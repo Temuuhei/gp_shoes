@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="view_cash_tree" model="ir.ui.view">
+            <field name="name">cash.tree</field>
+            <field name="model">cash</field>
+            <field name="priority">4</field>
+            <field name="arch" type="xml">
+                <tree string="Cash">
+                    <field name="name"/>
+                    <field name="amount"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_cash_form" model="ir.ui.view">
+            <field name="name">cash.form</field>
+            <field name="model">cash</field>
+            <field name="arch" type="xml">
+                <form string="Cash">
+                <header>
+                    <button name = "put_money" string = "Put money in" type = "object"/>
+                    <button name = "take_money" string = "Take money out" type = "object"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="amount"/>
+                    </group>
+                    <notebook>
+                        <page string="History">
+                            <field name="history">
+                                <tree string="History">
+                                    <field name="description"/>
+                                    <field name="amount"/>
+                                    <field name="date"/>
+                                    <field name="user"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_cash" model="ir.actions.act_window">
+            <field name="name">Cash</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cash</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+
+        <menuitem action="action_cash"
+            id="menu_cash" parent="sale.menu_sale_invoicing"
+            sequence="1" />
+
+
+	</data>
+</openerp>

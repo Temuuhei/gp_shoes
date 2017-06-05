@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_work_skill_user,access.work.skill.user,model_hr_work_skill,base.group_hr_user,1,0,0,0
+access_work_skill_manager,access.work.skill.manager,model_hr_work_skill,base.group_hr_manager,1,1,1,1
+access_hr_certificate_user,access.hr.certificate.user,model_hr_certificate,base.group_hr_user,1,0,0,0
+access_hr_certificate_manager,access.hr.certificate.manager,model_hr_certificate,base.group_hr_manager,1,1,1,1
