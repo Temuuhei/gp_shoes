@@ -43,5 +43,16 @@ class sale_order(models.Model):
         #     'flags': {'form': {'action_buttons': True}, }
         # }
 
+        # 'name': "Verify Ticket",
+        # 'type': 'ir.actions.act_window',
+        # 'res_model': 'citrus.verify.ticket',
+        # 'res_id': wizard_id,
+        # 'view_id': False,
+        # 'view_type': 'form',
+        # 'view_mode': 'form',
+        # 'nodestroy': True,  # don't dump the original wizard
+        # 'target': 'new',  # open the new one as a popup
+        # 'domain': '[]',
+        # 'context': context,
 
         super(sale_order, self).action_confirm()

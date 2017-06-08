@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_cash_management_form" model="ir.ui.view">
+            <field name="name">Cash Management</field>
+            <field name="model">cash.management</field>
+            <field name="arch" type="xml">
+                <form string="Cash Management">
+                    <group>
+                        <field name="amount" />
+                        <field name="description" required = "1"/>
+                    </group>
+                    <footer>
+                        <button name="confirm" string="Put Money In" type="object" invisible="context.get('out',False)"
+                                context="{'put_in': True}" class="btn-primary"/>
+                        <button name="confirm" string="Take Money Out" type="object" invisible="context.get('in',False)"
+                                context="{'take_out': True}" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_cash_management" model="ir.actions.act_window">
+            <field name="name">Cash Management</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cash.management</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- TODO: check if we need this -->
+        <record model="ir.values" id="cash_management">
+            <field name="model_id" ref="gp_shoes_sale.model_cash_management" />
+            <field name="name">Invoice Orders</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_view_cash_management'))" />
+            <field name="key">action</field>
+            <field name="model">cash</field>
+        </record>
+
+</odoo>

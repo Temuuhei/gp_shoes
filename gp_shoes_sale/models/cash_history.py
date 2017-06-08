@@ -26,6 +26,11 @@ class cash_history(models.Model):
     description = fields.Char(string='Description')
     date = fields.Datetime(string='Action Date')
     user = fields.Many2one('res.users', string='Action User')
+    action = fields.Selection([
+        ('in', 'In'),
+        ('out', 'Out'),
+    ], string='Action')
+    remaining_amount = fields.Float(string='Remainin Amount')
 
 
 
