@@ -24,40 +24,21 @@ class sale_order(models.Model):
     discount_manager = fields.Many2one('res.users', string='Discount Manager')
 
     def custom_confirm(self):
-        print'\n\n confirm \n\n'
+        print'\n custom confirm \n'
         for order in self:
-            if order.payment_term_id.type == 'mixed':
-                print'\n\n mixed*********++++++++++ \n\n'
-                data_obj = self.pool.get('ir.model.data')
-                form_data_id = data_obj._get_id('gp_shoes_sale', 'confirm_unlink_res_partner_bank_wizard_form')
-                form_view_id = False
-                if form_data_id:
-                    form_view_id = data_obj.browse(cr, uid, form_data_id, context=context).res_id
-                return {
-                    'name': 'Sales Order Cash Register',
-                    'view_type': 'form',
-                    'view_mode': 'form',
-                    'view_id': False,
-                    'views': [(form_view_id, 'form'), ],
-                    'res_model': 'sale.order.cash.register',
-                    'type': 'ir.actions.act_window',
-                    'target': 'new',
-                    'flags': {'form': {'action_buttons': True},
-                    # 'context': context,
-                              }
-                }
-
-                # super(sale_order, self).action_confirm()
-        # 'name': "Verify Ticket",
-        # 'type': 'ir.actions.act_window',
-        # 'res_model': 'citrus.verify.ticket',
-        # 'res_id': wizard_id,
-        # 'view_id': False,
-        # 'view_type': 'form',
-        # 'view_mode': 'form',
-        # 'nodestroy': True,  # don't dump the original wizard
-        # 'target': 'new',  # open the new one as a popup
-        # 'domain': '[]',
-        # 'context': context,
+            if order.payment_term_id and not order.payment_term_id.type == 'card':
+                view = self.env['ir.model.data'].get_object_reference('gp_shoes_sale', 'view_sale_order_cash_register')[1]
+                return {'name': _('Sales cash Wizard'),
+                     'type': 'ir.actions.act_window',
+                     'view_type': 'form',
+                     'view_mode': 'form',
+                     'res_model': 'sale.order.cash.register',
+                     'views': [(view, 'form')],
+                     'view_id': view,
+                     'target': 'new',
+                     'res_id': False,
+                     }
+            if order.payment_term_id.type == 'card' or not order.payment_term_id:
+                order.action_confirm()
 
 

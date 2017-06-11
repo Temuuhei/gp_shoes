@@ -5,8 +5,16 @@
             <field name="model">sale.order.cash.register</field>
             <field name="arch" type="xml">
                 <form string="Invoice Sales Order">
-
+                    <group>
+                        <field name="cash"/>
+                        <field name="amount"/>
+                    </group>
+                    <footer>
+                        <button name="confirm" string="Confirm" class="btn-primary" type="object" />
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
                 </form>
+
             </field>
         </record>
 

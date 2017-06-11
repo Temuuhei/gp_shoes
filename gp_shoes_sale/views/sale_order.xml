@@ -9,8 +9,11 @@
                 <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="discount_manager"/>
                 </xpath>
-                <xpath expr="//button[@name='action_done']" position="after">
-                    <button name="custom_confirm" string = "Custom Confirm" type = 'object'/>
+                <xpath expr="//button[@name='action_confirm']" position="replace">
+                    <button name="custom_confirm" string = "Custom Confirm" class="oe_highlight"  type = 'object' states = "draft" />
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
             </field>
         </record>
