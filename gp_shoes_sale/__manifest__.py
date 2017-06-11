@@ -26,6 +26,7 @@ Customising Sale for GP Shoes
         'views/account_payment_term.xml',
         'views/sale_order.xml',
         'views/cash.xml',
+        'wizard/sale_order_wizard.xml',
 
         
     ],

@@ -9,6 +9,9 @@
                 <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="discount_manager"/>
                 </xpath>
+                <xpath expr="//button[@name='action_done']" position="after">
+                    <button name="custom_confirm" string = "Custom Confirm" type = 'object'/>
+                </xpath>
             </field>
         </record>
 
