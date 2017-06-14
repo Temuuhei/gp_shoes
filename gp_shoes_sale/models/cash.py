@@ -29,6 +29,8 @@ class cash(models.Model):
 
     @api.multi
     def take_money(self):
+        for i in self:
+            print'\n\n aaaaaaaa %s \n\n' % i
         print'\n\n take_money %s \n\n'%self
         # create history line and update amount
 
