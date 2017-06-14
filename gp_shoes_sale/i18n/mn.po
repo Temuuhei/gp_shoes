@@ -1,0 +1,290 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* gp_shoes_sale
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-14 17:39+0000\n"
+"PO-Revision-Date: 2017-06-14 17:39+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_action
+msgid "Action"
+msgstr "Үйлдэл"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_date
+msgid "Action Date"
+msgstr "Огноо"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_user
+msgid "Action User"
+msgstr "Хэрэглэгч"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_amount
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_amount
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_amount
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_amount
+msgid "Amount"
+msgstr "Дүн"
+
+#. module: gp_shoes_sale
+#: code:addons/gp_shoes_sale/wizard/sale_order_wizard.py:26
+#, python-format
+msgid "Amount can not be less than zero."
+msgstr "Хасах тоо байж болохгүй."
+
+#. module: gp_shoes_sale
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_management_form
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register
+msgid "Cancel"
+msgstr "Цуцлах"
+
+#. module: gp_shoes_sale
+#: selection:account.payment.term,type:0
+msgid "Card"
+msgstr "Карт"
+
+#. module: gp_shoes_sale
+#: selection:account.payment.term,type:0
+#: model:ir.actions.act_window,name:gp_shoes_sale.action_cash
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_cash
+#: model:ir.ui.menu,name:gp_shoes_sale.menu_cash
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_form
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_tree
+msgid "Cash"
+msgstr "Касс"
+
+#. module: gp_shoes_sale
+#: model:ir.actions.act_window,name:gp_shoes_sale.action_view_cash_management
+#: model:ir.model,name:gp_shoes_sale.model_cash_management
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_management_form
+msgid "Cash Management"
+msgstr "Бэлэн мөнгний менежмент"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_check_discount
+msgid "Check Discount"
+msgstr "Хөнглөлт шалгах"
+
+#. module: gp_shoes_sale
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register
+msgid "Confirm"
+msgstr "Батлах"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_create_uid
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_create_uid
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_create_uid
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_create_uid
+msgid "Created by"
+msgstr "Үүсгэгч"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_create_date
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_create_date
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_create_date
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_create_date
+msgid "Created on"
+msgstr "Үүсгэгдсэн"
+
+#. module: gp_shoes_sale
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_order_form_inherited_gp_shoes
+msgid "Custom Confirm"
+msgstr "Батлах"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_description
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_description
+msgid "Description"
+msgstr "Тайлбар"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_discount_manager
+msgid "Discount Manager"
+msgstr "Хөнглөлтийн менежер"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_display_name
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_display_name
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_display_name
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_display_name
+msgid "Display Name"
+msgstr "Дэлгэцийн Нэр"
+
+#. module: gp_shoes_sale
+#: code:addons/gp_shoes_sale/models/sale_order_line.py:39
+#, python-format
+msgid "Extra line with %s "
+msgstr "Extra line with %s "
+
+#. module: gp_shoes_sale
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_form
+msgid "History"
+msgstr "Түүх"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_id
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_id
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_id
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_id
+msgid "ID"
+msgstr "ID"
+
+#. module: gp_shoes_sale
+#: selection:cash.history,action:0
+msgid "In"
+msgstr "Хийсэн"
+
+#. module: gp_shoes_sale
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register
+msgid "Invoice Sales Order"
+msgstr "Борлуулалтын захиалгыг нэхэмжлэх"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash___last_update
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history___last_update
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management___last_update
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register___last_update
+msgid "Last Modified on"
+msgstr "Сүүлд Өөрчлөгдсөн"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_write_uid
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_write_uid
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_write_uid
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_write_uid
+msgid "Last Updated by"
+msgstr "Сүүлд Шинэчлэгч"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_write_date
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_write_date
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_write_date
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_write_date
+msgid "Last Updated on"
+msgstr "Сүүлд Шинэчлэгдсэн"
+
+#. module: gp_shoes_sale
+#: selection:account.payment.term,type:0
+msgid "Mixed"
+msgstr "Холимог"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_name
+msgid "Name"
+msgstr "Нэр"
+
+#. module: gp_shoes_sale
+#: code:addons/gp_shoes_sale/wizard/cash_wizard.py:50
+#, python-format
+msgid "Not enough money in the cash register."
+msgstr "Кассны мөнгө хүрэлцэхгүй байна."
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_note
+msgid "Note"
+msgstr "Тэмдэглэл"
+
+#. module: gp_shoes_sale
+#: selection:cash.history,action:0
+msgid "Out"
+msgstr "Авсан"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_parent_id
+msgid "Parent"
+msgstr "Эцэг"
+
+#. module: gp_shoes_sale
+#: model:ir.model,name:gp_shoes_sale.model_account_payment_term
+msgid "Payment Term"
+msgstr "Төлбөрийн нөхцөл"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_account_payment_term_type
+msgid "Payment Type"
+msgstr "Төлбөрийн Төрөл"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_line_price_original
+msgid "Price Original"
+msgstr "Эхний үнэ"
+
+#. module: gp_shoes_sale
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_management_form
+msgid "Put Money In"
+msgstr "Мөнгө хийх"
+
+#. module: gp_shoes_sale
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_form
+msgid "Put money in"
+msgstr "Мөнгө хийх"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_remaining_amount
+msgid "Remainin Amount"
+msgstr "Үлдэгдэл"
+
+#. module: gp_shoes_sale
+#: model:ir.actions.act_window,name:gp_shoes_sale.action_view_sale_order_cash_register
+msgid "Sale Order Cash Register"
+msgstr "Борлуулатаас Касс руу"
+
+#. module: gp_shoes_sale
+#: model:ir.model,name:gp_shoes_sale.model_sale_order
+msgid "Sales Order"
+msgstr "Борлуулалтын захиалга"
+
+#. module: gp_shoes_sale
+#: model:ir.model,name:gp_shoes_sale.model_sale_order_cash_register
+msgid "Sales Order Cash Register"
+msgstr "Борлуулатаас Касс руу"
+
+#. module: gp_shoes_sale
+#: model:ir.model,name:gp_shoes_sale.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Борлуулалтын Захиалгын Мөр"
+
+#. module: gp_shoes_sale
+#: code:addons/gp_shoes_sale/models/sale_order.py:42
+#, python-format
+msgid "Sales cash Wizard"
+msgstr "Борлуулалтын бэлэн мөнгө"
+
+#. module: gp_shoes_sale
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_management_form
+msgid "Take Money Out"
+msgstr "Мөнгийг авах"
+
+#. module: gp_shoes_sale
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_form
+msgid "Take money out"
+msgstr "Мөнгө авах"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,help:gp_shoes_sale.field_sale_order_cash_register_amount
+msgid "The amount paid in cash."
+msgstr "Бэлнээр төлсөн дүн."
+
+#. module: gp_shoes_sale
+#: model:ir.model,name:gp_shoes_sale.model_cash
+msgid "cash"
+msgstr "Касс"
+
+#. module: gp_shoes_sale
+#: model:ir.model,name:gp_shoes_sale.model_cash_history
+msgid "cash.history"
+msgstr "Түүх"
+
