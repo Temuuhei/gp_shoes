@@ -28,14 +28,8 @@ class cash(models.Model):
     history = fields.One2many('cash.history','parent_id',string='Note')
 
     @api.multi
-    def put_money(self):
-        print'\n\n put_money \n\n'
-        # create history line and update amount
-
-
-    @api.multi
     def take_money(self):
-        print'\n\n take_money \n\n'
+        print'\n\n take_money %s \n\n'%self
         # create history line and update amount
 
 

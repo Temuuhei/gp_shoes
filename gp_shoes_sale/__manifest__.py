@@ -22,10 +22,13 @@ Customising Sale for GP Shoes
                 'account'
                  ],
     "data" : [
-
+        'wizard/cash_wizard.xml',
         'views/account_payment_term.xml',
         'views/sale_order.xml',
         'views/cash.xml',
+        'views/test.xml',
+        'wizard/sale_order_wizard.xml',
+
         
     ],
     "active": False,

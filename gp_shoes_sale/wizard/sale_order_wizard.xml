@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_sale_order_cash_register" model="ir.ui.view">
+            <field name="name">Sale Order Cash Register</field>
+            <field name="model">sale.order.cash.register</field>
+            <field name="arch" type="xml">
+                <form string="Invoice Sales Order">
+                    <group>
+                        <field name="cash"/>
+                        <field name="amount"/>
+                    </group>
+                    <footer>
+                        <button name="confirm" string="Confirm" class="btn-primary" type="object" />
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+
+            </field>
+        </record>
+
+        <record id="action_view_sale_order_cash_register" model="ir.actions.act_window">
+            <field name="name">Sale Order Cash Register</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.cash.register</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <!-- TODO: check if we need this -->
+        <record model="ir.values" id="sale_order_cash_register">
+            <field name="model_id" ref="sale.model_sale_order" />
+            <field name="name">Invoice Orders</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_view_sale_order_cash_register'))" />
+            <field name="key">action</field>
+            <field name="model">sale.order</field>
+        </record>
+
+</odoo>

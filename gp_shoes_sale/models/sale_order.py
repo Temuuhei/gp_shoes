@@ -19,29 +19,37 @@ from odoo.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FOR
 
 import odoo.addons.decimal_precision as dp
 
-class sale_order(models.Model):
+class SaleOrder(models.Model):
     _inherit = "sale.order"
+    def _check_discount(self):
+        for order in self:
+            discount = False
+            if order.order_line:
+                for line in order.order_line:
+                    if not line.price_unit == line.price_original:
+                        discount = True
+                        order.check_discount = True
+                        break
+
+
     discount_manager = fields.Many2one('res.users', string='Discount Manager')
+    check_discount = fields.Boolean(compute=_check_discount, string='Check Discount')
 
-    def action_confirm(self):
-        print'\n\n confirm \n\n'
-
-        # data_obj = self.pool.get('ir.model.data')
-        # form_data_id = data_obj._get_id(cr, uid, 'res_partner_extended', 'confirm_unlink_res_partner_bank_wizard_form')
-        # form_view_id = False
-        # if form_data_id:
-        #     form_view_id = data_obj.browse(cr, uid, form_data_id, context=context).res_id
-        # return {
-        #     'name': 'Confirm removing bank account',
-        #     'view_type': 'form',
-        #     'view_mode': 'form',
-        #     'view_id': False,
-        #     'views': [(form_view_id, 'form'), ],
-        #     'res_model': 'confirm.unlink.res.partner.bank.wizard',
-        #     'type': 'ir.actions.act_window',
-        #     'target': 'new',
-        #     'flags': {'form': {'action_buttons': True}, }
-        # }
+    def custom_confirm(self):
+        for order in self:
+            if order.payment_term_id and not order.payment_term_id.type == 'card':
+                view = self.env['ir.model.data'].get_object_reference('gp_shoes_sale', 'view_sale_order_cash_register')[1]
+                return {'name': _('Sales cash Wizard'),
+                     'type': 'ir.actions.act_window',
+                     'view_type': 'form',
+                     'view_mode': 'form',
+                     'res_model': 'sale.order.cash.register',
+                     'views': [(view, 'form')],
+                     'view_id': view,
+                     'target': 'new',
+                     'res_id': False,
+                     }
+            if order.payment_term_id.type == 'card' or not order.payment_term_id:
+                order.action_confirm()
 
 
-        super(sale_order, self).action_confirm()

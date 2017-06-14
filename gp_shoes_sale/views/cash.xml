@@ -19,20 +19,25 @@
             <field name="arch" type="xml">
                 <form string="Cash">
                 <header>
-                    <button name = "put_money" string = "Put money in" type = "object"/>
-                    <button name = "take_money" string = "Take money out" type = "object"/>
+                    <button name="%(action_view_cash_management)d" string="Put money in"
+                        type="action" context="{'in': True,'out': False}"/>
+                    <button name="%(action_view_cash_management)d" string="Take money out"
+                        type="action" context="{'in': False,'out': True}"/>
                 </header>
                 <sheet>
+                    <h2><field name="name"/></h2>
                     <group>
-                        <field name="name"/>
-                        <field name="amount"/>
+
+                        <field name="amount" readonly = "1"/>
                     </group>
                     <notebook>
                         <page string="History">
-                            <field name="history">
+                            <field name="history" readonly = "1">
                                 <tree string="History">
                                     <field name="description"/>
+                                    <field name="action"/>
                                     <field name="amount"/>
+                                    <field name="remaining_amount"/>
                                     <field name="date"/>
                                     <field name="user"/>
                                 </tree>

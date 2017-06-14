@@ -1,4 +1,5 @@
 import account_payment_term
 import sale_order
+import sale_order_line
 import cash
 import cash_history
