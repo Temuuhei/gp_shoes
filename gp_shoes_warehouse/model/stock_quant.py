@@ -26,24 +26,13 @@ class PickingType(models.Model):
     """ The picking type determines the picking view """
     _name = "stock.picking"
     _inherit = "stock.picking"
-    _description = "The picking type determines the picking view"
+    _description = "Stock Picking"
 
     @api.multi
     def my_function(self, cr, uid, ids, context=None):
-        print'IDSSSSSSSSSSSSSSSSSSSSSs',ids
-        # if any(expense.state != 'draft' for expense in self):
-        #     raise UserError(_("You cannot report twice the same line!"))
-        # if len(self.mapped('employee_id')) != 1:
-        #     raise UserError(_("You cannot report expenses for different employees in the same report!"))
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_model': 'hr.expense.sheet',
-            'target': 'current',
-            'context': {
-                # 'default_expense_line_ids': [line.id for line in self],
-                # 'default_employee_id': self[0].employee_id.id,
-                # 'default_name': self[0].name if len(self.ids) == 1 else ''
-            }
-        }
+         print'Temkaaaaaaaa\n\n\n\n\n', ids
+         for item in self:
+             # do something with selected records
+
+            print'Temkaaaaaaaa\n\n\n\n\n',item.product_id
 
