@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="cash_test_action_server" model="ir.actions.server">
+            <field name="name">Cash Test</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_cash"/>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = records.take_money()
+            </field>
+        </record>
+
+        <record id="action_cash_test" model="ir.values">
+            <field name="name">Cash Test</field>
+            <field name="model_id" ref="model_cash"/>
+            <field name="model">cash</field>
+            <field name="key2">client_action_multi</field>
+            <field eval="'ir.actions.server,%d'%cash_test_action_server" name="value"/>
+        </record>
+
+	</data>
+</openerp>
