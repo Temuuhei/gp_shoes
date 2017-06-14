@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="product_uom_form_view_l10n_mn_mak_stock" model="ir.ui.view">
+            <field name="name">product.uom.form.l10n_mn_mak_stock</field>
+            <field name="model">product.uom</field>
+        	<field name="inherit_id" ref="product.product_uom_form_view"/>
+            <field name="arch" type="xml">
+	            <xpath expr='//form/group/group/field[@name="active"]' position="after">
+                     <field name="is_default"/>
+	            </xpath>
+            </field>
+        </record>
+	</data>
+</openerp>

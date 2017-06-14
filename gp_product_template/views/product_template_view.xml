@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="product_product_template_form_view_l10n_mn_mak_product" model="ir.ui.view">
+            <field name="name">product.template.form.l10n_mn_mak_stock</field>
+            <field name="model">product.template</field>
+        	<field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="type"]' position="before">
+                    <field name="categ_id"/>
+                </xpath>
+                <xpath expr='//field[@name="name"]' position="before">
+                    <field name="product_number"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="account_product_product_template_form_view_l10n_mn_mak_product" model="ir.ui.view">
+            <field name="name">product.template.form.l10n_mn_mak_stock</field>
+            <field name="model">product.template</field>
+        	<field name="inherit_id" ref="account.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="categ_id"]' position="replace"/>
+                <xpath expr='//group/label[@string="Internal Category"]' position="replace"/>
+            </field>
+        </record>        
+	</data>
+</openerp>

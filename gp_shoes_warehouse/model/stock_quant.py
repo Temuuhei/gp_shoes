@@ -17,55 +17,33 @@ class Quant(models.Model):
     _inherit = "stock.quant"
     _description = "Quants"
 
-    # @api.one
-    # @api.depends('is_true', 'product_tmp_id')
-    # def compute_is_true(self):
-    #     product_tmpl_id = 0
-    #     for quant in self:
-    #         quant.is_true = True
-    #         if quant.product_id:
-    #             product_obj = self.env['product.product'].search([('id', '=',quant.product_id )])
-    #             print 'Temka\n\n\n\n\n\n',product_obj
-    #             quant.product_tmp_id = product_obj.product_tmpl_id
-
     product_id = fields.Many2one(
         'product.product', 'Product',
         index=True, ondelete="restrict", readonly=True, required=True)
-    # product_tmp_id = fields.Many2one(
-    #     'product.template',related='product_id.product_tmpl_id', string ='Product Template',
-    #     index=True, ondelete="restrict", stored = "True" )
-    product_tmp_id = fields.Integer(compute='_compute_comment')
+    product_tmp_id = fields.Char(string="Product related", related='product_id.product_tmpl_id.name',store=True )
 
-    def _compute_comment(self):
-        for record in self:
-            record.product_tmp_id = record.product_id.product_templ_id.id
-            print record.comment
-    # is_true = fields.Boolean(string='Is Product Template', compute=compute_is_true, default=False, invisible="1")
+class PickingType(models.Model):
+    """ The picking type determines the picking view """
+    _name = "stock.picking"
+    _inherit = "stock.picking"
+    _description = "The picking type determines the picking view"
 
-# class
-#     @api.multi
-#     def name_get(self):
-#         """ name_get() -> [(id, name), ...]
-#
-#         Returns a textual representation for the records in ``self``.
-#         By default this is the value of the ``display_name`` field.
-#
-#         :return: list of pairs ``(id, text_repr)`` for each records
-#         :rtype: list(tuple)
-#         """
-#         result = []
-#         name = self._rec_name
-#         if name in self._fields:
-#             convert = self._fields[name].convert_to_display_name
-#             for record in self:
-#                 result.append((record.id, convert(record[name], record)))
-#         else:
-#             for record in self:
-#                 result.append((record.id, "%s,%s" % (record._name, record.id)))
-#
-#         return result
-#     @api.multi
-#     def name_get_product_template(self):
-#         for quant in self:
-#             if quant.product_id:
-#                if quant.product_id.product_tmpl_id
+    @api.multi
+    def my_function(self, cr, uid, ids, context=None):
+        print'IDSSSSSSSSSSSSSSSSSSSSSs',ids
+        # if any(expense.state != 'draft' for expense in self):
+        #     raise UserError(_("You cannot report twice the same line!"))
+        # if len(self.mapped('employee_id')) != 1:
+        #     raise UserError(_("You cannot report expenses for different employees in the same report!"))
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'hr.expense.sheet',
+            'target': 'current',
+            'context': {
+                # 'default_expense_line_ids': [line.id for line in self],
+                # 'default_employee_id': self[0].employee_id.id,
+                # 'default_name': self[0].name if len(self.ids) == 1 else ''
+            }
+        }
+
