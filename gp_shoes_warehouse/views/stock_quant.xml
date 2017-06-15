@@ -79,9 +79,9 @@
         <field name="model">stock.quant</field>
         <field eval="10" name="priority"/>
         <field name="arch" type="xml">
-            <!--<header>
+            <header>
             	<button name = "convert_product" type = "object" string = "Convert Product template" class="oe_highlight"/>
-                </header>-->
+                </header>
             <tree string="Inventory Valuation" create="0" delete="0">
                 <field name="product_tmp_id"/>
                 <field name="product_id"/>
@@ -161,6 +161,7 @@
     <menuitem id="menu_consume_gp" name= "Бараа зарлагадах"  sequence="2" parent = "menu_quants_gp" action="stock.action_stock_scrap"/>
     <menuitem id="menu_transit_gp" name= "Бараа шилжүүлэх"  sequence="3" parent = "menu_quants_gp" action="stock.action_picking_tree_all"/>
     <menuitem id="menu_dashboard_gp" name= "Агуулахын мэдээлэл"  sequence="4" parent = "menu_quants_gp" action="stock.stock_picking_type_action"/>
+    <menuitem action="stock.action_inventory_form" name = "Тооллого хийх" id="menu_action_inventory_form_gp" parent="menu_quants_gp" sequence="30"/>
     <menuitem id="menu_other_gp" name= "Бусад"  sequence="5" parent = "menu_quants_gp_main" />
     <menuitem id="menu_cash_gp" name= "Касс"  sequence="5" parent = "menu_other_gp" action="gp_shoes_sale.action_cash"/>
     <menuitem id="menu_quants_gp_1" name= "Размераар хайх"  sequence="1" parent = "menu_quants_gp" action="quantsact"/>
@@ -173,8 +174,8 @@
             <field name="model_id" ref="model_stock_quant"/>
             <field name="state">code</field>
             <field name="code">
-if records:
-    action = records.my_function2()
+                if records:
+                    action = records.my_function()
             </field>
         </record>
 

@@ -22,61 +22,45 @@ class Quant(models.Model):
         index=True, ondelete="restrict", readonly=True, required=True)
     product_tmp_id = fields.Char(string="Product related", related='product_id.product_tmpl_id.name',store=True )
 
-class PickingType(models.Model):
-    """ The picking type determines the picking view """
-    _name = "stock.picking"
-    _inherit = "stock.picking"
-    _description = "Stock Picking"
-
     @api.multi
-    def my_function(self, cr, uid, ids, context=None):
-<<<<<<< HEAD
-         print'Temkaaaaaaaa\n\n\n\n\n', ids
+    def my_function(self):
+         first_warehouse = 0
+         picking_type = 0
+         outgoing_location = 0
+         stock_move = []
          for item in self:
-             # do something with selected records
+             first_warehouse = self.env['stock.warehouse'].search([('lot_stock_id', '=', item.location_id.id)], limit=1)
+             picking_type = self.env['stock.picking.type'].search([('warehouse_id','=',first_warehouse.id),
+                                                                   ('code','=','internal')],limit=1)
+             outgoing_location = self.env['stock.picking.type'].search([('warehouse_id', '=', first_warehouse.id),
+                                                                   ('code', '=', 'outgoing')], limit=1)
+             location_id = item.location_id.id
+             stock_move.append((0,0, {'product_id': item.product_id.id,
+                                'product_uom_qty': int(item.qty),
+                                'state': 'draft',
+                                'product_uom': item.product_id.product_tmpl_id.uom_id.id,
+                                'procure_method': 'make_to_stock',
+                                'location_id': item.location_id.id,
+                                'location_dest_id': outgoing_location.id,
+                                'company_id': item.company_id.id,
+                                'date_expected': item.in_date,
+                                'date': item.in_date,
+                                'name': item.product_tmp_id,
+                                'scrapped':False,
+                                }))
+         return \
+            {
+             'name':_("Stock Transit Order"),
+             'type': 'ir.actions.act_window',
+             'view_mode': 'form',
+             'res_model': 'stock.picking',
+             'target': 'new',
+             'context': {
+                 'default_picking_type_id':picking_type.id,
+                 'default_location_id':self.location_id.id,
+                 'default_location_dest_id':False,
+                 'default_origin':'temka',
+                 'default_move_lines':[line.stock_move for line in self],
+             }
 
-            print'Temkaaaaaaaa\n\n\n\n\n',item.product_id
-=======
-        print'IDSSSSSSSSSSSSSSSSSSSSSs',ids
-        # if any(expense.state != 'draft' for expense in self):
-        #     raise UserError(_("You cannot report twice the same line!"))
-        # if len(self.mapped('employee_id')) != 1:
-        #     raise UserError(_("You cannot report expenses for different employees in the same report!"))
-        return {
-            'type': 'ir.actions.act_window',
-            'view_mode': 'form',
-            'res_model': 'hr.expense.sheet',
-            'target': 'current',
-            'context': {
-                # 'default_expense_line_ids': [line.id for line in self],
-                # 'default_employee_id': self[0].employee_id.id,
-                # 'default_name': self[0].name if len(self.ids) == 1 else ''
-            }
-        }
-class StockQuant(models.Model):
-    """ The picking type determines the picking view """
-    _name = "stock.quant"
-    _inherit = "stock.quant"
-    _description = "The picking type determines the picking view"
-
-    @api.multi
-    def my_function2(self):
-        for i in self:
-            print'IDSSSSSSSSSSSSSSSSSSSSSs',i
-        # if any(expense.state != 'draft' for expense in self):
-        #     raise UserError(_("You cannot report twice the same line!"))
-        # if len(self.mapped('employee_id')) != 1:
-        #     raise UserError(_("You cannot report expenses for different employees in the same report!"))
-        # return {
-        #     'type': 'ir.actions.act_window',
-        #     'view_mode': 'form',
-        #     'res_model': 'hr.expense.sheet',
-        #     'target': 'current',
-        #     'context': {
-        #         # 'default_expense_line_ids': [line.id for line in self],
-        #         # 'default_employee_id': self[0].employee_id.id,
-        #         # 'default_name': self[0].name if len(self.ids) == 1 else ''
-        #     }
-        # }
->>>>>>> 3b1d4e2b8219c25f6f422455503bbac545d80277
-
+             }
