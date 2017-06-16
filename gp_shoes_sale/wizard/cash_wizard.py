@@ -23,10 +23,7 @@ class CashManagement(models.TransientModel):
     @api.onchange('advance_payment_method')
     def confirm(self):
         context = self._context or {}
-        print'\n\n context : %s \n\n' % context
-        print'\n\n context active_id : %s \n\n' % context.get('active_id')
         if self._context.get('put_in', False):
-            print'\n\n put in +++++++++++\n\n'
             cash = self.env['cash'].browse(context.get('active_id'))
             for wizard in self:
                 cash.amount += wizard.amount
@@ -42,7 +39,6 @@ class CashManagement(models.TransientModel):
                 })
 
         elif self._context.get('take_out', False):
-            print'\n\n out -------------\n\n'
             cash = self.env['cash'].browse(context.get('active_id'))
             for wizard in self:
                 if cash.amount < wizard.amount:
