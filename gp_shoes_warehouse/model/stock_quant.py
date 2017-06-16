@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from datetime import datetime
 
 from odoo import api, fields, models
@@ -64,7 +65,7 @@ class Quant(models.Model):
                         'default_picking_type_id': picking_type.id,
                         'default_location_id': outgoing_location.id,
                         'default_location_dest_id': False,
-                        'default_origin': 'temka',
+                        'default_origin':'Тайлбар бичнэ үү...',
                         'default_move_lines': stock_move,
                     }
 
