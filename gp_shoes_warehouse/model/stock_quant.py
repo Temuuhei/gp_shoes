@@ -30,9 +30,6 @@ class Quant(models.Model):
         stock_move = []
         for item in self:
             warehouse = self.env['stock.warehouse'].search([('lot_stock_id', '=', item.location_id.id)], limit=1)
-
-            if not warehouse:
-
             if first_warehouse == 0:
                 first_warehouse = warehouse
                 picking_type = self.env['stock.picking.type'].search([('warehouse_id', '=', first_warehouse.id),
