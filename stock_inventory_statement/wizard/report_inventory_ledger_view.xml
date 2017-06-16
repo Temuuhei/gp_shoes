@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <record id="view_report_inventory_ledger_form" model="ir.ui.view">
+            <field name="name">view.report.inventory.ledger.form</field>
+            <field name="model">report.inventory.ledger</field>
+            <field name="inherit_id" ref="l10n_mn_report_base.abstract_report_view"/>
+            <field name="arch" type="xml">
+                <xpath expr='//form' position="attributes">
+                    <attribute name="string">Report Inventory Ledger</attribute>
+                </xpath>
+                <xpath expr='//group[@name="report"]' position="inside">
+                    <group>
+                       <field name="company_id" invisible="1"/>
+                       <group>
+                            <field name="date_from"/>
+                            <field name="report_type"/>
+                       </group>
+                       <group>
+                            <field name="date_to"/>
+                            <field name="type"/>
+                       </group>
+                    </group>
+                   <div colspan="4">
+                       <field name="income_view" nolabel="1"/><label for="income_view"/>
+                       <field name="expense_view" nolabel="1"/><label for="expense_view"/>
+                   </div>
+                   <div colspan="4">
+                       <field name="cost" groups="l10n_mn_account.account_view_cost" nolabel="1"/><label for="cost" groups="l10n_mn_account.account_view_cost"/>
+                   </div>
+                   <notebook colspan="4">
+                       <page string="Warehouse">
+                       <field name="warehouse_ids" nolabel="1" colspan="4" widget="many2many_kanban" required="1">
+                           <kanban quick_create="false" create="true" delete="true">
+                                <field name="name"/>
+                                <templates>
+                                    <t t-name="kanban-box">
+                                        <div style="position: relative;border-width: 1px; border-radius: 4px; border-style: solid; border-bottom-color: #B9B9B9; border-left-color: #D8D8D8; border-right-color: #D8D8D8; border-top-color: #D8D8D8;">
+                                            <a t-if="! read_only_mode" type="delete" style="position: absolute; right: 0; padding: 4px; diplay: inline-block">X</a>
+                                            <div class="oe_module_vignette">
+                                                <div class="oe_module_desc">
+                                                    <field name="name"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </templates>
+                            </kanban>
+                       </field>
+                       </page>
+                       <page string="Product">
+                       <field name="product_ids" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="Category">
+                       <field name="category_ids" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="Manufacturer">
+                       <field name="partner_ids" nolabel="1" colspan="4"/>
+                       </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="action_report_inventory_ledger" model="ir.actions.act_window">
+            <field name="name">Report Inventory Ledger</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">report.inventory.ledger</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_report_inventory_ledger_form"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem action="action_report_inventory_ledger" id="menu_action_report_inventory_ledger" 
+            parent="stock.next_id_61" sequence="10" groups="stock.group_stock_manager,account.group_account_user"/>
+            
+    </data>
+</openerp>

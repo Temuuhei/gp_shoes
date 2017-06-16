@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record id="view_stock_fill_easy" model="ir.ui.view">
+            <field name="name">Fill Procurement</field>
+            <field name="model">stock.fill.easy</field>
+            <field name="arch" type="xml">
+              <form string="Fill Procurement" version="7.0">
+                  <group>
+                    <field name="scan_field" colspan="4" on_change="onchange_scan(scan_field,consume_id,transit_id,context)"/>
+                    <field name="product_id" colspan="4"/>
+                    <group>
+                        <field name="qty" on_change="onchange_qty(product_id,qty,warehouse_id,transit_id,consume_id,context)"/>
+                    </group>
+                    <group>
+                        <field name="availability"/>
+                    </group>
+                  </group>
+                  <field name="transit_id" invisible="1"/>
+                  <field name="consume_id" invisible="1"/>
+                  <field name="warehouse_id" invisible="1"/>
+                 <footer>
+                     <button name="fill_procure" string="Fill Procurement" type="object" class="oe_highlight"/>
+                     <button special="cancel" string="Cancel" class="oe_link"/>
+                 </footer>
+             </form>
+            </field>
+        </record>
+        
+        <record id="action_stock_fill_easy" model="ir.actions.act_window">
+            <field name="name">Fill Procurement</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.fill.easy</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_stock_fill_easy"/>
+            <field name="target">new</field>
+        </record>
+        
+        
+        
+    </data>
+</openerp>  

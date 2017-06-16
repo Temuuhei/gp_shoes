@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="l10n_mn_stock.report_stockpicking" inherit_id="stock.report_picking">
+    <xpath expr="//t[@t-call='report.external_layout']" position="replace">
+        <t t-foreach="docs" t-as="o">
+        	<t t-call="report.layout">
+		        <div class="page l10n_mn_base_report">
+		             <h2>Бараа Бэлтгэх Баримт</h2>
+		             <table class="table table-l10n_mn-header">
+		             	<tr><td colspan="2">Баримтын дугаар: <t style="font-size: 9px;" t-esc="pick_names"/></td></tr>
+		             	<tr t-if="local['yes']=='True'">
+		             	    <td width="50%">Борлуулалтын баг: <b t-esc="local['team']"/></td>
+		             	    <td width="50%">Түгээгч: <b t-esc="local['driver']"/></td>
+		             	</tr>
+		             	<tr t-if="local['yes']=='True'">
+                            <td width="50%">Агуулах: <b t-esc="local['wname']"/></td>
+                            <td width="50%">Хэвлэсэн огноо: <b t-esc="time.strftime('%Y-%m-%d %H:%m')"/></td>
+                        </tr>
+		                <tr t-if="local['yes']=='False'">
+                            <td t-if="team_names!=''" width="50%">Борлуулалтын баг: <b t-esc="team_names"/></td>
+                            <td align="right" width="50%">Хэвлэсэн огноо: <b t-esc="time.strftime('%Y-%m-%d %H:%m')"/></td>
+                        </tr>
+		             </table>
+                     <p></p>
+		             <table class="table table-l10n_mn-grid">
+		                 <tr>
+		                    <th width="3%" rowspan="2">№</th>
+		                    <th width="30%" rowspan="2">Барааны Нэр</th>
+		                    <th width="5%" rowspan="2">Х.Н</th>
+		                    <th width="21%" colspan="3">Бүртгэх тоо</th>
+							<th width="21%" colspan="3">Серь</th>		                    
+		                    <th width="6%" rowspan="2">Бүртгэсэн тоо</th>
+		                    <th width="6%" rowspan="2">Түгээгч х/а тоо</th>
+		                 </tr>
+		                 <tr>		                 	
+		                 	<th>Хайрцаг</th>
+		                 	<th>Задгай</th>
+		                 	<th>Нийт</th>
+							<th>Серийн дугаар</th>
+                            <th>Дуусах хугацаа</th>                            
+                            <th>Тоо</th>
+		                 </tr>
+			             <tbody>
+			                 <t t-set="line_number" t-value="1"/>
+			                 <t t-set="merge" t-value="False"/>
+			                 <tr t-foreach="pack_datas" t-as="pack">
+			                     <td style="text-align: center"><span t-esc="line_number"/></td>
+			                     <td style="text-align: left"><span t-esc="pack['name']"/></td>
+			                     <td style="text-align: center"><span t-esc="pack['uom']"/></td>			                     			                     
+			                     <t t-if="pack['id'] != merge">
+				                     <td t-att-rowspan="packs[pack['id']]['count']" style="text-align: right"><span t-esc="packs[pack['id']]['pack']"/></td>
+				                     <td t-att-rowspan="packs[pack['id']]['count']" style="text-align: right"><span t-esc="packs[pack['id']]['loose']"/></td>
+				                     <td t-att-rowspan="packs[pack['id']]['count']" style="text-align: right"><span t-esc="packs[pack['id']]['total']"/></td>
+				                     <t t-set="merge" t-value="pack['id']"/>
+			                     </t>			                     
+			                     <td style="text-align: center"><span t-esc="pack['lot']"/></td>
+			                     <td style="text-align: center"><span t-esc="pack['date']"/></td>
+			                     <td style="text-align: right"><span t-esc="pack['qty']"/></td>
+			                     <td></td>
+			                     <td></td>
+			                     <t t-set="line_number" t-value="line_number + 1"/>
+			                 </tr>
+			                 <tr style="background: #DDDDDD;color: #000000;">
+			                 	<td colspan="3"><b>НИЙТ</b></td>                                
+		                     	<td><b><span t-esc="total['pack']"/></b></td>
+		                     	<td><b><span t-esc="total['loose']"/></b></td>
+		                     	<td><b><span t-esc="total['total']"/></b></td>		                     	
+		                     	<td></td>
+		                     	<td></td>
+		                     	<td><b><span t-esc="total['total']"/></b></td>
+		                     	<td></td>
+		                     	<td></td>
+			                 </tr>
+			             </tbody>
+		             </table>
+		             <table class="table table-l10n_mn-header">
+		                 <tr>
+		                     <td width="40%" align="center" colspan="4"><b>НИЙТ Хэмжигдэхүүн: </b></td>
+		                     <td width="20%" align="right"><b>Эзлэхүүн: <span t-esc="weights.get('volume',0.0)"/> м3</b></td>
+		                     <td width="20%" align="right"><b>Бохир жин: <span t-esc="weights.get('weight',0.0)"/> кг</b></td>
+		                     <td width="20%" align="right"><b>Цэвэр жин: <span t-esc="weights.get('weight_net',0.0)"/> кг</b></td>
+		                     <td align="right" colspan="2"></td>
+		                 </tr>
+		             </table>
+		             <table class="table-l10n_mn-footer">
+		                 <tr><td></td></tr>
+		                 <tr><td></td></tr>
+		                 <tr>
+		                     <td width="15%" align="right">Delivered by: </td>   
+		                     <td width="20%">......................................................</td>
+		                     <td width="15%"></td>  
+		                     <td width="15%"></td>
+		                     <td width="15%" align="right">Checked by: </td>
+		                     <td width="20%">......................................................</td>
+		                 </tr>
+		             </table>
+		         </div>
+		    </t>
+       </t>
+     </xpath>
+</template>
+</data>
+</openerp>

@@ -1,0 +1,31 @@
+<openerp>
+    <data>
+        <record id="view_update_stock_move_float_value" model="ir.ui.view">
+            <field name="name">update.stock.move.float.value.form</field>
+            <field name="model">update.stock.move.float.value</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Update stock move float value">                    
+                    <group colspan="4" col="6">
+                        <label string="" colspan="2"/>
+                        <button icon="gtk-cancel" special="cancel" string="Close"/>
+                        <button icon="gtk-execute" string="Execute" name="execute_script" type="object"/>
+                   </group>
+               </form>
+            </field>	
+        </record>
+        
+        <record id="action_update_stock_move_float_value" model="ir.actions.act_window">
+            <field name="name">Update stock move float value</field>
+            <field name="res_model">update.stock.move.float.value</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_update_stock_move_float_value"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem action="action_update_stock_move_float_value" id="menu_action_update_stock_move"
+              parent="base.menu_board_root" sequence="22"/>
+        
+    </data>
+</openerp>

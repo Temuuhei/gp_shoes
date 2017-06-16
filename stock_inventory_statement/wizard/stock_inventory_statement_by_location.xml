@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+    <record id="view_stock_inventory_statement_by_location_form" model="ir.ui.view">
+        <field name="name">view.stock.inventory.statement._by.location.form</field>
+        <field name="model">stock.inventory.statement.by.location</field>
+        <field name="inherit_id" ref="l10n_mn_report_base.abstract_report_view"/>
+        <field name="arch" type="xml">
+            <xpath expr='//form' position="attributes">
+                <attribute name="string">Stock Inventory Statement</attribute>
+            </xpath>
+            <xpath expr='//group[@name="report"]' position="inside">
+                <group colspan="2">
+                   <field name="company_id" readonly="1"/>
+                   <field name="grouping"/>
+                   <field name="sorting"/>
+                   <field name="type" attrs="{'invisible':['|',('grouping','=',False)]}"/>
+                   <field name="date_from" attrs="{'invisible':[('income_expense','=',False)],'required':[('income_expense','=',True)]}"/>
+               </group>
+               <group colspan="2">
+                    <field name="ean"/>
+                    <field name="lot" attrs="{'invisible':[('income_expense','=',True)]}"/>
+                    <field name="income_expense"/>
+                    <div>
+                           <label string="Date" for="date_to" attrs="{'invisible':[('income_expense','=',True)]}"/>
+                           <label string="To Date" for="date_to" attrs="{'invisible':[('income_expense','=',False)]}"/>
+                    </div>
+                    <field name="date_to" nolabel="1"/>
+               </group>
+               <div colspan="4">
+                   <field name="cost" groups="l10n_mn_account.account_view_cost" nolabel="1"/><label for="cost" groups="l10n_mn_account.account_view_cost"/>
+               </div>
+               <notebook colspan="4">
+                   <page string="Warehouse">
+                       <field name="warehouse_ids" nolabel="1" colspan="4" widget="many2many_checkboxes" required="1" on_change="onchange_warehouse_ids(warehouse_ids)"/>
+                   </page>
+                   <page string="Warehouse location">
+                       <field name="location_ids" nolabel="1" colspan="4"/>
+                   </page>
+                   <page string="Manufacturer">
+                       <field name="partner_ids" nolabel="1" colspan="4"/>
+                   </page>
+                   <page string="Product Category">
+                       <field name="prod_categ_ids" nolabel="1" colspan="4"/>
+                   </page>
+                   <page string="Product">
+                       <field name="product_ids" nolabel="1" colspan="4"/>
+                   </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="action_stock_inventory_statement_by_location" model="ir.actions.act_window">
+        <field name="name">Stock Inventory Statement /By Location/</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.inventory.statement.by.location</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_stock_inventory_statement_by_location_form"/>
+        <field name="target">new</field>
+    </record>
+    
+    <menuitem action="action_stock_inventory_statement_by_location" id="menu_action_stock_inventory_statement_by_location" 
+        parent="stock.next_id_61" sequence="10" groups="stock.group_stock_manager,account.group_account_user"/>
+            
+</data>
+</openerp>

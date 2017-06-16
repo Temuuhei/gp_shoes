@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<openerp>
+    <data>
+        <record id="view_stock_return_picking_form_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">view.stock.return.picking.form.inherit.l10n.mn.stock</field>
+            <field name="model">stock.return.picking</field>
+            <field name="inherit_id" ref="stock.view_stock_return_picking_form"/>
+            <field name="arch" type="xml">
+            	<xpath expr='//field[@name="product_return_moves"]' position="replace">
+            	    <group>
+                        <field name="stock_return_category" attrs="{'required':[('stock_return_check','=',True)], 'invisible':[('stock_return_check','=',False)]}"/>
+                    </group>
+                    <field name="stock_return_check" invisible="1"/>
+                    <field name="picking_id" invisible="1"/>
+                    <field name="fill" invisible="1"/>
+            	    <field name="product_return_moves" colspan="4" context="{'picking_id': picking_id}">
+                        <tree editable="top">
+                            <field name="move_id" on_change="onchange_move(move_id,context)" required="1" domain="[('picking_id','=',picking_id)]"/>
+                            <field name="picking_id" invisible="1"/>
+                            <field name="product_id"/>
+                            <field name="lot_id" domain="[('product_id', '=', product_id)]" context="{'default_product_id': product_id}"/>
+                            <field name="quantity" on_change="onchange_qty(quantity,allowed_qty)"/>
+                            <field name="allowed_qty" readonly="1"/>
+                        </tree>
+                    </field>
+            	    <xpath expr='//button[@name="create_returns"]' position="before">
+                        <button name="clear_action" string="Clear" type="object" class="oe_highlight"/>
+                        <button name="fill_action" string="Fill" type="object" class="oe_highlight" context="{'picking_id':picking_id}" attrs="{'invisible':[('fill','=',False)]}"/>
+                        <separator/>
+                    </xpath>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="stock_return_fill_form" model="ir.ui.view">
+            <field name="name">stock.return.picking.fill.from</field>
+            <field name="model">stock.return.picking.fill</field>
+            <field name="arch" type="xml">
+                <form string="Return Picking">
+                    <field name="picking_id" readonly="1"/>
+                    <group col="4" string="Stock Move">
+                        <field name="move_ids" nolabel="1" domain="[('picking_id','=',picking_id)]"/>
+                    </group>
+                    <footer>
+                        <button name="stock_fill" string="Fill" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                 </form>
+            </field>
+        </record> 
+    </data>
+</openerp>

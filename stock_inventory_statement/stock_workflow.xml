@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Stock Replenishment Workflow -->
+        <record id="wkf_replenishment" model="workflow">
+            <field name="name">Stock Replenishment Workflow</field>
+            <field name="osv">stock.transit.order</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <record id="act_repl_draft_proc" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_replenishment"/>
+            <field name="flow_start">True</field>
+            <field name="name">draft</field>
+        </record>
+        <record id="act_repl_confirm_proc" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_replenishment"/>
+            <field name="name">confirmed</field>
+            <field name="kind">function</field>
+            <field name="action">wkf_confirm_transit()</field>
+        </record>
+        <record id="act_repl_shipping_done" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_replenishment"/>
+            <field name="name">shipped</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state':'shipped'})</field>
+        </record>
+        <record id="act_repl_receive_except" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_replenishment"/>
+            <field name="name">receive_except</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state':'receive_except'})</field>
+        </record>
+        <record id="act_repl_cancel_proc" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_replenishment"/>
+            <field name="name">cancel</field>
+            <field name="kind">function</field>
+            <field name="flow_stop">True</field>
+            <field name="action">write({'state':'cancelled'})</field>
+        </record>
+        <record id="act_repl_done_proc" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_replenishment"/>
+            <field name="name">done</field>
+            <field name="action">wkf_procurement_done()</field>
+            <field name="kind">function</field>
+            <field name="join_mode">XOR</field>
+            <field name="flow_stop">True</field>
+        </record>
+
+        <record id="repl_trans_draft_confirmed" model="workflow.transition">
+            <field name="act_from" ref="act_repl_draft_proc"/>
+            <field name="act_to" ref="act_repl_confirm_proc"/>
+            <field name="signal">action_confirm</field>
+        </record>
+        <record id="repl_trans_confirmed_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_repl_confirm_proc"/>
+            <field name="act_to" ref="act_repl_cancel_proc"/>
+            <field name="signal">action_cancel</field>
+        </record>
+        <record id="repl_trans_draft_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_repl_draft_proc"/>
+            <field name="act_to" ref="act_repl_cancel_proc"/>
+            <field name="signal">action_cancel</field>
+        </record>
+        <record id="repl_trans_confirm_shipped" model="workflow.transition">
+            <field name="act_from" ref="act_repl_confirm_proc"/>
+            <field name="act_to" ref="act_repl_shipping_done"/>
+            <field name="signal">action_shipped</field>
+        </record>
+        <record id="repl_trans_shipped_done" model="workflow.transition">
+            <field name="act_from" ref="act_repl_shipping_done"/>
+            <field name="act_to" ref="act_repl_done_proc"/>
+            <field name="signal">action_done</field>
+        </record>
+        <record id="repl_trans_shipped_receive_except" model="workflow.transition">
+            <field name="act_from" ref="act_repl_shipping_done"/>
+            <field name="act_to" ref="act_repl_receive_except"/>
+            <field name="condition">True</field>
+            <field name="signal">action_receive_cancelled</field>
+        </record>
+        <record id="repl_trans_receive_except_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_repl_receive_except"/>
+            <field name="act_to" ref="act_repl_cancel_proc"/>
+            <field name="signal">action_cancel</field>
+        </record>
+        <record id="repl_trans_receive_except_done" model="workflow.transition">
+            <field name="act_from" ref="act_repl_receive_except"/>
+            <field name="act_to" ref="act_repl_done_proc"/>
+            <field name="signal">action_correct</field>
+        </record>
+        <record id="repl_trans_receive_except_repick" model="workflow.transition">
+            <field name="act_from" ref="act_repl_receive_except"/>
+            <field name="act_to" ref="act_repl_shipping_done"/>
+            <field name="signal">action_repick</field>
+        </record>
+        
+        
+        
+        
+        
+        
+        
+        <!-- Stock Consume Workflow -->
+        <record id="wkf_consume" model="workflow">
+            <field name="name">Stock Consume Workflow</field>
+            <field name="osv">stock.consume.order</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <record id="act_cons_draft_proc" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_consume"/>
+            <field name="flow_start">True</field>
+            <field name="name">draft</field>
+        </record>
+        <record id="act_cons_confirm_proc" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_consume"/>
+            <field name="name">confirmed</field>
+            <field name="kind">function</field>
+            <field name="action">wkf_confirm_consume()</field>
+        </record>
+        <record id="act_cons_picking_wait" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_consume"/>
+            <field name="name">picking_wait</field>
+        </record>
+        <record id="act_cons_picking_except" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_consume"/>
+            <field name="name">picking_except</field>
+            <field name="kind">function</field>
+            <field name="action">write({'state':'picking_except'})</field>
+        </record>
+        <record id="act_cons_cancel_proc" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_consume"/>
+            <field name="name">cancel</field>
+            <field name="kind">function</field>
+            <field name="flow_stop">True</field>
+            <field name="action">write({'state':'cancelled'})</field>
+        </record>
+        <record id="act_cons_done_proc" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_consume"/>
+            <field name="name">done</field>
+            <field name="action">wkf_consume_done()</field>
+            <field name="kind">function</field>
+            <field name="join_mode">XOR</field>
+            <field name="flow_stop">True</field>
+        </record>
+
+        <record id="cons_trans_draft_confirmed" model="workflow.transition">
+            <field name="act_from" ref="act_cons_draft_proc"/>
+            <field name="act_to" ref="act_cons_confirm_proc"/>
+            <field name="signal">action_confirm</field>
+        </record>
+        <record id="cons_trans_confirmed_picking_wait" model="workflow.transition">
+            <field name="act_from" ref="act_cons_confirm_proc"/>
+            <field name="act_to" ref="act_cons_picking_wait"/>
+        </record>
+        <record id="cons_trans_wait_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_cons_picking_wait"/>
+            <field name="act_to" ref="act_cons_cancel_proc"/>
+            <field name="signal">action_cancel</field>
+        </record>
+        <record id="cons_trans_draft_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_cons_draft_proc"/>
+            <field name="act_to" ref="act_cons_cancel_proc"/>
+            <field name="signal">action_cancel</field>
+        </record>
+        <record id="cons_trans_wait_done" model="workflow.transition">
+            <field name="act_from" ref="act_cons_picking_wait"/>
+            <field name="act_to" ref="act_cons_done_proc"/>
+            <field name="signal">action_done</field>
+        </record>
+        <record id="cons_trans_wait_picking_except" model="workflow.transition">
+            <field name="act_from" ref="act_cons_picking_wait"/>
+            <field name="act_to" ref="act_cons_picking_except"/>
+            <field name="signal">action_picking_cancelled</field>
+        </record>
+        <record id="cons_trans_wait_except_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_cons_picking_except"/>
+            <field name="act_to" ref="act_cons_cancel_proc"/>
+            <field name="signal">action_cancel</field>
+        </record>
+        <record id="cons_trans_picking_except_done" model="workflow.transition">
+            <field name="act_from" ref="act_cons_picking_except"/>
+            <field name="act_to" ref="act_cons_done_proc"/>
+            <field name="signal">action_correct</field>
+        </record>
+        <record id="cons_trans_picking_except_repick" model="workflow.transition">
+            <field name="act_from" ref="act_cons_picking_except"/>
+            <field name="act_to" ref="act_cons_picking_wait"/>
+            <field name="signal">action_repick</field>
+        </record>
+		
+    </data>
+</openerp>

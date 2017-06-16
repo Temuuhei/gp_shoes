@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_transit_order_user,access.stock.transit.order.user,model_stock_transit_order,stock.group_stock_user,1,1,1,1
+access_stock_consume_order_user,access.stock.consume.order.user,model_stock_consume_order,stock.group_stock_user,1,1,1,1
+id_stock_return_type_read_access,stock.return.type.read.access,l10n_mn_stock.model_stock_return_type,stock.group_stock_user,1,0,0,0
+id_stock_return_type_write_access,stock.return.type.write.access,l10n_mn_stock.model_stock_return_type,stock.group_stock_manager,1,1,1,1
+stock.access_stock_picking_user,stock.picking user,stock.model_stock_picking,stock.group_stock_user,1,1,1,0
+product_profit_report_config_manager,product.profit.report.config.manager,l10n_mn_stock.model_product_profit_report_config,account.group_account_manager,1,1,1,0

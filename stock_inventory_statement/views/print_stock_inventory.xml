@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="l10n_mn_stock.print_stock_inventory">
+    <t t-foreach="docs" t-as="o">
+        <t t-call="report.layout">
+            <div class="page l10n_mn_base_report">
+	            <table class="table-l10n_mn-header">
+	                <tr><td align="left"><span><b>Маягт БМ-8-1</b></span></td>
+	                    <td align="right"><span>Байгууллагын нэр:</span> <b t-field="o.company_id.name"/></td>
+	                </tr>
+	            </table>
+                <h2>Бараа материалын тооллогын баримт</h2>
+                <table class="table-l10n_mn-header">
+                    <tr>
+                        <td><span>Дугаар : </span><b t-field="o.name"/></td>
+                        <td><span>Салбар нэгж : </span><b t-if="o.warehouse_id" t-field="o.warehouse_id.name"/>
+                             <b t-if="not o.warehouse_id">...............................</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span>Тооллогын огноо :</span><b t-if="o.date" t-field="o.date" t-field-options='{"format": "YYYY-MM-dd hh:mm"}'/>
+                             <b t-if="not o.date">....................</b>
+                        </td>
+                        <td><span>Хэвлэсэн огноо :</span><b t-esc="time.strftime('%Y-%m-%d %H:%M')"></b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><span>Төлөв :</span><b t-if="o.state == 'draft'">Ноорог</b><b t-if="o.state == 'cancel'">Цуцалсан</b>
+                        <b t-if="o.state == 'confirm'">Тоолсон</b><b t-if="o.state == 'done'">Баталсан</b></td>
+                    </tr>
+                </table>
+                <br/>
+                <t t-set="count" t-value="1"/>
+                <table class="table-l10n_mn-grid">
+                    <tr>
+                        <th rowspan="2" width="18px">Д/д</th>
+                        <th rowspan="2" width="60px">Бар код</th>
+                        <th rowspan="2" width="*">Бараа материалын нэр</th>
+                        <th rowspan="2" width="50px">Х.Н</th>
+                        <th rowspan="2" width="40px" t-if="seri==True">Серийн дугаар</th>
+                        <th rowspan="2" width="50px" t-if="seri==True">Дуусах хугацаа</th>
+                        <th rowspan="2" width="*" t-if="is_groupby_category==True">Барааны ангилал</th>
+                        <th t-if="avail==True" colspan="2" style="vertical-align:center,valign:middle;">Үлдэгдэл</th>
+                        <th colspan="2" style="vertical-align:center,valign:middle;">Тоолсон</th>
+                        <th t-if="o.state in ('confirm','done')" colspan="2" style="vertical-align:center,valign:middle;">Илүүдэл</th>
+                        <th t-if="o.state in ('confirm','done')" colspan="2" style="vertical-align:center,valign:middle;">Дутагдал</th>
+                    </tr>
+                    <tr>
+                        <th t-if="avail==True" width="45px">Тоо</th>
+                        <th t-if="avail==True" width="60px"><span t-if="type=='price'">Үнэ</span><span t-if="type=='cost'">Өртөг</span></th>
+                        <th width="50px">Тоо</th>
+                        <th width="60px"><span t-if="type=='price'">Үнэ</span><span t-if="type=='cost'">Өртөг</span></th>
+                        <th t-if="o.state in ('confirm','done')" width="45px">Тоо</th>
+                        <th t-if="o.state in ('confirm','done')" width="60px"><span t-if="type=='price'">Үнэ</span><span t-if="type=='cost'">Өртөг</span></th>
+                        <th t-if="o.state in ('confirm','done')" width="45px">Тоо</th>
+                        <th t-if="o.state in ('confirm','done')" width="60px"><span t-if="type=='price'">Үнэ</span><span t-if="type=='cost'">Өртөг</span></th>
+                    </tr>
+                    <tbody t-foreach="lines" t-as="l">
+                        <tr>
+                         <td align="center" t-esc="count"></td>
+                         <td align="center"><span t-esc="l['ean']"/></td>
+                         <td align="left"><span t-esc="l['name']"/></td>
+                         <td align="center"><span t-esc="l['uom']"/></td>
+                         <td align="center" t-if="seri==True"><span t-esc="l['prodlot']"/></td>
+                         <td align="center" t-if="seri==True"><span t-esc="l['expire']"/></td>
+                         <td align="right" t-if="avail==True"><span t-esc="l['avail_qty']"/></td>
+                         <td align="right" t-if="avail==True"><span t-esc="l['avail_amount']"/></td>
+                         <td align="left"  t-if="is_groupby_category==True"><span t-esc="l['categ_id']"/></td>
+                         <td align="right"><span t-esc="l['check_qty']"/></td>
+                         <td align="right"><span t-esc="l['check_amount']"/></td>
+                         <td align="right" t-if="o.state in ('confirm','done')"><span t-esc="l['more_qty']"/></td>
+                         <td align="right" t-if="o.state in ('confirm','done')"><span t-esc="l['more_amount']"/></td>
+                         <td align="right" t-if="o.state in ('confirm','done')"><span t-esc="l['less_qty']"/></td>
+                            <td align="right" t-if="o.state in ('confirm','done')"><span t-esc="l['less_amount']"/></td>
+                         <t t-set="count" t-value="count+1"/>
+                     </tr>
+                    </tbody>
+                    <tr>
+                        <td colspan="6" align="center" t-if="seri==True"><span><b>Хяналтын дүн :</b></span></td>
+                        <td colspan="4" align="center" t-if="seri==False"><span><b>Хяналтын дүн :</b></span></td>
+                        <td align="right" t-if="avail==True"><span><b t-esc="total_dict.get('avail_qty',0.0)"/></span></td>
+                        <td align="right" t-if="avail==True"><span><b t-esc="total_dict.get('avail_amount',0.0)"/></span></td>
+                        <td align="right" t-if="is_groupby_category==True"></td>
+                        <td align="right"><span><b t-esc="total_dict.get('check_qty',0.0)"/></span></td>
+                        <td align="right"><span><b t-esc="total_dict.get('check_amount',0.0)"/></span></td>
+                        <td align="right" t-if="o.state in ('confirm','done')"><span><b t-esc="total_dict.get('more_qty',0.0)"/></span></td>
+                        <td align="right" t-if="o.state in ('confirm','done')"><span><b t-esc="total_dict.get('more_amount',0.0)"/></span></td>
+                        <td align="right" t-if="o.state in ('confirm','done')"><span><b t-esc="total_dict.get('less_qty',0.0)"/></span></td>
+                        <td align="right" t-if="o.state in ('confirm','done')"><span><b t-esc="total_dict.get('less_amount',0.0)"/></span></td>
+                    </tr>
+                  </table>
+                  <table class="table-l10n_mn-header">
+                      <tr>
+                          <td width="15%">Эд хариуцагч : ........................................................................./<font color="white">-----------------------------</font>/</td>
+                      </tr>
+                      <br/><br/><br/>
+                      <tr>
+                          <td width="15%">Шалгасан нягтлан : ...................................................................../<font color="white">-----------------------------</font>/</td>
+                      </tr>
+                  </table>
+            </div>
+        </t>
+     </t>
+</template>
+</data>
+</openerp>

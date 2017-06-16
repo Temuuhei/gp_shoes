@@ -1,0 +1,3952 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* l10n_mn_stock
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-10-12 04:29+0000\n"
+"PO-Revision-Date: 2016-10-12 04:29+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1919
+#, python-format
+msgid "%s lot of %s"
+msgstr "%s серитэй %s"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1334
+#, python-format
+msgid "%s product %.2f %s but there is only %.2f %s stock available!"
+msgstr "%s product %.2f %s but there is only %.2f %s stock available!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1020
+#, python-format
+msgid "'%s' consume order has been complete."
+msgstr "'%s' дотоод зарлагын баримт дууссан төлөвт шилжлээ."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1521
+#, python-format
+msgid "'%s' stock picking cancelled."
+msgstr "'%s' агуулахын баримтыг цуцлав."
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "-----------------------------"
+msgstr "-----------------------------"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "...................."
+msgstr "...................."
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "............................"
+msgstr "............................"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "..............................."
+msgstr "..............................."
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "......................................"
+msgstr "......................................"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid ".........................................."
+msgstr ".........................................."
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "............................................"
+msgstr "............................................"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "......................................................"
+msgstr "......................................................"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "..............................................................."
+msgstr "..............................................................."
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "..................................................................."
+msgstr "..................................................................."
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "................................................................................................"
+msgstr "................................................................................................"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "........................................................................................................................."
+msgstr "........................................................................................................................."
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "........................................................................................................................................."
+msgstr "........................................................................................................................................."
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "....................................................................................................../...................................................../"
+msgstr "....................................................................................................../...................................................../"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "..................................................................................../...................................................../"
+msgstr "..................................................................................../...................................................../"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "................................................................................../...................................................../"
+msgstr "................................................................................../...................................................../"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "........................................................................../...................................................../"
+msgstr "........................................................................../...................................................../"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "171/111 тоот тушаалын хавсралт"
+msgstr "171/111 тоот тушаалын хавсралт"
+
+#. module: l10n_mn_stock
+#: model:product.expire.range,name:l10n_mn_stock.product_expire_range_nine_onwards
+msgid "9 months onwards"
+msgstr "9-с дээш сар"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory,account_move_id:0
+msgid "Account Entry"
+msgstr "Санхүүгийн бичилт"
+
+#. module: l10n_mn_stock
+#: field:stock.change.standard.price,journal_id:0
+msgid "Account Journal"
+msgstr "Account Journal"
+
+#. module: l10n_mn_stock
+#: selection:stock.print.picking,level:0
+msgid "Accountant"
+msgstr "Нягтлан бодогч"
+
+#. module: l10n_mn_stock
+#: field:stock.production.lot,active:0
+msgid "Active"
+msgstr "Идэвхтэй"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_change_standard_price.py:153
+#: code:addons/l10n_mn_stock/wizard/stock_change_standard_price.py:168
+#, python-format
+msgid "Active ID is not set in Context."
+msgstr "Active ID is not set in Context."
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+msgid "Acts accounts"
+msgstr "Актын данс"
+
+#. module: l10n_mn_stock
+#: field:product.profit.report.config,acts_expense_ids:0
+msgid "Acts expense"
+msgstr "Акт"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_consume_order.py:101
+#: field:stock.consume.order,analytic_account_id:0
+#, python-format
+msgid "Analytic Account"
+msgstr "Шинжилгээний данс"
+
+#. module: l10n_mn_stock
+#: field:crm.case.section,analytic_id:0
+#: field:product.category,analytic_id:0
+msgid "Analytic id"
+msgstr "Шинжилгээний данс"
+
+#. module: l10n_mn_stock
+#: field:print.stock.inventory,available:0
+msgid "Available"
+msgstr "Үлдэгдэл"
+
+#. module: l10n_mn_stock
+#: field:procurement.order,availability:0
+#: field:stock.fill.easy,availability:0
+msgid "Available Qty"
+msgstr "Боломжит нөөц"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_form
+msgid "Begin"
+msgstr "Эхлэх"
+
+#. module: l10n_mn_stock
+#: selection:product.profit.report,type:0
+msgid "Branch"
+msgstr "Борлуулалтын бүс"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_calendar
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_calendar
+msgid "Calendar View"
+msgstr "Хуанли харагдац"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:97
+#, python-format
+msgid "Can't find any internal consumable location."
+msgstr "Дотоод зарлагын ямар нэг байрлал олдсонгүй."
+
+#. module: l10n_mn_stock
+#: view:print.stock.inventory:l10n_mn_stock.print_stock_inventory_view
+#: view:report.product.label:l10n_mn_stock.report_product_label_view
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: view:stock.fill.easy:l10n_mn_stock.view_stock_fill_easy
+#: view:stock.fill.inventory:l10n_mn_stock.view_stock_fill_inventory
+#: view:stock.inventory.cost:l10n_mn_stock.view_stock_inventory_cost_form
+#: view:stock.print.picking:l10n_mn_stock.stock_print_picking_view
+#: view:stock.production.lot.wizard:l10n_mn_stock.view_production_lot_wizard
+#: view:stock.return.picking.fill:l10n_mn_stock.stock_return_fill_form
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "Cancel"
+msgstr "Цуцлах"
+
+#. module: l10n_mn_stock
+#: selection:stock.consume.order,state:0
+#: selection:stock.transit.order,state:0
+msgid "Cancelled"
+msgstr "Цуцлагдсан"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:883
+#, python-format
+msgid "Cannot cancel consume order !"
+msgstr "Cannot cancel consume order !"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:362
+#: code:addons/l10n_mn_stock/stock.py:368
+#, python-format
+msgid "Cannot cancel replenishment order !"
+msgstr "Нөхөн дүүргэлтийн захиалгыг цуцлах боломжгүй !"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:995
+#, python-format
+msgid "Cannot delete consume order which are in %s state!"
+msgstr "Cannot delete consume order which are in %s state!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:689
+#, python-format
+msgid "Cannot delete replenishment order which are in %s state!"
+msgstr "Нөхөн дүүргэх захиалга %s төлөвтэй үед устгах боломжгүй!"
+
+#. module: l10n_mn_stock
+#: view:report.delivery.ship:l10n_mn_stock.view_report_delivery_ship_form
+#: selection:report.delivery.ship,group_by:0
+#: field:stock.delivery.sheet,carname:0
+msgid "Car"
+msgstr "Машин"
+
+#. module: l10n_mn_stock
+#: field:report.delivery.ship,car_ids:0
+msgid "Cars"
+msgstr "Cars"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_refund_ledger.py:36
+#: code:addons/l10n_mn_stock/wizard/shuuder_stock.py:35
+#: code:addons/l10n_mn_stock/wizard/stock_inventory_statement.py:35
+#: code:addons/l10n_mn_stock/wizard/stock_inventory_statement_by_location.py:35
+#: view:report.consume.order:l10n_mn_stock.view_report_consume_order_form
+#: view:report.expense.ledger:l10n_mn_stock.view_report_expense_ledger_form
+#: view:report.income.ledger:l10n_mn_stock.view_report_income_ledger_form
+#: field:report.income.ledger,category_ids:0
+#: view:report.inventory.ledger:l10n_mn_stock.view_report_inventory_ledger_form
+#: field:report.inventory.ledger,category_ids:0
+#: field:report.product.move.check,category_id:0
+#: view:report.refund.ledger:l10n_mn_stock.view_report_refund_ledger_form
+#: field:report.refund.ledger,category_ids:0
+#: field:stock.inventory.line,categ_id:0
+#, python-format
+msgid "Category"
+msgstr "Ангилал"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_fill_inventory.py:257
+#, python-format
+msgid "Change Sales Price"
+msgstr "Change Sales Price"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_change_standard_price
+msgid "Change Standard Price"
+msgstr "Стандарт Үнийг Өөрчлөх"
+
+#. module: l10n_mn_stock
+#: view:stock.warehouse:l10n_mn_stock.view_warehouse_inherit_l10n_mn_stock
+msgid "Check Consume Routes"
+msgstr "Check Consume Routes"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "Checked by:"
+msgstr "Шалгасан:"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_unmerge_choice
+msgid "Choice of location for unmerge"
+msgstr "Choice of location for unmerge"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_production_lot_wizard
+msgid "Choose warehouse to open Production Lot tree"
+msgstr "Choose warehouse to open Production Lot tree"
+
+#. module: l10n_mn_stock
+#: view:stock.return.picking:l10n_mn_stock.view_stock_return_picking_form_inherit_l10n_mn_stock
+msgid "Clear"
+msgstr "Цэвэрлэх"
+
+#. module: l10n_mn_stock
+#: view:report.product.move.check:l10n_mn_stock.report_product_move_check_view
+#: view:stock.unmerge.lots:l10n_mn_stock.view_unmerge_lots
+msgid "Close"
+msgstr "Хаах"
+
+#. module: l10n_mn_stock
+#: field:product.profit.report,company_id:0
+#: field:product.profit.report.config,company_id:0
+#: field:report.consume.order,company_id:0
+#: field:report.delivery.ship,company_id:0
+#: field:report.expense.ledger,company_id:0
+#: field:report.income.ledger,company_id:0
+#: field:report.inventory.ledger,company_id:0
+#: field:report.procurement.ledger,company_id:0
+#: field:report.refund.ledger,company_id:0
+#: field:report.stock.inventory,company_id:0
+#: field:stock.consume.order,company_id:0
+#: field:stock.delivery.sheet,company_id:0
+#: field:stock.inventory.statement,company_id:0
+#: field:stock.inventory.statement.by.location,company_id:0
+#: field:stock.transit.order,company_id:0
+msgid "Company"
+msgstr "Компани"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_form
+msgid "Complete"
+msgstr "Хийгдэх"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "Confirm"
+msgstr "Батлах"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_search
+#: selection:stock.consume.order,state:0
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_search
+#: selection:stock.transit.order,state:0
+msgid "Confirmed"
+msgstr "Батлагдсан"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+msgid "Consume Correct"
+msgstr "Зарлагын саатлыг үл тоох"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+msgid "Consume Draft"
+msgstr "Consume Draft"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: field:stock.consume.order,order_line:0
+msgid "Consume Lines"
+msgstr "Зарлагын мөрүүд"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,consume_location_id:0
+msgid "Consume Location"
+msgstr "Зарлагын байрлал"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_consume_order
+#: model:ir.model,name:l10n_mn_stock.model_stock_consume_order
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_stock_consume_order
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_search
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_tree
+#: field:stock.picking,consume_order_id:0
+msgid "Consume Order"
+msgstr "Дотоод зарлагын баримт"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,warehouse_id:0
+msgid "Consume Warehouse"
+msgstr "Consume Warehouse"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:975
+#, python-format
+msgid "Consume order confirmed with '%s' order reference. Then '%s' output picking generated on %s warehouse."
+msgstr "Consume order confirmed with '%s' order reference. Then '%s' output picking generated on %s warehouse."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/print_stock_inventory.py:60
+#: code:addons/l10n_mn_stock/wizard/report_consume_order.py:102
+#: code:addons/l10n_mn_stock/wizard/report_product_move_check.py:42
+#: field:report.stock.inventory,cost:0
+#: selection:stock.print.picking,type:0
+#, python-format
+msgid "Cost Price"
+msgstr "Өртөг үнэ"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: field:product.profit.report.config,cost_diff_ids:0
+msgid "Cost diff"
+msgstr "Өртөгийн зөрүү"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: field:product.profit.report.config,cost_product_category:0
+msgid "Cost product category"
+msgstr "Барааны ангилал"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "Counted"
+msgstr "Тоолсон"
+
+#. module: l10n_mn_stock
+#: field:print.stock.inventory,create_uid:0
+#: field:product.profit.report,create_uid:0
+#: field:product.profit.report.config,create_uid:0
+#: field:report.consume.order,create_uid:0
+#: field:report.delivery.ship,create_uid:0
+#: field:report.expense.ledger,create_uid:0
+#: field:report.income.ledger,create_uid:0
+#: field:report.inventory.ledger,create_uid:0
+#: field:report.procurement.ledger,create_uid:0
+#: field:report.product.label,create_uid:0
+#: field:report.product.move.check,create_uid:0
+#: field:report.refund.ledger,create_uid:0
+#: field:stock.car.news,create_uid:0
+#: field:stock.consume.order,create_uid:0
+#: field:stock.delivery.sheet,create_uid:0
+#: field:stock.fill.easy,create_uid:0
+#: field:stock.fill.inventory,create_uid:0
+#: field:stock.fill.inventory.line,create_uid:0
+#: field:stock.inventory.cost,create_uid:0
+#: field:stock.inventory.cost.line,create_uid:0
+#: field:stock.inventory.statement,create_uid:0
+#: field:stock.inventory.statement.by.location,create_uid:0
+#: field:stock.print.picking,create_uid:0
+#: field:stock.production.lot.wizard,create_uid:0
+#: field:stock.return.picking.fill,create_uid:0
+#: field:stock.return.type,create_uid:0
+#: field:stock.transit.order,create_uid:0
+#: field:stock.unmerge.choice,create_uid:0
+#: field:stock.unmerge.lots,create_uid:0
+#: field:stock.unmerge.lots.lines,create_uid:0
+msgid "Created by"
+msgstr "Created by"
+
+#. module: l10n_mn_stock
+#: field:print.stock.inventory,create_date:0
+#: field:product.profit.report,create_date:0
+#: field:product.profit.report.config,create_date:0
+#: field:report.consume.order,create_date:0
+#: field:report.delivery.ship,create_date:0
+#: field:report.expense.ledger,create_date:0
+#: field:report.income.ledger,create_date:0
+#: field:report.inventory.ledger,create_date:0
+#: field:report.procurement.ledger,create_date:0
+#: field:report.product.label,create_date:0
+#: field:report.product.move.check,create_date:0
+#: field:report.refund.ledger,create_date:0
+#: field:stock.car.news,create_date:0
+#: field:stock.consume.order,create_date:0
+#: field:stock.delivery.sheet,create_date:0
+#: field:stock.fill.easy,create_date:0
+#: field:stock.fill.inventory,create_date:0
+#: field:stock.fill.inventory.line,create_date:0
+#: field:stock.inventory.cost,create_date:0
+#: field:stock.inventory.cost.line,create_date:0
+#: field:stock.inventory.statement,create_date:0
+#: field:stock.inventory.statement.by.location,create_date:0
+#: field:stock.print.picking,create_date:0
+#: field:stock.production.lot.wizard,create_date:0
+#: field:stock.return.picking.fill,create_date:0
+#: field:stock.return.type,create_date:0
+#: field:stock.transit.order,create_date:0
+#: field:stock.unmerge.choice,create_date:0
+#: field:stock.unmerge.lots,create_date:0
+#: field:stock.unmerge.lots.lines,create_date:0
+msgid "Created on"
+msgstr "Created on"
+
+#. module: l10n_mn_stock
+#: field:stock.delivery.sheet,currency_id:0
+msgid "Currency"
+msgstr "Currency"
+
+#. module: l10n_mn_stock
+#: selection:report.stock.inventory,location_type:0
+msgid "Customer Location"
+msgstr "Customer Location"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_consume_order.py:101
+#: field:report.stock.inventory,date:0
+#: view:stock.inventory.statement:l10n_mn_stock.view_stock_inventory_statement_form
+#: view:stock.inventory.statement.by.location:l10n_mn_stock.view_stock_inventory_statement_by_location_form
+#: field:stock.transfer_details,force_date:0
+#, python-format
+msgid "Date"
+msgstr "Огноо"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,date_order:0
+#: field:stock.transit.order,date_order:0
+msgid "Date Ordered"
+msgstr "Захиалсан огноо"
+
+#. module: l10n_mn_stock
+#: help:stock.consume.order,message_last_post:0
+#: help:stock.transit.order,message_last_post:0
+msgid "Date of the last message posted on the record."
+msgstr "Date of the last message posted on the record."
+
+#. module: l10n_mn_stock
+#: field:stock.warehouse.orderpoint,day:0
+msgid "Day"
+msgstr "Өдөр"
+
+#. module: l10n_mn_stock
+#: selection:product.profit.report,sorting:0
+#: selection:stock.inventory.statement,sorting:0
+#: selection:stock.inventory.statement.by.location,sorting:0
+msgid "Default Code"
+msgstr "Дотоод сурвалж"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "Delivered by:"
+msgstr "Бэлтгэсэн:"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_form
+#: field:stock.picking,sheet_id:0
+msgid "Delivery Sheet"
+msgstr "Delivery Sheet"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:673
+#, python-format
+msgid "Delivery of returning goods with %s reference shipped from %s warehouse and reception of returing goods generated with %s reference on %s warehouse."
+msgstr "%s дугаартай бараа буцаалтын хүргэлтийн баримт %s агуулах дээр гүйцэтгэгдлээ. Улмаар %s дугаартай бараа буцаалтыг хүлээн авах баримт %s агуулах дээр үүслээ."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:579
+#, python-format
+msgid "Delivery order with %s reference shipped from %s warehouse and reception of goods generated with %s reference on %s warehouse."
+msgstr "Delivery order with %s reference shipped from %s warehouse and reception of goods generated with %s reference on %s warehouse."
+
+#. module: l10n_mn_stock
+#: field:stock.car.news,description:0
+#: view:stock.return.type:l10n_mn_stock.stock_return_type_form_view
+#: field:stock.return.type,description:0
+msgid "Description"
+msgstr "Тайлбар"
+
+#. module: l10n_mn_stock
+#: selection:product.profit.report,type:0
+#: selection:report.delivery.ship,type:0
+#: selection:report.expense.ledger,type:0
+#: selection:report.income.ledger,type:0
+#: selection:report.inventory.ledger,type:0
+#: selection:report.procurement.ledger,type:0
+#: selection:report.refund.ledger,type:0
+#: selection:stock.inventory.statement,type:0
+#: selection:stock.inventory.statement.by.location,type:0
+msgid "Detail"
+msgstr "Дэлгэрэнгүй"
+
+#. module: l10n_mn_stock
+#: field:stock.delivery.sheet,user_id:0
+msgid "Dispatcher"
+msgstr "Диспетчер"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_consume_order.py:101
+#, python-format
+msgid "Document Ref"
+msgstr "Document Ref"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_search
+#: selection:stock.consume.order,state:0
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_search
+#: selection:stock.delivery.sheet,state:0
+msgid "Done"
+msgstr "Дууссан"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory,date_done:0
+msgid "Done Date"
+msgstr "Дууссан огноо"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_search
+#: selection:stock.consume.order,state:0
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_form
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_search
+#: selection:stock.delivery.sheet,state:0
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_search
+#: selection:stock.transit.order,state:0
+msgid "Draft"
+msgstr "Ноорог"
+
+#. module: l10n_mn_stock
+#: field:report.product.move.check,draft:0
+msgid "Draft View"
+msgstr "Ноорог харах"
+
+#. module: l10n_mn_stock
+#: view:report.delivery.ship:l10n_mn_stock.view_report_delivery_ship_form
+#: field:report.delivery.ship,driver_ids:0
+#: selection:report.delivery.ship,group_by:0
+#: field:stock.delivery.sheet,driver_id:0
+msgid "Driver"
+msgstr "Жолооч"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.report.xml,name:l10n_mn_stock.action_report_driver_picking
+msgid "Driver Picking Report"
+msgstr "Ачилтын хуудас"
+
+#. module: l10n_mn_stock
+#: field:stock.delivery.sheet,date_stop:0
+msgid "End Date"
+msgstr "Дуссан огноо"
+
+#. module: l10n_mn_stock
+#: field:stock.delivery.sheet,end_kilometrage:0
+msgid "End Kilometrage"
+msgstr "Дууссан Километр"
+
+#. module: l10n_mn_stock
+#: field:stock.quant,life_date:0
+msgid "End of Life Date"
+msgstr "End of Life Date"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:2171
+#, python-format
+msgid "Error"
+msgstr "Error"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:414
+#: code:addons/l10n_mn_stock/stock.py:416
+#: code:addons/l10n_mn_stock/stock.py:418
+#: code:addons/l10n_mn_stock/stock.py:421
+#: code:addons/l10n_mn_stock/stock.py:444
+#: code:addons/l10n_mn_stock/stock.py:447
+#: code:addons/l10n_mn_stock/stock.py:453
+#: code:addons/l10n_mn_stock/stock.py:603
+#: code:addons/l10n_mn_stock/stock.py:925
+#: code:addons/l10n_mn_stock/stock.py:952
+#: code:addons/l10n_mn_stock/stock.py:2884
+#: code:addons/l10n_mn_stock/stock.py:2900
+#: code:addons/l10n_mn_stock/stock.py:2917
+#: code:addons/l10n_mn_stock/stock.py:2934
+#: code:addons/l10n_mn_stock/wizard/stock_fill_inventory.py:143
+#: code:addons/l10n_mn_stock/wizard/stock_unmerge_lots.py:147
+#: code:addons/l10n_mn_stock/wizard/stock_unmerge_lots.py:155
+#: code:addons/l10n_mn_stock/wizard/stock_unmerge_lots.py:157
+#: code:addons/l10n_mn_stock/wizard/stock_unmerge_lots.py:173
+#: code:addons/l10n_mn_stock/wizard/stock_unmerge_lots.py:188
+#, python-format
+msgid "Error !"
+msgstr "Алдаа !"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:97
+#: code:addons/l10n_mn_stock/stock.py:1940
+#: code:addons/l10n_mn_stock/wizard/stock_fill_easy.py:85
+#: code:addons/l10n_mn_stock/wizard/stock_fill_inventory.py:79
+#, python-format
+msgid "Error!"
+msgstr "Error!"
+
+#. module: l10n_mn_stock
+#: view:report.consume.order:l10n_mn_stock.view_report_consume_order_form
+#: field:report.consume.order,account_ids:0
+#: field:stock.consume.order,expense_account_id:0
+msgid "Expense Account"
+msgstr "Зардлын данс"
+
+#. module: l10n_mn_stock
+#: field:report.inventory.ledger,expense_view:0
+msgid "Expense Inventory"
+msgstr "Тооллогын зарлага"
+
+#. module: l10n_mn_stock
+#: field:stock.production.lot,expire_color:0
+msgid "Expire Color"
+msgstr "Expire Color"
+
+#. module: l10n_mn_stock
+#: field:stock.production.lot,expire_range:0
+#: field:stock.quant,expire_range:0
+msgid "Expire Date Range"
+msgstr "Дуусах хугацааны муж"
+
+#. module: l10n_mn_stock
+#: view:report.product.move.check:l10n_mn_stock.report_product_move_check_view
+msgid "Export"
+msgstr "Экспорт"
+
+#. module: l10n_mn_stock
+#: field:stock.fill.inventory.line,fill_id:0
+#: view:stock.return.picking:l10n_mn_stock.view_stock_return_picking_form_inherit_l10n_mn_stock
+#: field:stock.return.picking,fill:0
+#: view:stock.return.picking.fill:l10n_mn_stock.stock_return_fill_form
+msgid "Fill"
+msgstr "Дүүргэх"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_fill_inventory
+#: view:stock.fill.inventory:l10n_mn_stock.view_stock_fill_inventory
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "Fill Inventory"
+msgstr "Нөөцийг дүүргэх"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_fill_easy.py:179
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_fill_easy
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: view:stock.fill.easy:l10n_mn_stock.view_stock_fill_easy
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+#, python-format
+msgid "Fill Procurement"
+msgstr "Нөөцийг дүүргэх"
+
+#. module: l10n_mn_stock
+#: field:stock.fill.inventory,unavailable:0
+msgid "Fill with unavailable products"
+msgstr "Үлдэгдэлгүй барааг хамруулах"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_search
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_search
+msgid "Filters"
+msgstr "Filters"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: field:product.profit.report.config,finance_expense_ids:0
+msgid "Finance expense"
+msgstr "Санхүү"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,message_follower_ids:0
+#: field:stock.transit.order,message_follower_ids:0
+msgid "Followers"
+msgstr "Followers"
+
+#. module: l10n_mn_stock
+#: model:res.groups,name:l10n_mn_stock.l10n_mn_stock_force_assign
+#: view:stock.picking:l10n_mn_stock.view_picking_form_inherit_l10n_mn_stock
+msgid "Force Availability"
+msgstr "Хүчээр бэлэн болгох"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory,force_date:0
+msgid "Force Date"
+msgstr "Дуусгах огноо"
+
+#. module: l10n_mn_stock
+#: field:product.profit.report,date_from:0
+#: field:report.consume.order,date_from:0
+#: field:report.delivery.ship,date_from:0
+#: field:report.expense.ledger,date_from:0
+#: field:report.income.ledger,date_from:0
+#: field:report.inventory.ledger,date_from:0
+#: field:report.procurement.ledger,date_from:0
+#: field:report.product.move.check,from_date:0
+#: field:report.refund.ledger,date_from:0
+#: field:stock.inventory.statement,date_from:0
+#: field:stock.inventory.statement.by.location,date_from:0
+msgid "From Date"
+msgstr "Эхлэх огноо"
+
+#. module: l10n_mn_stock
+#: field:product.profit.report,period_from:0
+msgid "From Period"
+msgstr "From Period"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+msgid "General management expense"
+msgstr "ЕУЗ"
+
+#. module: l10n_mn_stock
+#: field:product.profit.report.config,general_management_expense_ids:0
+msgid "General management xpense"
+msgstr "ЕУЗ"
+
+#. module: l10n_mn_stock
+#: field:report.delivery.ship,group_by:0
+msgid "Group By"
+msgstr "Бүлэглэлт"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_search
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_search
+msgid "Group By..."
+msgstr "Бүлэглэх..."
+
+#. module: l10n_mn_stock
+#: field:report.refund.ledger,grouping:0
+#: field:stock.inventory.statement,grouping:0
+#: field:stock.inventory.statement.by.location,grouping:0
+msgid "Grouping"
+msgstr "Бүлэглэл"
+
+#. module: l10n_mn_stock
+#: help:stock.consume.order,message_summary:0
+#: help:stock.transit.order,message_summary:0
+msgid "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+msgstr "Holds the Chatter summary (number of messages, ...). This summary is directly in html format in order to be inserted in kanban views."
+
+#. module: l10n_mn_stock
+#: field:print.stock.inventory,id:0
+#: field:product.profit.report,id:0
+#: field:product.profit.report.config,id:0
+#: field:report.consume.order,id:0
+#: field:report.delivery.ship,id:0
+#: field:report.expense.ledger,id:0
+#: field:report.income.ledger,id:0
+#: field:report.inventory.ledger,id:0
+#: field:report.l10n_mn_stock.print_stock_inventory,id:0
+#: field:report.l10n_mn_stock.report_driver_picking,id:0
+#: field:report.l10n_mn_stock.report_picking_all,id:0
+#: field:report.l10n_mn_stock.report_picking_cost,id:0
+#: field:report.l10n_mn_stock.report_product_label,id:0
+#: field:report.l10n_mn_stock.report_product_move_check,id:0
+#: field:report.l10n_mn_stock.report_stockpicking,id:0
+#: field:report.procurement.ledger,id:0
+#: field:report.product.label,id:0
+#: field:report.product.move.check,id:0
+#: field:report.refund.ledger,id:0
+#: field:report.stock.inventory,id:0
+#: field:stock.car.news,id:0
+#: field:stock.consume.order,id:0
+#: field:stock.delivery.sheet,id:0
+#: field:stock.fill.easy,id:0
+#: field:stock.fill.inventory,id:0
+#: field:stock.fill.inventory.line,id:0
+#: field:stock.inventory.cost,id:0
+#: field:stock.inventory.cost.line,id:0
+#: field:stock.inventory.statement,id:0
+#: field:stock.inventory.statement.by.location,id:0
+#: field:stock.print.picking,id:0
+#: field:stock.production.lot.wizard,id:0
+#: field:stock.return.picking.fill,id:0
+#: field:stock.return.type,id:0
+#: field:stock.transit.order,id:0
+#: field:stock.unmerge.choice,id:0
+#: field:stock.unmerge.lots,id:0
+#: field:stock.unmerge.lots.lines,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_mn_stock
+#: help:stock.consume.order,message_unread:0
+#: help:stock.transit.order,message_unread:0
+msgid "If checked new messages require your attention."
+msgstr "If checked new messages require your attention."
+
+#. module: l10n_mn_stock
+#: help:stock.fill.inventory,set_stock_zero:0
+msgid "If checked, all product quantities will be set to zero to help ensure a real physical inventory is done"
+msgstr "Тэмдэглэгдсэн бол бүх барааны тоо хэмжээ нь тэг болж тооллого таарч байгаа баталгааг хангахад туслана."
+
+#. module: l10n_mn_stock
+#: view:stock.fill.inventory:l10n_mn_stock.view_stock_fill_inventory
+msgid "Import Inventory"
+msgstr "Import Inventory"
+
+#. module: l10n_mn_stock
+#: view:stock.fill.inventory:l10n_mn_stock.view_stock_fill_inventory
+msgid "Import current product inventory from the following options"
+msgstr "Доорх шүүлтүүрээр тооллогын баримтад бараа нэмнэ"
+
+#. module: l10n_mn_stock
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "In Shipments"
+msgstr "Ирэх бараа"
+
+#. module: l10n_mn_stock
+#: field:report.inventory.ledger,income_view:0
+msgid "Income Inventory"
+msgstr "Тооллогын орлого"
+
+#. module: l10n_mn_stock
+#: field:stock.print.picking,type:0
+msgid "Income Order Type"
+msgstr "Income Order Type"
+
+#. module: l10n_mn_stock
+#: field:stock.transit.order,receipt_count:0
+msgid "Incoming Shipments"
+msgstr "Ирэх барааны баримт"
+
+#. module: l10n_mn_stock
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "Incoming Shipments to Receive Warehouse"
+msgstr "Хүлээн авах агуулахад бараа буух баримт"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:183
+#, python-format
+msgid "Internal Consumes"
+msgstr "Дотоод зарлагууд"
+
+#. module: l10n_mn_stock
+#: field:report.expense.ledger,consume:0
+msgid "Internal Expense"
+msgstr "Дотоод зарлага"
+
+#. module: l10n_mn_stock
+#: selection:report.stock.inventory,location_type:0
+msgid "Internal Location"
+msgstr "Internal Location"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_unmerge_lots.py:216
+#, python-format
+msgid "Internal Moves"
+msgstr "Internal Moves"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:688
+#: code:addons/l10n_mn_stock/stock.py:994
+#: code:addons/l10n_mn_stock/stock.py:1279
+#: code:addons/l10n_mn_stock/stock.py:1282
+#: code:addons/l10n_mn_stock/stock.py:1286
+#, python-format
+msgid "Invalid action !"
+msgstr "Буруу үйлдэл !"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.report.xml,name:l10n_mn_stock.print_report_inventory_inherit_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_inventory
+#: field:report.expense.ledger,inventory:0
+#: field:report.income.ledger,inventory:0
+#: selection:report.stock.inventory,location_type:0
+#: field:stock.fill.inventory,inventory_id:0
+#: field:stock.inventory.cost,inventory_id:0
+msgid "Inventory"
+msgstr "Тооллого"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory.cost:l10n_mn_stock.view_stock_inventory_cost_form
+#: field:stock.inventory.cost,lines:0
+msgid "Inventory Incomes"
+msgstr "Тооллогын орлого"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_inventory_line
+msgid "Inventory Line"
+msgstr "Тооллогын мөр"
+
+#. module: l10n_mn_stock
+#: field:stock.change.standard.price,inventory_location_id:0
+msgid "Inventory Location"
+msgstr "Inventory Location"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_location
+msgid "Inventory Locations"
+msgstr "Тооллогын Байрлалууд"
+
+#. module: l10n_mn_stock
+#: field:stock.picking,picking_returned:0
+msgid "Is Return Picking?"
+msgstr "Is Return Picking?"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,message_is_follower:0
+#: field:stock.transit.order,message_is_follower:0
+msgid "Is a Follower"
+msgstr "Is a Follower"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,message_last_post:0
+#: field:stock.transit.order,message_last_post:0
+msgid "Last Message Date"
+msgstr "Last Message Date"
+
+#. module: l10n_mn_stock
+#: field:print.stock.inventory,write_uid:0
+#: field:product.profit.report,write_uid:0
+#: field:product.profit.report.config,write_uid:0
+#: field:report.consume.order,write_uid:0
+#: field:report.delivery.ship,write_uid:0
+#: field:report.expense.ledger,write_uid:0
+#: field:report.income.ledger,write_uid:0
+#: field:report.inventory.ledger,write_uid:0
+#: field:report.procurement.ledger,write_uid:0
+#: field:report.product.label,write_uid:0
+#: field:report.product.move.check,write_uid:0
+#: field:report.refund.ledger,write_uid:0
+#: field:stock.car.news,write_uid:0
+#: field:stock.consume.order,write_uid:0
+#: field:stock.delivery.sheet,write_uid:0
+#: field:stock.fill.easy,write_uid:0
+#: field:stock.fill.inventory,write_uid:0
+#: field:stock.fill.inventory.line,write_uid:0
+#: field:stock.inventory.cost,write_uid:0
+#: field:stock.inventory.cost.line,write_uid:0
+#: field:stock.inventory.statement,write_uid:0
+#: field:stock.inventory.statement.by.location,write_uid:0
+#: field:stock.print.picking,write_uid:0
+#: field:stock.production.lot.wizard,write_uid:0
+#: field:stock.return.picking.fill,write_uid:0
+#: field:stock.return.type,write_uid:0
+#: field:stock.transit.order,write_uid:0
+#: field:stock.unmerge.choice,write_uid:0
+#: field:stock.unmerge.lots,write_uid:0
+#: field:stock.unmerge.lots.lines,write_uid:0
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: l10n_mn_stock
+#: field:print.stock.inventory,write_date:0
+#: field:product.profit.report,write_date:0
+#: field:product.profit.report.config,write_date:0
+#: field:report.consume.order,write_date:0
+#: field:report.delivery.ship,write_date:0
+#: field:report.expense.ledger,write_date:0
+#: field:report.income.ledger,write_date:0
+#: field:report.inventory.ledger,write_date:0
+#: field:report.procurement.ledger,write_date:0
+#: field:report.product.label,write_date:0
+#: field:report.product.move.check,write_date:0
+#: field:report.refund.ledger,write_date:0
+#: field:stock.car.news,write_date:0
+#: field:stock.consume.order,write_date:0
+#: field:stock.delivery.sheet,write_date:0
+#: field:stock.fill.easy,write_date:0
+#: field:stock.fill.inventory,write_date:0
+#: field:stock.fill.inventory.line,write_date:0
+#: field:stock.inventory.cost,write_date:0
+#: field:stock.inventory.cost.line,write_date:0
+#: field:stock.inventory.statement,write_date:0
+#: field:stock.inventory.statement.by.location,write_date:0
+#: field:stock.print.picking,write_date:0
+#: field:stock.production.lot.wizard,write_date:0
+#: field:stock.return.picking.fill,write_date:0
+#: field:stock.return.type,write_date:0
+#: field:stock.transit.order,write_date:0
+#: field:stock.unmerge.choice,write_date:0
+#: field:stock.unmerge.lots,write_date:0
+#: field:stock.unmerge.lots.lines,write_date:0
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: l10n_mn_stock
+#: field:report.product.move.check,level:0
+#: field:stock.print.picking,level:0
+msgid "Level"
+msgstr "Level"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_product_move_check.py:40
+#, python-format
+msgid "List Price"
+msgstr "Худалдах үнэ"
+
+#. module: l10n_mn_stock
+#: view:report.product.label:l10n_mn_stock.report_product_label_view
+#: field:report.product.label,location_ids:0
+#: selection:report.product.label,root_type:0
+#: field:report.stock.inventory,location_id:0
+#: field:stock.fill.inventory,location_id:0
+#: field:stock.inventory.statement.by.location,location_ids:0
+#: field:stock.unmerge.choice,location_id:0
+msgid "Location"
+msgstr "Байрлал"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_print_location_label
+msgid "Location Label"
+msgstr "Location Label"
+
+#. module: l10n_mn_stock
+#: field:report.stock.inventory,location_type:0
+msgid "Location Type"
+msgstr "Location Type"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory.cost.line,location_dest_id:0
+msgid "Location dest"
+msgstr "Очих байрлал"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory.cost.line,location_id:0
+msgid "Location src"
+msgstr "Гарах байрлал"
+
+#. module: l10n_mn_stock
+#: selection:report.product.label,report_type:0
+msgid "Long"
+msgstr "Урт"
+
+#. module: l10n_mn_stock
+#: field:report.stock.inventory,prodlot_id:0
+#: field:stock.unmerge.lots.lines,lot_id:0
+msgid "Lot"
+msgstr "Lot"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_production_lot
+msgid "Lot/Serial"
+msgstr "Цуврал"
+
+#. module: l10n_mn_stock
+#: view:stock.unmerge.lots:l10n_mn_stock.view_unmerge_lots
+#: field:stock.unmerge.lots.lines,existing_name:0
+msgid "Lots"
+msgstr "Lots"
+
+#. module: l10n_mn_stock
+#: field:report.expense.ledger,mrp_install:0
+#: field:report.income.ledger,mrp_install:0
+msgid "MRP Install"
+msgstr "MRP Install"
+
+#. module: l10n_mn_stock
+#: field:report.expense.ledger,mrp:0
+#: field:report.income.ledger,mrp:0
+msgid "MRP Production"
+msgstr "Үйлдвэрлэл"
+
+#. module: l10n_mn_stock
+#: model:res.groups,name:l10n_mn_stock.can_change_stock_date
+msgid "Manage Stock Transaction Date"
+msgstr "Агуулахын гүйлгээний огноог өөрчлөх"
+
+#. module: l10n_mn_stock
+#: selection:report.product.move.check,level:0
+#: selection:stock.print.picking,level:0
+msgid "Manager"
+msgstr "Manager"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_refund_ledger.py:38
+#: code:addons/l10n_mn_stock/wizard/stock_inventory_statement.py:34
+#: code:addons/l10n_mn_stock/wizard/stock_inventory_statement_by_location.py:34
+#: view:report.inventory.ledger:l10n_mn_stock.view_report_inventory_ledger_form
+#: view:report.refund.ledger:l10n_mn_stock.view_report_refund_ledger_form
+#: field:report.refund.ledger,manufacturer_ids:0
+#: view:stock.inventory.statement:l10n_mn_stock.view_stock_inventory_statement_form
+#: view:stock.inventory.statement.by.location:l10n_mn_stock.view_stock_inventory_statement_by_location_form
+#, python-format
+msgid "Manufacturer"
+msgstr "Үйлдвэрлэгч"
+
+#. module: l10n_mn_stock
+#: field:stock.car.news,mark:0
+msgid "Mark"
+msgstr "Mark"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: field:product.profit.report.config,marketing_analytic_account:0
+msgid "Marketing analytic account"
+msgstr "Маркетингийн шинжилгээний данс"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,message_ids:0
+#: field:stock.transit.order,message_ids:0
+msgid "Messages"
+msgstr "Messages"
+
+#. module: l10n_mn_stock
+#: help:stock.consume.order,message_ids:0
+#: help:stock.transit.order,message_ids:0
+msgid "Messages and communication history"
+msgstr "Messages and communication history"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_warehouse_orderpoint
+msgid "Minimum Inventory Rule"
+msgstr "Хамгийн бага нөөцийн дүрэм"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory.cost.line,move_id:0
+msgid "Move"
+msgstr "Move"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_search
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_search
+msgid "My Created Orders"
+msgstr "Миний үүсгэсэн захиалгууд"
+
+#. module: l10n_mn_stock
+#: field:stock.car.news,name:0
+#: field:stock.delivery.sheet,name:0
+#: field:stock.return.type,name:0
+msgid "Name"
+msgstr "Агуулга"
+
+#. module: l10n_mn_stock
+#: field:stock.move,weight_net:0
+#: field:stock.pack.operation,weight_net:0
+msgid "Net weight"
+msgstr "Net weight"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1243
+#, python-format
+msgid "Not enough stock !"
+msgstr "Нөөц хүрэлцэхгүй !"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_form
+msgid "Note..."
+msgstr "Тэмдэглэл..."
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: field:stock.consume.order,note:0
+#: field:stock.delivery.sheet,note:0
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+#: field:stock.transit.order,note:0
+msgid "Notes"
+msgstr "Тэмдэглэл"
+
+#. module: l10n_mn_stock
+#: field:stock.change.standard.price,old_price:0
+msgid "Old Price"
+msgstr "Old Price"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_refund_ledger.py:37
+#, python-format
+msgid "Order"
+msgstr "Захиалга"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+#: field:stock.transit.order,order_line:0
+msgid "Order Lines"
+msgstr "Захиалгын мөр"
+
+#. module: l10n_mn_stock
+#: selection:report.inventory.ledger,report_type:0
+#: selection:report.procurement.ledger,report_type:0
+msgid "Orders"
+msgstr "Баримтууд"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: field:product.profit.report.config,other_expense_ids:0
+msgid "Other expense"
+msgstr "Бусад"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "Out Shipments"
+msgstr "Гарах бараа"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,shipment_count:0
+#: field:stock.transit.order,shipment_count:0
+msgid "Outgoing Shipments"
+msgstr "Гарах барааны баримт"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+msgid "Outgoing Shipments for internal consume"
+msgstr "Дотоод зарлагаар бараа гаргах баримт"
+
+#. module: l10n_mn_stock
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "Outgoing Shipments from Supply Warehouse"
+msgstr "Нийлүүлэх агуулахаас бараа гаргах баримт"
+
+#. module: l10n_mn_stock
+#: selection:report.product.move.check,level:0
+msgid "Owner"
+msgstr "Owner"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_pack_operation
+msgid "Packing Operation"
+msgstr "Баглах Ажиллагаа"
+
+#. module: l10n_mn_stock
+#: field:procurement.order,consume_order_id:0
+#: field:stock.fill.easy,consume_id:0
+msgid "Parent Consume Order"
+msgstr "Parent Consume Order"
+
+#. module: l10n_mn_stock
+#: field:procurement.order,transit_order_id:0
+#: field:stock.fill.easy,transit_id:0
+msgid "Parent Transit Order"
+msgstr "Parent Transit Order"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_consume_order.py:101
+#: code:addons/l10n_mn_stock/wizard/report_refund_ledger.py:35
+#: field:product.profit.report,partner_ids:0
+#: view:report.consume.order:l10n_mn_stock.view_report_consume_order_form
+#: field:report.consume.order,partner_ids:0
+#: view:report.delivery.ship:l10n_mn_stock.view_report_delivery_ship_form
+#: field:report.delivery.ship,partner_ids:0
+#: view:report.expense.ledger:l10n_mn_stock.view_report_expense_ledger_form
+#: field:report.expense.ledger,category_ids:0
+#: field:report.expense.ledger,partner_ids:0
+#: field:report.income.ledger,partner_ids:0
+#: field:report.inventory.ledger,partner_ids:0
+#: view:report.refund.ledger:l10n_mn_stock.view_report_refund_ledger_form
+#: field:report.refund.ledger,partner_ids:0
+#: field:stock.consume.order,partner_id:0
+#: field:stock.inventory.statement,partner_ids:0
+#: field:stock.inventory.statement.by.location,partner_ids:0
+#, python-format
+msgid "Partner"
+msgstr "Харилцагч"
+
+#. module: l10n_mn_stock
+#: field:report.consume.order,category_ids:0
+msgid "Partner Category"
+msgstr "Partner Category"
+
+#. module: l10n_mn_stock
+#: selection:stock.fill.inventory,type:0
+msgid "Pick"
+msgstr "Цуглуулах"
+
+#. module: l10n_mn_stock
+#: field:stock.return.picking,picking_id:0
+#: field:stock.return.picking.fill,picking_id:0
+#: field:stock.return.picking.line,picking_id:0
+msgid "Picking"
+msgstr "Түүвэр"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_consume_order.py:101
+#, python-format
+msgid "Picking Document Ref"
+msgstr "Хөдөлгөөний дугаар"
+
+#. module: l10n_mn_stock
+#: selection:stock.consume.order,state:0
+msgid "Picking Exception"
+msgstr "Picking Exception"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_picking
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: field:stock.consume.order,picking_ids:0
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+#: field:stock.transit.order,picking_ids:0
+msgid "Picking List"
+msgstr "Бэлтгэх жагсаалт"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_form
+#: field:stock.delivery.sheet,picking_ids:0
+msgid "Picking Orders"
+msgstr "Picking Orders"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.report.xml,name:l10n_mn_stock.action_report_picking_all
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_form
+msgid "Picking Report"
+msgstr "Агуулахын баримт"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_transfer_details
+msgid "Picking wizard"
+msgstr "Бэлтгэх Харилцах Цонх"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_refund_ledger.py:42
+#: code:addons/l10n_mn_stock/wizard/stock_inventory_statement.py:38
+#: code:addons/l10n_mn_stock/wizard/stock_inventory_statement_by_location.py:38
+#: field:report.product.move.check,pos_categ_id:0
+#, python-format
+msgid "Pos Category"
+msgstr "Пос ангилал"
+
+#. module: l10n_mn_stock
+#: field:report.expense.ledger,pos_install:0
+#: field:report.income.ledger,pos_install:0
+#: field:report.refund.ledger,pos_install:0
+#: field:stock.inventory.statement,pos_install:0
+#: field:stock.inventory.statement.by.location,pos_install:0
+msgid "Pos Install"
+msgstr "Pos Install"
+
+#. module: l10n_mn_stock
+#: field:report.income.ledger,pos:0
+msgid "Pos Refund"
+msgstr "Посын буцаалт"
+
+#. module: l10n_mn_stock
+#: field:report.expense.ledger,pos:0
+msgid "Pos Sale"
+msgstr "Пос борлуулалт"
+
+#. module: l10n_mn_stock
+#: field:stock.return.picking.line,allowed_qty:0
+msgid "Possible for Return"
+msgstr "Буцаах боломжит тоо"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_form
+msgid "Prepare Report"
+msgstr "Бэлтгэх баримт"
+
+#. module: l10n_mn_stock
+#: selection:stock.transit.order,state:0
+msgid "Prepared"
+msgstr "Бэлтгэгдсэн"
+
+#. module: l10n_mn_stock
+#: field:print.stock.inventory,type:0
+msgid "Price Type"
+msgstr "Үнийн төрөл"
+
+#. module: l10n_mn_stock
+#: field:procurement.order,price_unit:0
+msgid "Price Unit"
+msgstr "Өртөг үнэ"
+
+#. module: l10n_mn_stock
+#: view:print.stock.inventory:l10n_mn_stock.print_stock_inventory_view
+#: view:report.product.label:l10n_mn_stock.report_product_label_view
+#: view:report.product.move.check:l10n_mn_stock.report_product_move_check_view
+#: view:stock.inventory.statement:l10n_mn_stock.view_stock_inventory_statement_form
+#: view:stock.print.picking:l10n_mn_stock.stock_print_picking_view
+msgid "Print"
+msgstr "Хэвлэх"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_print_inventory_wizard
+#: model:ir.actions.report.xml,name:l10n_mn_stock.print_stock_inventory_page
+#: model:ir.model,name:l10n_mn_stock.model_print_stock_inventory
+#: view:print.stock.inventory:l10n_mn_stock.print_stock_inventory_view
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "Print Inventory"
+msgstr "Тооллогын баримт хэвлэх"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.report.xml,name:l10n_mn_stock.action_report_picking_order_cost
+msgid "Print Order by Cost"
+msgstr "Агуулахын баримт өртөгөөр"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_print_picking
+#: model:ir.model,name:l10n_mn_stock.model_stock_print_picking
+#: view:stock.picking:l10n_mn_stock.view_picking_form_inherit_l10n_mn_stock
+msgid "Print Picking"
+msgstr "Print Picking"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.report.xml,name:l10n_mn_stock.action_report_product_label_print
+msgid "Print Product Label"
+msgstr "Print Product Label"
+
+#. module: l10n_mn_stock
+#: view:stock.print.picking:l10n_mn_stock.stock_print_picking_view
+msgid "Print Recipient Order"
+msgstr "Барааны орлогын баримт"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_procurement_order
+#: field:report.procurement.ledger,procure_ids:0
+#: selection:report.stock.inventory,location_type:0
+msgid "Procurement"
+msgstr "Татан авалт"
+
+#. module: l10n_mn_stock
+#: field:stock.warehouse.orderpoint,procure_method:0
+msgid "Procurement Method"
+msgstr "Procurement Method"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,procurement_group_id:0
+#: field:stock.transit.order,procurement_group_id:0
+msgid "Procurement group"
+msgstr "Procurement group"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report:l10n_mn_stock.view_product_profit_report_form
+#: field:product.profit.report,product_ids:0
+#: view:report.consume.order:l10n_mn_stock.view_report_consume_order_form
+#: field:report.consume.order,product_ids:0
+#: view:report.expense.ledger:l10n_mn_stock.view_report_expense_ledger_form
+#: field:report.expense.ledger,product_ids:0
+#: view:report.income.ledger:l10n_mn_stock.view_report_income_ledger_form
+#: field:report.income.ledger,product_ids:0
+#: view:report.inventory.ledger:l10n_mn_stock.view_report_inventory_ledger_form
+#: field:report.inventory.ledger,product_ids:0
+#: view:report.procurement.ledger:l10n_mn_stock.view_report_procurement_ledger_form
+#: field:report.procurement.ledger,product_ids:0
+#: view:report.product.label:l10n_mn_stock.report_product_label_view
+#: field:report.product.label,product_ids:0
+#: selection:report.product.label,root_type:0
+#: field:report.product.move.check,product_id:0
+#: view:report.refund.ledger:l10n_mn_stock.view_report_refund_ledger_form
+#: field:report.refund.ledger,product_ids:0
+#: field:report.stock.inventory,product_id:0
+#: field:stock.fill.easy,product_id:0
+#: view:stock.fill.inventory:l10n_mn_stock.view_stock_fill_inventory
+#: field:stock.fill.inventory,product_id:0
+#: field:stock.fill.inventory.line,product_id:0
+#: field:stock.inventory.cost.line,product_id:0
+#: view:stock.inventory.statement:l10n_mn_stock.view_stock_inventory_statement_form
+#: field:stock.inventory.statement,product_ids:0
+#: view:stock.inventory.statement.by.location:l10n_mn_stock.view_stock_inventory_statement_by_location_form
+#: field:stock.inventory.statement.by.location,product_ids:0
+#: field:stock.unmerge.lots,product_id:0
+msgid "Product"
+msgstr "Бараа"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_product_category
+#: view:product.profit.report:l10n_mn_stock.view_product_profit_report_form
+#: field:product.profit.report,prod_categ_ids:0
+#: view:stock.fill.inventory:l10n_mn_stock.view_stock_fill_inventory
+#: field:stock.fill.inventory,category_ids:0
+#: view:stock.inventory.statement:l10n_mn_stock.view_stock_inventory_statement_form
+#: field:stock.inventory.statement,prod_categ_ids:0
+#: view:stock.inventory.statement.by.location:l10n_mn_stock.view_stock_inventory_statement_by_location_form
+#: field:stock.inventory.statement.by.location,prod_categ_ids:0
+msgid "Product Category"
+msgstr "Барааны ангилал"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.product_expire_range_action
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_product_expire_range_action
+#: view:product.expire.range:l10n_mn_stock.product_expire_range_form
+#: view:product.expire.range:l10n_mn_stock.product_expire_range_tree
+msgid "Product Expire Range"
+msgstr "Барааны дуусах хугацааны муж"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_print_product_label
+#: model:ir.model,name:l10n_mn_stock.model_report_product_label
+#: view:report.product.label:l10n_mn_stock.report_product_label_view
+msgid "Product Label"
+msgstr "Барааны шошго"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.act_report_product_move_check
+#: model:ir.actions.act_window,name:l10n_mn_stock.report_product_move_check_act_window
+#: model:ir.actions.report.xml,name:l10n_mn_stock.action_report_product_move_check
+#: model:ir.model,name:l10n_mn_stock.model_report_product_move_check
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_report_product_move_check
+#: view:report.product.move.check:l10n_mn_stock.report_product_move_check_view
+msgid "Product Move Report"
+msgstr "Бүртгэл хяналтын баримт"
+
+#. module: l10n_mn_stock
+#: selection:product.profit.report,sorting:0
+#: selection:stock.inventory.statement,sorting:0
+#: selection:stock.inventory.statement.by.location,sorting:0
+msgid "Product Name"
+msgstr "Барааны нэр"
+
+#. module: l10n_mn_stock
+#: view:stock.warehouse.orderpoint:l10n_mn_stock.view_warehouse_orderpoint_form_inherit_l10n_mn_stock
+msgid "Product Procurement Method"
+msgstr "Бараа татан авах хэлбэр"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_product_profit_report
+#: model:ir.model,name:l10n_mn_stock.model_product_profit_report
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_product_profit_report
+#: view:product.profit.report:l10n_mn_stock.view_product_profit_report_form
+msgid "Product Profit Report"
+msgstr "Барааны ашгийн тайлан"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_product_profit_report_config
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_product_profit_report_config
+msgid "Product Profit Report Config"
+msgstr "Барааны ашгийн тайлангийн тохиргоо"
+
+#. module: l10n_mn_stock
+#: field:stock.fill.inventory.line,qty:0
+msgid "Product Qty"
+msgstr "Product Qty"
+
+#. module: l10n_mn_stock
+#: field:report.product.move.check,template_id:0
+msgid "Product Template"
+msgstr "Барааны загвар"
+
+#. module: l10n_mn_stock
+#: field:procurement.order,product_uom_category:0
+msgid "Product UOM"
+msgstr "Product UOM"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_report_product_label
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_report_product_label
+msgid "Product and Location Label"
+msgstr "Бараа & Байрлалын шошго"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: field:product.profit.report.config,product_marketing_expense_ids:0
+msgid "Product marketing expense"
+msgstr "Маркетингийн зардал"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_product_profit_report_config
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_tree
+msgid "Product profit report config"
+msgstr "Барааны ашгийн тайлангийн тохиргоо"
+
+#. module: l10n_mn_stock
+#: selection:report.stock.inventory,location_type:0
+msgid "Production"
+msgstr "Production"
+
+#. module: l10n_mn_stock
+#: field:report.product.move.check,prodlot_id:0
+#: field:stock.inventory.cost.line,prodlot_id:0
+#: field:stock.unmerge.lots,prod_lot:0
+msgid "Production Lot"
+msgstr "Сери дугаар"
+
+#. module: l10n_mn_stock
+#: view:stock.unmerge.lots:l10n_mn_stock.view_unmerge_lots
+msgid "Production Lot Number"
+msgstr "Production Lot Number"
+
+#. module: l10n_mn_stock
+#: view:stock.unmerge.lots:l10n_mn_stock.view_unmerge_lots
+msgid "Production Lot Numbers"
+msgstr "Production Lot Numbers"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.l10n_mn_stock_production_lot_form
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_l10n_mn_stock_production_lot_form
+msgid "Production Lots"
+msgstr "Сери шилжүүлэх"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_prodlot_with_warehouse.py:80
+#: field:stock.unmerge.lots,line_ids:0
+#, python-format
+msgid "Production lots"
+msgstr "Production lots"
+
+#. module: l10n_mn_stock
+#: selection:report.inventory.ledger,report_type:0
+#: selection:report.procurement.ledger,report_type:0
+#: view:stock.fill.inventory:l10n_mn_stock.view_stock_fill_inventory
+#: field:stock.fill.inventory,product_ids:0
+#: field:stock.production.lot.wizard,product_ids:0
+msgid "Products"
+msgstr "Бараанууд"
+
+#. module: l10n_mn_stock
+#: field:report.income.ledger,purchase:0
+#: selection:report.refund.ledger,report_type:0
+msgid "Purchase"
+msgstr "Худалдан авалт"
+
+#. module: l10n_mn_stock
+#: view:stock.picking:l10n_mn_stock.view_picking_form_inherit_l10n_mn_stock
+#: field:stock.picking,purchase_id:0
+msgid "Purchase Order"
+msgstr "Purchase Order"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_consume_order.py:102
+#: code:addons/l10n_mn_stock/wizard/report_product_move_check.py:39
+#: field:report.stock.inventory,product_qty:0
+#: field:stock.fill.easy,qty:0
+#: field:stock.fill.inventory,qty:0
+#: field:stock.inventory.cost.line,product_qty:0
+#: field:stock.unmerge.choice,product_qty:0
+#: field:stock.unmerge.lots,qty:0
+#: field:stock.unmerge.lots.lines,quantity:0
+#, python-format
+msgid "Quantity"
+msgstr "Тоо ширхэг"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_quant
+msgid "Quants"
+msgstr "Тоо бүртгэлүүд"
+
+#. module: l10n_mn_stock
+#: view:stock.picking:l10n_mn_stock.view_picking_form_inherit_l10n_mn_stock
+msgid "Re Confirm"
+msgstr "Сэргээж батлах"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "Real Quantity"
+msgstr "Бодит Тоо хэмжээ"
+
+#. module: l10n_mn_stock
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "Receive Correct"
+msgstr "Хүлээн авалтын саатлыг үл тоох"
+
+#. module: l10n_mn_stock
+#: selection:stock.transit.order,state:0
+msgid "Receive Exception"
+msgstr "Хүлээн авах саатал"
+
+#. module: l10n_mn_stock
+#: field:stock.transit.order,warehouse_id:0
+msgid "Receive Warehouse"
+msgstr "Бараа хүлээн авах агуулах"
+
+#. module: l10n_mn_stock
+#: selection:stock.transit.order,state:0
+msgid "Received"
+msgstr "Хүлээн авсан"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,name:0
+#: field:stock.transit.order,name:0
+msgid "Reference"
+msgstr "Дугаар"
+
+#. module: l10n_mn_stock
+#: field:report.expense.ledger,refund:0
+#: field:report.income.ledger,refund:0
+msgid "Refund"
+msgstr "Буцаалт"
+
+#. module: l10n_mn_stock
+#: model:mail.message.subtype,description:l10n_mn_stock.mt_transit_order_shipped
+msgid "Related delivery order shipped"
+msgstr "Related delivery order shipped"
+
+#. module: l10n_mn_stock
+#: model:mail.message.subtype,description:l10n_mn_stock.mt_transit_order_received
+msgid "Related reception order done"
+msgstr "Related reception order done"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1940
+#, python-format
+msgid "Removal strategy %s not implemented."
+msgstr "Removal strategy %s not implemented."
+
+#. module: l10n_mn_stock
+#: field:stock.fill.inventory,remove_current_list:0
+msgid "Remove Current List"
+msgstr "Өмнөх жагсаалтыг цэвэрлэх"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+msgid "Reopen Consume"
+msgstr "Зарлагыг дахин үүсгэх"
+
+#. module: l10n_mn_stock
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "Reopen Receive"
+msgstr "Хүлээн авалтыг дахин үүсгэх"
+
+#. module: l10n_mn_stock
+#: field:report.expense.ledger,procure:0
+#: field:report.income.ledger,procure:0
+#: view:report.procurement.ledger:l10n_mn_stock.view_report_procurement_ledger_form
+msgid "Replenishment"
+msgstr "Нөхөн дүүргэлт"
+
+#. module: l10n_mn_stock
+#: model:mail.message.subtype,name:l10n_mn_stock.mt_transit_order_confirmed
+msgid "Replenishment Confirmed"
+msgstr "Replenishment Confirmed"
+
+#. module: l10n_mn_stock
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "Replenishment Draft"
+msgstr "Replenishment Draft"
+
+#. module: l10n_mn_stock
+#: model:mail.message.subtype,name:l10n_mn_stock.mt_transit_order_received
+msgid "Replenishment Goods Received"
+msgstr "Replenishment Goods Received"
+
+#. module: l10n_mn_stock
+#: model:mail.message.subtype,name:l10n_mn_stock.mt_transit_order_shipped
+msgid "Replenishment Goods Shipped"
+msgstr "Replenishment Goods Shipped"
+
+#. module: l10n_mn_stock
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "Replenishment Lines"
+msgstr "Нөхөн дүүргэлтийн мөрүүд"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_transit_order
+#: model:ir.model,name:l10n_mn_stock.model_stock_transit_order
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_stock_transit_order
+#: field:stock.picking,transit_order_id:0
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_search
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_tree
+msgid "Replenishment Order"
+msgstr "Нөхөн дүүргэлтийн захиалга"
+
+#. module: l10n_mn_stock
+#: model:mail.message.subtype,description:l10n_mn_stock.mt_transit_order_confirmed
+msgid "Replenishment Order Confirmed"
+msgstr "Replenishment Order Confirmed"
+
+#. module: l10n_mn_stock
+#: field:stock.warehouse,property_replenishment_user:0
+msgid "Replenishment User"
+msgstr "Нөхөн дүүргэлт хариуцагч"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:466
+#, python-format
+msgid "Replenishment order confirmed with '%s' order reference. Then '%s' inter warehouse output picking generated on %s warehouse."
+msgstr "Нөхөн дүүргэлтийн захиалга батлагдаж '%s' дугаар оноогдов. Мөн '%s' дугаар бүхий агуулах хооронд бараа гаргах баримт %s агуулах дээр үүслээ."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:713
+#, python-format
+msgid "Replenishment receivement has been complete."
+msgstr "Нөхөн дүүргэлтийн барааг хүлээн авч гүйцлээ."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_consume_order.py:106
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_report_consume_order
+#: model:ir.model,name:l10n_mn_stock.model_report_consume_order
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_report_consume_order
+#: view:report.consume.order:l10n_mn_stock.view_report_consume_order_form
+#, python-format
+msgid "Report Consume Order"
+msgstr "Дотоод Зарлагын тайлан"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_report_delivery_ship
+#: model:ir.model,name:l10n_mn_stock.model_report_delivery_ship
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_report_delivery_ship
+#: view:report.delivery.ship:l10n_mn_stock.view_report_delivery_ship_form
+msgid "Report Delivery"
+msgstr "Түгээлтийн тайлан"
+
+#. module: l10n_mn_stock
+#: field:stock.warehouse,show_discount:0
+msgid "Report Discounts"
+msgstr "Report Discounts"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_report_expense_ledger
+#: model:ir.model,name:l10n_mn_stock.model_report_expense_ledger
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_report_expense_ledger
+#: view:report.expense.ledger:l10n_mn_stock.view_report_expense_ledger_form
+msgid "Report Expense Ledger"
+msgstr "Зарлагын товчоо тайлан"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_report_income_ledger
+#: model:ir.model,name:l10n_mn_stock.model_report_income_ledger
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_report_income_ledger
+#: view:report.income.ledger:l10n_mn_stock.view_report_income_ledger_form
+msgid "Report Income Ledger"
+msgstr "Орлогын товчоо тайлан"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_report_inventory_ledger
+#: model:ir.model,name:l10n_mn_stock.model_report_inventory_ledger
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_report_inventory_ledger
+#: view:report.inventory.ledger:l10n_mn_stock.view_report_inventory_ledger_form
+msgid "Report Inventory Ledger"
+msgstr "Тооллогын товчоо тайлан"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_report_procurement_ledger
+#: model:ir.model,name:l10n_mn_stock.model_report_procurement_ledger
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_report_procurement_ledger
+#: view:report.procurement.ledger:l10n_mn_stock.view_report_procurement_ledger_form
+msgid "Report Procurement Ledger"
+msgstr "Нөхөн дүүргэлтийн тайлан"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_report_refund_ledger
+#: model:ir.model,name:l10n_mn_stock.model_report_refund_ledger
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_report_refund_ledger
+#: view:report.refund.ledger:l10n_mn_stock.view_report_refund_ledger_form
+msgid "Report Refund Ledger"
+msgstr "Буцаалтын товчоо тайлан"
+
+#. module: l10n_mn_stock
+#: field:report.inventory.ledger,report_type:0
+#: field:report.procurement.ledger,report_type:0
+#: field:report.product.label,report_type:0
+#: field:report.product.move.check,report_type:0
+#: field:report.refund.ledger,report_type:0
+msgid "Report Type"
+msgstr "Тайлангийн төрөл"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,user_id:0
+#: field:stock.transit.order,user_id:0
+msgid "Responsible"
+msgstr "Хариуцагч"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_return_picking
+#: view:stock.return.picking.fill:l10n_mn_stock.stock_return_fill_form
+msgid "Return Picking"
+msgstr "Бэлтгэлтийн Буцаалт"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_refund_ledger.py:39
+#: view:report.refund.ledger:l10n_mn_stock.view_report_refund_ledger_form
+#: field:report.refund.ledger,return_type_ids:0
+#, python-format
+msgid "Return Type"
+msgstr "Буцаалтын төрөл"
+
+#. module: l10n_mn_stock
+#: field:stock.return.picking.fill,return_id:0
+msgid "Return Wizard"
+msgstr "Return Wizard"
+
+#. module: l10n_mn_stock
+#: field:report.product.label,root_type:0
+msgid "Root Type"
+msgstr "Үндсэн Төрөл"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/print_stock_inventory.py:58
+#: selection:stock.print.picking,type:0
+#, python-format
+msgid "Sale Price"
+msgstr "Худалдах үнэ"
+
+#. module: l10n_mn_stock
+#: field:product.category,sale_discount:0
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: field:product.profit.report.config,sale_discount_ids:0
+msgid "Sale discount"
+msgstr "Борлуулалтын хөнгөлөлт гэрээт"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: field:product.profit.report.config,sale_expense_ids:0
+msgid "Sale expense"
+msgstr "Борлуулалтын зардал"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: field:product.profit.report.config,sale_income_ids:0
+msgid "Sale income"
+msgstr "Борлуулалтын орлого"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+#: field:product.profit.report.config,sale_management_expense_ids:0
+msgid "Sale management expense"
+msgstr "БУЗ"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+msgid "Sale team"
+msgstr "Борлууулалтын бүс"
+
+#. module: l10n_mn_stock
+#: view:product.profit.report.config:l10n_mn_stock.product_profit_report_config_form
+msgid "Sale team analytic account"
+msgstr "Борлуулалтын бүсийн шинжилгээний данс"
+
+#. module: l10n_mn_stock
+#: field:product.profit.report.config,sale_team_account_ids:0
+#: field:product.profit.report.config,sale_team_analytic_ids:0
+msgid "Sale teams"
+msgstr "Борлуулалтын бүс"
+
+#. module: l10n_mn_stock
+#: field:report.expense.ledger,sales:0
+#: selection:report.refund.ledger,report_type:0
+msgid "Sales"
+msgstr "Борлуулалт"
+
+#. module: l10n_mn_stock
+#: field:report.stock.inventory,price:0
+#: field:stock.move,list_price:0
+#: field:stock.pack.operation,list_price:0
+msgid "Sales Base Price"
+msgstr "Sales Base Price"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_refund_ledger.py:34
+#: view:product.profit.report:l10n_mn_stock.view_product_profit_report_form
+#: field:product.profit.report,team_ids:0
+#: field:report.delivery.ship,team_ids:0
+#: field:report.refund.ledger,team_ids:0
+#: view:stock.picking:l10n_mn_stock.view_picking_internal_search_inherit_l10n_mn_stock
+#: field:stock.picking,section_id:0
+#, python-format
+msgid "Sales Team"
+msgstr "Борлуулалтын баг"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_crm_case_section
+msgid "Sales Teams"
+msgstr "Борлуулалтын баг"
+
+#. module: l10n_mn_stock
+#: view:report.delivery.ship:l10n_mn_stock.view_report_delivery_ship_form
+#: selection:report.delivery.ship,group_by:0
+#: view:report.refund.ledger:l10n_mn_stock.view_report_refund_ledger_form
+#: field:stock.delivery.sheet,sales_team_id:0
+msgid "Sales team"
+msgstr "Борлуулалтын баг"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory.cost:l10n_mn_stock.view_stock_inventory_cost_form
+msgid "Save"
+msgstr "Хадгалах"
+
+#. module: l10n_mn_stock
+#: field:product.profit.report,save:0
+#: field:report.consume.order,save:0
+#: field:report.delivery.ship,save:0
+#: field:report.expense.ledger,save:0
+#: field:report.income.ledger,save:0
+#: field:report.inventory.ledger,save:0
+#: field:report.procurement.ledger,save:0
+#: field:report.product.move.check,save:0
+#: field:report.refund.ledger,save:0
+#: field:stock.inventory.statement,save:0
+#: field:stock.inventory.statement.by.location,save:0
+msgid "Save to document storage"
+msgstr "Save to document storage"
+
+#. module: l10n_mn_stock
+#: field:stock.fill.easy,scan_field:0
+#: field:stock.fill.inventory,scan_field:0
+msgid "Scan Field"
+msgstr "Scan Field"
+
+#. module: l10n_mn_stock
+#: selection:stock.fill.inventory,type:0
+msgid "Scanner"
+msgstr "Сканнер"
+
+#. module: l10n_mn_stock
+#: field:stock.unmerge.lots,choice:0
+msgid "Select Location"
+msgstr "Select Location"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_consume_order.py:101
+#, python-format
+msgid "Seq."
+msgstr "Seq."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:2560
+#, python-format
+msgid "Serial have only product: \"%s\""
+msgstr "Serial have only product: \"%s\""
+
+#. module: l10n_mn_stock
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "Set Income Cost"
+msgstr "Орлогын өртөг тохируулах"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+msgid "Set to Draft"
+msgstr "Ноорог болгох"
+
+#. module: l10n_mn_stock
+#: field:stock.fill.inventory,set_stock_zero:0
+msgid "Set to zero"
+msgstr "Тэг болгох"
+
+#. module: l10n_mn_stock
+#: selection:report.product.label,report_type:0
+msgid "Short"
+msgstr "Богино"
+
+#. module: l10n_mn_stock
+#: field:report.refund.ledger,ean:0
+#: field:stock.inventory.statement,ean:0
+#: field:stock.inventory.statement.by.location,ean:0
+msgid "Show Barcode"
+msgstr "Баркод харах"
+
+#. module: l10n_mn_stock
+#: field:report.expense.ledger,cost:0
+#: field:report.income.ledger,cost:0
+#: field:report.inventory.ledger,cost:0
+#: field:report.procurement.ledger,cost:0
+#: field:report.refund.ledger,cost:0
+#: field:stock.inventory.statement,cost:0
+#: field:stock.inventory.statement.by.location,cost:0
+msgid "Show Cost Amount?"
+msgstr "Өртөг дүн харах?"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory.statement,currently_cost:0
+msgid "Currently Cost?"
+msgstr "Одоогийн өртгөөр харах?"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory.statement,income_expense:0
+#: field:stock.inventory.statement.by.location,income_expense:0
+msgid "Show Income and Expenditure?"
+msgstr "Орлого зарлага харах?"
+
+#. module: l10n_mn_stock
+#: field:print.stock.inventory,serial:0
+#: field:report.procurement.ledger,lot:0
+#: field:stock.inventory.statement,lot:0
+#: field:stock.inventory.statement.by.location,lot:0
+msgid "Show Serial"
+msgstr "Сери харах"
+
+#. module: l10n_mn_stock
+#: help:stock.warehouse,show_discount:0
+msgid "Show discount of expense report"
+msgstr "Зарлагын баримт дээр хөнгөлөлт харуулах"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:447
+#: code:addons/l10n_mn_stock/stock.py:453
+#: code:addons/l10n_mn_stock/stock.py:952
+#, python-format
+msgid "Something Wrong with generate output picking from %s warehouse!"
+msgstr "%s агуулахаас бараа гаргах баримт үүсгэх үед асуудал үүслээ!"
+
+#. module: l10n_mn_stock
+#: field:product.profit.report,sorting:0
+#: field:stock.inventory.statement,sorting:0
+#: field:stock.inventory.statement.by.location,sorting:0
+msgid "Sorting"
+msgstr "Эрэмбэлэл"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,origin:0
+#: field:stock.transit.order,origin:0
+msgid "Source Document"
+msgstr "Эх баримт"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory,specification:0
+msgid "Specification"
+msgstr "Тодруулга"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.act_unmerge_lots
+msgid "Split"
+msgstr "Split"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_unmerge_lots_lines
+msgid "Split lines"
+msgstr "Split lines"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_change_standard_price.py:207
+#, python-format
+msgid "Standard Price of %s product has changed"
+msgstr "Standard Price of %s product has changed"
+
+#. module: l10n_mn_stock
+#: field:stock.delivery.sheet,date_start:0
+msgid "Start Date"
+msgstr "Эхэлсэн огноо"
+
+#. module: l10n_mn_stock
+#: field:stock.delivery.sheet,start_kilometrage:0
+msgid "Start Kilometrage"
+msgstr "Эхэлсэн Километр"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_search
+#: selection:stock.delivery.sheet,state:0
+msgid "Started"
+msgstr "Эхэлсэн"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_search
+#: field:stock.consume.order,state:0
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_search
+#: field:stock.transit.order,state:0
+msgid "State"
+msgstr "Төлөв"
+
+#. module: l10n_mn_stock
+#: field:stock.delivery.sheet,state:0
+msgid "Status"
+msgstr "Status"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_car_news
+#: model:ir.model,name:l10n_mn_stock.model_stock_car_news
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_stock_car_news
+#: view:stock.car.news:l10n_mn_stock.view_stock_car_news_form
+#: view:stock.car.news:l10n_mn_stock.view_stock_car_news_tree
+msgid "Stock Car News"
+msgstr "Машины бүртгэл"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_delivery_sheet
+#: model:ir.model,name:l10n_mn_stock.model_stock_delivery_sheet
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_stock_delivery_sheet
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_form
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_search
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_tree
+msgid "Stock Delivery Sheet"
+msgstr "Ачилтын бүртгэл"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_fill_easy
+msgid "Stock Fill Easy"
+msgstr "Stock Fill Easy"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_fill_inventory
+msgid "Stock Fill Inventory"
+msgstr "Stock Fill Inventory"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_fill_inventory_line
+msgid "Stock Fill Inventory Line"
+msgstr "Stock Fill Inventory Line"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_inventory_cost
+#: model:ir.model,name:l10n_mn_stock.model_stock_inventory_cost
+#: view:stock.inventory.cost:l10n_mn_stock.view_stock_inventory_cost_form
+msgid "Stock Inventory Income Cost"
+msgstr "Тооллогын орлогын өртөг"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_inventory_cost_line
+msgid "Stock Inventory Income Cost Line"
+msgstr "Stock Inventory Income Cost Line"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_inventory_statement
+#: model:ir.model,name:l10n_mn_stock.model_stock_inventory_statement
+#: model:ir.model,name:l10n_mn_stock.model_stock_inventory_statement_by_location
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_stock_inventory_statement
+#: view:stock.inventory.statement:l10n_mn_stock.view_stock_inventory_statement_form
+#: view:stock.inventory.statement.by.location:l10n_mn_stock.view_stock_inventory_statement_by_location_form
+msgid "Stock Inventory Statement"
+msgstr "Агуулахын нөөцийн тайлан"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_inventory_statement_by_location
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_action_stock_inventory_statement_by_location
+msgid "Stock Inventory Statement /By Location/"
+msgstr "Stock Inventory Statement /By Location/"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_fill_inventory.py:85
+#, python-format
+msgid "Stock Inventory is already Validated."
+msgstr "Stock Inventory is already Validated."
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_move
+#: view:stock.return.picking.fill:l10n_mn_stock.stock_return_fill_form
+msgid "Stock Move"
+msgstr "Бараа шилжих"
+
+#. module: l10n_mn_stock
+#: field:stock.return.picking.fill,move_ids:0
+msgid "Stock Moves"
+msgstr "Stock Moves"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_product_move_check.py:1029
+#, python-format
+msgid "Stock Product Check"
+msgstr "Stock Product Check"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_return_picking.py:61
+#: code:addons/l10n_mn_stock/wizard/stock_return_picking.py:178
+#: code:addons/l10n_mn_stock/wizard/stock_return_picking.py:199
+#, python-format
+msgid "Stock Return Picking"
+msgstr "Stock Return Picking"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_return_picking_fill
+msgid "Stock Return Picking Fill"
+msgstr "Stock Return Picking Fill"
+
+#. module: l10n_mn_stock
+#: model:ir.actions.act_window,name:l10n_mn_stock.action_stock_return_type
+#: model:ir.model,name:l10n_mn_stock.model_stock_return_type
+#: model:ir.ui.menu,name:l10n_mn_stock.menu_stock_configuration_stock_return_type
+#: view:stock.picking:l10n_mn_stock.view_picking_internal_search_inherit_l10n_mn_stock
+#: field:stock.picking,stock_return_type_id:0
+#: field:stock.return.picking,stock_return_category:0
+#: view:stock.return.type:l10n_mn_stock.stock_return_type_form_view
+#: view:stock.return.type:l10n_mn_stock.stock_return_type_tree_view
+msgid "Stock Return Type"
+msgstr "Бараа буцаалтын төрөл"
+
+#. module: l10n_mn_stock
+#: field:stock.return.picking,stock_return_check:0
+msgid "Stock Return Type Check"
+msgstr "Бараа буцаалтын төрөл шалгах"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_report_stock_inventory
+msgid "Stock Statistics"
+msgstr "Stock Statistics"
+
+#. module: l10n_mn_stock
+#: field:stock.change.standard.price,qty_available:0
+msgid "Stock on hand"
+msgstr "Stock on hand"
+
+#. module: l10n_mn_stock
+#: field:procurement.order,sub_total:0
+msgid "Sub Total"
+msgstr "Нийт өртөг"
+
+#. module: l10n_mn_stock
+#: selection:product.profit.report,type:0
+#: selection:report.delivery.ship,type:0
+#: selection:report.expense.ledger,type:0
+#: selection:report.income.ledger,type:0
+#: selection:report.inventory.ledger,type:0
+#: selection:report.procurement.ledger,type:0
+#: selection:report.refund.ledger,type:0
+#: field:stock.consume.order,message_summary:0
+#: selection:stock.inventory.statement,type:0
+#: selection:stock.inventory.statement.by.location,type:0
+#: field:stock.transit.order,message_summary:0
+msgid "Summary"
+msgstr "Хураангуй"
+
+#. module: l10n_mn_stock
+#: view:report.income.ledger:l10n_mn_stock.view_report_income_ledger_form
+#: view:stock.fill.inventory:l10n_mn_stock.view_stock_fill_inventory
+#: field:stock.warehouse.orderpoint,supplier_id:0
+msgid "Supplier"
+msgstr "Нийлүүлэгч"
+
+#. module: l10n_mn_stock
+#: field:stock.fill.inventory,manufacture_ids:0
+msgid "Supplier & Manufacturer"
+msgstr "Supplier & Manufacturer"
+
+#. module: l10n_mn_stock
+#: selection:report.stock.inventory,location_type:0
+msgid "Supplier Location"
+msgstr "Supplier Location"
+
+#. module: l10n_mn_stock
+#: field:stock.warehouse.orderpoint,transit_warehouse:0
+msgid "Supplier Warehouse"
+msgstr "Supplier Warehouse"
+
+#. module: l10n_mn_stock
+#: field:stock.transit.order,supply_warehouse_id:0
+msgid "Supply Warehouse"
+msgstr "Бараа нийлүүлэх агуулах"
+
+#. module: l10n_mn_stock
+#: field:report.expense.ledger,swap:0
+#: field:report.income.ledger,swap:0
+msgid "Swap"
+msgstr "Солилцоо"
+
+#. module: l10n_mn_stock
+#: view:stock.unmerge.lots:l10n_mn_stock.view_unmerge_lots
+msgid "Switch"
+msgstr "Switch"
+
+#. module: l10n_mn_stock
+#: view:stock.production.lot:l10n_mn_stock.view_production_lot_form_inherit_l10n_mn_stock
+msgid "Switch Lots"
+msgstr "Сери шилжүүлэх"
+
+#. module: l10n_mn_stock
+#: constraint:stock.warehouse.orderpoint:0
+msgid "The Supplier Warehouse must be different for own warehouse."
+msgstr "Нийлүүлэх агуулах нь нөөцийн дүрэм тодорхойлж буй агуулахтай ижил байж болохгүй."
+
+#. module: l10n_mn_stock
+#: sql_constraint:stock.production.lot:0
+msgid "The combination of serial number and product must be unique !"
+msgstr "The combination of serial number and product must be unique !"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:2217
+#, python-format
+msgid "The list price of \"%s\" product must be greather than 0 on \"%s\" warehouse."
+msgstr "\"%s\" барааны хувьд \"%s\" агуулах дээр зарах үнэ нь 0-с ялгаатай байх ёстой."
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_picking_type
+msgid "The picking type determines the picking view"
+msgstr "Бэлтгэх төрөл нь бэлтгэх баримтын харагдацийг тодорхойлно"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:2171
+#, python-format
+msgid "The roundings of your Unit of Measures %s on the move vs. %s on the product don't allow to do these operations or you are not transferring the picking at once. "
+msgstr "The roundings of your Unit of Measures %s on the move vs. %s on the product don't allow to do these operations or you are not transferring the picking at once. "
+
+#. module: l10n_mn_stock
+#: help:stock.picking,stock_return_type_id:0
+#: help:stock.return.picking,stock_return_category:0
+msgid "The stock return type."
+msgstr "Бараа буцаалтын төрөл."
+
+#. module: l10n_mn_stock
+#: constraint:stock.transit.order:0
+msgid "The supply warehouse must be different for receive warehouse."
+msgstr "Бараа гаргах агуулах нь бараа хүлээн авах агуулахтай ижил байж болохгүй."
+
+#. module: l10n_mn_stock
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "Theoretical Quantity"
+msgstr "Theoretical Quantity"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:2326
+#, python-format
+msgid "There is no income cost defined for this product: %s"
+msgstr "Энэ барааны хувьд тооллогын орлогын өртөг тохируулагдаагүй байна: %s"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:562
+#: code:addons/l10n_mn_stock/stock.py:599
+#, python-format
+msgid "There is no incoming picking type defined on this warehouse: \"%s\""
+msgstr "Энэ агуулах дээр ирэх барааны баримтын төрөл тохируулагдаагүй байна: \"%s\""
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:421
+#, python-format
+msgid "There is no internal warehouse transit location defined on this company!"
+msgstr "There is no internal warehouse transit location defined on this company!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_unmerge_lots.py:147
+#, python-format
+msgid "There is no inventory location defined on this company!"
+msgstr "There is no inventory location defined on this company!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/procurement.py:285
+#, python-format
+msgid "There is no procurement user defined on this warehouse: %s"
+msgstr "There is no procurement user defined on this warehouse: %s"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:444
+#, python-format
+msgid "There is no replenishment rule found for this warehouse. \"%s\" !"
+msgstr "Энэ агуулах дээр нөхөн дүүргэлтийн дүрэм тодорхойлоогүй байна. \"%s\" !"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:418
+#: code:addons/l10n_mn_stock/stock.py:603
+#, python-format
+msgid "There is no replenishment user defined on this warehouse: \"%s\" !"
+msgstr "Энэ агуулах дээр нөхөн дүүргэлт хариуцах хэрэглэгч тодорхойлогдоогүй байна: \"%s\" !"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1349
+#, python-format
+msgid "There is some stock insuficient problem occurs in this warehouse!\n"
+"%s"
+msgstr "Бараа бэлтгэх агуулахад зарим барааны үлдэгдэл хүрэлцэхгүй асуудал гарч байна!\n"
+"%s"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1458
+#: code:addons/l10n_mn_stock/stock.py:1463
+#: code:addons/l10n_mn_stock/stock.py:1468
+#, python-format
+msgid "There is something wrong on trasfer process. Please tell about it to System Developement Team!"
+msgstr "There is something wrong on trasfer process. Please tell about it to System Developement Team!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_prodlot_with_warehouse.py:83
+#, python-format
+msgid "This is the list of all the production lots (serial numbers) you recorded. When you select a lot, you can get the upstream or downstream traceability of the products contained in lot. By default, the list is filtred on the serial numbers that are available in your warehouse but you can uncheck the 'Available' button to get all the lots you produced, received or delivered to customers."
+msgstr "This is the list of all the production lots (serial numbers) you recorded. When you select a lot, you can get the upstream or downstream traceability of the products contained in lot. By default, the list is filtred on the serial numbers that are available in your warehouse but you can uncheck the 'Available' button to get all the lots you produced, received or delivered to customers."
+
+#. module: l10n_mn_stock
+#: field:product.profit.report,date_to:0
+#: field:report.consume.order,date_to:0
+#: field:report.delivery.ship,date_to:0
+#: field:report.expense.ledger,date_to:0
+#: field:report.income.ledger,date_to:0
+#: field:report.inventory.ledger,date_to:0
+#: field:report.procurement.ledger,date_to:0
+#: field:report.product.move.check,to_date:0
+#: field:report.refund.ledger,date_to:0
+#: view:stock.inventory.statement:l10n_mn_stock.view_stock_inventory_statement_form
+#: field:stock.inventory.statement,date_to:0
+#: view:stock.inventory.statement.by.location:l10n_mn_stock.view_stock_inventory_statement_by_location_form
+#: field:stock.inventory.statement.by.location,date_to:0
+msgid "To Date"
+msgstr "Төгсөх огноо"
+
+#. module: l10n_mn_stock
+#: field:product.profit.report,period_to:0
+msgid "To Period"
+msgstr "To Period"
+
+#. module: l10n_mn_stock
+#: view:stock.move:l10n_mn_stock.stock_move_tree_inherit_sum
+msgid "Total"
+msgstr "Total"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_consume_order.py:102
+#, python-format
+msgid "Total Cost"
+msgstr "Өртөг дүн"
+
+#. module: l10n_mn_stock
+#: field:stock.change.standard.price,total_diff:0
+msgid "Total Different"
+msgstr "Total Different"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_tree
+#: field:stock.delivery.sheet,total_amount_in_cancel:0
+msgid "Total Incoming Cancelled"
+msgstr "Нийт цуцлагдсан орлого"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_tree
+#: field:stock.delivery.sheet,total_amount_in_done:0
+msgid "Total Incoming Complete"
+msgstr "Нийт хүлээн авсан орлого"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_tree
+#: field:stock.delivery.sheet,total_amount_in_wait:0
+msgid "Total Incoming Pending"
+msgstr "Нийт хүлээгдэж буй орлого"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_tree
+#: field:stock.delivery.sheet,total_amount_out_cancel:0
+msgid "Total Outgoing Cancelled"
+msgstr "Нийт цуцлагдсан зарлага"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_tree
+#: field:stock.delivery.sheet,total_amount_out_done:0
+msgid "Total Outgoing Complete"
+msgstr "Нийт шилжсэн зарлага"
+
+#. module: l10n_mn_stock
+#: view:stock.delivery.sheet:l10n_mn_stock.view_stock_delivery_sheet_tree
+#: field:stock.delivery.sheet,total_amount_out_wait:0
+msgid "Total Outgoing Pending"
+msgstr "Нийт хүлээгдэж буй зарлага"
+
+#. module: l10n_mn_stock
+#: field:stock.unmerge.lots.lines,name:0
+msgid "Tracking serial"
+msgstr "Tracking serial"
+
+#. module: l10n_mn_stock
+#: selection:report.stock.inventory,location_type:0
+msgid "Transit Location for Inter-Companies Transfers"
+msgstr "Transit Location for Inter-Companies Transfers"
+
+#. module: l10n_mn_stock
+#: field:product.profit.report,type:0
+#: field:report.delivery.ship,type:0
+#: field:report.expense.ledger,type:0
+#: field:report.income.ledger,type:0
+#: field:report.inventory.ledger,type:0
+#: field:report.procurement.ledger,type:0
+#: field:report.product.label,type:0
+#: field:report.refund.ledger,type:0
+#: field:stock.fill.inventory,type:0
+#: field:stock.inventory.statement,type:0
+#: field:stock.inventory.statement.by.location,type:0
+msgid "Type"
+msgstr "Төрөл"
+
+#. module: l10n_mn_stock
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_form
+#: field:stock.inventory.cost.line,product_uom:0
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_form
+#: field:stock.unmerge.lots,product_uom:0
+msgid "UOM"
+msgstr "Х.Нэгж"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_unmerge_lots
+msgid "UnMerge Lots"
+msgstr "UnMerge Lots"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory.cost.line,price_unit:0
+msgid "Unit Cost"
+msgstr "Нэгж өртөг"
+
+#. module: l10n_mn_stock
+#: field:stock.move,weight_uom_id:0
+#: field:stock.pack.operation,weight_uom_id:0
+msgid "Unit of Measure"
+msgstr "Unit of Measure"
+
+#. module: l10n_mn_stock
+#: help:stock.move,weight_uom_id:0
+#: help:stock.pack.operation,weight_uom_id:0
+msgid "Unit of Measure (Unit of Measure) is the unit of measurement for Weight"
+msgstr "Unit of Measure (Unit of Measure) is the unit of measurement for Weight"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,message_unread:0
+#: field:stock.transit.order,message_unread:0
+msgid "Unread Messages"
+msgstr "Unread Messages"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_transfer_details.py:62
+#, python-format
+msgid "User Error"
+msgstr "Хэрэглэгчийн алдаа"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1922
+#, python-format
+msgid "User error!"
+msgstr "Хэрэглэгчийн алдаа!"
+
+#. module: l10n_mn_stock
+#: selection:report.stock.inventory,location_type:0
+msgid "View"
+msgstr "View"
+
+#. module: l10n_mn_stock
+#: field:stock.car.news,volume:0
+#: field:stock.move,volume:0
+#: field:stock.pack.operation,volume:0
+msgid "Volume"
+msgstr "Эзлэхүүн"
+
+#. module: l10n_mn_stock
+#: model:ir.model,name:l10n_mn_stock.model_stock_warehouse
+#: field:product.profit.report,warehouse_ids:0
+#: view:report.consume.order:l10n_mn_stock.view_report_consume_order_form
+#: field:report.consume.order,warehouse_ids:0
+#: view:report.delivery.ship:l10n_mn_stock.view_report_delivery_ship_form
+#: field:report.delivery.ship,warehouse_ids:0
+#: view:report.expense.ledger:l10n_mn_stock.view_report_expense_ledger_form
+#: field:report.expense.ledger,warehouse_ids:0
+#: view:report.income.ledger:l10n_mn_stock.view_report_income_ledger_form
+#: field:report.income.ledger,warehouse_ids:0
+#: view:report.inventory.ledger:l10n_mn_stock.view_report_inventory_ledger_form
+#: field:report.inventory.ledger,warehouse_ids:0
+#: view:report.procurement.ledger:l10n_mn_stock.view_report_procurement_ledger_form
+#: field:report.procurement.ledger,warehouse_id:0
+#: field:report.procurement.ledger,warehouse_ids:0
+#: field:report.product.label,warehouse_id:0
+#: field:report.product.move.check,warehouse_id:0
+#: view:report.refund.ledger:l10n_mn_stock.view_report_refund_ledger_form
+#: field:report.refund.ledger,warehouse_ids:0
+#: field:stock.change.standard.price,warehouse_id:0
+#: view:stock.consume.order:l10n_mn_stock.view_stock_consume_order_search
+#: field:stock.delivery.sheet,warehouse_id:0
+#: field:stock.fill.easy,warehouse_id:0
+#: view:stock.inventory:l10n_mn_stock.view_inventory_filter_inherit_l10n_mn_stock
+#: field:stock.inventory,warehouse_id:0
+#: view:stock.inventory.statement:l10n_mn_stock.view_stock_inventory_statement_form
+#: field:stock.inventory.statement,warehouse_ids:0
+#: view:stock.inventory.statement.by.location:l10n_mn_stock.view_stock_inventory_statement_by_location_form
+#: field:stock.inventory.statement.by.location,warehouse_ids:0
+#: field:stock.production.lot.wizard,warehouse_id:0
+#: view:stock.transit.order:l10n_mn_stock.view_stock_transit_order_search
+#: field:stock.unmerge.lots,warehouse_id:0
+msgid "Warehouse"
+msgstr "Агуулах"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory.statement.by.location:l10n_mn_stock.view_stock_inventory_statement_by_location_form
+msgid "Warehouse location"
+msgstr "Warehouse location"
+
+#. module: l10n_mn_stock
+#: field:stock.change.standard.price,warehouse_required:0
+msgid "Warehouse required?"
+msgstr "Warehouse required?"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:562
+#: code:addons/l10n_mn_stock/stock.py:599
+#: code:addons/l10n_mn_stock/stock.py:1170
+#: code:addons/l10n_mn_stock/stock.py:1458
+#: code:addons/l10n_mn_stock/stock.py:1463
+#: code:addons/l10n_mn_stock/stock.py:1468
+#: code:addons/l10n_mn_stock/stock.py:2217
+#: code:addons/l10n_mn_stock/stock.py:2326
+#: code:addons/l10n_mn_stock/stock.py:2332
+#: code:addons/l10n_mn_stock/stock.py:2365
+#: code:addons/l10n_mn_stock/stock.py:2560
+#: code:addons/l10n_mn_stock/wizard/product_profit_report.py:235
+#: code:addons/l10n_mn_stock/wizard/product_profit_report.py:291
+#: code:addons/l10n_mn_stock/wizard/product_profit_report.py:296
+#: code:addons/l10n_mn_stock/wizard/report_inventory_ledger.py:105
+#: code:addons/l10n_mn_stock/wizard/stock_fill_inventory.py:168
+#: code:addons/l10n_mn_stock/wizard/stock_transfer_details.py:48
+#, python-format
+msgid "Warning !"
+msgstr "Анхааруулга !"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_fill_easy.py:123
+#: code:addons/l10n_mn_stock/wizard/stock_fill_inventory.py:118
+#, python-format
+msgid "Warning for %s"
+msgstr "Warning for %s"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/report/report_picking_all.py:68
+#: code:addons/l10n_mn_stock/report/report_picking_all.py:115
+#: code:addons/l10n_mn_stock/report/report_picking_all.py:349
+#: code:addons/l10n_mn_stock/report/report_picking_all.py:361
+#: code:addons/l10n_mn_stock/wizard/stock_fill_inventory.py:85
+#: code:addons/l10n_mn_stock/wizard/stock_return_picking.py:153
+#, python-format
+msgid "Warning!"
+msgstr "Warning!"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,website_message_ids:0
+#: field:stock.transit.order,website_message_ids:0
+msgid "Website Messages"
+msgstr "Website Messages"
+
+#. module: l10n_mn_stock
+#: help:stock.consume.order,website_message_ids:0
+#: help:stock.transit.order,website_message_ids:0
+msgid "Website communication history"
+msgstr "Website communication history"
+
+#. module: l10n_mn_stock
+#: field:stock.car.news,weight:0
+#: field:stock.move,weight:0
+#: field:stock.pack.operation,weight:0
+msgid "Weight"
+msgstr "Жин"
+
+#. module: l10n_mn_stock
+#: help:stock.warehouse,property_replenishment_user:0
+msgid "When generate replenishment order with warehouse as supply warehouse then delivery picking will be assigned to this user."
+msgstr "Уг агуулахыг бэлтгэн нийлүүлэх агуулахаар сонгож нөхөн дүүргэлтийн захиалга үүсгэх үед бараа хүргэх баримтыг энэ хэрэглэгч хариуцна."
+
+#. module: l10n_mn_stock
+#: selection:report.product.label,type:0
+msgid "With price"
+msgstr "Үнэтэй"
+
+#. module: l10n_mn_stock
+#: selection:report.product.label,type:0
+msgid "Without price"
+msgstr "Үнэгүй"
+
+#. module: l10n_mn_stock
+#: field:stock.inventory.cost.line,wizard_id:0
+msgid "Wizard"
+msgstr "Wizard"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/procurement.py:52
+#, python-format
+msgid "Wrong UoM !"
+msgstr "Wrong UoM !"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:2900
+#, python-format
+msgid "You can delete only draft documents!"
+msgstr "You can delete only draft documents!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1280
+#: code:addons/l10n_mn_stock/stock.py:1283
+#: code:addons/l10n_mn_stock/stock.py:1287
+#, python-format
+msgid "You can delete only draft or canceled Procurement Order(s) !"
+msgstr "You can delete only draft or canceled Procurement Order(s) !"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:2365
+#, python-format
+msgid "You can delete only draft or cancelled inventory!"
+msgstr "You can delete only draft or cancelled inventory!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_fill_inventory.py:143
+#, python-format
+msgid "You can only renew inventory lines on draft document."
+msgstr "You can only renew inventory lines on draft document."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:925
+#, python-format
+msgid "You cannot confirm consume order without any order lines."
+msgstr "You cannot confirm consume order without any order lines."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:416
+#, python-format
+msgid "You cannot confirm replenishment order with same warehouses !"
+msgstr "Та ижил агуулахуудын хооронд нөхөн дүүргэлт хийх боломжгүй !"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:414
+#, python-format
+msgid "You cannot confirm replenishment order without any order lines."
+msgstr "Та ямарч захиалгын мөргүй захиалгыг батлах боломжгүй."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_fill_easy.py:85
+#, python-format
+msgid "You cannot perform this operation on more than one Procurement Order."
+msgstr "You cannot perform this operation on more than one Procurement Order."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_fill_inventory.py:79
+#, python-format
+msgid "You cannot perform this operation on more than one Stock Inventories."
+msgstr "You cannot perform this operation on more than one Stock Inventories."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_transfer_details.py:62
+#, python-format
+msgid "You cannot process in future time!"
+msgstr "Та ирээдүй цаг дээр боловсруулалт хийж болохгүй!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_transfer_details.py:48
+#, python-format
+msgid "You cannot process incoming shipment until purchase order cost approved!"
+msgstr "You cannot process incoming shipment until purchase order cost approved!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:2332
+#, python-format
+msgid "You cannot set a negative product quantity in an inventory line:\n"
+"	%s - qty: %s"
+msgstr "You cannot set a negative product quantity in an inventory line:\n"
+"	%s - qty: %s"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/report_inventory_ledger.py:105
+#, python-format
+msgid "You don't checked any check field"
+msgstr "You don't checked any check field"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_unmerge_lots.py:157
+#, python-format
+msgid "You have entered invalid quantity on %s switching lot!"
+msgstr "You have entered invalid quantity on %s switching lot!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_unmerge_lots.py:155
+#, python-format
+msgid "You have selected same lot as switching lot!"
+msgstr "You have selected same lot as switching lot!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/procurement.py:52
+#, python-format
+msgid "You have to select UoM for same category with default UoM of %s product."
+msgstr "You have to select UoM for same category with default UoM of %s product."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_return_picking.py:153
+#, python-format
+msgid "You may only return pickings that are Done!"
+msgstr "You may only return pickings that are Done!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_fill_inventory.py:168
+#, python-format
+msgid "You must be set any one filter!"
+msgstr "You must be set any one filter!"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:369
+#: code:addons/l10n_mn_stock/stock.py:884
+#, python-format
+msgid "You must first delete all shipping document attached to this replenishment order."
+msgstr "Та эхлээд бараа бэлтгэн гаргах баримтуудыг цуцлаад устгах шаардлагатай."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:363
+#, python-format
+msgid "You must first cancel picking of reception attached to this replenishment order."
+msgstr "Та эхлээд бараа хүлээн авах баримтуудыг цуцлах шаардлагатай."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1171
+#, python-format
+msgid "You must select supply warehouse before add order line!"
+msgstr "Та захиалгын мөр нэмэхээс өмнө бараа бэлтгэх агуулахыг сонгох ёстой!"
+
+#. module: l10n_mn_stock
+#: view:product.expire.range:l10n_mn_stock.product_expire_range_form
+msgid "You must set -1 value to undefined range onwards."
+msgstr "You must set -1 value to undefined range onwards."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:2884
+#: code:addons/l10n_mn_stock/stock.py:2917
+#: code:addons/l10n_mn_stock/stock.py:2934
+#, python-format
+msgid "You should select any picking order."
+msgstr "You should select any picking order."
+
+#. module: l10n_mn_stock
+#: constraint:procurement.order:0
+msgid "You try to move a product using a UoM that is not compatible with the UoM of the product moved. Please use an UoM in the same UoM category."
+msgstr "Та хөдөлгөөн хийхдээ тухайн бараатай зохицохгүй хэмжих нэгж ашиглах гэж ороолдож байна. Зөвхөн уг бараатай тохирох ангилалын хэмжих нэгж ашиглана уу."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:1923
+#, python-format
+msgid "You trying do shippment %s product with %s %s but insufficient stock on %s location."
+msgstr "Та %s бараанаас %s %s хэмжээгээр зарлага хийх гэж байгаа боловч %s байрлал дээрх нөөц хүрэлцэхгүй байна."
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/stock_unmerge_lots.py:173
+#, python-format
+msgid "Your split quantity is greater than existing stock!"
+msgstr "Your split quantity is greater than existing stock!"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "confirm,counted"
+msgstr "confirm,counted"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "counted"
+msgstr "counted"
+
+#. module: l10n_mn_stock
+#: view:stock.transfer_details:l10n_mn_stock.view_stock_enter_transfer_details_inherit_l10n_mn
+msgid "false"
+msgstr "false"
+
+#. module: l10n_mn_stock
+#: selection:stock.warehouse.orderpoint,procure_method:0
+msgid "from stock"
+msgstr "Агуулахаас татах"
+
+#. module: l10n_mn_stock
+#: model:product.expire.range,name:l10n_mn_stock.product_expire_range_in_three
+msgid "in 3 months"
+msgstr "3 сарын дотор"
+
+#. module: l10n_mn_stock
+#: model:product.expire.range,name:l10n_mn_stock.product_expire_range_in_six
+msgid "in 3 to 6 months"
+msgstr "3-аас 6 сарын дотор"
+
+#. module: l10n_mn_stock
+#: model:product.expire.range,name:l10n_mn_stock.product_expire_range_in_nine
+msgid "in 6 to 9 months"
+msgstr "6-аас 9 сарын дотор"
+
+#. module: l10n_mn_stock
+#: selection:stock.warehouse.orderpoint,procure_method:0
+msgid "on order"
+msgstr "Захиалга хийх"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "onchange_createline(location_id, product_id, product_uom_id, package_id, prod_lot_id, partner_id, parent.company_id, parent.force_date, parent.date)"
+msgstr "onchange_createline(location_id, product_id, product_uom_id, package_id, prod_lot_id, partner_id, parent.company_id, parent.force_date, parent.date)"
+
+#. module: l10n_mn_stock
+#: view:stock.change.standard.price:l10n_mn_stock.view_change_standard_price_inherit_l10n_mn_stock
+msgid "onchange_new_price(new_price, old_price, qty_available)"
+msgstr "onchange_new_price(new_price, old_price, qty_available)"
+
+#. module: l10n_mn_stock
+#: view:report.product.move.check:l10n_mn_stock.report_product_move_check_view
+#: view:stock.inventory.cost:l10n_mn_stock.view_stock_inventory_cost_form
+#: view:stock.return.picking.fill:l10n_mn_stock.stock_return_fill_form
+msgid "or"
+msgstr "Эсвэл"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/stock.py:690
+#: code:addons/l10n_mn_stock/stock.py:996
+#, python-format
+msgid "state"
+msgstr "state"
+
+#. module: l10n_mn_stock
+#: help:stock.picking,picking_returned:0
+msgid "technical field for attrs in view"
+msgstr "technical field for attrs in view"
+
+#. module: l10n_mn_stock
+#: model:res.groups,comment:l10n_mn_stock.can_change_stock_date
+msgid "the user will have an permission to the set transaction date on any picking object."
+msgstr "хэрэглэгч агуулахын орлого зарлагын хөдөлгөөний баримтыг болосвруулахдаа огноог өөрчлөн зохицуулах боломжтой болно."
+
+#. module: l10n_mn_stock
+#: field:stock.inventory,show_cost_button:0
+msgid "unknown"
+msgstr "unknown"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "{'display_default_code':True}"
+msgstr "{'display_default_code':True}"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "{'invisible': [('state', 'not in', ('done','counted'))]}"
+msgstr "{'invisible': [('state', 'not in', ('done','counted'))]}"
+
+#. module: l10n_mn_stock
+#: view:stock.picking:l10n_mn_stock.view_picking_form_inherit_l10n_mn_stock
+msgid "{'invisible':['|', ('picking_type_code', '=', 'incoming'), ('state', '<>', 'assigned')]}"
+msgstr "{'invisible':['|', ('picking_type_code', '=', 'incoming'), ('state', '<>', 'assigned')]}"
+
+#. module: l10n_mn_stock
+#: view:stock.picking:l10n_mn_stock.view_picking_form_inherit_l10n_mn_stock
+#: view:stock.picking:l10n_mn_stock.view_picking_inherit_form2_l10n_mn_stock
+msgid "{'readonly':[('state','<>','draft')]}"
+msgstr "{'readonly':[('state','<>','draft')]}"
+
+#. module: l10n_mn_stock
+#: view:stock.inventory:l10n_mn_stock.view_inventory_form_inherit_l10n_mn_stock
+msgid "{'readonly':[('state','in',('cancel','counted','done'))]}"
+msgstr "{'readonly':[('state','in',('cancel','counted','done'))]}"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Авсан мөнгө"
+msgstr "Авсан мөнгө"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "Агуулах:"
+msgstr "Агуулах:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Агуулахын бүртгэл, хяналтын баримт"
+msgstr "Агуулахын бүртгэл, хяналтын баримт"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Агуулахын бүртгэл, хяналтын баримт (Худалдах үнээр)"
+msgstr "Агуулахын бүртгэл, хяналтын баримт (Худалдах үнээр)"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Агуулахын бүртгэл, хяналтын баримт (Өртөг үнээр)"
+msgstr "Агуулахын бүртгэл, хяналтын баримт (Өртөг үнээр)"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Ачилтын хуудас"
+msgstr "Ачилтын хуудас"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Аюулгүй нөөц :"
+msgstr "Аюулгүй нөөц :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Баглаа"
+msgstr "Баглаа"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Байгууллагын нэр:"
+msgstr "Байгууллагын нэр:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Байрлал"
+msgstr "Байрлал"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Бар код"
+msgstr "Бар код"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "Бараа Бэлтгэх Баримт"
+msgstr "Бараа Бэлтгэх Баримт"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Бараа материалын бар код :"
+msgstr "Бараа материалын бар код :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Бараа материалын зарлагын баримт (Өртөгөөр)"
+msgstr "Бараа материалын зарлагын баримт (Өртөгөөр)"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Бараа материалын нэр"
+msgstr "Бараа материалын нэр"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Бараа материалын нэр :"
+msgstr "Бараа материалын нэр :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Бараа материалын орлогын баримт (Өртөгөөр)"
+msgstr "Бараа материалын орлогын баримт (Өртөгөөр)"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Бараа материалын тооллогын баримт"
+msgstr "Бараа материалын тооллогын баримт"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "Барааны Нэр"
+msgstr "Барааны Нэр"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/product_profit_report.py:296
+#, python-format
+msgid "Барааны ангилал дээр шинжилгээний данснуудыг сонгоно уу!"
+msgstr "Барааны ангилал дээр шинжилгээний данснуудыг сонгоно уу!"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Барааны нэр"
+msgstr "Барааны нэр"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Баримтын"
+msgstr "Баримтын"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Баримтын дугаар"
+msgstr "Баримтын дугаар"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Баримтын дугаар :"
+msgstr "Баримтын дугаар :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:stock.report_picking
+msgid "Баримтын дугаар:"
+msgstr "Баримтын дугаар:"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/report/report_picking_all.py:115
+#: code:addons/l10n_mn_stock/report/report_picking_all.py:361
+#, python-format
+msgid "Баримтын төрөл өөр байж болохгүй!"
+msgstr "Баримтын төрөл өөр байж болохгүй!"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Баталсан"
+msgstr "Баталсан"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Бодит үлдэгдэл:"
+msgstr "Бодит үлдэгдэл:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Борлуулагчийн ТТД:"
+msgstr "Борлуулагчийн ТТД:"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "Борлуулалтын баг:"
+msgstr "Борлуулалтын баг:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Борлуулалтын төрөл"
+msgstr "Борлуулалтын төрөл"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:stock.report_picking
+msgid "Бохир жин:"
+msgstr "Бохир жин:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Бүгд дүн"
+msgstr "Бүгд дүн"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "Бүртгэсэн тоо"
+msgstr "Бүртгэсэн тоо"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "Бүртгэх тоо"
+msgstr "Бүртгэх тоо"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Бүсийн нэр:"
+msgstr "Бүсийн нэр:"
+
+#. module: l10n_mn_stock
+#: model:stock.location,name:l10n_mn_stock.stock_location_consumable
+msgid "Гологдол"
+msgstr "Гологдол"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "ДДТД:"
+msgstr "ДДТД:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Дотоод код :"
+msgstr "Дотоод код :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Дугаар"
+msgstr "Дугаар"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Дугаар :"
+msgstr "Дугаар :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Дугаар:"
+msgstr "Дугаар:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+msgid "Дутагдал"
+msgstr "Дутагдал"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:stock.report_picking
+msgid "Дуусах хугацаа"
+msgstr "Дуусах хугацаа"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Дуусах хугацаа :"
+msgstr "Дуусах хугацаа :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Дээд нөөц :"
+msgstr "Дээд нөөц :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:stock.report_picking
+msgid "Задгай"
+msgstr "Задгай"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Зарлага"
+msgstr "Зарлага"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Зээлээр үлдээсэн"
+msgstr "Зээлээр үлдээсэн"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Зөрүү:"
+msgstr "Зөрүү:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+msgid "Илүүдэл"
+msgstr "Илүүдэл"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Ирсэн огноо :"
+msgstr "Ирсэн огноо :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Ирэх огноо:"
+msgstr "Ирэх огноо:"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/product_profit_report.py:291
+#, python-format
+msgid "Маркетингийн зардлын шинжилгээний данснуудыг сонгоно уу!"
+msgstr "Маркетингийн зардлын шинжилгээний данснуудыг сонгоно уу!"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Маршрут /хаяг/"
+msgstr "Маршрут /хаяг/"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Маягт БМ-1"
+msgstr "Маягт БМ-1"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Маягт БМ-5-1"
+msgstr "Маягт БМ-5-1"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Маягт БМ-5-2"
+msgstr "Маягт БМ-5-2"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Маягт БМ-5-3"
+msgstr "Маягт БМ-5-3"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Маягт БМ-8-1"
+msgstr "Маягт БМ-8-1"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "НИЙТ ДҮН"
+msgstr "НИЙТ ДҮН"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "НИЙТ Хэмжигдэхүүн"
+msgstr "НИЙТ Хэмжигдэхүүн"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "НИЙТ Хэмжигдэхүүн:"
+msgstr "НИЙТ Хэмжигдэхүүн:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "НХМаягт БМ-3"
+msgstr "НХМаягт БМ-3"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Нийлүүлэгч"
+msgstr "Нийлүүлэгч"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Нийлүүлэгч:"
+msgstr "Нийлүүлэгч:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Нийт Дүн:"
+msgstr "Нийт Дүн:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Нийт НӨАТ-гүй дүн:"
+msgstr "Нийт НӨАТ-гүй дүн:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Нийт НӨАТ:"
+msgstr "Нийт НӨАТ:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Нийт Төлөх Дүн:"
+msgstr "Нийт Төлөх Дүн:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Нийт Хөнгөлөлтийн Дүн:"
+msgstr "Нийт Хөнгөлөлтийн Дүн:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Нийт дүн"
+msgstr "Нийт дүн"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Нийт дүн (үсгээр):"
+msgstr "Нийт дүн (үсгээр):"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Нийт дүн /төгрөгөөр/"
+msgstr "Нийт дүн /төгрөгөөр/"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Нийт дүн:"
+msgstr "Нийт дүн:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Ноорог"
+msgstr "Ноорог"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/report/report_picking_all.py:68
+#: code:addons/l10n_mn_stock/report/report_picking_all.py:349
+#, python-format
+msgid "Ноорог болон Цуцалсан баримтыг хэвлэх боломжгүй!"
+msgstr "Ноорог болон Цуцалсан баримтыг хэвлэх боломжгүй!"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Нэгж үнэ"
+msgstr "Нэгж үнэ"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Нэгж өртөг"
+msgstr "Нэгж өртөг"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Нягтлан бодогч :"
+msgstr "Нягтлан бодогч :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_cost
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Огноо"
+msgstr "Огноо"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Огноо :"
+msgstr "Огноо :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Огноо:"
+msgstr "Огноо:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Орлого"
+msgstr "Орлого"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Орлого, Зарлагын дүн"
+msgstr "Орлого, Зарлагын дүн"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Падааны дугаар"
+msgstr "Падааны дугаар"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Падааны дүн"
+msgstr "Падааны дүн"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Салбар нэгж"
+msgstr "Салбар нэгж"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Салбар нэгж :"
+msgstr "Салбар нэгж :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Салбар нэгж:"
+msgstr "Салбар нэгж:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Салбар, нэгжийн нэр :"
+msgstr "Салбар, нэгжийн нэр :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Санхүү эдийн засгийн сайд,"
+msgstr "Санхүү эдийн засгийн сайд,"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+#: view:website:stock.report_picking
+msgid "Серийн дугаар"
+msgstr "Серийн дугаар"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Серийн дугаар :"
+msgstr "Серийн дугаар :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Сугалааны дугаар :"
+msgstr "Сугалааны дугаар :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_inventory_inherit
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Тоо хэмжээ"
+msgstr "Тоо хэмжээ"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Тооллогын огноо :"
+msgstr "Тооллогын огноо :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Тоолсон"
+msgstr "Тоолсон"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Тэмдэг"
+msgstr "Тэмдэг"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Тээврийн хэрэгсэл:"
+msgstr "Тээврийн хэрэгсэл:"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "Түгээгч х/а тоо"
+msgstr "Түгээгч х/а тоо"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:stock.report_picking
+msgid "Түгээгч:"
+msgstr "Түгээгч:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Түгээгчийн нэр:"
+msgstr "Түгээгчийн нэр:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Төлбөрийн нөхцөл :"
+msgstr "Төлбөрийн нөхцөл :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Төлөв :"
+msgstr "Төлөв :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Төлөх дүн"
+msgstr "Төлөх дүн"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Төрөл"
+msgstr "Төрөл"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:stock.report_picking
+msgid "Хайрцаг"
+msgstr "Хайрцаг"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_cost
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Харилцагч"
+msgstr "Харилцагч"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Харилцагчийн нэр, код"
+msgstr "Харилцагчийн нэр, код"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Хаяг:"
+msgstr "Хаяг:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Худалдааны төлөөлөгч :"
+msgstr "Худалдааны төлөөлөгч :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Худалдан авагчийн ТТД:"
+msgstr "Худалдан авагчийн ТТД:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Худалдан авагчийн нэр:"
+msgstr "Худалдан авагчийн нэр:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Хэвлэсэн огноо :"
+msgstr "Хэвлэсэн огноо :"
+
+#. module: l10n_mn_stock
+#: view:website:stock.report_picking
+msgid "Хэвлэсэн огноо:"
+msgstr "Хэвлэсэн огноо:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Хяналтаар :"
+msgstr "Хяналтаар :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+msgid "Хяналтын дүн :"
+msgstr "Хяналтын дүн :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Хяналтын талаарх дүгнэлт, шийдвэр:"
+msgstr "Хяналтын талаарх дүгнэлт, шийдвэр:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Хяналтын хугацаа :"
+msgstr "Хяналтын хугацаа :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Хянасан эрх бүхий албан тушаалтан:"
+msgstr "Хянасан эрх бүхий албан тушаалтан:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Хүлээлгэн өгсөн:"
+msgstr "Хүлээлгэн өгсөн:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Хүлээлгэн өгсөн: .............................................."
+msgstr "Хүлээлгэн өгсөн: .............................................."
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Хүлээн аваагүй бараа"
+msgstr "Хүлээн аваагүй бараа"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Хүлээн авсан эд хариуцагч:"
+msgstr "Хүлээн авсан эд хариуцагч:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Хүлээн авсан: .............................................."
+msgstr "Хүлээн авсан: .............................................."
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Хүргэсэн огноо :"
+msgstr "Хүргэсэн огноо :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Хүргэх огноо :"
+msgstr "Хүргэх огноо :"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Хөн.(%)"
+msgstr "Хөн.(%)"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Цуцалсан"
+msgstr "Цуцалсан"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:stock.report_picking
+msgid "Цэвэр жин:"
+msgstr "Цэвэр жин:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Шалгасан нягтлан : ...................................................................../"
+msgstr "Шалгасан нягтлан : ...................................................................../"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Шалгасан нягтлан бодогч"
+msgstr "Шалгасан нягтлан бодогч"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Шалгасан нягтлан бодогч:"
+msgstr "Шалгасан нягтлан бодогч:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_inventory_inherit
+msgid "Эд хариуцагч : ........................................................................./"
+msgstr "Эд хариуцагч : ........................................................................./"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Эд хариуцагч:"
+msgstr "Эд хариуцагч:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Эд хариуцагчийн тайлбар:"
+msgstr "Эд хариуцагчийн тайлбар:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+#: view:website:stock.report_picking
+msgid "Эзлэхүүн:"
+msgstr "Эзлэхүүн:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_cost
+msgid "Эх баримт"
+msgstr "Эх баримт"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Эх баримт:"
+msgstr "Эх баримт:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Эхний үлдэгдэл"
+msgstr "Эхний үлдэгдэл"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "ажилтай"
+msgstr "ажилтай"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "байлцсан гарын үсэг:"
+msgstr "байлцсан гарын үсэг:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "гарын үсэг:"
+msgstr "гарын үсэг:"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "даргын 2002 оны 6-р сарын 18-ний"
+msgstr "даргын 2002 оны 6-р сарын 18-ний"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "хүртэл"
+msgstr "хүртэл"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Үлдэгдэл"
+msgstr "Үлдэгдэл"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Үлдэгдэл тоо хэмжээ"
+msgstr "Үлдэгдэл тоо хэмжээ"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_picking_all
+msgid "Үндэсний статискийн газрын"
+msgstr "Үндэсний статискийн газрын"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_product_move_check
+msgid "Үнэ өөрчлөлт"
+msgstr "Үнэ өөрчлөлт"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.report_driver_picking
+msgid "Өгсөн эсэх (Чеклэх)"
+msgstr "Өгсөн эсэх (Чеклэх)"
+
+#. module: l10n_mn_stock
+#: view:website:l10n_mn_stock.print_stock_inventory
+msgid "Өртөг"
+msgstr "Өртөг"
+
+#. module: l10n_mn_stock
+#: code:addons/l10n_mn_stock/wizard/product_profit_report.py:235
+#, python-format
+msgid "Өртөгийн зөрүүг хувиарлах барааны ангилалыг сонгоно уу!"
+msgstr "Өртөгийн зөрүүг хувиарлах барааны ангилалыг сонгоно уу!"
+
+#. module: l10n_mn_stock
+#: field:stock.warehouse,show_discount:0
+msgid "Report Discounts"
+msgstr "Тайланд хөнгөлөлт харуулах"
+
+#. module: l10n_mn_stock
+#: field:stock.warehouse,show_default:0
+msgid "Default Warehouse"
+msgstr "Үндсэн Агуулах"
+
+#. module: l10n_mn_stock
+#: field:print.stock.inventory,is_groupby_category:0
+msgid "Is Group by Category"
+msgstr "Ангиллаар бүлэглэх"
+
+#. module: l10n_mn_stock
+#: field:stock.warehouse,product_categ_line_ids:0
+msgid "Product Category Line"
+msgstr "Барааны ангилалын мөр"
+
+#. module: l10n_mn_stock
+#: view:stock.warehouse:l10n_mn_stock.view_warehouse_inherit_l10n_mn_stock
+#: field:stock.warehouse.product.category.line,product_category_id:0
+msgid "Product Categories"
+msgstr "Барааны ангилал"
+
+#. module: l10n_mn_stock
+#: field:stock.consume.order,all_total:0
+msgid "All Total"
+msgstr "Нийт дүн"
+
+

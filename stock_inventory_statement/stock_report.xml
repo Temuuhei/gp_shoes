@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <report 
+            string="Print Order by Cost" 
+            id="action_report_picking_order_cost" 
+            model="stock.picking" 
+            report_type="qweb-pdf"
+            groups="l10n_mn_account.account_view_cost"
+            name="l10n_mn_stock.report_picking_cost" 
+            file="l10n_mn_stock.report_picking_cost" 
+        />
+            
+        <report
+            string="Picking Report"
+            id="action_report_picking_all"
+            model="stock.picking"
+            report_type="qweb-pdf"
+            name="l10n_mn_stock.report_picking_all"
+            file="l10n_mn_stock.report_picking_all"
+        />
+        
+        <report 
+            string="Product Move Report" 
+            id="action_report_product_move_check" 
+            model="report.product.move.check" 
+            report_type="qweb-pdf"
+            name="l10n_mn_stock.report_product_move_check" 
+            file="l10n_mn_stock.report_product_move_check" 
+        />
+        
+        <report 
+            string="Driver Picking Report" 
+            id="action_report_driver_picking" 
+            model="stock.delivery.sheet" 
+            report_type="qweb-pdf"
+            name="l10n_mn_stock.report_driver_picking" 
+            file="l10n_mn_stock.report_driver_picking" 
+        />
+        
+        <report 
+            string="Picking" 
+            id="stock.action_report_picking" 
+            model="stock.picking" 
+            report_type="qweb-pdf"
+            name="l10n_mn_stock.report_stockpicking" 
+            file="l10n_mn_stock.report_stockpicking" 
+        />
+        
+        <report 
+            string="Print Inventory" 
+            id="print_stock_inventory_page" 
+            model="stock.inventory" 
+            report_type="qweb-pdf"
+            menu="False"
+            multi="False"
+            name="l10n_mn_stock.print_stock_inventory" 
+            file="l10n_mn_stock.print_stock_inventory"
+        />
+
+        <report 
+            string="Inventory"
+            id="print_report_inventory_inherit_stock" 
+            model="stock.inventory" 
+            report_type="qweb-pdf"          
+            name="l10n_mn_stock.report_inventory_inherit" 
+            file="l10n_mn_stock.report_inventory_inherit"
+        />
+
+         <record id="paperformat_expense_income" model="report.paperformat">
+            <field name="name">Print Inventory Inherit</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="print_report_inventory_inherit_stock" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="paperformat_expense_income"/>
+        </record>
+        
+        <record id="stock.next_id_61" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6,0,[ref('stock.group_stock_user')])]"/>
+        </record>
+        
+    </data>
+</openerp>

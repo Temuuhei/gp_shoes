@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record id="view_tool_data_merge_form" model="ir.ui.view">
+            <field name="name">view.tool.data.merge.form</field>
+            <field name="model">tool.data.merge</field>
+            <field name="arch" type="xml">
+                <form string="Data Merge Tool">
+                    <group>
+                        <group>
+                            <field name="merge_model_id"/>
+                        </group>
+                        <group>
+                            <field name="merge_resource_from"/>
+                            <field name="merge_resource_to"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="domerge" string="Merge" colspan="1" type="object"
+                            class="oe_highlight"/>
+                        <button class="oe_link" special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_tool_data_merge" model="ir.actions.act_window">
+            <field name="name">Data Merge Tool</field>
+            <field name="res_model">tool.data.merge</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_tool_data_merge_form"/>
+            <field name="target">new</field>
+        </record>
+        <menuitem action="action_tool_data_merge" id="menu_action_tool_data_merge"
+              parent="base.menu_board_root" sequence="21"/>
+        
+    </data>
+</openerp>

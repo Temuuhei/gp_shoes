@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="l10n_mn_stock.report_inventory_inherit">
+    <t t-foreach="docs" t-as="o">
+        <t t-call="report.layout">
+            <div class="page l10n_mn_base_report">
+	            <table class="table-l10n_mn-header">
+	                <tr><td align="left"><span><b>Маягт БМ-8-1</b></span></td>
+	                    <td align="right"><span>Байгууллагын нэр:</span> <b t-field="o.company_id.name"/></td>
+	                </tr>
+	            </table>
+                <h2>Бараа материалын тооллогын баримт</h2>
+                <table class="table-l10n_mn-header">
+                    <tr>
+                        <td><span>Дугаар : </span><b t-field="o.name"/></td>
+                        <td><span>Салбар нэгж : </span><b t-if="o.warehouse_id" t-field="o.warehouse_id.name"/>
+                             <b t-if="not o.warehouse_id">...............................</b>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span>Тооллогын огноо :</span><b t-if="o.date" t-field="o.date" t-field-options='{"format": "YYYY-MM-dd hh:mm"}'/>
+                             <b t-if="not o.date">....................</b>
+                        </td>
+                        <td><span>Хэвлэсэн огноо :</span><b t-esc="time.strftime('%Y-%m-%d %H:%M')"></b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><span>Төлөв :</span><b t-if="o.state == 'draft'">Ноорог</b><b t-if="o.state == 'cancel'">Цуцалсан</b>
+                        <b t-if="o.state == 'confirm'">Тоолсон</b><b t-if="o.state == 'done'">Баталсан</b></td>
+                    </tr>
+                </table>
+                <br/>
+                <t t-set="count" t-value="1"/>
+                <table class="table-l10n_mn-grid">
+                    <tr>
+                        <th >Д/д</th>
+                        <th >Байрлал</th>
+                        <th >Бараа материалын нэр</th>
+                        <th >Серийн дугаар</th>                        
+                        <th >Баглаа</th>
+                        <th >Тоо хэмжээ</th>
+                        <th >Тоолсон</th>                        
+                    </tr>
+                    <t t-set="sum_qty" t-value="0"/>              
+                    <t t-set="number" t-value="1"/>              
+                    <tbody t-foreach="o.line_ids" t-as="line">
+                        <tr>
+                          <t t-if="line.product_qty != 0.0">
+                            <td><span t-esc="number"/></td>
+                            <td><span t-field="line.location_id"/></td>
+                            <td><span t-field="line.product_id"/></td>
+                            <td><span t-field="line.prod_lot_id"/></td>
+                            <td><span t-field="line.package_id"/></td>
+                            <td><span t-field="line.product_qty"/></td>                            
+                            <td></td>
+                            <t t-set="sum_qty" t-value="sum_qty + line.product_qty"/>
+                            <t t-set="number" t-value="number + 1"/>
+                          </t>
+                     </tr>
+                    </tbody>
+                    <tr>
+                      <td colspan="5" style="text-align : center;"><b>НИЙТ</b></td>
+                      <td><t t-esc="sum_qty"/></td>
+                      <td></td>
+                    </tr>                    
+                  </table>
+                  <table class="table-l10n_mn-header">
+                      <tr>
+                          <td width="15%">Эд хариуцагч : ........................................................................./<font color="white">-----------------------------</font>/</td>
+                      </tr>
+                      <br/><br/><br/>
+                      <tr>
+                          <td width="15%">Шалгасан нягтлан : ...................................................................../<font color="white">-----------------------------</font>/</td>
+                      </tr>
+                  </table>
+            </div>
+        </t>
+     </t>
+</template>
+</data>
+</openerp>

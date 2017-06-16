@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_unmerge_lots" model="ir.ui.view">
+            <field name="name">Merge Lots</field>
+            <field name="model">stock.unmerge.lots</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form String="Split Lots">
+                    <group width="800" height="430">
+                        <label colspan="2" string=""/>
+                        <field name="warehouse_id" widget="selection" readonly="1"/>
+                        <field name="product_id" colspan="4" readonly="1"/>
+                        <field name="product_uom" colspan="2" readonly="1"/>
+                        <field name="prod_lot" colspan="2" readonly="1"/>
+                        <field name="choice" colspan="2" context="{'product_id': product_id,'prodlot_id':prod_lot}"/>
+                        <field name="line_ids" colspan="4" nolabel="1" height="220">
+                            <tree string="Production Lot Numbers">
+                                <field name="existing_name" string="Lots"/>
+                                <field name="quantity" />
+                            </tree>
+                            <form string="Production Lot Number">
+                                <field name="existing_name" string="Lots" 
+                                    on_change="onchange_existing_name(existing_name)" domain="[('product_id','=',parent.product_id)]"/>
+                                <field name="quantity" />
+                            </form>
+                        </field>
+                        <separator colspan="4"/>
+                        <group col="4" colspan="4">
+                            <button icon='gtk-cancel' special="cancel" string="Close" colspan="1"/>
+                            <label colspan="2" string=""/>
+                            <button name="split_lot" string="Switch" colspan="1" type="object" icon="gtk-ok"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="act_unmerge_lots" model="ir.actions.act_window">
+            <field name="name">Split</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.unmerge.lots</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_unmerge_lots"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

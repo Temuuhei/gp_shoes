@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_change_standard_price_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">change.standard.price.inherit.l10n_mn_stock</field>
+            <field name="model">stock.change.standard.price</field>
+            <field name="inherit_id" ref="stock_account.view_change_standard_price"/>
+            <field name="arch" type="xml">
+<!--                <xpath expr='//group' position="inside">-->
+<!--                    <field name="warehouse_id" attrs="{'invisible':[('warehouse_required','=',False)],'required':[('warehouse_required','=',True)]}"-->
+<!--                        on_change="onchange_warehouse(warehouse_id, new_price)"/>-->
+<!--                    <field name="warehouse_required" invisible="1"/>-->
+<!--                    <field name="old_price" readonly="1"/>-->
+<!--                    <field name="qty_available" readonly="1"/>-->
+<!--                    <field name="total_diff" readonly="1"/>-->
+<!--                    <field name="journal_id" attrs="{'invisible':[('total_diff','=',0)],'required':[('total_diff','&lt;&gt;',0)]}"-->
+<!--                        domain="[('type','=','general')]"/>-->
+<!--                    <field name="inventory_location_id" attrs="{'invisible':[('total_diff','=',0)],'required':[('total_diff','&lt;&gt;',0)]}"-->
+<!--                        domain="[('usage','=','inventory')]"/>-->
+<!--                </xpath>-->
+
+                <xpath expr='//group' position="inside">
+                    <field name="warehouse_required" invisible="1"/>
+                    <field name="warehouse_id" 
+                        on_change="onchange_warehouse(warehouse_id, new_price)" attrs="{'invisible':[('warehouse_required','=',False)]}"/>
+                    <field name="old_price" readonly="1"/>
+                    <field name="qty_available" readonly="1"/>
+                    <field name="total_diff" readonly="1"/>
+                    <field name="journal_id" 
+                        domain="[('type','=','general')]" attrs="{'invisible':[('warehouse_required','=',False)]}"/>
+                    <field name="inventory_location_id"
+                        domain="[('usage','=','inventory')]" attrs="{'invisible':[('warehouse_required','=',False)]}"/>
+                </xpath>
+
+	            <xpath expr='//field[@name="new_price"]' position="attributes">
+                    <attribute name="on_change">onchange_new_price(new_price, old_price, qty_available)</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>
+

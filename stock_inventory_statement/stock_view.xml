@@ -1,0 +1,1076 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+    <!-- Stock Return Type menu -->
+        
+        <record id="stock_return_type_form_view" model="ir.ui.view">
+            <field name="name">stock.return.type.form</field>
+            <field name="model">stock.return.type</field>
+            <field name="arch" type="xml">
+                <form string="Stock Return Type">
+                    <group>
+                        <group>
+        					<field name="name"/>
+        				</group>
+        				<separator string="Description" colspan="4"/>   
+        				<field name="description" colspan="4" nolabel="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+       <record id="stock_return_type_tree_view" model="ir.ui.view">
+            <field name="name">stock.return.type.tree</field>
+            <field name="model">stock.return.type</field>
+            <field name="arch" type="xml">
+                <tree string="Stock Return Type">
+        			<field name="name"/>
+        			<field name="description"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_stock_return_type" model="ir.actions.act_window">
+            <field name="name">Stock Return Type</field>
+            <field name="res_model">stock.return.type</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record> 
+    	
+    	<menuitem id="menu_stock_configuration_stock_return_type" name="Stock Return Type" action = "action_stock_return_type"
+            parent="stock.menu_stock_configuration" sequence="3" groups="stock.group_stock_manager"/>
+    
+    	<record id="view_picking_internal_search_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">stock.picking.internal.search.inherit.l10n.mn.stock</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+                <xpath expr='//search/field[@name="picking_type_id"]' position="after">
+                    <field name="section_id"/>
+                </xpath>
+                <xpath expr='//search/group/filter[@string="Procurement Group"]' position="after">
+                    <filter string="Stock Return Type" domain="[]" context="{'group_by':'stock_return_type_id'}"/>
+                    <filter string="Sales Team" domain="[]" context="{'group_by':'section_id'}"/>
+                </xpath>
+            </field>
+        </record>
+	
+        <record id="view_warehouse_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">stock.warehouse.inherit.l10n_mn_stock</field>
+            <field name="model">stock.warehouse</field>
+            <field name="inherit_id" ref="stock.view_warehouse"/>
+            <field name="arch" type="xml">
+                <xpath expr='//form/sheet/group/notebook/page[@string="Warehouse Configuration"]/group' position="inside">
+                    <field name="property_replenishment_user"/>
+                    <field name="show_discount"/>
+<!--                    <field name="show_default"/-->
+                </xpath>
+                <xpath expr='//sheet/div[@class="oe_right oe_button_box"]' position="inside">
+                    <button name="check_consume_routes" 
+                                string="Check Consume Routes" icon="fa-refresh"
+                                class="oe_stat_button" type="object"/> 
+                </xpath>
+            </field>
+        </record>
+		
+        <record id="view_stock_transit_order_form" model="ir.ui.view">
+            <field name="name">view.stock.transit.order.form</field>
+            <field name="model">stock.transit.order</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Replenishment Order" version="7.0">
+                    <header>
+                        <button name="action_cancel" states="confirmed,draft,shipped,receive_except" string="Cancel" type="object"/>
+                        <button name="action_cancel_draft" states="cancelled" string="Set to Draft" type="object"/>
+                        <button name="action_confirm" states="draft" string="Confirm" icon="gtk-go-forward"/>
+                        <button name="action_correct" states="receive_except" string="Receive Correct" icon="gtk-yes"/> 
+                        <button name="button_reassign_receipt" states="receive_except" string="Reopen Receive" icon="gtk-convert" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,shipped,done" statusbar_colors='{"receive_except":"red"}'/>
+                    </header>
+                    <sheet>
+                        <div class="oe_right oe_button_box" name="buttons">
+	                        <button type="object"
+	                            name="view_out_picking"
+	                            class="oe_stat_button"
+	                            icon="fa-truck"
+	                            attrs="{'invisible': [('shipment_count', '=', 0)]}">
+	                            <field name="shipment_count" widget="statinfo" string="Out Shipments" help="Outgoing Shipments from Supply Warehouse"/>
+	                        </button>
+	                        <button type="object" 
+	                            name="view_in_picking"
+	                            class="oe_stat_button"
+	                            icon="fa-truck"
+	                            attrs="{'invisible': [('receipt_count', '=', 0)]}">
+	                            <field name="receipt_count" widget="statinfo" string="In Shipments" help="Incoming Shipments to Receive Warehouse"/>
+	                        </button> 
+	                    </div>
+                        <div class="oe_title">
+                            <h1>
+                                <label string="Replenishment Draft " attrs="{'invisible':[('state','&lt;&gt;','draft')]}"/>
+                                <label string="Replenishment Order " attrs="{'invisible':[('state','=','draft')]}"/>
+                                <field name="name" class="oe_inline" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="warehouse_id" />
+                                <field name="user_id"/>
+                                <field name="company_id" widget="selection"/>
+                            </group>
+                            <group>
+                                <field name="supply_warehouse_id" attrs="{'readonly':[('state','&lt;&gt;','draft')]}"/>
+                                <field name="date_order"/>
+                            </group>
+                        </group>
+                        <div class="oe_right oe_button_box">
+	                        <button name="%(action_stock_fill_easy)d" string="Fill Procurement" states="draft" type="action" context="{'warehouse_id':supply_warehouse_id}"/>
+	                    </div>
+                        <notebook>
+                            <page string="Order Lines">
+                                <field name="order_line" context="{'warehouse_id':warehouse_id}">
+                                    <tree string="Replenishment Lines" editable="top">
+                                        <field name="product_id" on_change="onchange_product_id(product_id, product_qty, product_uom, parent.supply_warehouse_id, False, context)"/>
+                                        <field name="name"/>
+                                        <field name="product_uom_category" invisible="1"/>
+                                        <field name="product_qty" sum="Total" on_change="onchange_product_qty(product_id, product_qty, product_uom, parent.supply_warehouse_id, False, context)"/>
+                                        <field name="product_uom" string="UOM" on_change="onchange_product_qty(product_id, product_qty, product_uom, parent.supply_warehouse_id, False, context)" domain="[('category_id','=',product_uom_category)]"/>
+                                        <field name="availability" groups="l10n_mn_stock.stock_view_availability_qty" nolabel="1"/>
+<!--                                        <field name="price_unit" />-->
+<!--                                        <field name="sub_total"/>-->
+                                        <field name="price_unit" groups="l10n_mn_account.account_view_cost" nolabel="1"/>
+                                        <field name="sub_total" groups="l10n_mn_account.account_view_cost" nolabel="1"/>
+                                        <field name="state" invisible="1"/>
+                                    </tree>
+                                    <form string="Replenishment Lines">
+                                        <group>
+                                            <group>
+                                                <field name="product_id" colspan="4"/>
+                                                <field name="name"/>
+                                                <field name="product_qty" sum="Total" on_change="onchange_product_qty(product_qty, product_id, product_uom, parent.supply_warehouse_id, False, context)"/>
+                                                <field name="availability"/>
+                                                <field name="product_uom_category" invisible="1"/>
+                                                <field name="product_uom" on_change="onchange_product_qty(product_qty, product_id, product_uom, parent.supply_warehouse_id, False, context)" domain="[('category_id','=',product_uom_category)]"/>
+                                                <field name="state" invisible="1"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                                <div class="oe_clear"/>
+                            </page>
+                            <page string="Picking List">
+                                <field name="picking_ids" nolabel="1" colspan="4" widget="many2many"/>
+                            </page>
+                        </notebook>
+                        <field name="note" class="oe_inline" placeholder="Notes"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_stock_transit_order_tree" model="ir.ui.view">
+            <field name="name">stock.transit.order.tree</field>
+            <field name="model">stock.transit.order</field>
+            <field name="arch" type="xml">
+                <tree string="Replenishment Order" colors="red:state=='draft';blue:state=='confirmed'">
+                    <field name="name"/>
+                    <field name="warehouse_id"/>
+                    <field name="supply_warehouse_id"/>
+                    <field name="date_order"/>
+                    <field name="state"/>
+                    <field name="user_id"/>
+                    <field name="company_id" groups = "base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_stock_transit_order_search" model="ir.ui.view">
+            <field name="name">stock.transit.order.search</field>
+            <field name="model">stock.transit.order</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Replenishment Order">
+                    <group col='10' colspan='4' string="Filters">
+                       <filter icon="terp-document-new" string="Draft" domain="[('state','=','draft')]" name="draft"/>
+                       <filter icon="terp-camera_test" name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]" separator="1"/>
+                       <separator orientation="vertical"/>
+                       <field name="name"/>
+                       <field name="warehouse_id" string="Warehouse"/>
+                       <field name="date_order" widget="date"/>
+                       <newline/>
+                       <field name="state"/>
+                       <field name="user_id">
+                           <filter domain="[('user_id','=',uid)]" help="My Created Orders" icon="terp-personal" name="my_orders"/>
+                       </field>
+                    </group>
+                    <newline/>
+                    <group expand="0" string="Group By..." colspan="4" col="8" groups="base.group_user">
+                        <filter string="Warehouse" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'warehouse_id'}"/>
+                        <filter string="State" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <record id="view_stock_transit_order_calendar" model="ir.ui.view">
+            <field name="name">stock.transit.order.calendar</field>
+            <field name="model">stock.transit.order</field>
+            <field name="type">calendar</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Calendar View" date_start="date_order" color="warehouse_id">
+                    <field name="name"/>
+                    <field name="warehouse_id"/>
+                </calendar>
+            </field>
+        </record>
+        
+        <record id="action_stock_transit_order" model="ir.actions.act_window">
+            <field name="name">Replenishment Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.transit.order</field>
+            <field name="view_type">form</field>
+            <field name="context">{'search_default_my_orders': 1}</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="search_view_id" ref="view_stock_transit_order_search"/>
+        </record>
+        <menuitem action="action_stock_transit_order" id="menu_action_stock_transit_order"
+            parent="stock.menu_stock_inventory_control" sequence="20"/>
+        
+        
+        <!-- Internal Consume Orders -->
+        <record id="view_stock_consume_order_form" model="ir.ui.view">
+            <field name="name">view.stock.consume.order.form</field>
+            <field name="model">stock.consume.order</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Consume Order" version="7.0">
+                    <header>
+                        <button name="action_cancel" states="confirmed,draft,picking_except" string="Cancel" type="object"/>
+                        <button name="action_cancel_draft" states="cancelled" string="Set to Draft" type="object"/>
+                        <button name="action_confirm" states="draft" string="Confirm" icon="gtk-go-forward"/>
+                        <button name="action_picking_correct" states="picking_except" string="Consume Correct" icon="gtk-yes"/>
+                        <button name="button_reassign_picking" states="picking_except" string="Reopen Consume" icon="gtk-convert" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done" statusbar_colors='{"picking_except":"red"}'/>
+                    </header>
+                    <sheet>
+                        <div class="oe_right oe_button_box" name="buttons">
+	                        <button type="object"
+	                            name="view_out_picking"
+	                            class="oe_stat_button"
+	                            icon="fa-truck"
+	                            attrs="{'invisible': [('shipment_count', '=', 0)]}">
+	                            <field name="shipment_count" widget="statinfo" string="Out Shipments" help="Outgoing Shipments for internal consume"/>
+	                        </button>
+	                    </div>
+                        <div class="oe_title">
+                            <h1>
+                                <label string="Consume Draft " attrs="{'invisible':[('state','&lt;&gt;','draft')]}"/>
+                                <label string="Consume Order " attrs="{'invisible':[('state','=','draft')]}"/>
+                                <field name="name" class="oe_inline" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="warehouse_id"/>
+                                <field name="user_id"/>
+                                <field name="company_id" widget="selection"/>
+                                <field name="consume_location_id" domain="[('usage','=','consume')]"/>
+                            </group>
+                            <group>
+                                <field name="date_order"/>
+                                <field name="partner_id"/>
+                                <field name="expense_account_id"  domain="[('type','not in',('view','consolidation'))]" on_change="onchange_expense_account(expense_account_id,analytic_account_id,context)"/>
+                                <field name="analytic_account_id" attrs="{'required':[('analytic_required','=',True)]}"
+                                			domain="[('type','=','normal'),('state','in',('draft','open','pending'))]" on_change="onchange_expense_account(expense_account_id,analytic_account_id,context)"/>
+								<field name="analytic_required" invisible="1"/>                                
+                            </group>
+                        </group>
+                        <div class="oe_right oe_button_box">
+                            <button name="%(action_stock_fill_easy)d" string="Fill Procurement" states="draft" type="action" context="{'warehouse_id':warehouse_id}"/>
+                        </div>
+                        <notebook>
+                            <page string="Order Lines">
+                                <field name="order_line" context="{'warehouse_id':warehouse_id,'expense_account_id': expense_account_id,'analytic_account_id':analytic_account_id}" >
+                                    <tree string="Consume Lines" editable="top">
+                                        <field name="product_id" on_change="onchange_product_id(product_id, product_qty, product_uom, parent.warehouse_id, False, context)"/>
+                                        <field name="name"/>
+                                        <field name="product_uom_category" invisible="1"/>
+                                        <field name="product_qty" on_change="onchange_product_qty(product_id, product_qty, product_uom, parent.warehouse_id, False, context)" sum="Total Qty"/>
+                                        <field name="product_uom" string="UOM" on_change="onchange_product_qty(product_id, product_qty, product_uom, parent.warehouse_id, False, context)" domain="[('category_id','=',product_uom_category)]"/>
+			                            <field name="expense_account_id" domain="[('type','not in',('view','consolidation'))]" on_change="onchange_expense_account(expense_account_id)" required="1"/>
+			                            <field name="analytic_account_id" attrs="{'required':[('analytic_required','=',True)]}"
+                                						domain="[('type','=','normal'),('state','in',('draft','open','pending'))]" />
+                                        <field name="availability"/>
+                                        <field name="price_unit"/>
+                                        <field name="sub_total" sum="Total"/>
+                                        <field name="state" invisible="1"/>
+										<field name="analytic_required" invisible="1"/>                                        
+                                    </tree>
+                                    <form string="Consume Lines">
+                                        <group>
+                                            <group>
+                                                <field name="product_id" colspan="4"/>
+                                                <field name="name"/>
+                                                <field name="product_qty" on_change="onchange_product_qty(product_qty, product_id, product_uom, parent.warehouse_id, False, context)"/>
+                                                <field name="availability"/>
+        			                            <field name="expense_account_id" domain="[('type','not in',('view','consolidation'))]" on_change="onchange_expense_account(expense_account_id)" required="1"/>
+			                            		<field name="analytic_account_id" attrs="{'required':[('analytic_required','=',True)]}"
+                                						domain="[('type','=','normal'),('state','in',('draft','open','pending'))]"/>
+                                                <field name="product_uom_category" invisible="1"/>
+                                                <field name="product_uom" on_change="onchange_product_qty(product_qty, product_id, product_uom, parent.warehouse_id, False, context)" domain="[('category_id','=',product_uom_category)]"/>
+                                                <field name="state" invisible="1"/>
+												<field name="analytic_required" invisible="1"/>                                                
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                                <div class="oe_clear"/>
+                                
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="total">
+		           				<field name="all_total" />
+	           					</group>
+                                
+                                <field name="note" class="oe_inline" placeholder="Notes"/>
+                            </page>
+                            <page string="Picking List">
+                                <field name="picking_ids" nolabel="1" colspan="4" widget="many2many"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_stock_consume_order_tree" model="ir.ui.view">
+            <field name="name">stock.consume.order.tree</field>
+            <field name="model">stock.consume.order</field>
+            <field name="arch" type="xml">
+                <tree string="Consume Order" colors="red:state=='draft';blue:state=='confirmed'">
+                    <field name="name"/>
+                    <field name="warehouse_id"/>
+                    <field name="date_order"/>
+                    <field name="state"/>
+                    <field name="user_id"/>
+                    <field name="partner_id"/>
+                    <field name="all_total"/>
+                    <field name="company_id" groups = "base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_stock_consume_order_search" model="ir.ui.view">
+            <field name="name">stock.consume.order.search</field>
+            <field name="model">stock.consume.order</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Consume Order">
+                    <group col='10' colspan='4' string="Filters">
+                       <filter icon="terp-document-new" string="Draft" domain="[('state','=','draft')]" name="draft"/>
+                       <filter icon="terp-camera_test" name="confirmed" string="Confirmed" domain="[('state','=','confirmed')]" separator="1"/>
+                       <filter icon="terp-camera_test" name="done" string="Done" domain="[('state','=','done')]" separator="1"/>
+                       <separator orientation="vertical"/>
+                       <field name="name"/>
+                       <field name="warehouse_id" string="Warehouse"/>
+                       <field name="date_order" widget="date"/>
+                       <newline/>
+                       <field name="state"/>
+                       <field name="user_id">
+                           <filter domain="[('user_id','=',uid)]" help="My Created Orders" icon="terp-personal" name="my_orders"/>
+                       </field>
+                    </group>
+                    <newline/>
+                    <group expand="0" string="Group By..." colspan="4" col="8" groups="base.group_user">
+                        <filter string="Warehouse" icon="terp-accessories-archiver" domain="[]" context="{'group_by':'warehouse_id'}"/>
+                        <filter string="State" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <record id="view_stock_consume_order_calendar" model="ir.ui.view">
+            <field name="name">stock.consume.order.calendar</field>
+            <field name="model">stock.consume.order</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Calendar View" date_start="date_order" color="warehouse_id">
+                    <field name="name"/>
+                    <field name="warehouse_id"/>
+                </calendar>
+            </field>
+        </record>
+        
+        <record id="action_stock_consume_order" model="ir.actions.act_window">
+            <field name="name">Consume Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.consume.order</field>
+            <field name="view_type">form</field>
+            <field name="context">{'search_default_my_orders': 1}</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="search_view_id" ref="view_stock_consume_order_search"/>
+        </record>
+        <menuitem action="action_stock_consume_order" id="menu_action_stock_consume_order"
+            parent="stock.menu_stock_inventory_control" sequence="21"/>
+        
+        <record id="view_picking_form_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">stock.picking.form.inherit.l10n_mn_stock</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr='//button[@name="do_print_picking"]' position="attributes">
+                    <attribute name="attrs">{'invisible':['|', ('picking_type_code', '=', 'incoming'), ('state', '&lt;&gt;', 'assigned')]}</attribute>
+                </xpath>
+                <xpath expr='//button[@name="force_assign"]' position="after">
+                    <button name="reconfirm" states="cancel" string="Re Confirm" type="object" 
+                        group="stock.group_stock_manager,account.group_account"/>
+                </xpath>
+                <xpath expr='//button[@name="do_unreserve"]' position="after">
+                	<button name="stock_print_picking" string="Print Picking" 
+                        states="done" type="object" groups="base.group_user"/>
+                </xpath>
+                <xpath expr='//button[@name="force_assign"]' position="replace">
+                    <button name="force_assign" states="confirmed,waiting,partially_available" string="Force Availability" type="object" groups="l10n_mn_stock.l10n_mn_stock_force_assign"/>
+                </xpath>
+                <xpath expr='//field[@name="priority"]' position="after">
+                    <field name="account_move_id" invisible="1"/>
+                </xpath>
+                <xpath expr='//button[@name="open_barcode_interface"]' position="after">
+                    <button name="show_account_move" groups="account.group_account_user" type="object" 
+                        class="oe_stock_scan_button" attrs="{'invisible':[('account_move_id','=',False)]}">
+                        <img src="/l10n_mn_stock/static/src/img/accounting.png" class="oe_stock_scan_image oe_stock_scan_image_btn"
+                           title="Show Accounting Entry" alt="Show Accounting Entry"/>
+                    </button>
+                    <button type="object"
+                        name="view_purchase"
+                        class="oe_stat_button"
+                        icon="fa-strikethrough"
+                        attrs="{'invisible': [('purchase_id', '=', False)]}">
+                        <field name="purchase_id" widget="statinfo" string="Purchase Order"/>
+                    </button>
+                </xpath>
+                <xpath expr='//field[@name="date"]' position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','&lt;&gt;','draft')]}</attribute>
+                </xpath>
+                <xpath expr='//field[@name="date"]' position="replace"/>
+                <xpath expr='//field[@name="min_date"]' position="after">
+                    <field name="date_done" readonly="1"/>
+                </xpath>
+                <xpath expr='//group[@string="General Informations"]/group/field[@name="date_done"]' position="replace">
+                    <field name="date" attrs="{'readonly':[('state','&lt;&gt;','draft')]}"/>
+                </xpath>
+                <xpath expr='//field[@name="origin"]' position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','&lt;&gt;','draft')]}</attribute>
+                </xpath>
+                <xpath expr='//field[@name="move_type"]' position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','&lt;&gt;','draft')]}</attribute>
+                </xpath>
+                <xpath expr='//field[@name="picking_type_id"]' position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','&lt;&gt;','draft')]}</attribute>
+                </xpath>
+                <xpath expr='//field[@name="date_done"]' position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr='//field[@name="move_lines"]' position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','&lt;&gt;','draft')]}</attribute>
+                </xpath>
+                <!--<xpath expr='//notebook/page[last()]/group' position="inside">
+                    <group>
+                        <field name="vat_bill_id" readonly="1"/>
+                        <field name="vat_bill_type" readonly="1"/>
+                        <field name="vat_register_no" readonly="1"/>
+                    </group>
+                </xpath>-->
+            </field>
+        </record>
+        
+        <record id="view_picking_inherit_form2_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">stock.picking.form.inherit.l10n_mn_stock</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock_account.view_picking_inherit_form2"/>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="invoice_state"]' position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','&lt;&gt;','draft')]}</attribute>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="vpicktree_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">stock.picking.tree.inherit.l10n_mn_stock</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="min_date"]' position="attributes">
+                    <attribute name="invisible"></attribute>
+                </xpath>
+                <xpath expr='//field[@name="date"]' position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr='//field[@name="min_date"]' position="after">
+                    <field name="date_done"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- Stock Inventory Inherit -->
+        <record id="view_inventory_form_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">stock.inventory.form.inherit.l10n_mn_stock</field>
+            <field name="model">stock.inventory</field>
+            <field name="inherit_id" ref="stock.view_inventory_form"/>
+            <field name="arch" type="xml">
+                <xpath expr='//notebook' position="after">
+                    <group>
+                        <group>
+                            <field name="date_done" states="done"/>
+                            <field name="force_date" states="draft,confirm,counted" groups="l10n_mn_stock.can_change_stock_date"/>
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr='//form/sheet/group/group/field[@name="location_id"]' position="replace">
+                    <field name="warehouse_id" on_change="onchange_warehouse(warehouse_id,context)" widget="selection"/>
+					<field name="location_id" domain="[('usage','not in', ['supplier','production'])]"/>
+                </xpath>
+                <xpath expr='//button[@name="action_done"]' position="attributes">
+                    <attribute name="states">counted</attribute>
+                </xpath>
+                <xpath expr='//button[@name="action_cancel_inventory"]' position="attributes">
+                    <attribute name="states">confirm,counted</attribute>
+                </xpath>
+                <xpath expr='//button[@name="action_done"]' position="after">
+                    <button name="action_check" states="confirm" string="Counted" type="object" class="oe_highlight" groups="stock.group_stock_manager"/>
+                    <button name="%(action_stock_inventory_cost)d" type="action" class="oe_highlight" 
+                        string="Set Income Cost" attrs="{'invisible':[('show_cost_button','=',False)]}"/>
+                    <field name="show_cost_button" invisible="1"/>
+                    <button name="%(action_print_inventory_wizard)d" states="confirm,done,counted" 
+                        string="Print Inventory" type="action" groups="stock.group_stock_user"/>
+                </xpath>
+                <xpath expr='//page[@string="Inventory Adjustments"]' position="attributes">
+                    <attribute name="attrs">{'invisible': [('state', 'not in', ('done','counted'))]}</attribute>
+                </xpath>
+                <xpath expr='//field[@name="move_ids"]/tree/field[@name="location_dest_id"]' position="after">
+                    <field name="price_unit" groups="stock.group_stock_manager,account.group_account_user"/>
+                </xpath>
+                <xpath expr='//field[@name="move_ids"]' position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]' position="before">
+                    <div class="oe_right oe_button_box">
+                        <button name="%(action_stock_fill_inventory)d" string="Fill Inventory" states="draft,confirm" type="action" />
+                    </div>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]' position="attributes">
+                    <attribute name="attrs">{'readonly':[('state','in',('cancel','counted','done'))]}</attribute>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]/tree/field[@name="product_id"]' position="attributes">
+                    <attribute name="context">{'display_default_code':True}</attribute>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]/tree/field[@name="product_id"]' position="after">
+                    <field name="categ_id"/>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]/tree/field[@name="theoretical_qty"]' position="replace">
+                    <field name="theoretical_qty" readonly="1" sum="Theoretical Quantity"/>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]/tree/field[@name="product_qty"]' position="replace">
+                    <field name="product_qty" string="Real Quantity" sum="Real Quantity"/>
+                </xpath>
+                <xpath expr='//form/sheet/group/group/field[@name="filter"]' position="after">
+                    <field name="specification" states="confirm,counted,done"/>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]/tree/field[@name="product_id"]' position="attributes">
+                    <attribute name="on_change">onchange_createline(location_id, product_id, product_uom_id, package_id, prod_lot_id, partner_id, parent.company_id, parent.force_date, parent.date)</attribute>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]/tree/field[@name="product_uom_id"]' position="attributes">
+                    <attribute name="on_change">onchange_createline(location_id, product_id, product_uom_id, package_id, prod_lot_id, partner_id, parent.company_id, parent.force_date, parent.date)</attribute>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]/tree/field[@name="location_id"]' position="attributes">
+                    <attribute name="on_change">onchange_createline(location_id, product_id, product_uom_id, package_id, prod_lot_id, partner_id, parent.company_id, parent.force_date, parent.date)</attribute>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]/tree/field[@name="prod_lot_id"]' position="attributes">
+                    <attribute name="on_change">onchange_createline(location_id, product_id, product_uom_id, package_id, prod_lot_id, partner_id, parent.company_id, parent.force_date, parent.date)</attribute>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]/tree/field[@name="package_id"]' position="attributes">
+                    <attribute name="on_change">onchange_createline(location_id, product_id, product_uom_id, package_id, prod_lot_id, partner_id, parent.company_id, parent.force_date, parent.date)</attribute>
+                </xpath>
+                <xpath expr='//field[@name="line_ids"]/tree/field[@name="partner_id"]' position="attributes">
+                    <attribute name="on_change">onchange_createline(location_id, product_id, product_uom_id, package_id, prod_lot_id, partner_id, parent.company_id, parent.force_date, parent.date)</attribute>
+                </xpath>
+                
+            </field>
+        </record>
+        
+        <record id="view_inventory_filter_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">stock.inventory.filter.inherit.l10n_mn_stock</field>
+            <field name="model">stock.inventory</field>
+            <field name="inherit_id" ref="stock.view_inventory_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="company_id"]' position="after">
+                    <field name="warehouse_id"/>
+                </xpath>
+                <xpath expr='//group[@string="Group By"]' position="inside">
+                    <filter string="Warehouse" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'warehouse_id'}"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_inventory_tree_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">stock.inventory.tree.inherit.l10n_mn_stock</field>
+            <field name="model">stock.inventory</field>
+            <field name="inherit_id" ref="stock.view_inventory_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="state"]' position="before">
+                    <field name="warehouse_id"/>
+                    <field name="location_id"/>
+                    <field name="specification"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- Stock Production Lot inherit -->
+        <record id="view_production_lot_form_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">stock.production.lot.form.inherit.l10n_mn_stock</field>
+            <field name="model">stock.production.lot</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr='//button[@string="Traceability"]' position="after">
+                        <button name="%(act_unmerge_lots)d" string="Switch Lots" class="oe_stat_button" type="action" />
+                    </xpath>
+                    <xpath expr='//field[@name="removal_date"]' position="after">
+                        <field name="active"/>
+                    </xpath>
+                    <xpath expr='//field[@name="alert_date"]' position="after">
+                        <field name="expire_range"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+        
+        <!-- Product Expire Date Range -->
+        <record id="product_expire_range_form" model="ir.ui.view">
+            <field name="name">product.expire.range.form</field>
+            <field name="model">product.expire.range</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Product Expire Range">
+                    <field name="name" select="1"/>
+                    <field name="range"/>
+                    <field name="color" colspan="4"/>
+                    <label colspan="4" string="You must set -1 value to undefined range onwards."/>
+                </form>
+            </field>
+        </record>
+        
+        <record id="product_expire_range_tree" model="ir.ui.view">
+            <field name="name">product.expire.range.tree</field>
+            <field name="model">product.expire.range</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Product Expire Range">
+                    <field name="name"/>
+                    <field name="range"/>
+                    <field name="color"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="product_expire_range_action" model="ir.actions.act_window">
+            <field name="name">Product Expire Range</field>
+            <field name="res_model">product.expire.range</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        <menuitem
+            parent="stock.menu_stock_configuration"
+            id="menu_product_expire_range_action"
+            action="product_expire_range_action"/>
+            
+            
+            <!-- Stock Delivery Sheet -->
+            
+    <record id="view_stock_delivery_sheet_form" model="ir.ui.view">
+           <field name="name">view.stock.delivery.sheet.form</field>
+           <field name="model">stock.delivery.sheet</field>
+           <field name="type">form</field>
+           <field name="arch" type="xml">
+               <form string="Stock Delivery Sheet">
+                   <header>
+                       <button string="Begin" name="begin" states="draft" type="object" class="oe_highlight" />
+                       <button string="Complete" name="complete" states="start" type="object" class="oe_highlight"/>
+                       <button string="Draft" name="draft" states="start" type="object" class="oe_highlight"/>
+                       <button string="Picking Report" name="print_picking" states="start" type="object" class="oe_highlight"/>
+                       <button string="Prepare Report" name="print_prepare" states="draft,start" type="object" class="oe_highlight"/>
+                       <field name="state" widget="statusbar" statusbar_visible="draft,start,done" statusbar_colors='{"auto":"blue", "start":"red"}'/>
+                   </header>
+                   <sheet>
+                       <div class="oe_title">
+                        <h1>
+                            <label string="Delivery Sheet "/>
+                            <field name="name" class="oe_inline" readonly="1"/>
+                        </h1>
+                       </div>
+                       <group col="3">
+	                       <group>
+	                           <field name="driver_id" on_change="onchange_driver_id(driver_id, user_id, context)"/>
+	                           <field name="user_id"/>
+	                       </group>
+	                       <group>
+	                           <field name="warehouse_id" widget="selection" on_change="change_warehouse(warehouse_id,context)"/>
+	                           <field name="sales_team_id" widget="selection"/>
+	                           <field name="company_id" widget="selection"/>
+	                           <field name="currency_id" invisible="1"/>
+	                       </group>
+	                   </group>
+	                   <group col="4">
+	                       <group>
+	                           <field name="carname"/>
+	                           <field name="start_kilometrage"/>
+	                           <field name="end_kilometrage"/>
+	                       </group>
+	                       <group>
+	                           <field name ="date_start"/>
+	                           <field name="date_stop"/>
+	                       </group>
+	                  </group>
+	                   <notebook colspan="4">
+	                       <page string="Picking Orders">
+	                           <field name="picking_ids" nolabel="1" colspan="4" attrs="{'readonly':['|',('driver_id','=',False),('state','in',['start','done'])]}"
+	                               widget="many2many" domain="[('state','in',('done','assigned','partially_available')),('picking_type_id.code','=','outgoing'),('picking_type_id.warehouse_id','=',warehouse_id),('sheet_id','=',False),('partner_id.section_id','=',sales_team_id)]">
+	                               <tree string="Picking Orders">
+	                               		<field name="name"/>
+	                               		<field name="picking_type_id"/>
+	                               		<field name="origin"/>
+	                               		<field name="partner_id"/>
+	                               		<field name="date_done"/>
+	                               		<field name="state"/>
+	                               </tree>
+	                           </field>
+	                           <group>
+	                               <group class="oe_subtotal_footer oe_right" colspan="2" name="picking_total_out">
+	                                   <field name="total_amount_out_done" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                                   <field name="total_amount_out_wait" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                                   <field name="total_amount_out_cancel" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                               </group>
+	                               <group class="oe_subtotal_footer oe_right" colspan="2" name="picking_total_in">
+	                                   <field name="total_amount_in_done" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                                   <field name="total_amount_in_wait" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                                   <field name="total_amount_in_cancel" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+	                               </group>
+	                           </group>
+	                           <div class="oe_clear"/>
+                               <field name="note" class="oe_inline" placeholder="Note..." attrs="{'readonly':[('state','=','done')]}"/>
+	                       </page>
+	                   </notebook>
+	                 </sheet>
+               </form>
+           </field>
+       </record>
+       
+       <record id="view_stock_delivery_sheet_tree" model="ir.ui.view">
+           <field name="name">view.stock.delivery.sheet.tree</field>
+           <field name="model">stock.delivery.sheet</field>
+           <field name="arch" type="xml">
+               <tree string="Stock Delivery Sheet">
+                   <field name="name"/>
+                   <field name="warehouse_id"/>
+                   <field name="driver_id"/>
+                   <field name="date_start"/>
+                   <field name="date_stop"/>
+                   <field name="user_id"/>
+                   <field name="total_amount_out_done" sum="Total Outgoing Complete"/>
+                   <field name="total_amount_out_wait" sum="Total Outgoing Pending"/>
+                   <field name="total_amount_out_cancel" sum="Total Outgoing Cancelled"/>
+                   <field name="total_amount_in_done" sum="Total Incoming Complete"/>
+                   <field name="total_amount_in_wait" sum="Total Incoming Pending"/>
+                   <field name="total_amount_in_cancel" sum="Total Incoming Cancelled"/>
+                   <field name="state"/>
+               </tree>
+           </field>
+       </record>
+        
+
+        <record id="stock_move_tree_inherit_sum" model="ir.ui.view">
+            <field name="name">stock.move.tree.inherit.l10n_mn_stock.sum</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="product_uom_qty"]' position="replace">
+                    <field name="product_uom_qty" sum="Total" on_change="onchange_quantity(product_id, product_uom_qty, product_uom, product_uos)"/>
+                </xpath>
+                 <xpath expr='//field[@name="product_uos_qty"]' position="replace">
+                      <field name="product_uos_qty" sum="Total"  groups="product.group_uos"/>
+                </xpath>
+            
+            </field>
+        </record>
+
+
+       <record id="view_stock_delivery_sheet_search" model="ir.ui.view">
+           <field name="name">view.stock.delivery.sheet.search</field>
+           <field name="model">stock.delivery.sheet</field>
+           <field name="type">search</field>
+           <field name="arch" type="xml">
+               <search string="Stock Delivery Sheet">
+                   <group col='10' colspan='4'>
+                       <filter icon="terp-document-new" name="start" string="Draft" domain="[('state','=','draft')]"/>
+                       <filter icon="terp-camera_test" name="start" string="Started" domain="[('state','=','start')]"/>
+                       <filter icon="terp-check" name="done" string="Done" domain="[('state','=','done')]"/>
+                       <separator orientation="vertical"/>
+                       <field name="name"/>
+                       <field name="warehouse_id"/>
+                       <field name="user_id"/>
+                       <newline/>
+                       <field name="driver_id"/>
+                       <field name="date_start"/>
+                       <field name="date_stop"/>
+                   </group>
+               </search>
+           </field>
+       </record>
+       
+       <record id="action_stock_delivery_sheet" model="ir.actions.act_window">
+           <field name="name">Stock Delivery Sheet</field>
+           <field name="res_model">stock.delivery.sheet</field>
+           <field name="view_type">form</field>
+           <field name="view_mode">tree,form</field>
+           <field name="domain">[]</field>
+           <field name="search_view_id" ref="view_stock_delivery_sheet_search"/>
+           <field name="context">{'search_default_start':1,'search_default_user_id':uid}</field>
+           <field name="view_id" eval="False"/>
+       </record>
+       
+       <menuitem action="action_stock_delivery_sheet" id="menu_action_stock_delivery_sheet"
+           parent="stock.menu_stock_inventory_control" sequence="07"/>
+       
+       <record id="view_stock_car_news_form" model="ir.ui.view">
+           <field name="name">view.stock.car.news.form</field>
+           <field name="model">stock.car.news</field>
+           <field name="type">form</field>
+           <field name="arch" type="xml">
+               <form string="Stock Car News">
+                   <group>
+                     <group>
+	                    <field name="name"/>
+	                    <field name="volume"/>
+	                 </group>
+	                 <group>
+	                    <field name="mark"/>
+	                    <field name="weight"/>
+	                 </group>
+	                 <field name="description"/>
+	              </group>
+       	       </form>
+       	   </field>
+       	</record>
+       	
+       	<record id="view_stock_car_news_tree" model="ir.ui.view">
+           <field name="name">view.stock.car.news.tree</field>
+           <field name="model">stock.car.news</field>
+           <field name="arch" type="xml">
+               <tree string="Stock Car News">
+                   <field name="name"/>
+                   <field name="mark"/>
+               </tree>
+           </field>
+       </record>
+       
+       <record id="action_stock_car_news" model="ir.actions.act_window">
+           <field name="name">Stock Car News</field>
+           <field name="res_model">stock.car.news</field>
+           <field name="view_type">form</field>
+           <field name="view_mode">tree,form</field>
+           <field name="domain">[]</field>
+           <field name="view_id" eval="False"/>
+       </record>
+       <menuitem action="action_stock_car_news" id="menu_action_stock_car_news"
+           parent="stock.menu_stock_configuration" sequence="07"/>
+       
+       <!-- Set fully readonly -->
+       <record id="view_move_form_inherit_l10n_mn_stock" model="ir.ui.view">
+           <field name="name">stock.move.form.inherit.l10n_mn_stock</field>
+           <field name="model">stock.move</field>
+           <field name="inherit_id" ref="stock.view_move_form"/>
+           <field name="arch" type="xml">
+               <xpath expr='//field[@name="product_id"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="product_uom_qty"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="product_uom"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="name"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="product_uos_qty"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="product_uos"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="picking_type_id"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="company_id"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="date"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="date_expected"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="location_id"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="picking_id"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="procure_method"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="location_dest_id"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="partner_id"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+               <xpath expr='//field[@name="group_id"]' position="attributes">
+                   <attribute name="readonly">1</attribute>
+               </xpath>
+           </field>
+       </record>
+       <record id="stock_account_view_move_form_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">stock_account.stock.move.form.inherit.l10n_mn_stock</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock_account.view_move_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_state']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+
+
+        <!-- Барааны ашгийн тайлангийн тохиргооны форм -->
+        <record id="product_profit_report_config_form" model="ir.ui.view">
+            <field name="name">view.product.profit.report.config.form</field>
+            <field name="model">product.profit.report.config</field>            
+            <field name="arch" type="xml">                
+                 <form string="Product profit report config">
+                   <group>
+                     <field name="company_id" readonly="1"/>                     
+                   </group>                                
+                   <notebook colspan="4">
+                       <page string="Sale income">
+                           <field name="sale_income_ids" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="Cost diff">
+                           <field name="cost_diff_ids" nolabel="1" colspan="4"/>
+                           <h1>
+                                <label colspan="4" string="Cost product category"/>
+                           </h1>
+                           <field name="cost_product_category" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="Sale discount">
+                           <field name="sale_discount_ids" nolabel="1" colspan="4"/>
+                       </page>                       
+                       <page string="Acts accounts">
+                           <field name="acts_expense_ids" nolabel="1" colspan="4"/>
+                       </page>                       
+                       <page string="Product marketing expense">
+                           <field name="product_marketing_expense_ids" nolabel="1" colspan="4"/>
+                           <h1>
+                                <label colspan="4" string="Marketing analytic account"/>
+                           </h1>
+                           <field name="marketing_analytic_account" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="Sale expense">
+                           <field name="sale_expense_ids" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="Sale management expense">
+                           <field name="sale_management_expense_ids" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="General management expense">
+                           <field name="general_management_expense_ids" nolabel="1" colspan="4"/>
+                       </page>                       
+                       <page string="Finance expense">
+                           <field name="finance_expense_ids" nolabel="1" colspan="4"/>
+                       </page>                       
+                       <page string="Other expense">
+                           <field name="other_expense_ids" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="Sale team">
+                           <field name="sale_team_account_ids" nolabel="1" colspan="4"/>
+                           <h1>
+                                <label colspan="4" string="Sale team analytic account"/>
+                           </h1>
+                           <field name="sale_team_analytic_ids" nolabel="1" colspan="4"/>
+                       </page>                       
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+       <record id="product_profit_report_config_tree" model="ir.ui.view">
+           <field name="name">view.product.profit.report.config.tree</field>
+           <field name="model">product.profit.report.config</field>
+           <field name="arch" type="xml">
+               <tree string="Product profit report config">
+                   <field name="company_id"/>                 
+               </tree>
+           </field>
+       </record>
+        
+        <record id="action_product_profit_report_config" model="ir.actions.act_window">
+            <field name="name">Product Profit Report Config</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.profit.report.config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="product_profit_report_config_tree"/>        
+        </record>
+
+        <menuitem id="menu_action_product_profit_report_config" action="action_product_profit_report_config"
+           parent="stock.menu_stock_configuration" sequence="2" icon="terp-idea" groups="account.group_account_manager"/>
+
+
+
+
+       <!-- Барааны ангилал дээр шинжилгээний данс сонгох болон хөнгөлөлтийн хувь тодорхойлох -->
+        <record model="ir.ui.view" id="product_category_form_view_inherit_l10n_mn_stock">
+            <field name="name">product.category.form.inherit.l10n_mn_stock</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="stock_account.view_category_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr='//group[@name="account_stock_property"]' position="inside">                    
+                    <field name="analytic_id"/>
+                    <field name="sale_discount"/>
+                </xpath> 
+            </field>
+        </record>
+
+        <!-- Борлуулалтын баг дээр аналитик данс тохируулах-->
+        <record id="crm_case_section_view_form_inherit_l10n_mn_stock" model="ir.ui.view">
+            <field name="name">crm.case.section.form.inherit.l10n_mn_stock</field>
+            <field name="model">crm.case.section</field>
+            <field name="inherit_id" ref="crm.sales_team_form_view_in_crm"/>
+            <field name="arch" type="xml">
+                <xpath expr='//field[@name="alias_contact"]' position="after">                    
+                    <field name="analytic_id"/>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

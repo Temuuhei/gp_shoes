@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="l10n_mn_stock.report_product_label">
+            
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="report.layout">
+                        <div class="page l10n_mn_base_report">
+                            <table style="width:100%" border="1" class="table table-l10n_mn-grid">
+                                <tbody t-foreach="lines" t-as="l">
+	                                <tr t-if="root_type=='product' and type=='price' and report_type=='short'">
+	                                   <t t-set="count" t-value="0"/>
+	                                    <tr>
+	                                       <td>
+	                                           <table >
+	                                               <tr rowIndex="0"> 
+		                                               <td colspan="2"><span t-esc="l['name']" width="25%"/></td>
+		                                           </tr>
+		                                           <tr rowIndex="1"> 
+		                                               <td colspan="2"><span t-esc="l['code']" width="25%"/></td>
+		                                           </tr>
+		                                           <tr rowIndex="2">
+		                                               <td><span t-esc="l['barcode']"/></td>
+		                                               <td><span t-esc="l['price']"/><t t-esc="count%4"/></td>
+		                                           </tr>
+	                                           </table>
+                                           <t t-set="count" t-value="count+1"/>
+                                           </td>
+	                                       <t t-if="count%4==0"/>
+	                                           </tr>
+	                                </tr>
+	                                <tr t-if="root_type=='product' and type=='price' and report_type=='long'">
+                                       <t t-set="count" t-value="1"/>
+                                        <tr>
+                                           <tr rowIndex="0"> 
+                                               <td colspan="2"><span t-esc="l['name']" width="25%"/></td>
+                                           </tr>
+                                           <tr rowIndex="1"> 
+                                               <td colspan="2"><span t-esc="l['code']" width="25%"/></td>
+                                           </tr>
+                                           <tr rowIndex="2">
+                                               <td><span t-esc="l['barcode']"/></td>
+                                               <td><span t-esc="l['price']"/></td>
+                                           </tr>
+                                           <t t-set="count" t-value="count+1"/>
+                                           <t t-if="count%2==0"/>
+                                               </tr>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+                 </t>
+             </t>
+        </template>
+    </data>
+</openerp>

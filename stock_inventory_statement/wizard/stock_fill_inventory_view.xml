@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record id="view_stock_fill_inventory" model="ir.ui.view">
+            <field name="name">Import Inventory</field>
+            <field name="model">stock.fill.inventory</field>
+            <field name="arch" type="xml">
+              <form string="Import Inventory" version="7.0">
+                  <group string="Import current product inventory from the following options">
+                    <group>
+                        <field name="type" invisible="1"/>
+                        <field name="location_id" invisible="1"/>
+                       <field name="unavailable" attrs="{'invisible':[('type','=','scan')]}"/>
+                       <field name="inventory_id" invisible="1"/>
+                    </group>
+                    <group>
+                       <field name="remove_current_list" attrs="{'invisible':[('type','=','scan')]}"/>
+                       <field name="set_stock_zero" attrs="{'invisible':[('type','=','scan')]}"/>
+                    </group>
+                  </group>
+                  
+                  <group>
+                    <field name="scan_field" colspan="4" on_change="onchange_scan(scan_field,inventory_id,context)" attrs="{'invisible':[('type','=','pick')]}"/>
+                    <field name="product_id" colspan="4" attrs="{'invisible':[('type','=','pick')],'required':[('type','=','scan')]}"/>
+                    <group>
+                        <field name="qty" attrs="{'invisible':[('type','=','pick')],'required':[('type','=','scan')]}"/>
+                    </group>
+                  </group>
+                  <group attrs="{'invisible':[('type','=','scan')]}">
+                    <notebook colspan="4">
+                        <page string="Product Category">
+                            <field name="category_ids" colspan="4"/>
+                        </page>
+                        <page string="Supplier">
+                            <field name="manufacture_ids" colspan="4"/>
+                        </page>
+                        <page string="Product">
+                            <field name="product_ids" colspan="4">
+                                <tree string="Products">
+                                    <field name="ean13"/>
+                                    <field name="default_code"/>
+                                    <field name="name"/>
+                                    <field name="uom_id"/>
+                                    <field name="categ_id"/>
+                                    <field name="manufacturer"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                 </group>
+                 <footer>
+                     <button name="fill_inventory" string="Fill Inventory" type="object" class="oe_highlight"/>
+                     <button special="cancel" string="Cancel" class="oe_link"/>
+                 </footer>
+             </form>
+            </field>
+        </record>
+        
+        <record id="action_stock_fill_inventory" model="ir.actions.act_window">
+            <field name="name">Fill Inventory</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.fill.inventory</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_stock_fill_inventory"/>
+            <field name="target">new</field>
+        </record>
+        
+        
+        
+    </data>
+</openerp>  

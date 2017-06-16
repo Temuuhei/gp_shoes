@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_production_lot_wizard" model="ir.ui.view">
+            <field name="name">Production Lost</field>
+            <field name="model">stock.production.lot.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form String="Choose warehouse">
+                    <field name="warehouse_id" colspan="4" widget="selection"/>
+                    <newline/>
+                    <notebook colspan="4">
+                        <page String="Products">
+                            <field name="product_ids" nolabel="1" colspan="4"></field>
+                        </page>
+                    </notebook>
+                    <separator colspan="4"/>
+                    <group col="2" colspan="4">
+                        <button icon='gtk-cancel' special="cancel"
+                            string="Cancel" />
+                        <button name="open_tree" string="Ok"
+                            colspan="1" type="object" icon="gtk-ok" />
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="l10n_mn_stock_production_lot_form" model="ir.actions.act_window">
+            <field name="name">Production Lots</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.production.lot.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_production_lot_wizard"/>
+            <field name="search_view_id" ref=""/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem action="l10n_mn_stock_production_lot_form" id="menu_l10n_mn_stock_production_lot_form"
+            parent="stock.menu_traceability" groups="stock.group_production_lot"
+            sequence="1"/>
+    </data>
+</openerp>

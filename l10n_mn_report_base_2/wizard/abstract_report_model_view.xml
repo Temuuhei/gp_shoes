@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <record id="action_excel_output_view" model="ir.ui.view">
+            <field name="name">action.excel.output.view</field>
+            <field name="model">report.excel.output</field>
+            <field name="arch" type="xml">
+	            <form string="Report Output">
+	                <separator string="Processing done" colspan="4"/>
+	                <field name="name" colspan="4" invisible="1"/>
+	                <field name="data" readonly="1" filename="name"/>
+	                <footer>
+                        <button special="cancel" string="Close" type="object" class="oe_link"/>
+                    </footer>
+	            </form>
+            </field>
+        </record>
+        
+        <record id="action_excel_output_tree_view" model="ir.ui.view">
+            <field name="name">action.excel.output.tree.view</field>
+            <field name="model">report.excel.output</field>
+            <field name="arch" type="xml">
+                <tree string="Report Options">
+                    <field name="name" select="1"/>
+                    <field name="data"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_report_excel_output" model="ir.actions.act_window">
+            <field name="name">Excel Report Output</field>
+            <field name="res_model">report.excel.output</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <!-- 
+        <record id="view_report_schedule_generator_wizard" model="ir.ui.view">
+            <field name="name">view.report.schedule.generator.wizard</field>
+            <field name="model">report.schedule.generator.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Report Schedule Generator Wizard">
+                </form>
+            </field>
+        </record>
+         -->
+        
+        <record id="action_report_schedule_generator_wizard" model="ir.actions.act_window">
+            <field name="name">Report Schedule Generator Wizard</field>
+            <field name="res_model">report.schedule.generator.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <!-- <field name="view_id" ref="view_report_schedule_generator_wizard"/> -->
+            <field name="target">new</field>
+        </record>
+        
+        <record id="view_report_schedule_generator_form" model="ir.ui.view">
+            <field name="name">view.report.schedule.generator.form</field>
+            <field name="model">report.schedule.generator</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Report Schedule Generator">
+                    <field name="name" colspan="4" select="1"/>
+                    <!-- <field name="attache_name" colspan="4"/> -->
+                    <field name="report_name" select="1" 
+                        on_change="onchange_report_name(report_name,context)"/>
+                    <field name="active" select="1"/>
+                    <field name="user_id" select="1"/>
+                    <notebook colspan="4">
+	                    <page string="Report Data">
+		                    <field name="params" nolabel="1" colspan="4"/>
+		                </page>
+		                <page string="Send Mail">
+		                	<field name="subject" colspan="4"/>
+		                    <field name="email_from" colspan="4"/>
+		                    <field name="email_to" colspan="4"/>
+		                    <field name="email_cc" colspan="4"/>
+		                    <field name="email_bcc" colspan="4"/>
+		                    <field name="template_id" colspan="2" on_change="onchange_template_id(template_id, context)"/>
+		                    <field name="server_id" colspan="2" />
+		                    <newline/>
+		                    <separator string="Text contents" colspan="4"/>
+		                    <field name="body_text" colspan="4" nolabel="1" />
+		                </page>
+		                <page string="Other Users">
+		                    <field name="user_ids" nolabel="1" colspan="4"/>
+		                </page>
+	                </notebook>
+                    <separator string="" colspan="4"/>
+                    <group colspan="4" col="8">
+                        <field name="date_last"/>
+                        <field name="date_next"/>
+                        <field name="fixed"/>
+                        <label colspan="2" string=""/>
+                        <field name="increment_type"/>
+                        <field name="increment"/>
+                        <label colspan="2" string=""/>
+                        <button name="run_report_generator" string="Test" colspan="1" type="object"
+                            icon="gtk-convert"/>
+                        <button name="%(action_report_schedule_generator_wizard)d" colspan="1" 
+                            string="Build" icon="gtk-execute" type="action"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_report_schedule_generator_tree" model="ir.ui.view">
+            <field name="name">view.report.schedule.generator.tree</field>
+            <field name="model">report.schedule.generator</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Report Schedule Generator">
+                    <field name="name" colspan="4"/>
+                    <!-- <field name="attache_name" colspan="4" /> -->
+                    <field name="report_name"/>
+                    <field name="user_id"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_report_schedule_generator_filter" model="ir.ui.view">
+            <field name="name">view.report.schedule.generator.filter</field>
+            <field name="model">report.schedule.generator</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Report Schedule Generator">
+                   <group>
+                        <filter name="active" icon="terp-document-new" string="Active" domain="[('active','=',True)]"/>
+                        <filter name="inactive" icon="terp-gtk-media-pause" string="Inactive" domain="[('active','=',False)]"/>
+                        <separator orientation="vertical"/>
+                        <field name="user_id"/>
+                        <field name="name"/>
+                        <field name="report_name"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+        
+        <record id="action_report_schedule_generator" model="ir.actions.act_window">
+            <field name="name">Report Schedule Generator</field>
+            <field name="res_model">report.schedule.generator</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','=','scheduled')]</field>
+            <field name="search_view_id" ref="view_report_schedule_generator_filter"/>
+            <field name="context">{'search_default_active':1}</field>
+        </record>
+        <record id="action_report_schedule_generator_tree_view" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_report_schedule_generator_tree"/>
+            <field name="act_window_id" ref="action_report_schedule_generator"/>
+        </record>
+        <record id="action_report_schedule_generator_form_view" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_report_schedule_generator_form"/>
+            <field name="act_window_id" ref="action_report_schedule_generator"/>
+        </record>
+        
+        <menuitem name="Automatic Reports" parent="report.reporting_menuitem" id="menu_automatic_reports_root" sequence="10"/>
+        <menuitem action="action_report_schedule_generator" id="menu_action_report_schedule_generator"
+            parent="menu_automatic_reports_root" sequence="50"/>
+            
+        <!-- User Queued Reports  -->
+        <record id="view_report_queue_generator_form" model="ir.ui.view">
+            <field name="name">view.report.queue.generator.form</field>
+            <field name="model">report.schedule.generator</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Report Queue Generator">
+                    <field name="name" colspan="4" select="1" readonly="1"/>
+                    <!-- <field name="attache_name" colspan="4"/> -->
+                    <field name="report_name" select="1" readonly="1"/>
+                    <field name="active" select="1" readonly="1"/>
+                    <field name="user_id" select="1" readonly="1"/>
+                    <notebook colspan="4">
+	                    <page string="Report Data">
+		                    <field name="params" nolabel="1" colspan="4" readonly="1"/>
+		                </page>
+		                <page string="Send Mail">
+		                	<field name="subject" colspan="4"/>
+		                    <field name="email_from" colspan="4"/>
+		                    <field name="email_to" colspan="4"/>
+		                    <field name="email_cc" colspan="4"/>
+		                    <field name="email_bcc" colspan="4"/>
+		                    <field name="template_id" colspan="2" on_change="onchange_template_id(template_id, context)"/>
+		                    <field name="server_id" colspan="2" />
+		                    <newline/>
+		                    <separator string="Text contents" colspan="4"/>
+		                    <field name="body_text" colspan="4" nolabel="1" />
+		                </page>
+		                <page string="Report Log">
+		                    <field name="logging" nolabel="1" colspan="4" readonly="1"/>
+		                </page>
+	                </notebook>
+                    <separator string="" colspan="4"/>
+                    <group colspan="4" col="8">
+                        <field name="queued_date" readonly="1"/>
+                        <field name="queued_success_date" readonly="1"/>
+                        <field name="queued_success" readonly="1"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_report_queue_generator_tree" model="ir.ui.view">
+            <field name="name">view.report.queue.generator.tree</field>
+            <field name="model">report.schedule.generator</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Report Queued Generator">
+                    <field name="name" colspan="4"/>
+                    <field name="report_name"/>
+                    <field name="user_id"/>
+                    <field name="queued_date"/>
+                    <field name="queued_success"/>
+                    <field name="remaining"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_report_queue_generator_filter" model="ir.ui.view">
+            <field name="name">view.report.queue.generator.filter</field>
+            <field name="model">report.schedule.generator</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Report Queued Generator">
+                   <group>
+                        <filter name="waiting" icon="terp-gnome-cpu-frequency-applet+" string="Waiting" domain="[('queued_success','=',False)]"/>
+                        <filter name="done" icon="terp-check" string="Done" domain="[('queued_success','=',True)]"/>
+                        <filter name="today_queued" string="Today Queued" domain="[('queued_date','=',time.strftime(%%Y-%%m-%%d))]"/>
+                        <separator orientation="vertical"/>
+                        <field name="user_id"/>
+                        <field name="name"/>
+                        <field name="queued_date"/>
+                        <field name="queued_success_date"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+        
+        <record id="action_report_queue_generator" model="ir.actions.act_window">
+            <field name="name">Report Queued Generator</field>
+            <field name="res_model">report.schedule.generator</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','=','queued')]</field>
+            <field name="search_view_id" ref="view_report_queue_generator_filter"/>
+        </record>
+        <record id="action_report_queue_generator_tree_view" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_report_queue_generator_tree"/>
+            <field name="act_window_id" ref="action_report_queue_generator"/>
+        </record>
+        <record id="action_report_queue_generator_form_view" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_report_queue_generator_form"/>
+            <field name="act_window_id" ref="action_report_queue_generator"/>
+        </record>
+        
+        <menuitem action="action_report_queue_generator" id="menu_action_report_queue_generator"
+            parent="menu_automatic_reports_root" sequence="60"/>
+            
+        <record id="action_report_queue_generator_user" model="ir.actions.act_window">
+            <field name="name">Report Queued Generator</field>
+            <field name="res_model">report.schedule.generator</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','=','queued'),('user_id','=',uid)]</field>
+            <field name="search_view_id" ref="view_report_queue_generator_filter"/>
+            <field name="context">{'search_default_waiting':1,'search_default_today_queued':1,'search_default_user_id':uid}</field>
+        </record>
+        <record id="action_report_queue_generator_user_tree_view" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_report_queue_generator_tree"/>
+            <field name="act_window_id" ref="action_report_queue_generator_user"/>
+        </record>
+        <record id="action_report_queue_generator_user_form_view" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_report_queue_generator_form"/>
+            <field name="act_window_id" ref="action_report_queue_generator_user"/>
+        </record>
+        
+        <menuitem action="action_report_queue_generator_user" id="menu_action_report_queue_generator_user"
+            parent="report.reporting_menuitem" sequence="15"/>
+            
+        
+        
+        
+        <record id="view_abstract_report_logging_tree" model="ir.ui.view">
+            <field name="name">view.abstract.report.logging.tree</field>
+            <field name="model">abstract.report.logging</field>
+            <field name="arch" type="xml">
+                <tree string="Report Loader Logging" delete="false" create="false" colors="red:state=='error'">
+                    <field name="name"/>
+                    <field name="date_start"/>
+                    <field name="date_stop"/>
+                    <field name="type"/>
+                    <field name="report_model"/>
+                    <field name="user_id"/>
+                    <field name="duration"/>
+                    <field name="company_id"/>
+                    <field name="automatic"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_abstract_report_logging_search" model="ir.ui.view">
+            <field name="name">view.abstract.report.logging.search</field>
+            <field name="model">abstract.report.logging</field>
+            <field name="arch" type="xml">
+                <search string="Report Loader Logging">
+                   <group>
+                        <group expand="1" string="Filter">
+                        <filter name="running" icon="terp-gnome-cpu-frequency-applet+" string="Running" domain="[('state','=','running')]"/>
+                        <filter name="done" icon="terp-check" string="Success" domain="[('state','=','done')]"/>
+                        <filter name="today_queued" string="Today Runned" domain="[('date_start','&gt;=',time.strftime(%%Y-%%m-%%d 00:00:00)),('date_stop','&lt;=',time.strftime(%%Y-%%m-%%d 23:59:59))]"/>
+                        <separator orientation="vertical"/>
+                        <filter name="excel" icon="terp-stock_format-scientific" string="Excel Report" domain="[('type','=','XLS')]"/>
+                        <filter name="pdf" icon="terp-report" string="PDF Report" domain="[('type','=','PDF')]"/>
+                        </group>
+                        <field name="user_id"/>
+                        <field name="report_model"/>
+                        <field name="company_id"/>
+                        <field name="name"/>
+                        <field name="date_start" string="Date(from)" filter_domain="[('date_start','&gt;=',self)]"/>
+                        <field name="date_stop" string="Date(to)" filter_domain="[('date_stop','&lt;=',self)]"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+        
+        <record id="view_abstract_report_logging_form" model="ir.ui.view">
+            <field name="name">view.abstract.report.logging.form</field>
+            <field name="model">abstract.report.logging</field>
+            <field name="arch" type="xml">
+                <form string="Report Loader Logging" create="false" delete="false" version="7.0">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="report_model" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date_start" readonly="1"/>
+                            <field name="date_stop" readonly="1"/>
+                            <field name="duration" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="user_id" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="type" readonly="1"/>
+                            <field name="automatic" readonly="1"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_abstract_report_logging" model="ir.actions.act_window">
+            <field name="name">Report Loader Logging</field>
+            <field name="res_model">abstract.report.logging</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_abstract_report_logging_search"/>
+        </record>
+        <menuitem action="action_abstract_report_logging" id="menu_action_abstract_report_logging"
+            parent="report.reporting_menuitem" sequence="20"/>
+        
+        <record id="view_report_mirror_server_tree" model="ir.ui.view">
+            <field name="name">view.report.mirror.server.tree</field>
+            <field name="model">report.mirror.server</field>
+            <field name="arch" type="xml">
+                <tree string="Report Mirror Server">
+                    <field name="name"/>
+                    <field name="server_url"/>
+                    <field name="server_db"/>
+                    <field name="login"/>
+                    <field name="password"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_report_mirror_server_form" model="ir.ui.view">
+            <field name="name">view.report.mirror.server.form</field>
+            <field name="model">report.mirror.server</field>
+            <field name="arch" type="xml">
+                <form string="Report Mirror Server" version="7.0">
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="server_url"/>
+                            <field name="server_db"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                            <field name="login"/>
+                            <field name="password"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_report_mirror_server" model="ir.actions.act_window">
+            <field name="name">Report Mirror Server</field>
+            <field name="res_model">report.mirror.server</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem action="action_report_mirror_server" id="menu_action_report_mirror_server"
+            parent="report.reporting_menuitem" sequence="30"/>
+        
+        
+        <record id="abstract_report_view" model="ir.ui.view">
+            <field name="name">abstract.report.view</field>
+            <field name="model">abstract.report.model</field>
+            <field name="arch" type="xml">
+                <form string="Report Options">
+                    <label string=""/>
+                    <group col="4" name="report" colspan="4">
+                       
+	                </group>
+	                <footer>
+	                    <label for="save" groups="l10n_mn_report_base.group_save_report_attachment"/>
+	                    <field name="save" groups="l10n_mn_report_base.group_save_report_attachment"/>
+	                    <label string=""/>
+	                    <button icon="gtk-execute" name="export_report" string="Export" type="object" colspan="1"/>
+	                    <button icon="gtk-print" name="print_report" string="Print" type="object" colspan="1" class="oe_highlight"/>
+	                     or 
+	                    <button string="Close" class="oe_link" special="cancel"/>
+	                </footer>
+                </form>
+            </field>
+        </record>
+        
+    </data>
+</odoo>

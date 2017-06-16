@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <record id="view_report_delivery_ship_form" model="ir.ui.view">
+            <field name="name">view.report.delivery.ship.form</field>
+            <field name="model">report.delivery.ship</field>
+            <field name="inherit_id" ref="l10n_mn_report_base.abstract_report_view"/>
+            <field name="arch" type="xml">
+                <xpath expr='//form' position="attributes">
+                    <attribute name="string">Report Delivery</attribute>
+                </xpath>
+                <xpath expr='//group[@name="report"]' position="inside">
+                    <group>
+                       <field name="company_id" invisible="1"/>
+                       <group>
+                            <field name="date_from"/>
+                            <field name="group_by"/>
+                       </group>
+                       <group>
+                            <field name="date_to"/>
+                            <field name="type" attrs="{'invisible':[('group_by','=',False)]}"/>
+                       </group>
+                    </group>
+                   <notebook colspan="4">
+                       <page string="Warehouse">
+                       <field name="warehouse_ids" nolabel="1" colspan="4" widget="many2many_kanban" required="1">
+                           <kanban quick_create="false" create="true" delete="true">
+                                <field name="name"/>
+                                <templates>
+                                    <t t-name="kanban-box">
+                                        <div style="position: relative;border-width: 1px; border-radius: 4px; border-style: solid; border-bottom-color: #B9B9B9; border-left-color: #D8D8D8; border-right-color: #D8D8D8; border-top-color: #D8D8D8;">
+                                            <a t-if="! read_only_mode" type="delete" style="position: absolute; right: 0; padding: 4px; diplay: inline-block">X</a>
+                                            <div class="oe_module_vignette">
+                                                <div class="oe_module_desc">
+                                                    <field name="name"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </templates>
+                            </kanban>
+                       </field>
+                       </page>
+                       <page string="Partner">
+                       <field name="partner_ids" nolabel="1" colspan="4" domain="[('customer','=',True)]"/>
+                       </page>
+                       <page string="Car">
+                       <field name="car_ids" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="Sales team">
+                       <field name="team_ids" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="Driver">
+                       <field name="driver_ids" nolabel="1" colspan="4"/>
+                       </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="action_report_delivery_ship" model="ir.actions.act_window">
+            <field name="name">Report Delivery</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">report.delivery.ship</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_report_delivery_ship_form"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem action="action_report_delivery_ship" id="menu_action_report_delivery_ship" 
+            parent="stock.next_id_61" sequence="10" groups="stock.group_stock_user"/>
+            
+    </data>
+</openerp>

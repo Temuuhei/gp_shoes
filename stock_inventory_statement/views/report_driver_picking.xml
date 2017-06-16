@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="l10n_mn_stock.report_driver_picking">
+    <t t-foreach="docs" t-as="o">
+        <t t-call="report.layout">
+            <div class="page l10n_mn_base_report">
+                 <h3>Ачилтын хуудас</h3>
+                 <table class="table table-l10n_mn-header">
+                     <tr><td>Баримтын дугаар: <b t-field="o.name"/></td>
+                         <td>Огноо: <b t-field="o.date_start"/></td></tr>
+                     <tr>
+                     <td>Түгээгчийн нэр: <span t-if="o.driver_id"><b t-field="o.driver_id"/></span></td>
+                     <td>Бүсийн нэр: <span t-if="o.sales_team_id"><b t-field="o.sales_team_id"/></span></td>
+                     </tr>
+                     <tr>
+                        <td>Тээврийн хэрэгсэл: <span t-if="o.carname"><b t-field="o.carname"/></span></td>
+                        <td>Салбар нэгж: <span t-if="o.warehouse_id"><b t-field="o.warehouse_id"/></span></td>
+                     </tr>
+                 </table>
+                 <table class="table table-l10n_mn-grid">
+                 <thead>
+                     <tr>
+                        <th width="*">№</th>
+                        <th width="10%">Падааны дугаар</th>
+                        <th width="25%">Харилцагчийн нэр, код</th>
+                        <th width="20%">Маршрут /хаяг/</th>
+                        <th width="10%">Падааны дүн</th>
+                        <th>Өгсөн эсэх (Чеклэх)</th>
+                        <th width="15%">Авсан мөнгө</th>
+                        <th width="15%">Хүлээн аваагүй бараа</th>
+                        <th width="15%">Зээлээр үлдээсэн</th>
+                        <th width="15%">Борлуулалтын төрөл</th>
+                     </tr>
+                 </thead>
+                 <tbody>
+                     <t t-set="line_number" t-value="1"/>
+                     <tr t-foreach="o.picking_ids" t-as="pick">
+                         <td align="center"><span t-esc="line_number"/></td>
+                         <td><span t-field="pick.name"/></td>
+                         <td><span t-if="pick.partner_id" t-field="pick.partner_id"/>
+                           <span t-if="not pick.partner_id">''</span>
+                         </td>
+                         <td><span t-esc="address.get(pick.partner_id.id,'')"/></td>
+                         <td align="right"><span t-esc="pick_total.get(pick.id,0.0)"/></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td align="right"><span t-esc="sale_type.get(pick.id,0.0)"/></td>
+                         <t t-set="line_number" t-value="line_number + 1"/>
+                     </tr>
+                 </tbody>
+                 <tfoot>
+                     <tr>
+                         <td align="center"></td>
+                         <td colspan="3"><b>НИЙТ ДҮН</b></td>
+                         <td align="right"><b><span t-esc="total.get(o.id,0.0)"/></b></td>
+                         <td align="right"></td>
+                         <td align="right"></td>
+                         <td align="right"></td>
+                         <td align="right"></td>
+                         <td align="right"></td>
+                     </tr>
+                 </tfoot>
+                 </table>
+                 <table border="0" class="table table-l10n_mn-header">
+                    <tr>
+                        <td width="40%" align="center" colspan="4"><b>НИЙТ Хэмжигдэхүүн</b></td>
+                        <td width="20%" align="right"><b>Эзлэхүүн: <span t-esc="weights.get('volume',0.0)"/> м3</b></td>
+                        <td width="20%" align="right"><b>Бохир жин: <span t-esc="weights.get('weight',0.0)"/> кг</b></td>
+                        <td width="20%" align="right"><b>Цэвэр жин: <span t-esc="weights.get('weight_net',0.0)"/> кг</b></td>
+                        <td align="right" colspan="2"></td>
+                    </tr>
+                </table>
+                <p align="right" style="padding-top: 0px; font-size: 8px;">Нийт дүн (үсгээр): <t t-esc="verbose_total.get(o.id, '')"/><!-- <t t-esc="currency"/> --></p>
+                
+                <table class="table-l10n_mn-footer">
+                    <tr>
+                        <td rowspan="2" width="10%" align="center" valign="center">Тэмдэг</td>
+                        <td width="15%">Хүлээн авсан эд хариуцагч:</td>
+                        <td width="15%">...................................................................</td>
+                        <td width="15%">Хүлээлгэн өгсөн:</td>
+                        <td width="*">...................................................................</td>
+                    </tr>
+                    <tr>
+                        <td width="15%"></td>
+                        <td width="15%"></td>
+                        <td width="15%">Шалгасан нягтлан бодогч:</td>
+                        <td width="*">...................................................................</td>
+                    </tr>
+                </table>
+            </div>
+        </t>
+     </t>
+</template>
+</data>
+</openerp>

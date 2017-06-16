@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- Sale-related subtypes for messaging / Chatter -->
+        <record id="mt_transit_order_confirmed" model="mail.message.subtype">
+            <field name="name">Replenishment Confirmed</field>
+            <field name="res_model">stock.transit.order</field>
+            <field name="default" eval="False"/>
+            <field name="description">Replenishment Order Confirmed</field>
+        </record>
+        <record id="mt_transit_order_shipped" model="mail.message.subtype">
+            <field name="name">Replenishment Goods Shipped</field>
+            <field name="res_model">stock.transit.order</field>
+            <field name="default" eval="False"/>
+            <field name="description">Related delivery order shipped</field>
+        </record>
+        <record id="mt_transit_order_received" model="mail.message.subtype">
+            <field name="name">Replenishment Goods Received</field>
+            <field name="res_model">stock.transit.order</field>
+            <field name="default" eval="False"/>
+            <field name="description">Related reception order done</field>
+        </record>
+        
+        <!-- Sequences for sale.order -->
+        <record id="seq_type_stock_transit_order" model="ir.sequence.type">
+            <field name="name">Replenishment Order</field>
+            <field name="code">stock.transit.order</field>
+        </record>
+
+        <record id="seq_stock_transit_order" model="ir.sequence">
+            <field name="name">Replenishment Order</field>
+            <field name="code">stock.transit.order</field>
+            <field name="prefix">TRANSIT/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+        <!-- Sequences for consume.order -->
+        <record id="seq_type_stock_consume_order" model="ir.sequence.type">
+            <field name="name">Consume Order</field>
+            <field name="code">stock.consume.order</field>
+        </record>
+
+        <record id="seq_stock_consume_order" model="ir.sequence">
+            <field name="name">Consume Order</field>
+            <field name="code">stock.consume.order</field>
+            <field name="prefix">CONSU/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+            <field name="reset_mode">yearly</field>
+            <field name="implementation">standard</field>
+        </record>
+        
+        <!-- Sequences for delivery.order -->
+        <record id="seq_type_stock_delivery_sheet" model="ir.sequence.type">
+            <field name="name">Delivery Sheet</field>
+            <field name="code">stock.delivery.sheet</field>
+        </record>
+
+        <record id="seq_stock_delivery_sheet" model="ir.sequence">
+            <field name="name">Delivery Sheet</field>
+            <field name="code">stock.delivery.sheet</field>
+            <field name="prefix">DRIVE/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+            <field name="reset_mode">yearly</field>
+            <field name="implementation">standard</field>
+        </record>
+        
+        
+        
+        <record id="stock_location_consumable" model="stock.location">
+            <field name="name">Scrap Location</field>
+            <field name="location_id" ref="stock.stock_location_locations_virtual"/>
+            <field name="usage">consume</field>
+            <field name="company_id"></field>
+            <field name="valuation_in_account_id" search="[('code','=','7025 0101')]"/>
+            <field name="valuation_out_account_id" search="[('code','=','7025 0101')]"/>
+        </record>
+        
+        <!-- Дуусах хугацааны муж -->
+        <record id="product_expire_range_in_three" model="product.expire.range">
+            <field name="name">in 3 months</field>
+            <field name="range">3</field>
+            <field name="color">red</field>
+        </record>
+        <record id="product_expire_range_in_six" model="product.expire.range">
+            <field name="name">in 3 to 6 months</field>
+            <field name="range">6</field>
+            <field name="color">darkorange</field>
+        </record>
+        <record id="product_expire_range_in_nine" model="product.expire.range">
+            <field name="name">in 6 to 9 months</field>
+            <field name="range">9</field>
+            <field name="color">darkgreen</field>
+        </record>
+        <record id="product_expire_range_nine_onwards" model="product.expire.range">
+            <field name="name">9 months onwards</field>
+            <field name="range">-1</field>
+        </record>
+        
+        <!-- Бараа солилцоо -->
+        <record id="seq_type_stock_inventory" model="ir.sequence.type">
+            <field name="name">Stock Inventory Sequence</field>
+            <field name="code">stock.inventory.sequence</field>
+        </record>
+        <record id="seq_stock_inventory" model="ir.sequence">
+            <field name="name">Stock Inventory Sequence</field>
+            <field name="code">stock.inventory.sequence</field>
+            <field name="prefix">Invt.%(year)s.</field>
+            <field name="padding">4</field>
+            <field name="implementation">standard</field>
+            <field name="reset_mode">yearly</field>
+        </record>
+        
+        <record id="update_expire_range_cron" model="ir.cron">
+            <field name="name">Update product expire range</field>
+            <field name="user_id">1</field>
+            <field name="active">True</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">True</field>
+            <field name="model">stock.production.lot</field>
+            <field name="function">update_expire_date_range</field>
+        </record>
+    </data>
+</openerp>

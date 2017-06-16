@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_picking_all">
+    <t t-foreach="docs" t-as="o">
+        <t t-call="report.layout">
+            <div class="page l10n_mn_base_report">                
+                 <table width="100%" style="padding: 2px; font-size: 10px">
+                    <tr>
+                        <td style="vertical-align:top;">
+                            <span t-if="type=='in'">Маягт БМ-1</span>
+                            <span t-if="type=='out'">
+                            	<p class="small">НХМаягт БМ-3</p>
+                                <p class="small">Санхүү эдийн засгийн сайд,</p>
+                                <p class="small">Үндэсний статискийн газрын</p>
+                                <p class="small">даргын 2002 оны 6-р сарын 18-ний</p>
+                                <p class="small">171/111 тоот тушаалын хавсралт</p></span>
+                        </td>
+                        <td align="right">Байгууллагын нэр: <t t-esc="o.company_id.name"/></td>
+                    </tr>
+                    <tr>
+                        <td align="center" colspan="2" style="vertical-align:top;">
+                            <h3 t-esc="document_name"/>
+                        </td>
+                    </tr>
+                 </table>              
+                 <table t-if="type=='in'" width="100%">
+                     <tr><td width="50%">
+                         <table class="table table-l10n_mn-header">
+                             <tr><td>Баримтын дугаар: <b t-field="o.name"/></td></tr>
+                             <tr><td>Эх баримт: <span t-if="o.origin"><b t-field="o.origin"/></span></td></tr>
+                             <tr><td>Салбар нэгж: <span t-if="o.picking_type_id.warehouse_id"><b t-field="o.picking_type_id.warehouse_id"/></span></td></tr>
+                             <tr><td t-if="o.transit_order_id"> Нийлүүлэх агуулах: <b t-field="o.transit_order_id.supply_warehouse_id"/></td></tr>
+                         </table></td>
+                         <td width="50%">
+                         <table class="table table-l10n_mn-header">
+                             <tr><td>Ирэх огноо: <b t-field="o.min_date"/></td></tr>
+                             <tr><td>Нийлүүлэгч: <span t-if="o.partner_id"><b t-field="o.partner_id"/></span></td></tr>
+                             <tr><td>Ирсэн огноо : <b t-field="o.date_done"/> </td></tr>
+                         </table>
+                         </td>
+                     </tr>
+                 </table>
+                 <table t-if="type=='out'" width="100%">
+                    <tr><td width="50%">
+                            <table class="table table-l10n_mn-header">
+                                <tr><td colspan="2">Дугаар: <b t-field="o.name"/></td></tr>
+                                <tr><td colspan="2">Эх баримт: <b t-field="o.origin"/></td></tr>
+                                <tr><td colspan="2">Худалдан авагчийн нэр: <b t-field="o.partner_id.name"/></td></tr>
+                                <tr><td colspan="2">Хаяг: <span t-esc="address.get(o.partner_id.id,'')"/></td></tr>
+                                <tr t-if="driver['yes']=='True'"><td colspan="2">Түгээгч: <b t-esc="driver['name']"/></td></tr>
+                                <!-- <t t-if="vat_list">                                    
+                                    <tr><td colspan="2">Худалдан авагчийн ТТД: <span t-esc="vat_list[o.id]['register']"/></td></tr>
+                                    <tr><td>ДДТД:</td><td> <span t-esc="vat_list[o.id]['bill_id']"/></td></tr>
+                                </t> -->
+                            </table></td>
+                        <td width="50%">
+                            <table class="table table-l10n_mn-header">
+                                <tr><td colspan="2">Салбар, нэгжийн нэр : <b t-field="o.picking_type_id.warehouse_id"/></td></tr>
+                             	<tr><td colspan="2" t-if="o.transit_order_id"> Хүлээн авах агуулах: <b t-field="o.transit_order_id.warehouse_id"/></td></tr>
+                                <tr><td colspan="2">Худалдааны төлөөлөгч : <b t-esc="owners[o.id]"/></td></tr>
+                                <tr><td colspan="2">Хүргэх огноо : <t t-esc="o.min_date"/></td></tr>
+                                <tr><td colspan="2">Хүргэсэн огноо : <t t-esc="o.date_done"/></td></tr>
+                                <tr><td colspan="2">Борлуулагчийн ТТД: <span t-field="o.company_id.partner_id.register_number"/> </td></tr>
+                            </table></td>
+                    </tr>
+                 </table>
+                 <t t-set="number" t-value="1"/>
+                 <p align="right"><t t-esc="time.strftime('%Y-%m-%d %H:%M')"/></p>
+                 <table class="table table-l10n_mn-grid" t-if="type=='in'">
+                     <tr>
+                        <th width="*">№</th>
+                        <th width="15%">Бар код</th>
+                        <th width="35%">Бараа материалын нэр</th>
+                        <th t-if="lot" width="10%">Серийн дугаар</th>
+                        <th>Х.Н</th>
+                        <th width="15%">Тоо</th>
+                        <th>Нэгж үнэ</th>
+                        <th width="15%">Нийт</th>
+                     </tr>
+                     <tbody t-foreach="lines[o.id]" t-as="l">
+                        <tr>
+                             <td style="text-align: center"><span t-esc="number"/></td>
+                             <td style="text-align: center"><span t-esc="l['ean']"/></td>
+                             <td style="text-align: left"><span t-esc="l['name']"/></td>
+                             <td t-if="lot" style="text-align: center"><span t-esc="l['lot']"/></td>
+                             <td style="text-align: center"><span t-esc="l['uom']"/></td>
+                             <td style="text-align: right"><span t-esc="l['qty']"/></td>
+                             <td style="text-align: right"><span t-esc="l['price']"/></td>
+                             <td style="text-align: right"><span t-esc="l['amount']"/></td>
+                             <t t-set="number" t-value="number + 1"/>
+                        </tr>
+                    </tbody>
+                    <tr style="background: #DDDDDD;color: #000000;">
+                         <td t-if="lot" align="center" colspan="5"><b>НИЙТ ДҮН</b></td>
+                         <td t-if="not lot" align="center" colspan="4"><b>НИЙТ ДҮН</b></td>
+                         <td style="text-align: right"><b><span t-esc="total[o.id]['qty']"/></b></td>
+                         <td style="text-align: right"></td>
+                         <td style="text-align: right"><b><span t-esc="total[o.id]['amount']"/></b></td>
+                     </tr>
+                 </table>
+                 <table class="table table-l10n_mn-grid" t-if="type=='out'">
+                     <tr>
+                        <th>№</th>
+                        <th>Барааны нэр</th>
+                        <th t-if="lot">Серийн дугаар</th>
+                        <th>Х.Н</th>
+                        <th width="5%">Тоо</th>
+                        <th>Нэгж үнэ</th>
+                        <th t-if="o.picking_type_id.warehouse_id.show_discount">Нийт дүн</th>
+                        <th t-if="o.picking_type_id.warehouse_id.show_discount" width="5%">Хөн.(%)</th>
+                        <th>Дүн</th>
+                        <th>Хайрцаг</th>
+                        <th>Задгай</th>
+                        <th>Нийт</th>
+                     </tr>
+                     <tbody t-foreach="lines[o.id]" t-as="l">
+                         <tr>
+                            <td style="text-align: center" t-esc="number"></td>
+                            <td style="text-align: left"><span t-esc="l['name']"/><span t-if="l['ean']"> [<t t-esc="l['ean']"/>]</span></td>
+                            <td t-if="lot"><span t-esc="l['lot']"/></td>
+                            <td style="text-align: center"><span t-esc="l['uom']"/></td>
+                            <td style="text-align: right"><span t-esc="l['qty']"/></td>
+                            <td t-if="o.picking_type_id.warehouse_id.show_discount" style="text-align: right"><span t-esc="l['price']"/> </td>
+                            <td t-if="not o.picking_type_id.warehouse_id.show_discount" style="text-align: right"><span t-esc="l['unit']"/> </td>
+                            <td t-if="o.picking_type_id.warehouse_id.show_discount" style="text-align: right"><span t-esc="l['amount']"/></td>
+                            <td t-if="o.picking_type_id.warehouse_id.show_discount" style="text-align: right"><span t-esc="l['discount']"/></td>
+                            <td style="text-align: right"><span t-esc="l['total1']"/></td>     
+                            <td style="text-align: left"><span t-esc="pack_datas[o.id][l['id']]['pack']"/></td>                                                   
+                            <td style="text-align: left"><span t-esc="pack_datas[o.id][l['id']]['loose']"/></td>                                                   
+                            <td style="text-align: left"><span t-esc="pack_datas[o.id][l['id']]['total']"/></td>
+                            <t t-set="number" t-value="number + 1"/>
+                        </tr>
+                    </tbody>
+<!--                    <tr style="background: #DDDDDD;color: #000000;">-->
+<!--                       <td t-if="lot" colspan="4" style="text-align: center"><b style="font-size: 10px">НИЙТ</b></td>-->
+<!--                       <td colspan="3" style="text-align: center"><b style="font-size: 10px">НИЙТ</b></td-->
+<!--                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['qty']"/></span></td>-->
+<!--                       <td/>-->
+<!--                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['amount']"/></span></td>-->
+<!--                       <td t-if="o.picking_type_id.warehouse_id.show_discount" colspan="1"></td>-->
+<!--                       <td t-if="not o.picking_type_id.warehouse_id.show_discount"></td> -->
+<!--                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['total1']"/></span></td>                       -->
+<!--                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['pack']"/></span></td>                       -->
+<!--                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['loose']"/></span></td>                       -->
+<!--                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['pack_total']"/></span></td>                       -->
+<!--                    </tr>-->
+                    <tr style="background: #DDDDDD;color: #000000;">
+                       <td t-if="lot" colspan="4" style="text-align: center"><b style="font-size: 10px">НИЙТ</b></td>
+                       <td  t-if="not lot" colspan="3" style="text-align: center"><b style="font-size: 10px">НИЙТ</b></td>
+<!--					   <td t-if="lot"></td-->
+                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['qty']"/></span></td>
+                       <td t-if="o.picking_type_id.warehouse_id.show_discount"/>
+                       <td t-if="o.picking_type_id.warehouse_id.show_discount" style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['amount']"/></span></td>
+                       <td t-if="o.picking_type_id.warehouse_id.show_discount" colspan="1"></td>
+                       <td t-if="not o.picking_type_id.warehouse_id.show_discount"></td> 
+                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['total1']"/></span></td>                       
+                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['pack']"/></span></td>                       
+                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['loose']"/></span></td>                       
+                       <td style="text-align: right"><span><b style="font-size: 10px" t-esc="total[o.id]['pack_total']"/></span></td>                       
+                    </tr>
+
+	                </table>
+                <table t-if="o.picking_type_id.warehouse_id.show_discount" width="30%" align="right" style="font-size: 10px; padding: 0px; border-collapse: collapse;">
+                    <tr><td align="left" width="80%">Нийт Дүн: </td>
+                        <td align="right" border="1" t-esc="total[o.id]['amount']"></td></tr>
+                    <tr><td align="left" width="80%">Нийт Хөнгөлөлтийн Дүн: </td>
+                        <td align="right" border="1" t-esc="total[o.id]['discount']"></td></tr>
+                    <tr><td align="left" width="80%"><b>Нийт НӨАТ-гүй дүн: </b></td>
+                        <td align="right" border="1"><b t-esc="total[o.id]['novat']"/></td></tr>
+                    <tr><td t-if="type=='out'" align="left" width="80%"><b>Нийт НӨАТ: </b></td>
+                        <td t-if="type=='out'" align="right" border="1"><b t-esc="total[o.id]['vat']"/></td></tr>
+                    <tr><td align="left" width="80%"><b>Нийт Төлөх Дүн: </b></td>
+                        <td align="right" border="1"><b t-esc="total[o.id]['total1']"/></td></tr>
+                </table>
+                <table t-if="not o.picking_type_id.warehouse_id.show_discount" width="30%" align="right" style="font-size: 10px; padding: 0px; border-collapse: collapse;">
+                    <tr><td align="left" width="80%"><b>Нийт НӨАТ: </b></td>
+                        <td align="right" border="1"><b t-esc="total[o.id]['vat']"/></td></tr>
+                    <tr><td align="left" width="80%"><b>Нийт НӨАТ-гүй дүн: </b></td>
+                        <td align="right" border="1"><b t-esc="total[o.id]['novat']"/></td></tr>
+                    <tr><td align="left" width="80%"><b>Нийт дүн: </b></td>
+                        <td align="right" border="1"><b t-esc="total[o.id]['total1']"/></td></tr>
+                </table>
+                <p></p> <p></p>
+                <p align="left" t-if="type=='out' and sales_type[o.id]">Төлбөрийн нөхцөл : <b t-esc="sales_type[o.id]"/></p>
+                <p align="left" style="padding-top: 0px; font-size: 10px;">Нийт дүн (үсгээр): <t t-esc="verbose_total.get(o.id, '')"/><!-- <t t-esc="currency"/> --></p>
+                <table class="table-l10n_mn-footer" t-if="type=='in'">
+                    <tr>
+                        <td rowspan="2" width="10%" align="center" valign="center">Тэмдэг</td>
+                        <td align="left" width="15%">Хүлээн авсан эд хариуцагч:</td>
+                        <td align="left" width="15%">...................................................................</td>
+                        <td align="left" width="15%">Хүлээлгэн өгсөн:</td>
+                        <td align="left" width="*">...................................................................</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td align="left">Шалгасан нягтлан бодогч</td>
+                        <td align="left">...............................................................</td>
+                    </tr>
+                </table>
+                <table t-if="type=='out'" width="100%">
+                   <tr>
+                        <!-- <td rowspan="3" align="left" width="30%">
+                            <div t-if="vat_list">
+                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;humanreadable=1' % ('Code128', vat_list[o.id]['bill_id'], 350, 40)" style="width:160px;height:25px"/>
+                            </div>
+                        </td>
+                        <td rowspan="3" align="right" width="30%">
+                            <div t-if="vat_list">
+                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;' % ('QR', vat_list[o.id]['qr_data'], 180, 180)" style="width:90px;height:90px"/>
+                            </div>
+                        </td> -->
+                        <td align="left" width="50%" style="font-size: 10px;">Хүлээлгэн өгсөн: .......................Түгээгч: <span t-if="o.sheet_id.driver_id" t-field="o.sheet_id.driver_id.name" ></span>(<span t-if="o.sheet_id.driver_id.mobile_phone" t-field="o.sheet_id.driver_id.mobile_phone" ></span>)</td>
+                        <td align="left" width="50%" style="font-size: 10px;">Хүлээн авсан:.........................../Утас:............................/</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td align="left" width="50%" style="font-size: 10px;">Нийт төлөх дүн: <span t-esc="total[o.id]['total1']"></span></td>
+                        <td align="left" width="50%" style="font-size: 10px;">Төлсөн дүн:.....................................</td>
+                    </tr>
+                    <tr>
+                        <td align="left" width="50%" style="font-size: 10px;">Мөнгө хүлээн авсан:....................Түгээгч: <span t-if="o.sheet_id.driver_id" t-field="o.sheet_id.driver_id.name"></span>(<span t-if="o.sheet_id.driver_id.mobile_phone" t-field="o.sheet_id.driver_id.mobile_phone" ></span>)</td>
+                        <td align="left" width="50%" style="font-size: 10px;">Мөнгө хүлээлгэн өгсөн:................./Утас: ............................/</td>
+                    </tr>
+                    <tr>
+                    	<td></td>
+                    </tr>
+                     <tr>
+                    	<td></td>
+                        <td align="left" width="50%" style="font-size: 10px;">Шалгасан нягтлан бодогч:...........................</td>
+                    </tr>
+                 <!--  <tr>
+                        <td align="left" width="30%">Захиалга буцсан шалтгаан:</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                    	<td></td>
+                    </tr>
+                    <tr>
+                        <td align="left" width="30%">Хаалттай</td>
+                        <td align="left" width="30%">Нэр төрөл зөрсөн</td>
+                        <td align="left" width="30%">Харилцагчийн нэр зөрсөн</td>
+                    </tr>
+                    <tr>
+                        <td align="left" width="30%">Сав баглаа гэмтэлтэй</td>
+                        <td align="left" width="30%">Захиалга давхар гарсан</td>
+                        <td align="left" width="30%">Өмнө захиалсан боловч хоцорч ирсэн</td>
+                    </tr>
+                    <tr>
+                        <td align="left" width="30%">Мөнгөгүй</td>
+                        <td align="left" width="30%">Захиалаагүй</td>
+                        <td align="left" width="30%">Бусад............................</td>
+                    </tr> -->
+                    <!-- <tr t-if="vat_list"><td align="left">Сугалааны дугаар : <span style="background:#000000;color:#ffffff" t-esc="vat_list[o.id]['lottery']"/></td></tr> -->
+                </table>
+            </div>            
+        </t>
+     </t>
+</template>
+        
+<template id="report_picking_cost">
+    <t t-foreach="docs" t-as="o">
+        <t t-call="report.layout">
+            <div class="page l10n_mn_base_report">
+                 <h3 t-if="type=='in'">Бараа материалын орлогын баримт (Өртөгөөр)</h3>
+                 <h3 t-if="type=='out'">Бараа материалын зарлагын баримт (Өртөгөөр)</h3>
+                 <table class="table table-l10n_mn-header" t-if="pick_type=='one'">
+                     <tr><td><span>Баримтын дугаар</span>: <b t-field="o.name"/></td>
+                         <td><span>Огноо</span>: <b t-field="o.date_done"/></td></tr>
+                     <tr><td><span>Эх баримт</span>: <span t-if="o.origin"><b t-field="o.origin"/></span></td>
+                         <td><span t-if="type=='in'">Нийлүүлэгч</span><span t-if="type=='out'">Харилцагч</span>: <span t-if="o.partner_id"><b t-field="o.partner_id" t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": true}'/></span></td></tr>
+                     <tr><td><span>Салбар нэгж</span>: <span t-if="o.picking_type_id.warehouse_id"><b t-field="o.picking_type_id.warehouse_id"/></span></td>
+                     </tr>
+                 </table>
+                 <table class="table table-l10n_mn-header" t-if="pick_type=='many'">
+                     <tr><td><span>Баримтын дугаар</span>: <b t-esc="pick_names"/></td>
+                         <td><span>Огноо</span>: <b t-esc="time.strftime('%Y-%m-%d %H:%M')"/></td></tr>
+                 </table>
+                 <table class="table table-l10n_mn-grid">
+                     <tr>
+                        <th width="*">№</th>
+                        <th width="15%">Бар код</th>
+                        <th width="50%">Бараа материалын нэр</th>
+                        <th t-if="lot" width="10%">Серийн дугаар</th>
+                        <th>Х.Н</th>
+                        <th width="10%">Тоо</th>
+                        <th>Нэгж үнэ</th>
+                        <th width="15%">Нийт</th>
+                     </tr>
+                     <t t-set="number" t-value="1"/>
+                     <tbody t-foreach="lines" t-as="l">
+                        <tr>
+                             <td><span t-esc="number"/></td>
+                             <td><span t-esc="l['ean']"/></td>
+                             <td><span t-esc="l['name']"/></td>
+                             <td t-if="lot"><span t-esc="l['lot']"/></td>
+                             <td><span t-esc="l['uom']"/></td>
+                             <td style="text-align: right"><span t-esc="l['qty']"/></td>
+                             <td style="text-align: right"><span t-esc="l['cost']"/></td>
+                             <td style="text-align: right"><span t-esc="l['amount']"/></td>
+                             <t t-set="number" t-value="number + 1"/>
+                        </tr>
+                    </tbody>
+                    <tr style="background: #DDDDDD;color: #000000;">
+                         <td t-if="lot" align="center" colspan="5"><b>НИЙТ ДҮН</b></td>
+                         <td t-if="not lot" align="center" colspan="4"><b>НИЙТ ДҮН</b></td>
+                         <td style="text-align: right"><b><span t-esc="total['qty']"/></b></td>
+                         <td style="text-align: right"></td>
+                         <td style="text-align: right"><b><span t-esc="total['amount']"/></b></td>
+                     </tr>
+                 </table>
+                <p>Нийт дүн (үсгээр): <t t-esc="verbose_total"/> <!-- <t t-esc="currency"/> --></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <table class="table-l10n_mn-footer">
+                    <tr>
+                        <td rowspan="2" width="10%" align="center" valign="center">Тэмдэг</td>
+                        <td width="15%">Хүлээн авсан эд хариуцагч:</td>
+                        <td width="15%">...................................................................</td>
+                        <td width="15%">Хүлээлгэн өгсөн:</td>
+                        <td width="*">...................................................................</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Шалгасан нягтлан бодогч</td>
+                        <td>...............................................................</td>
+                    </tr>
+                </table>
+            </div>
+        </t>
+     </t>
+</template>
+</data>
+</openerp>

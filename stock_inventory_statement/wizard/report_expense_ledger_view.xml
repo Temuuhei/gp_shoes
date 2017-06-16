@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+        <record id="view_report_expense_ledger_form" model="ir.ui.view">
+            <field name="name">view.report.expense.ledger.form</field>
+            <field name="model">report.expense.ledger</field>
+            <field name="inherit_id" ref="l10n_mn_report_base.abstract_report_view"/>
+            <field name="arch" type="xml">
+                <xpath expr='//form' position="attributes">
+                    <attribute name="string">Report Expense Ledger</attribute>
+                </xpath>
+                <xpath expr='//group[@name="report"]' position="inside">
+                    <group>
+                       <field name="company_id" invisible="1"/>
+                       <group>
+                            <field name="date_from"/>
+                            <field name="type"/>
+                       </group>
+                       <group>
+                            <field name="date_to"/>
+                            <label for="cost" groups="l10n_mn_account.account_view_cost"/><field name="cost" groups="l10n_mn_account.account_view_cost" nolabel="1"/>
+                       </group>
+                        <group>
+                            <field name="sales"/>
+                            <field name="swap"/>
+                            <field name="consume"/>
+                            <field name="pos" attrs="{'invisible':[('pos_install','=',False)]}"/>
+                        </group>
+                        <group>
+                            <field name="refund"/>
+                            <field name="inventory"/>
+                            <field name="procure"/>
+                            <field name="mrp" attrs="{'invisible':[('mrp_install','=',False)]}"/>
+                        </group>
+                        <field name="pos_install" invisible="1"/>
+                        <field name="mrp_install" invisible="1"/>
+                    </group>
+                   <notebook colspan="4">
+                       <page string="Warehouse">
+                       <field name="warehouse_ids" nolabel="1" colspan="4" widget="many2many_kanban" required="1">
+                           <kanban quick_create="false" create="true" delete="true">
+                                <field name="name"/>
+                                <templates>
+                                    <t t-name="kanban-box">
+                                        <div style="position: relative;border-width: 1px; border-radius: 4px; border-style: solid; border-bottom-color: #B9B9B9; border-left-color: #D8D8D8; border-right-color: #D8D8D8; border-top-color: #D8D8D8;">
+                                            <a t-if="! read_only_mode" type="delete" style="position: absolute; right: 0; padding: 4px; diplay: inline-block">X</a>
+                                            <div class="oe_module_vignette">
+                                                <div class="oe_module_desc">
+                                                    <field name="name"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </templates>
+                            </kanban>
+                       </field>
+                       </page>
+                       <page string="Product">
+                       <field name="product_ids" nolabel="1" colspan="4"/>
+                       </page>
+                       <page string="Partner">
+                       <field name="partner_ids" nolabel="1" colspan="4" domain="[('customer','=',True)]"/>
+                       </page>
+                       <page string="Category">
+                       <field name="category_ids" nolabel="1" colspan="4"/>
+                       </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="action_report_expense_ledger" model="ir.actions.act_window">
+            <field name="name">Report Expense Ledger</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">report.expense.ledger</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_report_expense_ledger_form"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem action="action_report_expense_ledger" id="menu_action_report_expense_ledger" 
+            parent="stock.next_id_61" sequence="10" groups="stock.group_stock_manager,account.group_account_user"/>
+            
+    </data>
+</openerp>

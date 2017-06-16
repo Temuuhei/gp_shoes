@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        
+        <record model="ir.rule" id="stock_consume_order_rule">
+	        <field name="name">stock_consume_order multi-company</field>
+	        <field name="model_id" search="[('model','=','stock.consume.order')]" model="ir.model"/>
+	        <field name="global" eval="True"/>
+	        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+	    </record>
+	    
+	    <record model="ir.rule" id="stock_transit_order_rule">
+	        <field name="name">stock_transit_order multi-company</field>
+	        <field name="model_id" search="[('model','=','stock.transit.order')]" model="ir.model"/>
+	        <field name="global" eval="True"/>
+	        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+	    </record>
+	    
+	    <record id="can_change_stock_date" model="res.groups">
+	        <field name="name">Manage Stock Transaction Date</field>
+	        <field name="comment">the user will have an permission to the set transaction date on any picking object.</field>
+	        <field name="category_id" ref="base.module_category_hidden"/>
+	    </record>
+	    
+	    <record id="l10n_mn_stock_force_assign" model="res.groups">
+	       <field name="name">Force Availability</field>
+	       <field name="commet">the user will have on permission to the set force availableity</field>
+	       <field name="category_id" ref="base.module_category_hidden"/>
+	    </record>
+	    
+	    <record id="stock_picking_type_warehouse_rule" model="ir.rule">
+	        <field name="name">Stock Picking Rule by Warehouse</field>
+	        <field name="model_id" ref="stock.model_stock_picking_type"/>
+            <field name="groups" eval="[(4,ref('stock.group_stock_user'))]"/>
+            <field name="domain_force">['|',('warehouse_id','=',False),('warehouse_id','in',map(lambda x:x.id,user.allowed_warehouses))]</field>
+	    </record>
+	    
+	    <record id="stock_picking_type_warehouse_rule_all" model="ir.rule">
+            <field name="name">Stock Picking Rule All</field>
+            <field name="model_id" ref="stock.model_stock_picking_type"/>
+            <field name="groups" eval="[(4,ref('base.group_erp_manager'))]"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+        </record>
+	    
+	    <record id="stock_picking_warehouse_rule" model="ir.rule">
+	        <field name="name">Stock Picking by Warehouse</field>
+	        <field name="model_id" ref="stock.model_stock_picking"/>
+	        <field name="groups" eval="[(4,ref('stock.group_stock_user'))]"/>
+	        <field name="domain_force">['|',('picking_type_id.warehouse_id','=',False),('picking_type_id.warehouse_id','in',map(lambda x:x.id,user.allowed_warehouses))]</field>
+	    </record>
+	    
+	    <record id="stock_picking_warehouse_rule_all" model="ir.rule">
+            <field name="name">Stock Picking All</field>
+            <field name="model_id" ref="stock.model_stock_picking"/>
+            <field name="groups" eval="[(4,ref('base.group_erp_manager'))]"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+        </record>
+	    
+	    <record id="stock_inventory_warehouse_rule" model="ir.rule">
+	        <field name="name">Stock Inventory by Warehouse</field>
+	        <field name="model_id" ref="stock.model_stock_inventory"/>
+	        <field name="groups" eval="[(4,ref('stock.group_stock_user'))]"/>
+	        <field name="domain_force">['|',('warehouse_id','=',False),('warehouse_id','in',map(lambda x:x.id,user.allowed_warehouses))]</field>
+	    </record>
+	    
+	    <record id="stock_transit_order warehouse_rule" model="ir.rule">
+            <field name="name">Stock Transit Order by Warehouse</field>
+            <field name="model_id" ref="l10n_mn_stock.model_stock_transit_order"/>
+            <field name="groups" eval="[(4,ref('stock.group_stock_user'))]"/>
+            <field name="domain_force">['|',('warehouse_id','in',map(lambda x:x.id,user.allowed_warehouses)),('supply_warehouse_id','in',map(lambda x:x.id,user.allowed_warehouses))]</field>
+        </record>
+        
+        <record id="ir_config_parameter_tax_factor" model="ir.config_parameter">
+            <field name="key">report.tax</field>
+            <field name="value">0.10</field>
+        </record>
+        
+        <!-- Fix access rights on core modules -->
+        <record id="stock.access_product_product_stock_user" model="ir.model.access">
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="stock.access_product_template_stock_user" model="ir.model.access">
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        
+        <record id="stock_view_availability_qty" model="res.groups">
+	        <field name="name">Боломжит нөөц харах</field>
+	        <field name="comment">Энэ бүлгийн хэрэглэгчид нөхөн дүүргэлтийн боломжит нөөцийг харах эрхтэй байна.</field>
+	    </record>
+    </data>
+</openerp>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+    <record id="view_product_profit_report_form" model="ir.ui.view">
+        <field name="name">view.product.profit.report.form</field>
+        <field name="model">product.profit.report</field>
+        <field name="inherit_id" ref="l10n_mn_report_base.abstract_report_view"/>
+        <field name="arch" type="xml">
+            <xpath expr='//form' position="attributes">
+                <attribute name="string">Product Profit Report</attribute>
+            </xpath>
+            <xpath expr='//group[@name="report"]' position="inside">
+               <group>
+                 <field name="company_id" readonly="1"/>
+                 <field name="type"/>
+               </group>
+               <group colspan="2">                   
+                   <field name="sorting"/>                                      
+               </group>
+               <group colspan="2">         
+                    <field name="date_from" attrs="{'required':[('type','!=','summary')], 'invisible': ['|',('type','=','summary')]}"/>
+                    <field name="date_to" attrs="{'required':[('type','!=','summary')], 'invisible': ['|',('type','=','summary')]}"/>
+                    <field name="period_from" attrs="{'required':[('type','=','summary')], 'invisible': [('type', '!=', 'summary')]}"/>
+                    <field name="period_to" attrs="{'required':[('type','=','summary')], 'invisible': [('type', '!=', 'summary')]}"/>
+               </group>               
+               <notebook colspan="4">                   
+                   <page string="Sales Team">
+                       <field name="team_ids" nolabel="1" colspan="4"/>
+                   </page>
+                   <page string="Product Category">
+                       <field name="prod_categ_ids" nolabel="1" colspan="4"/>
+                   </page>
+                   <page string="Product">
+                       <field name="product_ids" nolabel="1" colspan="4"/>
+                   </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="action_product_profit_report" model="ir.actions.act_window">
+        <field name="name">Product Profit Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.profit.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_product_profit_report_form"/>
+        <field name="target">new</field>
+    </record>
+    
+    <menuitem action="action_product_profit_report" id="menu_action_product_profit_report" 
+        parent="stock.next_id_61" sequence="10" groups="stock.group_stock_manager,account.group_account_user"/>
+            
+</data>
+</openerp>
