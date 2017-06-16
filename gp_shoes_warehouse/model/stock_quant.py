@@ -24,43 +24,90 @@ class Quant(models.Model):
 
     @api.multi
     def my_function(self):
-         first_warehouse = 0
-         picking_type = 0
-         outgoing_location = 0
-         stock_move = []
-         for item in self:
-             first_warehouse = self.env['stock.warehouse'].search([('lot_stock_id', '=', item.location_id.id)], limit=1)
-             picking_type = self.env['stock.picking.type'].search([('warehouse_id','=',first_warehouse.id),
-                                                                   ('code','=','internal')],limit=1)
-             outgoing_location = self.env['stock.picking.type'].search([('warehouse_id', '=', first_warehouse.id),
-                                                                   ('code', '=', 'outgoing')], limit=1)
-             location_id = item.location_id.id
-             stock_move.append((0,0, {'product_id': item.product_id.id,
-                                'product_uom_qty': int(item.qty),
-                                'state': 'draft',
-                                'product_uom': item.product_id.product_tmpl_id.uom_id.id,
-                                'procure_method': 'make_to_stock',
-                                'location_id': item.location_id.id,
-                                'location_dest_id': outgoing_location.id,
-                                'company_id': item.company_id.id,
-                                'date_expected': item.in_date,
-                                'date': item.in_date,
-                                'name': item.product_tmp_id,
-                                'scrapped':False,
-                                }))
-         return \
-            {
-             'name':_("Stock Transit Order"),
-             'type': 'ir.actions.act_window',
-             'view_mode': 'form',
-             'res_model': 'stock.picking',
-             'target': 'new',
-             'context': {
-                 'default_picking_type_id':picking_type.id,
-                 'default_location_id':self.location_id.id,
-                 'default_location_dest_id':False,
-                 'default_origin':'temka',
-                 'default_move_lines':[line.stock_move for line in self],
-             }
+        first_warehouse = 0
+        picking_type = 0
+        outgoing_location = 0
+        stock_move = []
+        for item in self:
+            warehouse = self.env['stock.warehouse'].search([('lot_stock_id', '=', item.location_id.id)], limit=1)
+            if first_warehouse == 0:
+                first_warehouse = warehouse
+                picking_type = self.env['stock.picking.type'].search([('warehouse_id', '=', first_warehouse.id),
+                                                                      ('code', '=', 'internal')], limit=1)
+                outgoing_location = self.env['stock.picking.type'].search([('warehouse_id', '=', first_warehouse.id),
+                                                                           ('code', '=', 'outgoing')], limit=1)
+            elif first_warehouse.id > 0:
+                if not (warehouse == first_warehouse):
+                    raise UserError(_("You can create transit order only for one location at time.") )
+            stock_move.append((0, 0, {'product_id': item.product_id.id,
+                                      'product_uom_qty': int(item.qty),
+                                      'state': 'draft',
+                                      'product_uom': item.product_id.product_tmpl_id.uom_id.id,
+                                      'procure_method': 'make_to_stock',
+                                      'location_id': item.location_id.id,
+                                      'location_dest_id': outgoing_location.id,
+                                      'company_id': item.company_id.id,
+                                      'date_expected': item.in_date,
+                                      'date': item.in_date,
+                                      'name': item.product_tmp_id,
+                                      'scrapped': False,
+                                      }))
+        if stock_move:
+            return \
+                {
+                    'name': _("Stock Transit Order"),
+                    'type': 'ir.actions.act_window',
+                    'view_mode': 'form',
+                    'res_model': 'stock.picking',
+                    'target': 'new',
+                    'context': {
+                        'default_picking_type_id': picking_type.id,
+                        'default_location_id': outgoing_location.id,
+                        'default_location_dest_id': False,
+                        'default_origin': 'temka',
+                        'default_move_lines': stock_move,
+                    }
 
-             }
+                }
+    #OLD FUNCTION
+    # def my_function(self):
+    #      first_warehouse = 0
+    #      picking_type = 0
+    #      outgoing_location = 0
+    #      stock_move = []
+    #      for item in self:
+    #          first_warehouse = self.env['stock.warehouse'].search([('lot_stock_id', '=', item.location_id.id)], limit=1)
+    #          picking_type = self.env['stock.picking.type'].search([('warehouse_id','=',first_warehouse.id),
+    #                                                                ('code','=','internal')],limit=1)
+    #          outgoing_location = self.env['stock.picking.type'].search([('warehouse_id', '=', first_warehouse.id),
+    #                                                                ('code', '=', 'outgoing')], limit=1)
+    #          location_id = item.location_id.id
+    #          stock_move.append((0,0, {'product_id': item.product_id.id,
+    #                             'product_uom_qty': int(item.qty),
+    #                             'state': 'draft',
+    #                             'product_uom': item.product_id.product_tmpl_id.uom_id.id,
+    #                             'procure_method': 'make_to_stock',
+    #                             'location_id': item.location_id.id,
+    #                             'location_dest_id': outgoing_location.id,
+    #                             'company_id': item.company_id.id,
+    #                             'date_expected': item.in_date,
+    #                             'date': item.in_date,
+    #                             'name': item.product_tmp_id,
+    #                             'scrapped':False,
+    #                             }))
+    #      return \
+    #         {
+    #          'name':_("Stock Transit Order"),
+    #          'type': 'ir.actions.act_window',
+    #          'view_mode': 'form',
+    #          'res_model': 'stock.picking',
+    #          'target': 'new',
+    #          'context': {
+    #              'default_picking_type_id':picking_type.id,
+    #              'default_location_id':self.location_id.id,
+    #              'default_location_dest_id':False,
+    #              'default_origin':'temka',
+    #              'default_move_lines':stock_move,
+    #          }
+    #
+    #          }

@@ -26,13 +26,13 @@ class cash(models.Model):
     amount = fields.Float(string='Amount')
     note = fields.Text(string='Note')
     history = fields.One2many('cash.history','parent_id',string='Note')
-
-    @api.multi
-    def take_money(self):
-        for i in self:
-            print'\n\n aaaaaaaa %s \n\n' % i
-        print'\n\n take_money %s \n\n'%self
-        # create history line and update amount
+    #
+    # @api.multi
+    # def take_money(self):
+    #     for i in self:
+    #         print'\n\n aaaaaaaa %s \n\n' % i
+    #     print'\n\n take_money %s \n\n'%self
+    #     # create history line and update amount
 
 
 
