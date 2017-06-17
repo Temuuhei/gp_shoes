@@ -231,7 +231,6 @@ class Abstract_Report_Model(models.Model):
             log_id = self.create_log_message(report_type='XLS', automatic=True)
         else :
             log_id = self.create_log_message(report_type='XLS', automatic=False)
-        
         user = self.env['res.users'].browse()
         
         report_code, directory_name = self.get_report_code()
@@ -484,19 +483,17 @@ class Abstract_Report_Model(models.Model):
         tempf.write(buffer_value)
         tempf.close()
         
-        excel_id = self.pool.get('report.excel.output').create({
+        excel_id = self.env['report.excel.output'].create({
                                 'data':out,
                                 'name':filename
         })
         
-        mod_obj = self.pool.get('ir.model.data')
-        form_res = mod_obj.get_object_reference('l10n_mn_report_base', 'action_excel_output_view')
+        mod_obj = self.env['ir.model.data']
+        form_res = mod_obj.get_object_reference('l10n_mn_report_base_2', 'action_excel_output_view')
         form_id = form_res and form_res[1] or False
-        
-        self.pool.get('abstract.report.logging').done([log_id])
-        
+        logging = self.env['abstract.report.logging'].browse(log_id)
+        # logging.done()
         # context.update({'report_output_temporary': tempf.name, 'report_output_filename':filename})
-        
         return {
             'name': _('Export Result'),
             'view_type': 'form',
@@ -504,7 +501,7 @@ class Abstract_Report_Model(models.Model):
             'res_model': 'report.excel.output',
             'view_id': False,
             'views': [(form_id, 'form')],
-            'res_id': excel_id,
+            'res_id': excel_id.id,
             'context': context,
             'type': 'ir.actions.act_window',
             'target':'new',
@@ -704,8 +701,9 @@ class abstract_report_logging(models.Model):
         'duration': '--'
     }
     
-    def done(self, cr, uid, ids, context=None):
-        log = self.browse(cr, uid, ids[0], context=context)
+    def done(self):
+        log = self
+
         stop_date = datetime.datetime.now()
         dta = stop_date - datetime.datetime.strptime(log.date_start, '%Y-%m-%d %H:%M:%S')
         if dta.seconds > 60 :
@@ -717,7 +715,7 @@ class abstract_report_logging(models.Model):
         else :
             prefix = u"[Тайлан][%s][COMPLETE (%s)]" % (log.type, tm)
         message = u"%s %s" % (prefix, log.name)
-        self.write(cr, uid, ids, {'state':'done',
+        self.write({'state':'done',
                                   'date_stop':stop_date.strftime('%Y-%m-%d %H:%M:%S'),
                                   'duration': tm})
         _logger.info(message)

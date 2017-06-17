@@ -36,7 +36,7 @@ class stock_inventory_statement(models.Model):
             res += [('pos_categ', _('Pos Category'))]
         return res
 
-    def _get_pos_install(self, cr, uid, context=None):
+    def _get_pos_install(self):
         '''
             Посын модуль суусан эсэхийг шалгана.
         '''
@@ -45,21 +45,21 @@ class stock_inventory_statement(models.Model):
             return True
         return False
 
-    company_id = fields.Many2one('res.company', 'Company', readonly=True)
+    company_id = fields.Many2one('res.company', 'Company', readonly=True,default=lambda self: self.env['res.company']._company_default_get('account.account'))
     warehouse_ids = fields.Many2many('stock.warehouse', 'stock_inventory_statement_warehouse_rel', 'wizard_id', 'warehouse_id', 'Warehouse')
     prod_categ_ids = fields.Many2many('product.category', 'stock_inventory_statement_prod_categ_rel', 'wizard_id', 'prod_categ_id', 'Product Category')  # domain=['|',('parent_id','=',False),('parent_id.parent_id','=',False)]),
     product_ids = fields.Many2many('product.product', 'stock_inventory_statement_product_rel', 'wizard_id', 'product_id', 'Product')
-    income_expense = fields.Boolean('Show Income and Expenditure?')
+    income_expense = fields.Boolean('Show Income and Expenditure?', default = False)
     partner_ids = fields.Many2many('res.partner', 'stock_inventory_statement_partner_rel', 'wizard_id', 'partner_id', 'Partner')
     grouping = fields.Selection(get_group_by, 'Grouping')
     sorting = fields.Selection([('default_code', 'Default Code'),
-                                ('name', 'Product Name')], 'Sorting', required=True)
-    type = fields.Selection([('detail', 'Detail'), ('summary', 'Summary')], 'Type', required=True)
-    date_to = fields.Date('To Date', required=True)
-    date_from = fields.Date('From Date')
-    pos_install = fields.Boolean('Pos Install')
-    cost = fields.Boolean('Show Cost Amount?')
-    ean = fields.Boolean('Show Barcode')
+                                ('name', 'Product Name')], 'Sorting', required=True, default = 'default_code')
+    type = fields.Selection([('detail', 'Detail'), ('summary', 'Summary')], 'Type', required=True, default = 'detail')
+    date_to = fields.Date('To Date', required=True, default=fields.Datetime.now)
+    date_from = fields.Date('From Date',default=time.strftime('%Y-%m-01'))
+    pos_install = fields.Boolean(compute = _get_pos_install, string = 'Pos Install')
+    cost = fields.Boolean('Show Cost Amount?', default = False)
+    ean = fields.Boolean('Show Barcode', default = True)
     lot = fields.Boolean('Show Serial')
     currently_cost = fields.Boolean('Currently Cost?')
     
@@ -67,19 +67,19 @@ class stock_inventory_statement(models.Model):
     def _get_warehouse(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
         return (user.allowed_warehouses and map(lambda x: x.id, user.allowed_warehouses)) or []
-
-    _defaults = {
-        'company_id': lambda obj, cr, uid, c: obj.pool.get('res.company')._company_default_get(cr, uid, 'stock.inventory.report'),
-        'date_to': lambda *a: time.strftime('%Y-%m-%d'),
-        'date_from': lambda *a: time.strftime('%Y-%m-01'),
-        'income_expense': False,
-        'sorting': 'default_code',
-        'pos_install': _get_pos_install,
-        'cost': False,
-        'ean': True,
-        # 'warehouse_ids': _get_warehouse,
-        'type': 'detail'
-    }
+    #
+    # _defaults = {
+    #     'company_id': lambda obj, cr, uid, c: obj.pool.get('res.company')._company_default_get(cr, uid, 'stock.inventory.report'),
+    #     'date_to': lambda *a: time.strftime('%Y-%m-%d'),
+    #     'date_from': lambda *a: time.strftime('%Y-%m-01'),
+    #     'income_expense': False,
+    #     'sorting': 'default_code',
+    #     'pos_install': _get_pos_install,
+    #     'cost': False,
+    #     'ean': True,
+    #     # 'warehouse_ids': _get_warehouse,
+    #     'type': 'detail'
+    # }
 
     def get_log_message(self, cr, uid, ids, context=None):
         form = self.browse(cr, uid, ids[0], context=context)
@@ -115,6 +115,7 @@ class stock_inventory_statement(models.Model):
         '''
         wiz = self.read()
         data, titles, row_span = self.prepare_report_data(wiz)
+        wiz = wiz[0]
         warehouses = self.env['stock.warehouse'].browse(wiz['warehouse_ids'])
         widths = [2]
         if wiz['income_expense']:
@@ -278,8 +279,8 @@ class stock_inventory_statement(models.Model):
         return {'datas': datas}
 
     def prepare_report_data(self,wiz):
+        wiz = wiz[0]
         context = self._context or {}
-
         location_obj = self.env['stock.location']
         product_obj = self.env['product.product']
         warehouses = self.env['stock.warehouse'].browse(wiz['warehouse_ids'])
@@ -1012,10 +1013,15 @@ class stock_inventory_statement(models.Model):
                 parent_groupby = ",myquery.group_id,myquery.gname "
             for wh in warehouses:
                 ctx = context.copy()
-                if company.store_cost_per_warehouse:
-                    ctx.update({'warehouse': wh.id})
+                # if company.store_cost_per_warehouse:
+                #     ctx.update({'warehouse': wh.id})
                 locations = location_obj.search([('usage', '=', 'internal'),
                                                           ('location_id', 'child_of', [wh.view_location_id.id])])
+                location2 = []
+                for i in locations:
+                    location2.append(i.id)
+
+                locations = location2
                 locations = tuple(locations)
                 if wh.id not in total_dict['whs']:
                     total_dict['whs'][wh.id] = {'qty': 0,
@@ -1023,7 +1029,7 @@ class stock_inventory_statement(models.Model):
                                                 'price': 0}
                 # Тайлант хугацааны эхний үлдэгдэл
                 if wiz['lot'] and ((wiz['grouping'] and wiz['type'] == 'detail') or not wiz['grouping']):
-                    cr.execute("(SELECT m.product_id AS prod,  lot.id AS lot, lot.life_date AS ldate,lot.name AS lname, " + select + ""
+                    self._cr.execute("(SELECT m.product_id AS prod,  lot.id AS lot, lot.life_date AS ldate,lot.name AS lname, " + select + ""
                                     "coalesce(sum(m.product_qty),0) as q, "
                                     "coalesce(sum(m.cost),0) as c, "
                                     "coalesce(sum(m.price),0) as l "
@@ -1035,13 +1041,13 @@ class stock_inventory_statement(models.Model):
                                "GROUP BY m.product_id,lot.id,lot.life_date,lot.name" + groupby + " having sum(m.product_qty)::decimal(16,4) <> 0) ",
                             (locations,))
                 else:
-                    cr.execute("SELECT myquery.product_id as prod, " + parent_select + ""
+                    self._cr.execute("SELECT myquery.product_id as prod, " + parent_select + ""
                                     "sum(myquery.q) as q, sum(myquery.c) as c, sum(myquery.price) as l "
                                "FROM ( "
                                         "(SELECT m.product_id, " + select + ""
                                                 "coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                                 "coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                                "coalesce(sum(m.list_price*(m.product_qty/u.factor*u2.factor)),0) as price "
+                                                "0 as price "
                                            "FROM stock_move m "
                                                 "JOIN product_product pp ON (pp.id=m.product_id) "
                                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -1054,7 +1060,7 @@ class stock_inventory_statement(models.Model):
                                        "(SELECT m.product_id, " + select + ""
                                                 "-coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                                 "-coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                                "-coalesce(sum(m.list_price*(m.product_qty/u.factor*u2.factor)),0) as price "
+                                                "0 as price "
                                            "FROM stock_move m "
                                                 "JOIN product_product pp ON (pp.id=m.product_id) "
                                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -1066,14 +1072,15 @@ class stock_inventory_statement(models.Model):
                                                "GROUP BY m.product_id " + groupby + " ) ) as myquery GROUP BY myquery.product_id " + parent_groupby + ""
                                             "having sum(myquery.q)::decimal(16,4) <> 0 ", (locations, locations, locations, locations))
 
-                fetched = cr.dictfetchall()
+                fetched = self._cr.dictfetchall()
                 for f in fetched:
                     if wiz['currently_cost'] is True:
                         standard_price_display = product_obj.price_get(f['prod'], 'standard_price')[f['prod']]
                         f['c'] = f['q'] * standard_price_display
                     price = 0
                     if f['prod']:
-                        price = product_obj.price_get(f['prod'], 'list_price')[f['prod']]
+                        product = product_obj.browse(f['prod'])
+                        price = product.price_get('list_price')[f['prod']]
                     if f['prod'] not in prod_ids:
                         prod_ids.append(f['prod'])
                     if f['q'] != 0:
@@ -1182,11 +1189,12 @@ class stock_inventory_statement(models.Model):
             warehouse_cost_dict = {}
             for wh in warehouses:
                 ctx = context.copy()
-                if company.store_cost_per_warehouse:
-                    ctx.update({'warehouse': wh.id})
+                # if company.store_cost_per_warehouse:
+                #     ctx.update({'warehouse': wh.id})
                 if wiz['cost']:
                     warehouse_cost_dict[wh.id] = product_obj.price_get(prod_ids, ptype='standard_price')
-                prices[wh.id] = product_obj.price_get(prod_ids, 'list_price')
+                product = product_obj.browse(f['prod'])
+                prices[wh.id] = product.price_get('list_price')
             row = ['']
             if wiz['ean'] and ((wiz['grouping'] and wiz['type'] == 'detail') or not wiz['grouping']):
                 row += ['']

@@ -1088,7 +1088,7 @@ class report_product_move_check(osv.osv_memory):
         message = u"[Бүртгэл хяналтын баримт][XLS][COMPLETE (%s)] %s" % (tm, body)
         #self.pool.get('res.log').write(cr, uid, [log_id], {'name': message,'create_date':time.strftime('%Y-%m-%d %H:%M:%S')})
         _logger.info(message)
-        mod_obj = self.pool.get('ir.model.data')
+        mod_obj = self.env['ir.model.data']
         form_res = mod_obj.get_object_reference(cr, uid, 'l10n_mn_report_base', 'action_excel_output_view')
         form_id = form_res and form_res[1] or False
         return {
