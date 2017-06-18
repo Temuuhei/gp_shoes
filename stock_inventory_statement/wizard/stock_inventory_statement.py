@@ -29,7 +29,7 @@ class stock_inventory_statement(models.Model):
     _inherit = 'abstract.report.model'
     _description = 'Stock Inventory Statement'
     def get_group_by(self):
-        res = [('manufacture', _('Manufacturer')),
+        res = [
                ('category', _('Category'))]
         pos_obj = self.pool.get('pos.category')
         if pos_obj:
@@ -49,7 +49,7 @@ class stock_inventory_statement(models.Model):
     warehouse_ids = fields.Many2many('stock.warehouse', 'stock_inventory_statement_warehouse_rel', 'wizard_id', 'warehouse_id', 'Warehouse')
     prod_categ_ids = fields.Many2many('product.category', 'stock_inventory_statement_prod_categ_rel', 'wizard_id', 'prod_categ_id', 'Product Category')  # domain=['|',('parent_id','=',False),('parent_id.parent_id','=',False)]),
     product_ids = fields.Many2many('product.product', 'stock_inventory_statement_product_rel', 'wizard_id', 'product_id', 'Product')
-    income_expense = fields.Boolean('Show Income and Expenditure?', default = False)
+    income_expense = fields.Boolean('Show Income and Expenditure?', default = False,invisible= True)
     partner_ids = fields.Many2many('res.partner', 'stock_inventory_statement_partner_rel', 'wizard_id', 'partner_id', 'Partner')
     grouping = fields.Selection(get_group_by, 'Grouping')
     sorting = fields.Selection([('default_code', 'Default Code'),
@@ -59,8 +59,8 @@ class stock_inventory_statement(models.Model):
     date_from = fields.Date('From Date',default=time.strftime('%Y-%m-01'))
     pos_install = fields.Boolean(compute = _get_pos_install, string = 'Pos Install')
     cost = fields.Boolean('Show Cost Amount?', default = False)
-    ean = fields.Boolean('Show Barcode', default = False)
-    lot = fields.Boolean('Show Serial')
+    ean = fields.Boolean('Show Barcode', default = False, invisible= True)
+    lot = fields.Boolean('Show Serial',invisible= True)
     currently_cost = fields.Boolean('Currently Cost?')
     
 

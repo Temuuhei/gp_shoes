@@ -326,8 +326,8 @@
                         <filter name="done" icon="terp-check" string="Success" domain="[('state','=','done')]"/>
                         <filter name="today_queued" string="Today Runned" domain="[('date_start','&gt;=',time.strftime(%%Y-%%m-%%d 00:00:00)),('date_stop','&lt;=',time.strftime(%%Y-%%m-%%d 23:59:59))]"/>
                         <separator orientation="vertical"/>
-                        <filter name="excel" icon="terp-stock_format-scientific" string="Excel Report" domain="[('type','=','XLS')]"/>
-                        <filter name="pdf" icon="terp-report" string="PDF Report" domain="[('type','=','PDF')]"/>
+                        <filter name="excel" string="Excel Report" domain="[('type','=','XLS')]"/>
+                        <filter name="pdf" string="PDF Report" domain="[('type','=','PDF')]"/>
                         </group>
                         <field name="user_id"/>
                         <field name="report_model"/>

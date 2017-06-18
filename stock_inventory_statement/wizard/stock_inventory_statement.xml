@@ -14,7 +14,7 @@
                    <field name="grouping"/>
                    <field name="sorting"/>
                    <field name="type" attrs="{'invisible':['|',('grouping','=',False)]}"/>
-                   <field name="date_from" attrs="{'invisible':[('income_expense','=',False)],'required':[('income_expense','=',True)]}"/>
+                   <field name="date_from"/>
                </group>
                <group colspan="2">
                     <field name="company_id" readonly="1"/>
@@ -36,7 +36,7 @@
                        <field name="warehouse_ids" nolabel="1" colspan="4" widget="many2many_checkboxes" required="1"/>
                    </page>
                    <page string="Manufacturer" invisible = "1">
-                       <field name="partner_ids" nolabel="1" colspan="4"/>
+                       <field name="partner_ids" nolabel="1" colspan="4"  invisible = "1"/>
                    </page>
                    <page string="Product Category">
                        <field name="prod_categ_ids" nolabel="1" colspan="4"/>
