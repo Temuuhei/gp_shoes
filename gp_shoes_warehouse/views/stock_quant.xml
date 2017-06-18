@@ -167,6 +167,8 @@
     <menuitem id="menu_cash_gp" name= "Касс"  sequence="5" parent = "menu_other_gp" action="gp_shoes_sale.action_cash"/>
     <menuitem id="menu_quants_gp_1" name= "Размераар хайх"  sequence="1" parent = "menu_quants_gp" action="quantsact"/>
 
+    <menuitem id="menu_report" name= "Тайлан"  sequence="10" parent = "menu_quants_gp_main"/>
+    <menuitem id="menu_stock_report" name= "Агуулахын нөөцийн тайлан"  sequence="1" parent = "menu_report" action="stock_inventory_statement.action_stock_inventory_statement"/>
 
     <!--Сонгосон бараан зөөх-->
     <record id="stock_quant_action_server" model="ir.actions.server">

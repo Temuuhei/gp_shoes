@@ -11,16 +11,16 @@
             </xpath>
             <xpath expr='//group[@name="report"]' position="inside">
                 <group colspan="2">
-                   <field name="company_id" readonly="1"/>
                    <field name="grouping"/>
                    <field name="sorting"/>
                    <field name="type" attrs="{'invisible':['|',('grouping','=',False)]}"/>
                    <field name="date_from" attrs="{'invisible':[('income_expense','=',False)],'required':[('income_expense','=',True)]}"/>
                </group>
                <group colspan="2">
-                    <field name="ean"/>
-                    <field name="lot" attrs="{'invisible':[('income_expense','=',True)]}"/>
-                    <field name="income_expense"/>
+                    <field name="company_id" readonly="1"/>
+                    <field name="ean" invisible = "1"/>
+                    <field name="lot" invisible = "1"/>
+                    <field name="income_expense" invisible = "1"/>
                     <div>
                            <label string="Date" for="date_to" attrs="{'invisible':[('income_expense','=',True)]}"/>
                            <label string="To Date" for="date_to" attrs="{'invisible':[('income_expense','=',False)]}"/>
@@ -35,7 +35,7 @@
                    <page string="Warehouse">
                        <field name="warehouse_ids" nolabel="1" colspan="4" widget="many2many_checkboxes" required="1"/>
                    </page>
-                   <page string="Manufacturer">
+                   <page string="Manufacturer" invisible = "1">
                        <field name="partner_ids" nolabel="1" colspan="4"/>
                    </page>
                    <page string="Product Category">
@@ -48,7 +48,7 @@
             </xpath>
 
             <xpath expr='//form/footer/button[@name="print_report"]' position="replace">
-                     <button icon="gtk-print" name="print_report" string="Print" type="object" colspan="1" class="oe_highlight" invisible="1"/>
+                     <button name="print_report" string="Print" type="object" colspan="1" class="oe_highlight" invisible="1"/>
             </xpath>
         </field>
     </record>

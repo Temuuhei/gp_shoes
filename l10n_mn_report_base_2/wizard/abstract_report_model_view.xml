@@ -440,8 +440,8 @@
 	                    <label for="save" groups="l10n_mn_report_base.group_save_report_attachment"/>
 	                    <field name="save" groups="l10n_mn_report_base.group_save_report_attachment"/>
 	                    <label string=""/>
-	                    <button icon="gtk-execute" name="export_report" string="Export" type="object" colspan="1"/>
-	                    <button icon="gtk-print" name="print_report" string="Print" type="object" colspan="1" class="oe_highlight"/>
+	                    <button  name="export_report" string="Export" type="object" class="oe_highlight" colspan="1"/>
+	                    <button  name="print_report" string="Print" type="object" colspan="1" class="oe_highlight"/>
 	                     or 
 	                    <button string="Close" class="oe_link" special="cancel"/>
 	                </footer>

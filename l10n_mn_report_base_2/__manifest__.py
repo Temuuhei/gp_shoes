@@ -9,7 +9,7 @@
 ##############################################################################
  
 {
-    "name" : "GP Shoes Report Base TEST",
+    "name" : "GP Shoes Report Base",
     "version" : "1.0",
     "author" : "Game of Code",
     "description": """

@@ -19,6 +19,7 @@ Stock Inventory Statement Wizard
     "category" : "Stock",
     "depends" : [
                 'stock',
+                'l10n_mn_report_base_2'
                  ],
     "data" : [
         'wizard/stock_inventory_statement.xml',

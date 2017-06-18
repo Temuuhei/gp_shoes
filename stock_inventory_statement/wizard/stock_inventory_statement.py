@@ -59,7 +59,7 @@ class stock_inventory_statement(models.Model):
     date_from = fields.Date('From Date',default=time.strftime('%Y-%m-01'))
     pos_install = fields.Boolean(compute = _get_pos_install, string = 'Pos Install')
     cost = fields.Boolean('Show Cost Amount?', default = False)
-    ean = fields.Boolean('Show Barcode', default = True)
+    ean = fields.Boolean('Show Barcode', default = False)
     lot = fields.Boolean('Show Serial')
     currently_cost = fields.Boolean('Currently Cost?')
     
@@ -987,7 +987,10 @@ class stock_inventory_statement(models.Model):
             parent_select = ""
             parent_groupby = ""
             if wiz['prod_categ_ids']:
-                categ_ids = self.env['product.category'].search([('parent_id', 'child_of', wiz['prod_categ_ids'])])
+                categ_ids = []
+                cat = self.env['product.category'].search([('parent_id', 'child_of', wiz['prod_categ_ids'])])
+                for i in cat:
+                    categ_ids.append(i.id)
                 where += " AND pt.categ_id in (" + ','.join(map(str, categ_ids)) + ") "
             if wiz['product_ids']:
                 where += " AND pp.id in (" + ','.join(map(str, wiz['product_ids'])) + ") "
@@ -1187,14 +1190,14 @@ class stock_inventory_statement(models.Model):
 
             number = 1
             warehouse_cost_dict = {}
-            for wh in warehouses:
-                ctx = context.copy()
-                # if company.store_cost_per_warehouse:
-                #     ctx.update({'warehouse': wh.id})
-                if wiz['cost']:
-                    warehouse_cost_dict[wh.id] = product_obj.price_get(prod_ids, ptype='standard_price')
-                product = product_obj.browse(f['prod'])
-                prices[wh.id] = product.price_get('list_price')
+            # for wh in warehouses:
+            #     ctx = context.copy()
+            #     # if company.store_cost_per_warehouse:
+            #     #     ctx.update({'warehouse': wh.id})
+            #     if wiz['cost']:
+            #         warehouse_cost_dict[wh.id] = product_obj.price_get(prod_ids, ptype='standard_price')
+            #     product = product_obj.browse(f['prod'])
+            #     prices[wh.id] = product.price_get('list_price')
             row = ['']
             if wiz['ean'] and ((wiz['grouping'] and wiz['type'] == 'detail') or not wiz['grouping']):
                 row += ['']
@@ -1276,8 +1279,7 @@ class stock_inventory_statement(models.Model):
                                 prods = product_obj.search([('id', 'in', prod_ids), ('categ_id', '=', val['group_id'])])
                             else:
                                 prods = product_obj.search([('id', 'in', prod_ids), ('pos_categ_id', '=', val['group_id'])])
-                            prods = dict([(x['id'], x) for x in product_obj.read(prods,
-                                        ['ean13', 'name', 'default_code', 'uom_id', 'standard_price'])])
+                            prods = dict([(x['id'], x) for x in prods.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price'])])
                             for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                                 row.append(['<str>%s.%s</str>' % (number, count)])
                                 if wiz['ean']:
@@ -1404,6 +1406,7 @@ class stock_inventory_statement(models.Model):
                 else:
                     row = []
                     rrowx = 0
+                    #I edited here =)
                     prodd = product_obj.browse(prod_ids)
                     prods = dict([(x['id'], x) for x in prodd.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price'])])
                     for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
