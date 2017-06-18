@@ -465,7 +465,7 @@ class stock_inventory_statement(models.Model):
                         total_dict['whs'][wh.id]['start_price'] += f['l']
                         total_dict['whs'][wh.id]['start'] += f['q'] * price
                 # Тайлант хугацааны орлого
-                cr.execute("(SELECT m.product_id AS prod, " + select + ""
+                self._cr.execute("(SELECT m.product_id AS prod, " + select + ""
                                 "coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                 "coalesce(sum(m.price_unit*m.product_qty),0) as c, "
                                 "coalesce(sum(m.list_price* (m.product_qty/u.factor*u2.factor)), 0) as l "
@@ -493,9 +493,9 @@ class stock_inventory_statement(models.Model):
                            "GROUP BY m.product_id " + groupby + " )",
                         (locations, locations, wiz['date_from'] + ' 00:00:00', wiz['date_to'] + ' 23:59:59',
                          locations, locations, wiz['date_from'] + ' 00:00:00', wiz['date_to'] + ' 23:59:59'))
-                fetched = cr.dictfetchall()
+                fetched = self._cr.dictfetchall()
                 for f in fetched:
-#                     if wiz['currently_cost'] is True:
+#                         if wiz['currently_cost'] is True:
 #                             standard_price_display = product_obj.price_get(cr, uid, f['prod'], 'standard_price', context=ctx)[f['prod']]
 #                             f['c'] = f['q'] * standard_price_display
                     price = 0
@@ -1404,8 +1404,8 @@ class stock_inventory_statement(models.Model):
                 else:
                     row = []
                     rrowx = 0
-                    prods = dict([(x['id'], x) for x in product_obj.read(prod_ids,
-                                        ['ean13', 'name', 'default_code', 'uom_id', 'standard_price'])])
+                    prodd = product_obj.browse(prod_ids)
+                    prods = dict([(x['id'], x) for x in prodd.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price'])])
                     for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                         if prod['id'] == 1951:
                             aa = True
