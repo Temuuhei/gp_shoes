@@ -1,1 +1,2 @@
 import stock_quant
+import product

@@ -285,6 +285,7 @@ class stock_inventory_statement(models.Model):
         product_obj = self.env['product.product']
         warehouses = self.env['stock.warehouse'].browse(wiz['warehouse_ids'])
         company = self.env['res.company'].browse(wiz['company_id'][0])
+        attributes = self.env['product.attribute']
         titles = []
         data = []
         row_span = {}
@@ -1050,7 +1051,7 @@ class stock_inventory_statement(models.Model):
                                         "(SELECT m.product_id, " + select + ""
                                                 "coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                                 "coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                                "0 as price "
+                                                "coalesce(sum(pt.list_price*(m.product_qty/u.factor*u2.factor)),0) as price "
                                            "FROM stock_move m "
                                                 "JOIN product_product pp ON (pp.id=m.product_id) "
                                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -1059,11 +1060,11 @@ class stock_inventory_statement(models.Model):
                                            "WHERE m.state = 'done' " + where + " "
                                                 "AND m.location_id NOT IN %s AND m.location_dest_id IN %s "
                                            + initial_date_where + 
-                                           "GROUP BY m.product_id " + groupby + " ) UNION "
+                                           "GROUP BY m.product_id,m.price_unit " + groupby + " ) UNION "
                                        "(SELECT m.product_id, " + select + ""
                                                 "-coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                                 "-coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                                "0 as price "
+                                                "-coalesce(sum(pt.list_price*(m.product_qty/u.factor*u2.factor)),0) as price "
                                            "FROM stock_move m "
                                                 "JOIN product_product pp ON (pp.id=m.product_id) "
                                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -1072,13 +1073,13 @@ class stock_inventory_statement(models.Model):
                                            "WHERE m.state = 'done' " + where + " "
                                             "AND m.location_id in %s and m.location_dest_id not in %s "
                                                + initial_date_where + 
-                                               "GROUP BY m.product_id " + groupby + " ) ) as myquery GROUP BY myquery.product_id " + parent_groupby + ""
+                                               "GROUP BY m.product_id, m.price_unit " + groupby + " ) ) as myquery GROUP BY myquery.product_id " + parent_groupby + ""
                                             "having sum(myquery.q)::decimal(16,4) <> 0 ", (locations, locations, locations, locations))
 
                 fetched = self._cr.dictfetchall()
                 for f in fetched:
                     if wiz['currently_cost'] is True:
-                        standard_price_display = product_obj.price_get(f['prod'], 'standard_price')[f['prod']]
+                        standard_price_display = product_obj.price_get(f['prod'], 'list_price', context=ctx)[f['prod']]
                         f['c'] = f['q'] * standard_price_display
                     price = 0
                     if f['prod']:
@@ -1279,12 +1280,22 @@ class stock_inventory_statement(models.Model):
                                 prods = product_obj.search([('id', 'in', prod_ids), ('categ_id', '=', val['group_id'])])
                             else:
                                 prods = product_obj.search([('id', 'in', prod_ids), ('pos_categ_id', '=', val['group_id'])])
-                            prods = dict([(x['id'], x) for x in prods.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price'])])
+                            prods = dict([(x['id'], x) for x in prods.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price','attribute_value_ids'])])
                             for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                                 row.append(['<str>%s.%s</str>' % (number, count)])
                                 if wiz['ean']:
                                     row[prowx] += [u'<str>%s</str>' % (prod['ean13'] or '')]
-                                row[prowx] += [u'<space/><space/>[%s] %s' % ((prod['default_code'] or ''), (prod['name'] or '')),
+                                #Агуулахын нөөцийн тайлан дээр размер гаргах код тухайн аттрибутын id г л хэвлэж байгаа учир түр хойшлуулав
+                                # attributes = self.env['product.attribute']
+                                # attributes_value = self.env['product.attribute.value']
+                                # for value in product_obj.search([('id', 'in', prod_ids), ('categ_id', '=', val['group_id'])])[0].attribute_value_ids:
+                                #     if value.attribute_id in attributes:
+                                #         variable_attributes = product.attribute_line_ids.filtered(
+                                #             lambda l: len(l.value_ids) > 1).mapped('attribute_id')
+                                #         prod['attribute_value_ids'] = product.attribute_value_ids._variant_name(variable_attributes)
+                                #         for variant_name in attributes_value.search([('id', 'in', prod['attribute_value_ids'])]):
+                                #             temka = variant_name.name
+                                row[prowx] += [u'<space/><space/>%s [%s]' % ((prod['name'] or ''),(prod['default_code'] or '')),
                                         u'<c>%s</c>' % (prod['uom_id'][1])]
 
                                 if prod['id'] in val['lines']:
@@ -1415,7 +1426,7 @@ class stock_inventory_statement(models.Model):
                         row.append(['<str>%s</str>' % (number)])
                         if wiz['ean']:
                             row[rrowx] += [u'<str>%s</str>' % (prod['ean13'] or '')]
-                        row[rrowx] += [u'<space/><space/>[%s] %s' % ((prod['default_code'] or ''), (prod['name'] or '')),
+                        row[rrowx] += [u'<space/><space/>%s [%s]' % ( (prod['name'] or ''),(prod['default_code'] or '')),
                                 u'<c>%s</c>' % (prod['uom_id'][1])]
 
                         if prod['id'] in data_dict:
