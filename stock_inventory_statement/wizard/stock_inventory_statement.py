@@ -58,7 +58,7 @@ class stock_inventory_statement(models.Model):
     date_to = fields.Date('To Date', required=True, default=fields.Datetime.now)
     date_from = fields.Date('From Date',default=time.strftime('%Y-%m-01'))
     pos_install = fields.Boolean(compute = _get_pos_install, string = 'Pos Install')
-    cost = fields.Boolean('Show Cost Amount?', default = False)
+    cost = fields.Boolean(u'Өртөг харах', default = False)
     ean = fields.Boolean('Show Barcode', default = False, invisible= True)
     lot = fields.Boolean('Show Serial',invisible= True)
     currently_cost = fields.Boolean('Currently Cost?')
@@ -1077,10 +1077,13 @@ class stock_inventory_statement(models.Model):
                                             "having sum(myquery.q)::decimal(16,4) <> 0 ", (locations, locations, locations, locations))
 
                 fetched = self._cr.dictfetchall()
+                print'\n\n\n Temka \n\n\n', fetched
                 for f in fetched:
-                    if wiz['currently_cost'] is True:
-                        standard_price_display = product_obj.price_get(f['prod'], 'list_price', context=ctx)[f['prod']]
-                        f['c'] = f['q'] * standard_price_display
+                    # if wiz['currently_cost'] is True:
+                    product_pro = product_obj.browse(f['prod'])
+                    standard_price_display = product_pro.list_price
+                    print'\n\n\n Price \n\n\n', standard_price_display
+                    f['c'] = f['q'] * standard_price_display
                     price = 0
                     if f['prod']:
                         product = product_obj.browse(f['prod'])
@@ -1283,19 +1286,14 @@ class stock_inventory_statement(models.Model):
                             prods = dict([(x['id'], x) for x in prods.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price','attribute_value_ids'])])
                             for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                                 row.append(['<str>%s.%s</str>' % (number, count)])
+                                temka=''
                                 if wiz['ean']:
                                     row[prowx] += [u'<str>%s</str>' % (prod['ean13'] or '')]
-                                #Агуулахын нөөцийн тайлан дээр размер гаргах код тухайн аттрибутын id г л хэвлэж байгаа учир түр хойшлуулав
-                                # attributes = self.env['product.attribute']
-                                # attributes_value = self.env['product.attribute.value']
-                                # for value in product_obj.search([('id', 'in', prod_ids), ('categ_id', '=', val['group_id'])])[0].attribute_value_ids:
-                                #     if value.attribute_id in attributes:
-                                #         variable_attributes = product.attribute_line_ids.filtered(
-                                #             lambda l: len(l.value_ids) > 1).mapped('attribute_id')
-                                #         prod['attribute_value_ids'] = product.attribute_value_ids._variant_name(variable_attributes)
-                                #         for variant_name in attributes_value.search([('id', 'in', prod['attribute_value_ids'])]):
-                                #             temka = variant_name.name
-                                row[prowx] += [u'<space/><space/>%s [%s]' % ((prod['name'] or ''),(prod['default_code'] or '')),
+                                #Агуулахын нөөцийн тайлан дээр размер гаргах код тухайн аттрибутыг хэвлэх
+                                value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
+                                if value:
+                                    temka=value.name
+                                row[prowx] += [u'<space/><space/>%s [%s] [%s]' % ((prod['name'] or ''),(prod['default_code'] or ''),(temka)),
                                         u'<c>%s</c>' % (prod['uom_id'][1])]
 
                                 if prod['id'] in val['lines']:
@@ -1419,14 +1417,18 @@ class stock_inventory_statement(models.Model):
                     rrowx = 0
                     #I edited here =)
                     prodd = product_obj.browse(prod_ids)
-                    prods = dict([(x['id'], x) for x in prodd.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price'])])
+                    prods = dict([(x['id'], x) for x in prodd.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price','attribute_value_ids'])])
                     for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
+                        temka=''
                         if prod['id'] == 1951:
                             aa = True
                         row.append(['<str>%s</str>' % (number)])
                         if wiz['ean']:
                             row[rrowx] += [u'<str>%s</str>' % (prod['ean13'] or '')]
-                        row[rrowx] += [u'<space/><space/>%s [%s]' % ( (prod['name'] or ''),(prod['default_code'] or '')),
+                        value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
+                        if value:
+                            temka = value.name
+                        row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % ( (prod['name'] or ''),(prod['default_code'] or ''),(temka)),
                                 u'<c>%s</c>' % (prod['uom_id'][1])]
 
                         if prod['id'] in data_dict:
