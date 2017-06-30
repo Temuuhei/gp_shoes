@@ -1,0 +1,36 @@
+<openerp>
+    <data>
+        <record id="view_product_data_initial" model="ir.ui.view">
+            <field name="name">product.data.initial.form</field>
+            <field name="model">product.data.initial</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Product Data Initial">
+                    <group colspan="4">
+                        <field name="categ_id" colspan="4"/>
+                        <field name="data" colspan="4"/>
+                    </group>
+                    <group colspan="4" col="6">
+                        <label string="" colspan="2"/>
+                        <button  special="cancel" string="Close"/>
+                        <button  string="Execute" name="import_data" type="object"/>
+                   </group>
+               </form>
+            </field>
+        </record>
+        
+        <record id="action_product_data_initial" model="ir.actions.act_window">
+            <field name="name">Product Data Initial</field>
+            <field name="res_model">product.data.initial</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_product_data_initial"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem id="menu_initial_data" name="Initial Product Insertion" parent="gp_shoes_warehouse.menu_other_gp"/>
+        <menuitem id="menu_action_product_data_initial" action="action_product_data_initial"
+           parent="menu_initial_data" sequence="1" icon="terp-idea"/>
+        
+    </data>
+</openerp>

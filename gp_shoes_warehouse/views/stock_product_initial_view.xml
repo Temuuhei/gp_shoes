@@ -1,0 +1,39 @@
+<openerp>
+    <data>
+        <record id="view_stock_product_initial" model="ir.ui.view">
+            <field name="name">stock.product.initial.form</field>
+            <field name="model">stock.product.initial</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Stock Product Initial">
+                    <group colspan="4">
+                        <field name="date" colspan="2"/>
+                        <field name="type" colspan="2"/>
+                        <field name="location_id" colspan="4"/>
+                        <field name="categ_id" colspan="4"/>
+                        <field name="data" colspan="4"/>
+                    </group>
+                    <group colspan="4" col="6">
+                        <label string="" colspan="2"/>
+                        <button special="cancel" string="Close"/>
+                        <button string="Execute" name="import_data" type="object"/>
+                   </group>
+               </form>
+            </field>
+        </record>
+        
+        <record id="action_stock_product_initial" model="ir.actions.act_window">
+            <field name="name">Stock Product Initial</field>
+            <field name="res_model">stock.product.initial</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_stock_product_initial"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem id="menu_initial_data" name="Initial Stock Data Insertion" parent="menu_other_gp"/>
+        <menuitem id="menu_action_stock_product_initial" action="action_stock_product_initial"
+           parent="menu_initial_data" sequence="1" icon="terp-idea"/>
+        
+    </data>
+</openerp>

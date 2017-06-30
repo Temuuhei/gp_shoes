@@ -16,6 +16,8 @@
     'depends' : ['product','stock'],
     'data': [
         'views/stock_quant.xml',
+        'views/stock_product_initial_view.xml',
+        # 'views/product_initial_insertion_view.xml',
 
     ],
     'installable': True,
