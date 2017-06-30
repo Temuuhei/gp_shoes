@@ -37,7 +37,7 @@ class StockProductInitial(models.TransientModel):
     # }
 
     def import_data(self, wiz):
-        print'\n\n\n Input complete'
+        # print'\n\n\n Input complete'
         wiz = self
         context = self._context or {}
         product_obj = self.env['product.product']
@@ -62,7 +62,7 @@ class StockProductInitial(models.TransientModel):
         book = xlrd.open_workbook(fileobj.name)
         sheet = book.sheet_by_index(0)
         nrows = sheet.nrows
-        print '\n\n\n\n ROWS', nrows
+        # print '\n\n\n\n ROWS', nrows
 
         rowi = 1
 
@@ -100,7 +100,7 @@ class StockProductInitial(models.TransientModel):
                     product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
                     # print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,row[0].value
                     att_ids = []
-                    if row[2].value is not None:
+                    if row[2].value:
                         product_attribute_value_size = self.env['product.attribute.value'].search(
                             [('name', '=', str(row[2].value)[:2])])
                         # print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
@@ -146,7 +146,7 @@ class StockProductInitial(models.TransientModel):
                             'standart_price': row[5].value or 9999,
                             'attribute_value_ids': [(6, 0, att_ids)],
                         })
-                    if row[3].value is not None:
+                    if row[3].value:
                         # print'Агуулахын код'
                         line_data = {
                             'product_qty': row[3].value,
@@ -187,7 +187,7 @@ class StockProductInitial(models.TransientModel):
                             diff = a.difference(b)
                             if diff is False:
                                 # print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн',have_prod
-                                if row[3].value is not None:
+                                if row[3].value:
                                     # print'Агуулахын код'
                                     line_data = {
                                         'product_qty': row[3].value,
