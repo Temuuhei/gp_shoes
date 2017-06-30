@@ -118,7 +118,8 @@ class StockProductInitial(models.TransientModel):
                             print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
                         print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
                         product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
-                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
+#                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
+
                         print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
                         if row[4].value:
                             print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
@@ -168,6 +169,7 @@ class StockProductInitial(models.TransientModel):
                         })
                         inventory.action_done()
                         print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
+			print'ROWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',row
                 else:
                     print'RIGHT Congratz'
                     att_ids = []
