@@ -1419,7 +1419,7 @@ class stock_inventory_statement(models.Model):
                     prodd = product_obj.browse(prod_ids)
                     prods = dict([(x['id'], x) for x in prodd.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price','attribute_value_ids'])])
                     for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
-                        temka=''
+                        temka=[]
                         if prod['id'] == 1951:
                             aa = True
                         row.append(['<str>%s</str>' % (number)])
@@ -1427,8 +1427,9 @@ class stock_inventory_statement(models.Model):
                             row[rrowx] += [u'<str>%s</str>' % (prod['ean13'] or '')]
                         value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
                         if value:
-                            temka = value.name
-                        row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % ( (prod['name'] or ''),(prod['default_code'] or ''),(temka)),
+                            for val in value:
+                                temka.append(val.name)
+                        row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % ( (prod['name'] or ''),(prod['default_code'] or ''),(str(temka).strip('[]'))),
                                 u'<c>%s</c>' % (prod['uom_id'][1])]
 
                         if prod['id'] in data_dict:
