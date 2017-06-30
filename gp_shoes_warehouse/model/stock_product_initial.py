@@ -70,7 +70,7 @@ class StockProductInitial(models.TransientModel):
             try:
                 row = sheet.row(rowi)
                 code = row[0].value
-                print'Internal Code \n\n\n',code
+                # print'Internal Code \n\n\n',code
                 product_type = 'product'
                 product_supply_method = 'buy'
                 product_procure_method = 'make_to_stock'
@@ -96,32 +96,32 @@ class StockProductInitial(models.TransientModel):
                         'sale_ok': True,
                         'company_id': 1,
                     }
-                    print'\n\n\n\n Values',values_pro_tmp
+                    # print'\n\n\n\n Values',values_pro_tmp
                     product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
-                    print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,row[0].value
+                    # print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,row[0].value
                     att_ids = []
                     if row[2].value is not None:
                         product_attribute_value_size = self.env['product.attribute.value'].search(
                             [('name', '=', str(row[2].value)[:2])])
-                        print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
+                        # print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
                         if product_attribute_value_size:
                             att_ids.append(product_attribute_value_size[0].id)
                         product_att_line = self.env['product.attribute.line'].search(
                             [('product_tmpl_id', '=', product_tmpl_id.id),
                              ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
-                        print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
+                        # print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
                         if not product_att_line:
                             product_att_line = self.env['product.attribute.line'].create(
                                 {'product_tmpl_id': product_tmpl_id.id,
                                  'attribute_id':
                                      product_attribute_value_size[0].attribute_id.id})
-                            print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
-                        print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
+                            # print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
+                        # print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
                         product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
-                        print'\n Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
-                        print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
+                        # print'\n Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
+                        # print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
                         if row[4].value:
-                            print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
+                            # print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
                             product_attribute_value_season = self.env['product.attribute.value'].search(
                                 [('name', '=', str(row[4].value))])
                             if product_attribute_value_season:
@@ -134,7 +134,7 @@ class StockProductInitial(models.TransientModel):
                                     {'product_tmpl_id': product_tmpl_id.id,
                                      'attribute_id':
                                          product_attribute_value_season.attribute_id.id})
-                                print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
+                                # print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
                             product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
 
 
@@ -147,7 +147,7 @@ class StockProductInitial(models.TransientModel):
                             'attribute_value_ids': [(6, 0, att_ids)],
                         })
                     if row[3].value is not None:
-                        print'Агуулахын код'
+                        # print'Агуулахын код'
                         line_data = {
                             'product_qty': row[3].value,
                             'location_id': wiz.location_id.id,
@@ -156,7 +156,7 @@ class StockProductInitial(models.TransientModel):
                             'theoretical_qty': 0,
                             'prod_lot_id': None,
                         }
-                        print'\n\n %s \n\n' % line_data
+                        # print'\n\n %s \n\n' % line_data
                         inventory_filter = 'product'
                         inventory = Inventory.create({
                             'name': _('INV- %s: %s -%s') %(wiz.location_id,product_id.name,product_id.default_code),
@@ -167,9 +167,9 @@ class StockProductInitial(models.TransientModel):
                             'line_ids': [(0, 0, line_data)],
                         })
                         inventory.action_done()
-                        print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
+                        # print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
                 else:
-                    print'RIGHT Congratz'
+                    # print'RIGHT Congratz'
                     att_ids = []
                     check = True
                     product_attribute_value_size = self.env['product.attribute.value'].search(
@@ -186,9 +186,9 @@ class StockProductInitial(models.TransientModel):
                             b = set(att_ids)
                             diff = a.difference(b)
                             if diff is False:
-                                print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн',have_prod
+                                # print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн',have_prod
                                 if row[3].value is not None:
-                                    print'Агуулахын код'
+                                    # print'Агуулахын код'
                                     line_data = {
                                         'product_qty': row[3].value,
                                         'location_id': wiz.location_id.id,
@@ -197,7 +197,7 @@ class StockProductInitial(models.TransientModel):
                                         'theoretical_qty': 0,
                                         'prod_lot_id': None,
                                     }
-                                    print'\n\n %s \n\n' % line_data
+                                    # print'\n\n %s \n\n' % line_data
                                     inventory_filter = 'product'
                                     inventory = Inventory.create({
                                         'name': _('INV- %s: %s -%s') % (
@@ -209,7 +209,7 @@ class StockProductInitial(models.TransientModel):
                                         'line_ids': [(0, 0, line_data)],
                                     })
                                     inventory.action_done()
-                                    print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
+                                    # print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
                                     check = False
                                     break
                     if check == True:
@@ -217,20 +217,20 @@ class StockProductInitial(models.TransientModel):
                         product_att_line = self.env['product.attribute.line'].search(
                             [('product_tmpl_id', '=', have_prod[0].product_tmpl_id.id),
                              ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
-                        print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
+                        # print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
                         if not product_att_line:
                             product_att_line = self.env['product.attribute.line'].create(
                                 {'product_tmpl_id': have_prod[0].product_tmpl_id.id,
                                  'attribute_id':
                                      product_attribute_value_size[0].attribute_id.id})
                         new_att_ids.append(product_attribute_value_size[0].id)
-                        print'GOYYYYYYYYYYYYYYYYYYYYYYYYYYYy',product_att_line.value_ids
+                        # print'GOYYYYYYYYYYYYYYYYYYYYYYYYYYYy',product_att_line.value_ids
                         if product_attribute_value_size not in product_att_line.value_ids:
-                            print'Нэмэгдсэн Product Attribute Line ------------------->', product_att_line
-                            print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
+                            # print'Нэмэгдсэн Product Attribute Line ------------------->', product_att_line
+                            # print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
                             product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
                         if row[4].value:
-                            print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
+                            # print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
                             product_attribute_value_season = self.env['product.attribute.value'].search(
                                 [('name', '=', str(row[4].value))])
                             product_att_line = self.env['product.attribute.line'].search(
@@ -242,11 +242,11 @@ class StockProductInitial(models.TransientModel):
                                      'attribute_id':
                                          product_attribute_value_season.attribute_id.id})
 
-                                print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
+                                # print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
                             new_att_ids.append(product_attribute_value_season[0].attribute_id.id)
                             product_att_line.value_ids = [(6, 0, product_attribute_value_season[0].ids)]
 
-                            print'\n\nTemka', have
+                            # print'\n\nTemka', have
                         product_id = product_obj.create({
                             'product_tmpl_id': have_prod[0].product_tmpl_id.id,
                             'active': True,
@@ -256,7 +256,7 @@ class StockProductInitial(models.TransientModel):
                             'attribute_value_ids': [(6, 0, new_att_ids)],
                         })
                         if row[3].value is not None:
-                            print'Агуулахын код'
+                            # print'Агуулахын код'
                             line_data = {
                             'product_qty': row[3].value,
                                 'location_id': wiz.location_id.id,
@@ -265,7 +265,7 @@ class StockProductInitial(models.TransientModel):
                                 'theoretical_qty': 0,
                                 'prod_lot_id': None,
                             }
-                            print'\n\n %s \n\n' % line_data
+                            # print'\n\n %s \n\n' % line_data
                             inventory_filter = 'product'
                             inventory = Inventory.create({
                                 'name': _('INV-%s: %s - %s') % (
@@ -277,7 +277,7 @@ class StockProductInitial(models.TransientModel):
                                 'line_ids': [(0, 0, line_data)],
                             })
                             inventory.action_done()
-                            print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ $$$$$$$$$$$$'
+                            # print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ $$$$$$$$$$$$'
                 rowi += 1
             except IndexError:
                 raise UserError(_('Excel sheet must be 6 columned : Code, Price,Size,Qty,Season,Cost: error on row %s ' % rowi))
