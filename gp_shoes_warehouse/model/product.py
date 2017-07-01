@@ -41,9 +41,13 @@ class ProductProduct(models.Model):
         for product in self.sudo():
             # display only the attributes with multiple possible values on the template
             variable_attributes = product.attribute_line_ids.filtered(lambda l: len(l.value_ids) > 1).mapped('attribute_id')
-            variant = product.attribute_value_ids._variant_name(variable_attributes)
+            # variant = product.attribute_value_ids._variant_name(variable_attributes)
             # name = variant or "%s %s (%s)" % (product.name,product.default_code, variant) or product.name
-            print'Барааны шинж чанар',variant
+            variant = ""
+            for i in product.attribute_value_ids:
+                if not variant == "":
+                    variant += ", "
+                variant= variant + i.name
             name = "%s %s (%s)" % (product.name,product.default_code, variant) or product.name
             sellers = []
             if partner_ids:
