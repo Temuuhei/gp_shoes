@@ -1292,9 +1292,11 @@ class stock_inventory_statement(models.Model):
                                 #Агуулахын нөөцийн тайлан дээр размер гаргах код тухайн аттрибутыг хэвлэх
                                 value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
                                 if value:
-                                    temka=value.name
-                                row[prowx] += [u'<space/><space/>%s [%s] [%s]' % ((prod['name'] or ''),(prod['default_code'] or ''),(temka)),
-                                        u'<c>%s</c>' % (prod['uom_id'][1])]
+                                    for val in value:
+                                        temka.append(val.name.encode("utf-8"))
+                                row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % (
+                                (prod['name'] or ''), (prod['default_code'] or ''), (str(temka).strip('[]'))),
+                                               u'<c>%s</c>' % (prod['uom_id'][1])]
 
                                 if prod['id'] in val['lines']:
                                     line = val['lines'][prod['id']]
@@ -1428,7 +1430,7 @@ class stock_inventory_statement(models.Model):
                         value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
                         if value:
                             for val in value:
-                                temka.append(val.name)
+                                temka.append(val.name.encode("utf-8"))
                         row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % ( (prod['name'] or ''),(prod['default_code'] or ''),(str(temka).strip('[]'))),
                                 u'<c>%s</c>' % (prod['uom_id'][1])]
 
