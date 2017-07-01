@@ -216,6 +216,35 @@ class StockProductInitial(models.TransientModel):
                                     print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
                                     check = False
                                     break
+                    for have in have_prod:
+                        if len(have.attribute_value_ids) == len(att_ids):
+                            for a in have.attribute_value_ids:
+                                if a.id in att_ids:
+                                    if row[3].value:
+                                        # print'Агуулахын код'
+                                        line_data = {
+                                            'product_qty': row[3].value,
+                                            'location_id': wiz.location_id.id,
+                                            'product_id': have.id,
+                                            'product_uom_id': have.uom_id.id,
+                                            'theoretical_qty': 0,
+                                            'prod_lot_id': None,
+                                        }
+                                        # print'\n\n %s \n\n' % line_data
+                                        inventory_filter = 'product'
+                                        inventory = Inventory.create({
+                                            'name': _('INV- %s: %s -%s') % (
+                                                wiz.location_id, have.name, have.default_code),
+                                            'filter': inventory_filter,
+                                            'product_id': have.id,
+                                            'location_id': wiz.location_id.id,
+                                            'lot_id': None,
+                                            'line_ids': [(0, 0, line_data)],
+                                        })
+                                        inventory.action_done()
+                                        check = False
+                                        print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
+
                     if check == True:
                         new_att_ids =[]
                         product_att_line = self.env['product.attribute.line'].search(
