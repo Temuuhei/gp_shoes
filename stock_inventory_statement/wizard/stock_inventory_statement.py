@@ -1294,7 +1294,7 @@ class stock_inventory_statement(models.Model):
                                 if value:
                                     for val in value:
                                         temka.append(val.name.encode("utf-8"))
-                                row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % (
+                                row[prowx] += [u'<space/><space/>%s [%s] [%s]' % (
                                 (prod['name'] or ''), (prod['default_code'] or ''), (str(temka).strip('[]'))),
                                                u'<c>%s</c>' % (prod['uom_id'][1])]
 
