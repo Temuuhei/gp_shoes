@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_template_form_hide_barcode_view" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.hide.barcode</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr='//field[@name="barcode"]' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_product_form_hide_barcode_view" model="ir.ui.view">
+        <field name="name">product.product.form.inherit.hide.barcode</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr='//field[@name="barcode"]' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_product_form_hide2_barcode_view" model="ir.ui.view">
+        <field name="name">product.product.form.inherit.hide2.barcode</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+        <field name="arch" type="xml">
+            <xpath expr='//field[@name="barcode"]' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="product_product_tree_injerit_on_gp_view" model="ir.ui.view">
+        <field name="name">product.product.tree</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+        <xpath expr='//tree/field[@name="barcode"]' position="attributes">
+             <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr='//tree/field[@name="name"]' position="attributes">
+             <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr='//tree/field[@name="default_code"]' position="replace">
+                <field name="name"/>
+        </xpath>
+        <xpath expr='//tree/field[@name="attribute_value_ids"]' position="before">
+                <field name="default_code"/>
+        </xpath>
+
+        </field>
+    </record>
+    <record id="purchase_order_inherited_gp_form" model="ir.ui.view">
+        <field name="name">purchase.order.inherit.gp.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr='//field[@name="date_planned"]' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr='//field[@name="qty_invoiced"]' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>
