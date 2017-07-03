@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_res_users_inherited_gp_form">
+                    <field name="name">res.users.inherited.gp.form</field>
+                    <field name="model">res.users</field>
+                    <field name="inherit_id" ref="base.view_users_form"/>
+                    <field name="arch" type="xml">
+                    <xpath expr='//form/sheet/notebook/page[@name="access_rights"]' position="inside">
+                        <group colspan="6" col="2">
+                            <group colspan="1" col="2">
+                                <separator string="Allowed Cash" colspan="2"/>
+                                <field name="allowed_cash" widget="many2many_tags" nolabel="1" />
+                            </group>
+                            <group colspan="1" col="2">
+                                <separator string="Allowed Warehouses" colspan="2"/>
+                                <field name="allowed_warehouses" widget="many2many_tags" nolabel="1" />
+                            </group>
+                        </group>
+                    </xpath>
+                </field>
+        </record>
+    </data>
+</openerp>
