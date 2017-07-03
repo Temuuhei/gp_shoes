@@ -1286,16 +1286,15 @@ class stock_inventory_statement(models.Model):
                             prods = dict([(x['id'], x) for x in prods.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price','attribute_value_ids'])])
                             for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                                 row.append(['<str>%s.%s</str>' % (number, count)])
-                                temka=''
+                                temka=[]
                                 if wiz['ean']:
                                     row[prowx] += [u'<str>%s</str>' % (prod['ean13'] or '')]
                                 #Агуулахын нөөцийн тайлан дээр размер гаргах код тухайн аттрибутыг хэвлэх
                                 value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
                                 if value:
-                                    for val in value:
-                                        temka.append(val.name.encode("utf-8"))
-                                row[prowx] += [u'<space/><space/>%s [%s] [%s]' % (
-                                (prod['name'] or ''), (prod['default_code'] or ''), (str(temka).strip('[]'))),
+                                    for a in value:
+                                        temka.append(a.name.encode("utf-8"))
+                                row[prowx] += [u'<space/><space/>%s [%s] [%s]' % ((prod['name'] or ''), (prod['default_code'] or ''), (str(temka).strip('[]'))),
                                                u'<c>%s</c>' % (prod['uom_id'][1])]
 
                                 if prod['id'] in val['lines']:
@@ -1429,8 +1428,8 @@ class stock_inventory_statement(models.Model):
                             row[rrowx] += [u'<str>%s</str>' % (prod['ean13'] or '')]
                         value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
                         if value:
-                            for val in value:
-                                temka.append(val.name.encode("utf-8"))
+                            for a in value:
+                                temka.append(a.name.encode("utf-8"))
                         row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % ( (prod['name'] or ''),(prod['default_code'] or ''),(str(temka).strip('[]'))),
                                 u'<c>%s</c>' % (prod['uom_id'][1])]
 
