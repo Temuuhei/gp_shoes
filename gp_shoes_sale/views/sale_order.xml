@@ -32,6 +32,11 @@
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="check_discount"/>
                 </xpath>
+                <xpath expr="//field[@name='invoice_status']" position="replace">
+                    <field name="cash_pay"/>
+                    <field name="card_pay"/>
+                </xpath>
+
                 <tree position="attributes">
                     <attribute name="colors">green:check_discount==True</attribute>
                 </tree>

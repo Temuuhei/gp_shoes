@@ -14,6 +14,8 @@ class SaleOrderCashRegister(models.TransientModel):
 
     amount = fields.Float('Amount', help="The amount paid in cash.")
     cash = fields.Many2one('cash', string = 'Cash')
+    type = fields.Selection([('card' 'Card'),
+                             ('cash' 'Cash')], string='Type')
 
     def confirm(self):
         context = self._context or {}
@@ -37,5 +39,7 @@ class SaleOrderCashRegister(models.TransientModel):
                     'user': self.env.uid,
                     'action': 'in'
                 })
+                so.write({'cash_pay':wizard.amount,
+                          'card_pay': so.amount_total - wizard.amount})
         so.action_confirm()
         return True

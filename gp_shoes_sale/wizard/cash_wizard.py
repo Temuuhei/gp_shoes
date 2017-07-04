@@ -19,6 +19,8 @@ class CashManagement(models.TransientModel):
 
     amount = fields.Float('Amount')
     description = fields.Char('Description')
+    type = fields.Selection([('card' 'Card'),
+                             ('cash' 'Cash')], string='Type')
 
     @api.onchange('advance_payment_method')
     def confirm(self):

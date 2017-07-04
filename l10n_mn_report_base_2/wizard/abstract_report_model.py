@@ -269,7 +269,7 @@ class Abstract_Report_Model(models.Model):
             title_xf = book.add_format({'align':'left', 'bold':True, 'font_size':14})
             footer_xf = book.add_format({'align':'left', 'bold':True, 'font_size':footer_font_size})
             small_title_xf = book.add_format({'align':'left', 'bold':True, 'font_size':9})
-            heading_xf = book.add_format({'align':'center', 'bold':True, 'font_size':header_font_size, 'border':1, 'pattern':1, 'bg_color':'#FF7F50', 'text_wrap':1})
+            heading_xf = book.add_format({'align':'center', 'bold':True, 'font_size':header_font_size, 'border':1, 'pattern':1, 'bg_color':'#50fffc', 'text_wrap':1})
             
             rowx = 0
             if subtitle:

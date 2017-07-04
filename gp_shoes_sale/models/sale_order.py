@@ -31,9 +31,10 @@ class SaleOrder(models.Model):
                         order.check_discount = True
                         break
 
-
     discount_manager = fields.Many2one('res.users', string='Discount Manager')
     check_discount = fields.Boolean(compute=_check_discount, string='Check Discount')
+    cash_pay = fields.Float(string='Бэлэн')
+    card_pay = fields.Float(string='Карт')
 
     def custom_confirm(self):
         for order in self:
@@ -50,6 +51,7 @@ class SaleOrder(models.Model):
                      'res_id': False,
                      }
             if order.payment_term_id.type == 'card' or not order.payment_term_id:
+                order.card_pay = order.amount_total
                 order.action_confirm()
 
 

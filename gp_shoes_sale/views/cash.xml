@@ -29,6 +29,7 @@
                     <group>
 
                         <field name="amount" readonly = "1"/>
+                        <field name="type" readonly = "1"/>
                     </group>
                     <notebook>
                         <page string="History">

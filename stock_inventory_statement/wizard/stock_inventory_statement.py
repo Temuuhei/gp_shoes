@@ -140,7 +140,9 @@ class stock_inventory_statement(models.Model):
             widths += [10]
             colx += 1
             if (wiz['grouping'] and wiz['type'] == 'detail') or not wiz['grouping']:
-                headers[0] += [u'Х.нэгж']
+                # Размер болгож өөрчлөв
+                # headers[0] += [u'Х.нэгж']
+                headers[0] += [u'Размер']
                 headers[1] += [None]
                 headers[2] += [None]
                 header_span += [((colx, 0), (colx, 2))]
@@ -203,7 +205,9 @@ class stock_inventory_statement(models.Model):
             header_span += [((colx, 0), (colx, 1))]
             colx += 1
             if (wiz['grouping'] and wiz['type'] == 'detail') or not wiz['grouping']:
-                headers[0] += [u'Х.нэгж']
+                # Размер болгож өөрчлөв
+                # headers[0] += [u'Х.нэгж']
+                headers[0] += [u'Размер']
                 headers[1] += [None]
                 widths += [3]
                 header_span += [((colx, 0), (colx, 1))]
@@ -1293,9 +1297,13 @@ class stock_inventory_statement(models.Model):
                                 value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
                                 if value:
                                     for a in value:
-                                        temka.append(a.name.encode("utf-8"))
-                                row[prowx] += [u'<space/><space/>%s [%s] [%s]' % ((prod['name'] or ''), (prod['default_code'] or ''), (str(temka).strip('[]'))),
-                                               u'<c>%s</c>' % (prod['uom_id'][1])]
+                                        if len(a.name) <= 3:
+                                            temka.append(a.name.encode("utf-8"))
+                                row[prowx] += [u'<space/><space/>%s [%s]' % ((prod['name'] or ''), (prod['default_code'] or '')),
+                                               u'<c>%s</c>' % (str(temka).strip('[]'))]
+                                #         Хэмжих нэгж хэрэггүй барааны шинж харна гэсэн болохоор доорх мөрийг коммент болгож өөрчлөлт хийв
+                                # row[prowx] += [u'<space/><space/>%s [%s] [%s]' % ((prod['name'] or ''), (prod['default_code'] or ''), (str(temka).strip('[]'))),
+                                #                u'<c>%s</c>' % (prod['uom_id'][1])]
 
                                 if prod['id'] in val['lines']:
                                     line = val['lines'][prod['id']]
@@ -1429,9 +1437,14 @@ class stock_inventory_statement(models.Model):
                         value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
                         if value:
                             for a in value:
-                                temka.append(a.name.encode("utf-8"))
-                        row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % ( (prod['name'] or ''),(prod['default_code'] or ''),(str(temka).strip('[]'))),
-                                u'<c>%s</c>' % (prod['uom_id'][1])]
+                                if len(a.name) <= 3:
+                                    temka.append(a.name.encode("utf-8"))
+                        #         Хэмжих нэгж хэрэггүй барааны шинж харна гэсэн болохоор доорх мөрийг коммент болгож өөрчлөлт хийв
+                        # row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % ( (prod['name'] or ''),(prod['default_code'] or ''),(str(temka).strip('[]'))),
+                                # u'<c>%s</c>' % (prod['uom_id'][1])]
+                        row[rrowx] += [u'<space/><space/>%s [%s]' % (
+                        (prod['name'] or ''), (prod['default_code'] or '')),
+                                       u'<c>%s</c>' % (str(temka).strip('[]'))]
 
                         if prod['id'] in data_dict:
                             line = data_dict[prod['id']]
