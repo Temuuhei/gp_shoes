@@ -1086,7 +1086,7 @@ class stock_inventory_statement(models.Model):
                     # if wiz['currently_cost'] is True:
                     product_pro = product_obj.browse(f['prod'])
                     standard_price_display = product_pro.list_price
-                    print'\n\n\n Price \n\n\n', standard_price_display
+                    # print'\n\n\n Price \n\n\n', standard_price_display
                     f['c'] = f['q'] * standard_price_display
                     price = 0
                     if f['prod']:
@@ -1297,7 +1297,7 @@ class stock_inventory_statement(models.Model):
                                 value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
                                 if value:
                                     for a in value:
-                                        if len(a.name) <= 3:
+                                        if len(a.name) <= 4:
                                             temka.append(a.name.encode("utf-8"))
                                 row[prowx] += [u'<space/><space/>%s [%s]' % ((prod['name'] or ''), (prod['default_code'] or '')),
                                                u'<c>%s</c>' % (str(temka).strip('[]'))]
@@ -1437,7 +1437,7 @@ class stock_inventory_statement(models.Model):
                         value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
                         if value:
                             for a in value:
-                                if len(a.name) <= 3:
+                                if len(a.name) <= 4:
                                     temka.append(a.name.encode("utf-8"))
                         #         Хэмжих нэгж хэрэггүй барааны шинж харна гэсэн болохоор доорх мөрийг коммент болгож өөрчлөлт хийв
                         # row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % ( (prod['name'] or ''),(prod['default_code'] or ''),(str(temka).strip('[]'))),

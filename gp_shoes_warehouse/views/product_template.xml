@@ -9,8 +9,34 @@
             <xpath expr='//field[@name="barcode"]' position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr='//page[@name="sales"]' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
+
+    <record id="product_template_form_hide_inventory_view" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.hide.barcode</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="stock.view_template_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr='//page[2]' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_form_hide_invoicing_view" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.hide.barcode</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr='//page[@name="invoicing"]' position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
     <record id="product_product_form_hide_barcode_view" model="ir.ui.view">
         <field name="name">product.product.form.inherit.hide.barcode</field>
         <field name="model">product.product</field>

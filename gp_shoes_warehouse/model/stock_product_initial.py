@@ -171,7 +171,7 @@ class StockProductInitial(models.TransientModel):
                         print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
 			print'ROWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',row
                 else:
-                    print'RIGHT Congratz'
+                    print'Зүгээр БАРААНЫ ТОО ХЭМЖЭЭГ ӨӨРЧИЛЖ БАЙНА ------------------------------'
                     att_ids = []
                     check = True
                     product_attribute_value_size = self.env['product.attribute.value'].search(
@@ -246,6 +246,7 @@ class StockProductInitial(models.TransientModel):
                                         print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
 
                     if check == True:
+                        print'ШИНЭЭР БАРАААА ҮҮСГЭЖ бАЙНА 00000000000000000000000000000000000000000000'
                         new_att_ids =[]
                         product_att_line = self.env['product.attribute.line'].search(
                             [('product_tmpl_id', '=', have_prod[0].product_tmpl_id.id),
