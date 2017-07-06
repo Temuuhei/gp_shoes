@@ -26,8 +26,8 @@ class cash(models.Model):
     amount = fields.Float(string='Amount')
     note = fields.Text(string='Note')
     history = fields.One2many('cash.history','parent_id',string='Note')
-    type = fields.Selection([('card' 'Card'),
-                             ('cash' 'Cash')], string = 'Type')
+    type = fields.Selection([('card','Card'),
+                             ('cash' ,'Cash')], string = 'Төрөл', required = "True")
     #
     # @api.multi
     # def take_money(self):

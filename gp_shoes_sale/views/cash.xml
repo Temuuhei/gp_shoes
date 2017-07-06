@@ -9,6 +9,7 @@
                 <tree string="Cash">
                     <field name="name"/>
                     <field name="amount"/>
+                    <field name="type"/>
                 </tree>
             </field>
         </record>
@@ -27,9 +28,8 @@
                 <sheet>
                     <h2><field name="name"/></h2>
                     <group>
-
                         <field name="amount" readonly = "1"/>
-                        <field name="type" readonly = "1"/>
+                        <field name="type"/>
                     </group>
                     <notebook>
                         <page string="History">

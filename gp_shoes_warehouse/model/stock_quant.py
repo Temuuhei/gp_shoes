@@ -41,7 +41,7 @@ class Quant(models.Model):
                 if not (warehouse == first_warehouse):
                     raise UserError(_("You can create transit order only for one location at time.") )
             stock_move.append((0, 0, {'product_id': item.product_id.id,
-                                      'product_uom_qty': int(item.qty),
+                                      'product_uom_qty': 1,
                                       'state': 'draft',
                                       'product_uom': item.product_id.product_tmpl_id.uom_id.id,
                                       'procure_method': 'make_to_stock',

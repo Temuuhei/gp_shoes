@@ -13,9 +13,10 @@ class SaleOrderCashRegister(models.TransientModel):
     _description = "Sales Order Cash Register"
 
     amount = fields.Float('Amount', help="The amount paid in cash.")
-    cash = fields.Many2one('cash', string = 'Cash')
-    type = fields.Selection([('card' 'Card'),
-                             ('cash' 'Cash')], string='Type')
+    amount_card = fields.Float('Amount', help="The amount paid in cash.")
+    cash = fields.Many2one('cash', string = 'Бэлэн мөнгө',domain="[('type', '=', 'cash')]")
+    card = fields.Many2one('cash', string = 'Карт',domain="[('type', '=', 'card')]")
+
 
     def confirm(self):
         context = self._context or {}
@@ -26,9 +27,9 @@ class SaleOrderCashRegister(models.TransientModel):
             if wizard.amount < 0:
                 raise UserError(
                     _('Amount can not be less than zero.'))
-            if wizard.amount == 0:
-                return True
-            if wizard.amount > 0:
+            # if wizard.amount == 0:
+            #     return True
+            if wizard.cash and wizard.amount > 0:
                 wizard.cash.amount += wizard.amount
                 self.env['cash.history'].create({
                     'parent_id': wizard.cash.id,
@@ -39,7 +40,20 @@ class SaleOrderCashRegister(models.TransientModel):
                     'user': self.env.uid,
                     'action': 'in'
                 })
-                so.write({'cash_pay':wizard.amount,
-                          'card_pay': so.amount_total - wizard.amount})
-        so.action_confirm()
+            if wizard.card and wizard.amount_card > 0:
+                wizard.card.amount += wizard.amount_card
+                print'Орж байна ЗӨВВВВВВВВВВВВВВВВВВВВВ',wizard.card.amount,wizard.card.id
+                self.env['cash.history'].create({
+                    'parent_id': wizard.card.id,
+                    'amount': wizard.amount_card,
+                    'remaining_amount': wizard.card.amount,
+                    'description': so.name + u' дугаартай борлуулалтаас [%s]' % so.id + u' [' + so.payment_term_id.type + u']',
+                    'date': datetime.today(),
+                    'user': self.env.uid,
+                    'action': 'in'
+                })
+
+            so.write({'cash_pay':wizard.amount,
+                      'card_pay': wizard.amount_card})
+            so.action_confirm()
         return True

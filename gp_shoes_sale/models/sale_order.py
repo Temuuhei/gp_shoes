@@ -38,7 +38,7 @@ class SaleOrder(models.Model):
 
     def custom_confirm(self):
         for order in self:
-            if order.payment_term_id and not order.payment_term_id.type == 'card':
+            if order.payment_term_id and order.payment_term_id.type == 'cash':
                 view = self.env['ir.model.data'].get_object_reference('gp_shoes_sale', 'view_sale_order_cash_register')[1]
                 return {'name': _('Sales cash Wizard'),
                      'type': 'ir.actions.act_window',
@@ -50,8 +50,33 @@ class SaleOrder(models.Model):
                      'target': 'new',
                      'res_id': False,
                      }
-            if order.payment_term_id.type == 'card' or not order.payment_term_id:
-                order.card_pay = order.amount_total
+            elif order.payment_term_id and order.payment_term_id.type == 'card':
+                view = self.env['ir.model.data'].get_object_reference('gp_shoes_sale', 'view_sale_order_cash_register_card')[1]
+                return {'name': _('Sales cash Wizard'),
+                     'type': 'ir.actions.act_window',
+                     'view_type': 'form',
+                     'view_mode': 'form',
+                     'res_model': 'sale.order.cash.register',
+                     'views': [(view, 'form')],
+                     'view_id': view,
+                     'target': 'new',
+                     'res_id': False,
+                     }
+            elif order.payment_term_id and order.payment_term_id.type == 'mixed':
+                view = self.env['ir.model.data'].get_object_reference('gp_shoes_sale', 'view_sale_order_cash_register_mixed')[1]
+                return {'name': _('Sales cash Wizard'),
+                     'type': 'ir.actions.act_window',
+                     'view_type': 'form',
+                     'view_mode': 'form',
+                     'res_model': 'sale.order.cash.register',
+                     'views': [(view, 'form')],
+                     'view_id': view,
+                     'target': 'new',
+                     'res_id': False,
+                     }
                 order.action_confirm()
+            # elif not order.payment_term_id:
+            #     # order.card_pay = order.amount_total
+            order.action_confirm()
 
 

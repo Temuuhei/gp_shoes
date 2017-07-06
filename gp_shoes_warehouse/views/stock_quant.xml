@@ -190,5 +190,17 @@
             <field eval="'ir.actions.server,%d'%stock_quant_action_server" name="value"/>
         </record>
 
+    <!--Stock Picking -->
+    <!--<record id="view_picking_form_inherit" model="ir.ui.view">-->
+            <!--<field name="name">stock.picking.form</field>-->
+            <!--<field name="model">stock.picking</field>-->
+            <!--<field name="inherit_id" ref="stock.view_picking_form"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<xpath expr='//form/sheet/notebook/page/field[@name="product_uom_qty"]' position="replace">-->
+                   <!--<field name="product_uom_qty" sum ='Total'/>-->
+                <!--</xpath>-->
+            <!--</field>-->
+    <!--</record>-->
+
 
 </odoo>

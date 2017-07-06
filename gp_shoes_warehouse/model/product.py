@@ -20,6 +20,12 @@ class ProductProduct(models.Model):
     _description = "Product"
     _inherit = ['product.product']
     _order = 'default_code, id'
+
+    old_code = fields.Float('Old Code')
+    # _sql_constraints = [
+    #     ('old_code', 'unique(old_code)', "Another product already exists with this old code number!"),
+    # ]
+
     @api.multi
     def name_get(self):
         # TDE: this could be cleaned a bit I think

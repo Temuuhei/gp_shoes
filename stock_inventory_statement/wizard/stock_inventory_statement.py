@@ -1081,7 +1081,7 @@ class stock_inventory_statement(models.Model):
                                             "having sum(myquery.q)::decimal(16,4) <> 0 ", (locations, locations, locations, locations))
 
                 fetched = self._cr.dictfetchall()
-                print'\n\n\n Temka \n\n\n', fetched
+                # print'\n\n\n Temka \n\n\n', fetched
                 for f in fetched:
                     # if wiz['currently_cost'] is True:
                     product_pro = product_obj.browse(f['prod'])
