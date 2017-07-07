@@ -42,7 +42,6 @@ class SaleOrderCashRegister(models.TransientModel):
                 })
             if wizard.card and wizard.amount_card > 0:
                 wizard.card.amount += wizard.amount_card
-                print'Орж байна ЗӨВВВВВВВВВВВВВВВВВВВВВ',wizard.card.amount,wizard.card.id
                 self.env['cash.history'].create({
                     'parent_id': wizard.card.id,
                     'amount': wizard.amount_card,

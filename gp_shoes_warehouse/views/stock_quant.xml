@@ -74,7 +74,7 @@
         </field>
     </record>
 
-    <record model="ir.ui.view" id="view_stock_quant_tree">
+    <record model="ir.ui.view" id="stock.view_stock_quant_tree">
         <field name="name">stock.quant.tree</field>
         <field name="model">stock.quant</field>
         <field eval="10" name="priority"/>
@@ -82,7 +82,7 @@
             <tree string="Inventory Valuation" create="0" delete="0">
                 <field name="product_tmp_id"/>
                 <field name="product_id"/>
-                <field name="qty"/>
+                <field name="qty" sum="Total"/>
                 <field name="product_uom_id" groups="product.group_uom"/>
                 <field name="location_id"/>
                 <field name="owner_id" groups="stock.group_tracking_owner"/>
@@ -191,16 +191,52 @@
         </record>
 
     <!--Stock Picking -->
-    <!--<record id="view_picking_form_inherit" model="ir.ui.view">-->
-            <!--<field name="name">stock.picking.form</field>-->
-            <!--<field name="model">stock.picking</field>-->
-            <!--<field name="inherit_id" ref="stock.view_picking_form"/>-->
-            <!--<field name="arch" type="xml">-->
-                <!--<xpath expr='//form/sheet/notebook/page/field[@name="product_uom_qty"]' position="replace">-->
-                   <!--<field name="product_uom_qty" sum ='Total'/>-->
-                <!--</xpath>-->
-            <!--</field>-->
-    <!--</record>-->
+  <record id="stock.view_move_picking_tree" model="ir.ui.view">
+            <field name="name">stock.move.tree</field>
+            <field name="model">stock.move</field>
+            <field eval="12" name="priority"/>
+            <field name="arch" type="xml">
+                <tree decoration-muted="scrapped == True" string="Stock Moves" editable="bottom">
+                    <field name="product_tmpl_id" invisible="1"/>
+                    <field name="product_id"/>
+                    <field name="name" invisible="1"/>
+                    <field name="product_uom_qty" sum="Total"/>
+                    <field name="product_uom" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="product.group_uom"/>
+                    <field name="location_id" invisible="1"/>
+                    <field name="create_date" invisible="1" />
+                    <field name="date_expected" invisible="1" />
+                    <field name="picking_type_id" invisible="1"/>
+                    <field name="scrapped" invisible="1"/>
+                    <field name="availability" invisible="1"/>
+                    <field name="reserved_availability" invisible="1"/>
+                    <field name="location_dest_id" invisible="1"/>
+                    <field name="remaining_qty" invisible="1"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="stock.stock_move_tree" model="ir.ui.view">
+            <field name="name">Stock Moves</field>
+            <field name="model">stock.move</field>
+            <field name="arch" type="xml">
+                <tree decoration-muted="state == 'cancel'" string="Moves" create="false">
+                     <field name="product_tmpl_id" invisible="1"/>
+                    <field name="product_id"/>
+                    <field name="product_uom_qty" sum="Total"/>
+                    <field name="product_uom" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="product.group_uom"/>
+                    <field name="product_packaging" domain="[('product_tmpl_id','=',product_tmpl_id)]" groups="product.group_stock_packaging"/>
+                    <field name="picking_id"/>
+                    <field name="location_id" groups="stock.group_stock_multi_locations"/>
+                    <field name="location_dest_id" groups="stock.group_stock_multi_locations"/>
+                    <field name="create_date" groups="base.group_no_one"/>
+                    <field name="date" string="Date" groups="base.group_no_one"/>
+                    <field name="date_expected" string="Date Expected"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
 
 
 </odoo>

@@ -118,7 +118,7 @@ class StockProductInitial(models.TransientModel):
                             print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
                         print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
                         product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
-#                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
+                        #                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
 
                         print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
                         if row[4].value:
@@ -169,9 +169,8 @@ class StockProductInitial(models.TransientModel):
                         })
                         inventory.action_done()
                         print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
-			print'ROWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW',row
                 else:
-                    print'Зүгээр БАРААНЫ ТОО ХЭМЖЭЭГ ӨӨРЧИЛЖ БАЙНА ------------------------------'
+                    print'Зүгээр БАРААНЫ ТОО ХЭМЖЭЭГ ӨӨРЧИЛЖ БАЙНА ------------------------------',row
                     att_ids = []
                     check = True
                     product_attribute_value_size = self.env['product.attribute.value'].search(
@@ -205,7 +204,7 @@ class StockProductInitial(models.TransientModel):
                                     inventory_filter = 'product'
                                     inventory = Inventory.create({
                                         'name': _('INV- %s: %s -%s') % (
-                                        wiz.location_id, have.name, have.default_code),
+                                            wiz.location_id, have.name, have.default_code),
                                         'filter': inventory_filter,
                                         'product_id': have.id,
                                         'location_id': wiz.location_id.id,
@@ -292,7 +291,7 @@ class StockProductInitial(models.TransientModel):
                         if row[3].value is not None:
                             print'Агуулахын код'
                             line_data = {
-                            'product_qty': row[3].value,
+                                'product_qty': row[3].value,
                                 'location_id': wiz.location_id.id,
                                 'product_id': product_id.id,
                                 'product_uom_id': product_id.uom_id.id,
@@ -303,7 +302,7 @@ class StockProductInitial(models.TransientModel):
                             inventory_filter = 'product'
                             inventory = Inventory.create({
                                 'name': _('INV-%s: %s - %s') % (
-                                wiz.location_id, product_id.name, product_id.default_code),
+                                    wiz.location_id, product_id.name, product_id.default_code),
                                 'filter': inventory_filter,
                                 'product_id': product_id.id,
                                 'location_id': wiz.location_id.id,
