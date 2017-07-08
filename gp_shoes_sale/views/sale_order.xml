@@ -9,6 +9,9 @@
                 <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="discount_manager"/>
                 </xpath>
+                <xpath expr="//field[@name='validity_date']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//button[@name='action_confirm']" position="replace">
                     <button name="custom_confirm" string = "Custom Confirm" class="oe_highlight"  type = 'object' states = "draft" />
                 </xpath>
@@ -24,6 +27,7 @@
             </field>
         </record>
 
+
         <record id="view_order_tree_inherited_gp_shoes" model="ir.ui.view">
             <field name="name">sale.order.tree.inherited</field>
             <field name="model">sale.order</field>
@@ -31,6 +35,12 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="check_discount"/>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="before">
+                    <field name="warehouse_id"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='invoice_status']" position="replace">
                     <field name="cash_pay"/>
@@ -43,6 +53,9 @@
 
             </field>
         </record>
+
+
+
 
 	</data>
 </openerp>
