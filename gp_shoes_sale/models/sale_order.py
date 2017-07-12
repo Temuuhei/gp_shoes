@@ -37,6 +37,12 @@ class SaleOrder(models.Model):
         warehouse_ids = self.env['stock.warehouse'].search([('company_id', '=', company)], limit=1)
         return warehouse_ids
 
+    @api.multi
+    def _default_payment_term(self):
+        payment_term_ids = self.env['account.payment.term'].search([('default','=',True)], limit=1)
+        print '\n\n\n _default_payment_term',payment_term_ids
+        return payment_term_ids
+
     warehouse_id = fields.Many2one(
         'stock.warehouse', string='Warehouse',
         required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
@@ -45,6 +51,7 @@ class SaleOrder(models.Model):
     check_discount = fields.Boolean(compute=_check_discount, string='Check Discount')
     cash_pay = fields.Float(string='Бэлэн')
     card_pay = fields.Float(string='Карт')
+    payment_term_id = fields.Many2one('account.payment.term', string='Payment Term', oldname='payment_term', default = _default_payment_term)
 
     def custom_confirm(self):
         for order in self:

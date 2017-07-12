@@ -45,3 +45,4 @@ class account_payment_term(models.Model):
     #                     name += ' %s' % (emp.job_id.name,)
     #         res.append((record.id, name))
     #     return res
+    default = fields.Boolean ('Default')
