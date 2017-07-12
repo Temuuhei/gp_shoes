@@ -174,6 +174,7 @@
     <record id="stock_quant_action_server" model="ir.actions.server">
             <field name="name">Бараа шилжүүлэх</field>
             <field name="type">ir.actions.server</field>
+            <field name="multi">True</field>
             <field name="model_id" ref="model_stock_quant"/>
             <field name="state">code</field>
             <field name="code">

@@ -187,3 +187,9 @@ class ProductTemplate(models.Model):
                         variant.write({'active': False})
                         pass
             return True
+
+class ProductAttributevalue(models.Model):
+    _name = "product.attribute.value"
+    _order = 'sequence'
+    _inherit = ['product.attribute.value']
+    _order = 'name'
