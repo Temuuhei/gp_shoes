@@ -31,17 +31,20 @@ class SaleOrder(models.Model):
                         order.check_discount = True
                         break
 
-    @api.model
+
     def _default_warehouse_id(self):
         company = self.env.user.company_id.id
         warehouse_ids = self.env['stock.warehouse'].search([('company_id', '=', company)], limit=1)
         return warehouse_ids
 
-    @api.multi
     def _default_payment_term(self):
-        payment_term_ids = self.env['account.payment.term'].search([('default','=',True)], limit=1)
-        print '\n\n\n _default_payment_term',payment_term_ids
-        return payment_term_ids
+        payment_term_id = self.env['account.payment.term'].search([('default','=',True)], limit=1)[0]
+        return payment_term_id
+
+    def _default_partner(self):
+        partner_ids = self.env['res.partner'].search([('customer','=',True)],limit=1)[0]
+        return partner_ids
+
 
     warehouse_id = fields.Many2one(
         'stock.warehouse', string='Warehouse',
@@ -51,7 +54,53 @@ class SaleOrder(models.Model):
     check_discount = fields.Boolean(compute=_check_discount, string='Check Discount')
     cash_pay = fields.Float(string='Бэлэн')
     card_pay = fields.Float(string='Карт')
-    payment_term_id = fields.Many2one('account.payment.term', string='Payment Term', oldname='payment_term', default = _default_payment_term)
+    payment_term_id = fields.Many2one('account.payment.term', string='Payment Term',required = True, oldname='payment_term',
+                                      default =_default_payment_term)
+    partner_id = fields.Many2one('res.partner', string='Customer', readonly=True,
+                                 states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, required=True,
+                                 change_default=True, index=True, track_visibility='always', default = _default_partner)
+
+    @api.multi
+    @api.onchange('partner_id','payment_term_id','warehouse_id')
+    def onchange_partner_id(self):
+        """
+        Update the following fields when the partner is changed:
+        - Pricelist
+        - Payment term
+        - Invoice address
+        - Delivery address
+        """
+        if not self.partner_id:
+            self.update({
+                'partner_invoice_id': False,
+                'partner_shipping_id': False,
+                'payment_term_id': False,
+                'fiscal_position_id': False,
+            })
+            return
+
+        addr = self.partner_id.address_get(['delivery', 'invoice'])
+        values = {
+            'pricelist_id': self.partner_id.property_product_pricelist and self.partner_id.property_product_pricelist.id or False,
+            'payment_term_id': self.partner_id.property_payment_term_id and self.partner_id.property_payment_term_id.id or False,
+            'partner_invoice_id': addr['invoice'],
+            'partner_shipping_id': addr['delivery'],
+        }
+        if self.env.user.company_id.sale_note:
+            values['note'] = self.with_context(lang=self.partner_id.lang).env.user.company_id.sale_note
+
+        if self.partner_id.user_id:
+            values['user_id'] = self.partner_id.user_id.id
+        if self.partner_id.team_id:
+            values['team_id'] = self.partner_id.team_id.id
+        if self.partner_id :
+            values['payment_term_id'] = self.env['account.payment.term'].search([('default','=',True)])[0]
+        allowed_whs = self.env.user.allowed_warehouses
+        if allowed_whs:
+            for a in allowed_whs:
+                allow_wh = self.env['stock.warehouse'].search([('id', '=', a.id)])[0]
+                values['warehouse_id'] = allow_wh[0]
+        self.update(values)
 
     def custom_confirm(self):
         for order in self:

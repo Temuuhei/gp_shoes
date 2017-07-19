@@ -70,3 +70,33 @@ class Quant(models.Model):
                     }
 
                 }
+class Picking(models.Model):
+    _name = "stock.picking"
+    _inherit = "stock.picking"
+    _description = "Transfer"
+    _order = "date desc"
+
+    def _default_stock_picking(self):
+        # if self.location_id:
+            # warehouse = self.env['stock.warehouse'].search([('lot_stock_id', '=', self.location_id.id)], limit=1)
+        picking_type = self.env['stock.picking.type'].search([('id', '=',int(5)),
+                                                              ('code', '=', 'internal')], limit=1)
+        return picking_type
+
+    location_id = fields.Many2one(
+            'stock.location', "Source Location Zone",
+            default=lambda self: self.env['stock.picking.type'].browse(
+                self._context.get('default_picking_type_id')).default_location_src_id,
+            readonly=True, required=True,
+            states={'draft': [('readonly', False)]}, domain = "[('usage', '=', 'internal')]")
+    location_dest_id = fields.Many2one(
+        'stock.location', "Destination Location Zone",
+        default=lambda self: self.env['stock.picking.type'].browse(
+            self._context.get('default_picking_type_id')).default_location_dest_id,
+        readonly=True, required=True,
+        states={'draft': [('readonly', False)]}, domain = "[('usage', '=', 'internal')]")
+    picking_type_id = fields.Many2one(
+        'stock.picking.type', 'Picking Type',
+        required=True,
+        states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain = "[('code', '=', 'internal')]",
+        default= _default_stock_picking)

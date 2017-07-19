@@ -1,3 +1,92 @@
 <odoo>
 
+    <record id="daily_order_search_view" model="ir.ui.view">
+        <field name="name">daily.order.search</field>
+        <field name="model">daily.order</field>
+        <field eval="10" name="priority"/>
+        <field name="arch" type="xml">
+            <search string="Locations">
+                <field name="location_id"/>
+                <field name="product_id"/>
+                <field name="product_qty"/>
+                <field name="state"/>
+                <group expand='0' string='Group by...'>
+                    <filter string='Location' name="locationgroup" domain="[]" context="{'group_by': 'location_id'}"/>
+                    <filter string='Product' name="productgroup" context="{'group_by': 'product_id'}"/>
+                    <filter string='Product Qty' name="productqtygroup" context="{'group_by': 'product_qty'}"/>
+                    <filter string='State' name="stategroup" context="{'group_by': 'state'}"/>
+                    <filter string='Date' name="dategroup" context="{'group_by': 'date'}"/>
+               </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_daily_order_tree" model="ir.ui.view">
+            <field name="name">daily.order.tree</field>
+            <field name="model">daily.order</field>
+            <field name="priority">4</field>
+            <field name="arch" type="xml">
+                <tree string="Daily Order" create="0" delete="0" color ="blue:date &lt; current_date;">
+                    <field name="location_id"/>
+                    <field name="product_id"/>
+                    <field digits="(14, 0)" name="product_qty"/>
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                    <button name="confirm_order" string="Confirm" type="object" help="calls python function" states="draft" />
+                </tree>
+            </field>
+        </record>
+
+
+    <!--Form view of Daily Order-->
+    <record id="view_daily_order_form" model="ir.ui.view">
+            <field name="name">daily.order.from</field>
+            <field name="model">daily.order</field>
+            <field name="priority">4</field>
+            <field name="arch" type="xml">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done,cancel"/>
+                </header>
+                <form string = "Daily Order" edit="false" delete="false">
+                  <sheet>
+                    <group colspan = "4">
+                        <field name="location_id"/>
+                        <field name="product_id"/>
+                        <field digits="(14, 0)" name="product_qty"/>
+                    </group>
+                      <group colspan="4">
+                          <field name="name"/>
+                          <field name="date"/>
+                      </group>
+                  </sheet>
+                </form>
+            </field>
+        </record>
+
+     <record id="action_daily_order" model="ir.actions.act_window">
+            <field name="name">Daily Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">daily.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_locationgroup': 1,'search_default_locationgroup': 1}</field>
+            <field name="domain">[]</field>
+        </record>
+
+        <menuitem action="action_daily_order"
+            id="menu_daily_order" parent="gp_shoes_warehouse.menu_quants_gp"
+            sequence="10" />
+
+    <record id="view_warehouse_gp_do_inherited" model="ir.ui.view">
+            <field name="name">Stock Warehouse Inherited</field>
+            <field name="model">stock.warehouse</field>
+            <field name="inherit_id" ref="stock.view_warehouse"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='default_resupply_wh_id']" position="before">
+                    <field name="main_warehouse" />
+                </xpath>
+            </field>
+        </record>
+
 </odoo>

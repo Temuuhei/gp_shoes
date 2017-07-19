@@ -1,0 +1,146 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* gp_shoes_daily_order
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-18 16:25+0000\n"
+"PO-Revision-Date: 2017-07-19 01:29+0900\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: mn_MN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#. module: gp_shoes_daily_order
+#: selection:daily.order,state:0
+msgid "Cancelled"
+msgstr "Цуцалсан"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_tree
+msgid "Confirm"
+msgstr "Батлах"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_create_uid
+msgid "Created by"
+msgstr "Үүсгэгч"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_create_date
+msgid "Created on"
+msgstr "Үүсгэгдсэн"
+
+#. module: gp_shoes_daily_order
+#: model:ir.actions.act_window,name:gp_shoes_daily_order.action_daily_order
+#: model:ir.ui.menu,name:gp_shoes_daily_order.menu_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_form
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_tree
+msgid "Daily Order"
+msgstr "Өдөр бүрийн захиалга"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Date"
+msgstr "Огноо"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_display_name
+msgid "Display Name"
+msgstr "Дэлгэцийн Нэр"
+
+#. module: gp_shoes_daily_order
+#: selection:daily.order,state:0
+msgid "Done"
+msgstr "Шилжүүлсэн"
+
+#. module: gp_shoes_daily_order
+#: selection:daily.order,state:0
+msgid "Draft"
+msgstr "Шинэ"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Group by..."
+msgstr "Бүлэглэх..."
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_id
+msgid "ID"
+msgstr "ID"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order___last_update
+msgid "Last Modified on"
+msgstr "Сүүлд Өөрчлөгдсөн"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_write_uid
+msgid "Last Updated by"
+msgstr "Сүүлд Шинэчлэгч"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_write_date
+msgid "Last Updated on"
+msgstr "Сүүлд Шинэчлэгдсэн"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Location"
+msgstr "Байршил"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Locations"
+msgstr "Салбарууд"
+
+#. module: gp_shoes_daily_order
+#: code:addons/gp_shoes_daily_order/models/daily_order.py:122
+#, python-format
+msgid ""
+"Main Warehouse doesnt detected!! \n"
+" Configure the main warehouse!"
+msgstr ""
+"Үндсэн төв агуулах олдсонгүй!! \n"
+"Төв агуулах дээр тохиргоо хийнэ үү"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Product"
+msgstr "Бараа"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Product Qty"
+msgstr "Тоо ширхэг"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_sale_order
+msgid "Sales Order"
+msgstr "Борлуулалтын захиалга"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "State"
+msgstr "Төлөв"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_stock_warehouse
+msgid "Warehouse"
+msgstr "Агуулах"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_tree
+msgid "calls python function"
+msgstr "calls python function"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_daily_order
+msgid "daily.order"
+msgstr "Өдөр бүрийн захиалга"
