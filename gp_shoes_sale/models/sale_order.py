@@ -38,8 +38,9 @@ class SaleOrder(models.Model):
         return warehouse_ids
 
     def _default_payment_term(self):
-        payment_term_id = self.env['account.payment.term'].search([('default','=',True)])[0]
-        return payment_term_id
+        payment_term_id = self.env['account.payment.term'].search([('default','=',True)], limit=1)[0]
+        if payment_term_id:
+            return payment_term_id
 
     def _default_partner(self):
         partner_ids = self.env['res.partner'].search([('customer','=',True)],limit=1)[0]
