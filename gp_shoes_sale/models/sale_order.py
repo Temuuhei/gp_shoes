@@ -39,8 +39,7 @@ class SaleOrder(models.Model):
 
     def _default_payment_term(self):
         payment_term_id = self.env['account.payment.term'].search([('default','=',True)], limit=1)
-        if payment_term_id:
-            return payment_term_id
+        return payment_term_id
 
     def _default_partner(self):
         partner_ids = self.env['res.partner'].search([('customer','=',True)],limit=1)[0]
@@ -59,10 +58,10 @@ class SaleOrder(models.Model):
                                       default =_default_payment_term)
     partner_id = fields.Many2one('res.partner', string='Customer', readonly=True,
                                  states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, required=True,
-                                 change_default=True, index=True, track_visibility='always', default = _default_partner)
+                                 change_default=True, index=True, track_visibility='always')
 
     @api.multi
-    @api.onchange('partner_id','payment_term_id','warehouse_id')
+    @api.onchange('partner_id','warehouse_id')
     def onchange_partner_id(self):
         """
         Update the following fields when the partner is changed:
@@ -94,8 +93,8 @@ class SaleOrder(models.Model):
             values['user_id'] = self.partner_id.user_id.id
         if self.partner_id.team_id:
             values['team_id'] = self.partner_id.team_id.id
-        if self.partner_id :
-            values['payment_term_id'] = self.env['account.payment.term'].search([('default','=',True)])[0]
+        # if self.partner_id :
+        #     values['payment_term_id'] = self.env['account.payment.term'].search([('default','=',True)])[0]
         allowed_whs = self.env.user.allowed_warehouses
         if allowed_whs:
             for a in allowed_whs:
