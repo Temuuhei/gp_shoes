@@ -62,7 +62,7 @@ class stock_inventory_statement(models.Model):
     ean = fields.Boolean('Show Barcode', default = False, invisible= True)
     lot = fields.Boolean('Show Serial',invisible= True)
     currently_cost = fields.Boolean('Currently Cost?')
-    
+
 
     def _get_warehouse(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
@@ -373,7 +373,7 @@ class stock_inventory_statement(models.Model):
                                 "JOIN product_uom u2 ON (u2.id=pt.uom_id) " + join + ""
                            "WHERE m.state = 'done' " + where + " "
                                 "AND m.location_id NOT IN %s AND m.location_dest_id IN %s "
-                            + initial_date_where + 
+                            + initial_date_where +
                            "GROUP BY m.product_id" + groupby + ") UNION "
                            "(SELECT m.product_id, " + select + ""
                                 "-coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
@@ -386,7 +386,7 @@ class stock_inventory_statement(models.Model):
                                 "JOIN product_uom u2 ON (u2.id=pt.uom_id) " + join + ""
                            "WHERE m.state = 'done' " + where + " "
                                 "AND m.location_id IN %s AND m.location_dest_id NOT IN %s "
-                           + initial_date_where + 
+                           + initial_date_where +
                            "GROUP BY m.product_id" + groupby + ") ) as myquery "
                            "GROUP BY myquery.product_id " + parent_groupby + ""
                                 "having sum(myquery.q)::decimal(16,4) <> 0",
@@ -478,7 +478,7 @@ class stock_inventory_statement(models.Model):
                                 "JOIN product_product pp ON (pp.id=m.product_id) "
                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
                                 "JOIN product_uom u ON (u.id=m.product_uom) "
-                                "JOIN product_uom u2 ON (u2.id=pt.uom_id) " + join + 
+                                "JOIN product_uom u2 ON (u2.id=pt.uom_id) " + join +
                            "WHERE m.state = 'done' " + where + " "
                                 "AND m.location_id NOT IN %s AND m.location_dest_id IN %s "
                                 "AND m.date >= %s AND m.date <= %s "
@@ -491,7 +491,7 @@ class stock_inventory_statement(models.Model):
                                 "JOIN product_product pp ON (pp.id=m.product_id) "
                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
                                 "JOIN product_uom u ON (u.id=m.product_uom) "
-                                "JOIN product_uom u2 on (u2.id=pt.uom_id) " + join + 
+                                "JOIN product_uom u2 on (u2.id=pt.uom_id) " + join +
                            "WHERE m.state = 'done' " + where + " "
                                 "AND m.location_id IN %s AND m.location_dest_id NOT IN %s "
                                 "AND m.date >= %s AND m.date <= %s "
