@@ -20,7 +20,7 @@
                     <field name="company_id" readonly="1"/>
                     <field name="ean" invisible = "1"/>
                     <field name="lot" invisible = "1"/>
-                    <field name="income_expense" invisible = "1"/>
+                    <field name="income_expense"/>
                     <div>
                            <label string="Date" for="date_to" attrs="{'invisible':[('income_expense','=',True)]}"/>
                            <label string="To Date" for="date_to" attrs="{'invisible':[('income_expense','=',False)]}"/>

@@ -49,7 +49,7 @@ class stock_inventory_statement(models.Model):
     warehouse_ids = fields.Many2many('stock.warehouse', 'stock_inventory_statement_warehouse_rel', 'wizard_id', 'warehouse_id', 'Warehouse')
     prod_categ_ids = fields.Many2many('product.category', 'stock_inventory_statement_prod_categ_rel', 'wizard_id', 'prod_categ_id', 'Product Category')  # domain=['|',('parent_id','=',False),('parent_id.parent_id','=',False)]),
     product_ids = fields.Many2many('product.product', 'stock_inventory_statement_product_rel', 'wizard_id', 'product_id', 'Product')
-    income_expense = fields.Boolean('Show Income and Expenditure?', default = False,invisible= True)
+    income_expense = fields.Boolean('Show Income and Expenditure?')
     partner_ids = fields.Many2many('res.partner', 'stock_inventory_statement_partner_rel', 'wizard_id', 'partner_id', 'Partner')
     grouping = fields.Selection(get_group_by, 'Grouping')
     sorting = fields.Selection([('default_code', 'Default Code'),
@@ -347,12 +347,18 @@ class stock_inventory_statement(models.Model):
                 parent_groupby = ",myquery.group_id,myquery.gname "
             for wh in warehouses:
                 ctx = context.copy()
-                if company.store_cost_per_warehouse:
+                if company:
                     ctx.update({'warehouse': wh.id})
                 wids.append(wh.id)
-                locations = location_obj.search(cr, uid, [('usage', '=', 'internal'),
-                                                          ('location_id', 'child_of', [wh.view_location_id.id])], context=context)
+                locations = location_obj.search([('usage', '=', 'internal'),
+                                                          ('location_id', 'child_of', [wh.view_location_id.id])])
+                print '/n/n/n  Normal Locations \n\n\n',locations
+                for l in locations:
+                    locations = []
+                    locations.append(l.id)
+
                 locations = tuple(locations)
+                print '/n/n/n Tuple Locations \n\n\n',locations
                 if wh.id not in total_dict['whs']:
                     total_dict['whs'][wh.id] = {'start_qty': 0, 'start_cost': 0, 'start_price': 0, 'start': 0,
                                                 'in_qty': 0, 'in_cost': 0, 'in_price': 0, 'in': 0,
@@ -365,7 +371,7 @@ class stock_inventory_statement(models.Model):
                            "(SELECT m.product_id, " + select + ""
                                 "coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                 "coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                "coalesce(sum(m.list_price* (m.product_qty/u.factor*u2.factor)), 0) as price "
+                                "coalesce(sum(m.price_unit* (m.product_qty/u.factor*u2.factor)), 0) as price "
                            "FROM stock_move m "
                                 "FULL JOIN product_product pp ON (pp.id=m.product_id) "
                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -378,7 +384,7 @@ class stock_inventory_statement(models.Model):
                            "(SELECT m.product_id, " + select + ""
                                 "-coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                 "-coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                "-coalesce(sum(m.list_price* (m.product_qty/u.factor*u2.factor)), 0) as price "
+                                "-coalesce(sum(m.price_unit* (m.product_qty/u.factor*u2.factor)), 0) as price "
                            "FROM stock_move m "
                                 "FULL JOIN product_product pp ON (pp.id=m.product_id) "
                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -399,7 +405,8 @@ class stock_inventory_statement(models.Model):
 #                             f['c'] = f['q'] * standard_price_display
                         price = 0
                         if f['prod']:
-                            price = product_obj.price_get(f['prod'], 'list_price', context=ctx)[f['prod']]
+                            price = product_obj.list_price
+                            # price = product_obj.price_get(f['prod'], 'list_price')[f['prod']]
                         if f['prod'] not in prod_ids:
                             prod_ids.append(f['prod'])
                         if wiz['grouping']:
@@ -473,7 +480,7 @@ class stock_inventory_statement(models.Model):
                 self._cr.execute("(SELECT m.product_id AS prod, " + select + ""
                                 "coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                 "coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                "coalesce(sum(m.list_price* (m.product_qty/u.factor*u2.factor)), 0) as l "
+                                "coalesce(sum(m.price_unit* (m.product_qty/u.factor*u2.factor)), 0) as l "
                            "FROM stock_move m "
                                 "JOIN product_product pp ON (pp.id=m.product_id) "
                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -486,7 +493,7 @@ class stock_inventory_statement(models.Model):
                            "(SELECT m.product_id AS prod, " + select + ""
                                 "-coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                 "-coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                "-coalesce(sum(m.list_price* (m.product_qty/u.factor*u2.factor)), 0) as l "
+                                "-coalesce(sum(m.price_unit* (m.product_qty/u.factor*u2.factor)), 0) as l "
                            "FROM stock_move m "
                                 "JOIN product_product pp ON (pp.id=m.product_id) "
                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -505,7 +512,8 @@ class stock_inventory_statement(models.Model):
 #                             f['c'] = f['q'] * standard_price_display
                     price = 0
                     if f['prod']:
-                        price = product_obj.price_get(f['prod'], 'list_price')[f['prod']]
+                        price = product_obj.list_price
+                        # price = product_obj.price_get(f['prod'], 'list_price')[f['prod']]
                     if f['prod'] not in prod_ids:
                         prod_ids.append(f['prod'])
                     if wiz['grouping']:
@@ -617,7 +625,7 @@ class stock_inventory_statement(models.Model):
                            'whs': {},
                            'prods': {}}
             """Product Change Price"""
-            cr.execute("select d.warehouse_id,d.product_id,sum(d.amount) "
+            self._cr.execute("select d.warehouse_id,d.product_id,sum(d.amount) "
                        "from product_price_history h "
                        "join product_price_history_detail d on h.id = d.history_id "
                        "where h.datetime >= %s and h.datetime <= %s and d.warehouse_id in %s "
@@ -977,7 +985,8 @@ class stock_inventory_statement(models.Model):
                         number += 1
 
         else:  # Зөвхөн үлдэгдэл харуулах
-            titles.append(u'Хугацаа: %s' % wiz['date_to'])
+            titles.append(u'Эхлэх Огноо: %s' % wiz['date_from'])
+            titles.append(u'Дуусах Огноо: %s' % wiz['date_to'])
             initial_date_where = " and m.date <= '%s' " % (wiz['date_to'] + ' 23:59:59')
             total_dict = {'qty': 0,
                           'cost': 0,
