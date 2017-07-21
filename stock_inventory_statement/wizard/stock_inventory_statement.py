@@ -347,12 +347,12 @@ class stock_inventory_statement(models.Model):
                 parent_groupby = ",myquery.group_id,myquery.gname "
             for wh in warehouses:
                 ctx = context.copy()
-                if company.store_cost_per_warehouse:
-                    ctx.update({'warehouse': wh.id})
+                # if company.store_cost_per_warehouse:
+                #     ctx.update({'warehouse': wh.id})
                 wids.append(wh.id)
-                locations = location_obj.search(cr, uid, [('usage', '=', 'internal'),
-                                                          ('location_id', 'child_of', [wh.view_location_id.id])], context=context)
-                locations = tuple(locations)
+                locations = location_obj.search([('usage', '=', 'internal'),
+                                                          ('location_id', 'child_of', [wh.view_location_id.id])])
+                locations = tuple(locations.ids)
                 if wh.id not in total_dict['whs']:
                     total_dict['whs'][wh.id] = {'start_qty': 0, 'start_cost': 0, 'start_price': 0, 'start': 0,
                                                 'in_qty': 0, 'in_cost': 0, 'in_price': 0, 'in': 0,
@@ -365,7 +365,7 @@ class stock_inventory_statement(models.Model):
                            "(SELECT m.product_id, " + select + ""
                                 "coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                 "coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                "coalesce(sum(m.list_price* (m.product_qty/u.factor*u2.factor)), 0) as price "
+                                "coalesce(sum(m.price_unit* (m.product_qty/u.factor*u2.factor)), 0) as price "
                            "FROM stock_move m "
                                 "FULL JOIN product_product pp ON (pp.id=m.product_id) "
                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -378,7 +378,7 @@ class stock_inventory_statement(models.Model):
                            "(SELECT m.product_id, " + select + ""
                                 "-coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                 "-coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                "-coalesce(sum(m.list_price* (m.product_qty/u.factor*u2.factor)), 0) as price "
+                                "-coalesce(sum(m.price_unit* (m.product_qty/u.factor*u2.factor)), 0) as price "
                            "FROM stock_move m "
                                 "FULL JOIN product_product pp ON (pp.id=m.product_id) "
                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -399,7 +399,8 @@ class stock_inventory_statement(models.Model):
 #                             f['c'] = f['q'] * standard_price_display
                         price = 0
                         if f['prod']:
-                            price = product_obj.price_get(f['prod'], 'list_price', context=ctx)[f['prod']]
+                            product = product_obj.browse(f['prod'])
+                            price = product.price_get('list_price')[f['prod']]
                         if f['prod'] not in prod_ids:
                             prod_ids.append(f['prod'])
                         if wiz['grouping']:
@@ -473,7 +474,7 @@ class stock_inventory_statement(models.Model):
                 self._cr.execute("(SELECT m.product_id AS prod, " + select + ""
                                 "coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                 "coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                "coalesce(sum(m.list_price* (m.product_qty/u.factor*u2.factor)), 0) as l "
+                                "coalesce(sum(m.price_unit* (m.product_qty/u.factor*u2.factor)), 0) as l "
                            "FROM stock_move m "
                                 "JOIN product_product pp ON (pp.id=m.product_id) "
                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -486,7 +487,7 @@ class stock_inventory_statement(models.Model):
                            "(SELECT m.product_id AS prod, " + select + ""
                                 "-coalesce(sum(m.product_qty/u.factor*u2.factor),0) as q, "
                                 "-coalesce(sum(m.price_unit*m.product_qty),0) as c, "
-                                "-coalesce(sum(m.list_price* (m.product_qty/u.factor*u2.factor)), 0) as l "
+                                "-coalesce(sum(m.price_unit* (m.product_qty/u.factor*u2.factor)), 0) as l "
                            "FROM stock_move m "
                                 "JOIN product_product pp ON (pp.id=m.product_id) "
                                 "JOIN product_template pt ON (pt.id=pp.product_tmpl_id) "
@@ -505,7 +506,8 @@ class stock_inventory_statement(models.Model):
 #                             f['c'] = f['q'] * standard_price_display
                     price = 0
                     if f['prod']:
-                        price = product_obj.price_get(f['prod'], 'list_price')[f['prod']]
+                        product = product_obj.browse(f['prod'])
+                        price = product.price_get('list_price')[f['prod']]
                     if f['prod'] not in prod_ids:
                         prod_ids.append(f['prod'])
                     if wiz['grouping']:
@@ -617,35 +619,36 @@ class stock_inventory_statement(models.Model):
                            'whs': {},
                            'prods': {}}
             """Product Change Price"""
-            cr.execute("select d.warehouse_id,d.product_id,sum(d.amount) "
-                       "from product_price_history h "
-                       "join product_price_history_detail d on h.id = d.history_id "
-                       "where h.datetime >= %s and h.datetime <= %s and d.warehouse_id in %s "
-                       "and d.product_id in %s and h.price_type in ('list_price','retail_price') "
-                       "group by d.warehouse_id,d.product_id ",
-                       (wiz['date_from'] + ' 00:00:00', wiz['date_to'] + ' 23:59:59',
-                        tuple(wids), tuple(prod_ids)))
-            fetched = self._cr.fetchall()
-            for wid, prod, amt in fetched:
-                if wid not in change_dict['whs']:
-                    change_dict['whs'][wid] = {'total': 0.0}
-                if prod not in change_dict['whs'][wid]:
-                    change_dict['whs'][wid][prod] = 0.0
-                if prod not in change_dict['prods']:
-                    change_dict['prods'][prod] = 0.0
-                change_dict['total'] += amt
-                change_dict['whs'][wid]['total'] += amt
-                change_dict['whs'][wid][prod] += amt
-                change_dict['prods'][prod] += amt
+            # self._cr.execute("select d.warehouse_id,d.product_id,sum(d.amount) "
+            #            "from product_price_history h "
+            #            "join product_price_history_detail d on h.id = d.history_id "
+            #            "where h.datetime >= %s and h.datetime <= %s and d.warehouse_id in %s "
+            #            "and d.product_id in %s and h.price_type in ('list_price','retail_price') "
+            #            "group by d.warehouse_id,d.product_id ",
+            #            (wiz['date_from'] + ' 00:00:00', wiz['date_to'] + ' 23:59:59',
+            #             tuple(wids), tuple(prod_ids)))
+            # fetched = self._cr.fetchall()
+            # for wid, prod, amt in fetched:
+            #     if wid not in change_dict['whs']:
+            #         change_dict['whs'][wid] = {'total': 0.0}
+            #     if prod not in change_dict['whs'][wid]:
+            #         change_dict['whs'][wid][prod] = 0.0
+            #     if prod not in change_dict['prods']:
+            #         change_dict['prods'][prod] = 0.0
+            #     change_dict['total'] += amt
+            #     change_dict['whs'][wid]['total'] += amt
+            #     change_dict['whs'][wid][prod] += amt
+            #     change_dict['prods'][prod] += amt
             number = 1
             warehouse_cost_dict = {}
             for wh in warehouses:
                 ctx = context.copy()
-                if company.store_cost_per_warehouse:
+                if company:
                     ctx.update({'warehouse': wh.id})
                 if wiz['cost']:
                     warehouse_cost_dict[wh.id] = product_obj.price_get(prod_ids, ptype='standard_price')
-                prices[wh.id] = product_obj.price_get(prod_ids, 'list_price')
+                prices[wh.id] = product_obj.price_get(prod_ids)
+                print'\n\n hereeeeeeeeeeeeeeeeeeeee %s \n'%prices
 
             row = ['']
             if wiz['ean'] and ((wiz['grouping'] and wiz['type'] == 'detail') or not wiz['grouping']):
@@ -832,8 +835,9 @@ class stock_inventory_statement(models.Model):
                                 prods = product_obj.search([('id', 'in', prod_ids), ('categ_id', '=', val['group_id'])])
                             elif wiz['grouping'] == 'pos_categ':
                                 prods = product_obj.search([('id', 'in', prod_ids), ('pos_categ_id', '=', val['group_id'])])
-                            prods = dict([(x['id'], x) for x in product_obj.read(prods,
-                                        ['ean13', 'name', 'default_code', 'uom_id', 'standard_price'])])
+                            pro = product_obj.browse(prod_ids)
+                            print'\n\n pro : %s \n\n'
+                            prods = dict([(x['id'], x) for x in pro.read(['name', 'default_code', 'uom_id'])])
 
                             for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                                 row = ['<str>%s.%s</str>' % (number, count)]
@@ -909,8 +913,9 @@ class stock_inventory_statement(models.Model):
                                 count += 1
                         number += 1
                 else:
-                    prods = dict([(x['id'], x) for x in product_obj.read(cr, uid, prod_ids,
-                                        ['ean13', 'name', 'default_code', 'uom_id'], context=context)])
+                    pro = product_obj.browse(prod_ids)
+                    print'\n\n pro : %s \n\n'
+                    prods = dict([(x['id'], x) for x in pro.read(['name', 'default_code', 'uom_id'])])
                     for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                         row = ['<str>%s</str>' % (number)]
                         if wiz['ean']:
