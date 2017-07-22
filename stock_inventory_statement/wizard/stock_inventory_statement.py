@@ -648,7 +648,6 @@ class stock_inventory_statement(models.Model):
                 if wiz['cost']:
                     warehouse_cost_dict[wh.id] = product_obj.price_get(prod_ids, ptype='standard_price')
                 prices[wh.id] = product_obj.price_get(prod_ids)
-                print'\n\n hereeeeeeeeeeeeeeeeeeeee %s \n'%prices
 
             row = ['']
             if wiz['ean'] and ((wiz['grouping'] and wiz['type'] == 'detail') or not wiz['grouping']):
@@ -836,15 +835,22 @@ class stock_inventory_statement(models.Model):
                             elif wiz['grouping'] == 'pos_categ':
                                 prods = product_obj.search([('id', 'in', prod_ids), ('pos_categ_id', '=', val['group_id'])])
                             pro = product_obj.browse(prod_ids)
-                            print'\n\n pro : %s \n\n'
-                            prods = dict([(x['id'], x) for x in pro.read(['name', 'default_code', 'uom_id'])])
+                            prods = dict([(x['id'], x) for x in pro.read(['name', 'default_code', 'uom_id','attribute_value_ids'])])
 
                             for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                                 row = ['<str>%s.%s</str>' % (number, count)]
                                 if wiz['ean']:
                                     row += [u'<str>%s</str>' % (prod['ean13'] or '')]
-                                row += [u'<space/><space/>[%s] %s' % ((prod['default_code'] or ''), (prod['name'] or '')),
-                                        u'<c>%s</c>' % (prod['uom_id'][1])]
+                                temka = []
+                                value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
+                                if value:
+                                    for a in value:
+                                        if len(a.name) <= 4:
+                                            temka.append(a.name.encode("utf-8"))
+
+                                row += [
+                                    u'<space/><space/>%s [%s]' % ((prod['name'] or ''), (prod['default_code'] or '')),
+                                    u'<c>%s</c>' % (str(temka).strip('[]'))]
                                 if prod['id'] in val['lines']:
                                     line = val['lines'][prod['id']]
                                     if len(warehouses) > 1:
@@ -914,14 +920,20 @@ class stock_inventory_statement(models.Model):
                         number += 1
                 else:
                     pro = product_obj.browse(prod_ids)
-                    print'\n\n pro : %s \n\n'
-                    prods = dict([(x['id'], x) for x in pro.read(['name', 'default_code', 'uom_id'])])
+                    prods = dict([(x['id'], x) for x in pro.read(['name', 'default_code', 'uom_id','attribute_value_ids'])])
                     for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                         row = ['<str>%s</str>' % (number)]
                         if wiz['ean']:
                             row += [u'<str>%s</str>' % (prod['ean13'] or '')]
-                        row += [u'<space/><space/>[%s] %s' % ((prod['default_code'] or ''), (prod['name'] or '')),
-                                u'<c>%s</c>' % (prod['uom_id'][1])]
+                        temka = []
+                        value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
+                        if value:
+                            for a in value:
+                                if len(a.name) <= 4:
+                                    temka.append(a.name.encode("utf-8"))
+
+                        row += [u'<space/><space/>%s [%s]' % ((prod['name'] or ''), (prod['default_code'] or '')),
+                            u'<c>%s</c>' % (str(temka).strip('[]'))]
                         if prod['id'] in data_dict:
                             line = data_dict[prod['id']]
                             if len(warehouses) > 1:

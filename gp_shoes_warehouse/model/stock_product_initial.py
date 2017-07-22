@@ -84,6 +84,7 @@ class StockProductInitial(models.TransientModel):
                     print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
                     values_pro_tmp = {
                         'name': sheet.name,
+                        'default_code': row[0].value,
                         'categ_id': self.categ_id.id,
                         'standard_price':row[5].value or 9999,
                         'list_price':row[1].value or 9999,
