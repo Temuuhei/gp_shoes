@@ -187,6 +187,19 @@ class ProductTemplate(models.Model):
                         variant.write({'active': False})
                         pass
             return True
+    def action_reload_product_tmp(self):
+        product_obj = self.env['product.product'].search([('active','=',True)])
+        product_tmp_obj = self.env['product.template']
+        for pro in product_obj:
+            if pro.default_code and pro.product_tmpl_id:
+                tmp = product_tmp_obj.search([('id','=',pro.product_tmpl_id.id)])
+                if tmp and tmp.default_code == '':
+                    tmp.write({'default_code':pro.default_code})
+                else:
+                    rm = product_obj.search ([('default_code','=','')])
+                    if rm:
+                        rm.unlink()
+
 
 class ProductAttributevalue(models.Model):
     _name = "product.attribute.value"
