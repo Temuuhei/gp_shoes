@@ -183,12 +183,12 @@ class StockProductInitial(models.TransientModel):
                         if product_attribute_value_season:
                             att_ids.append(product_attribute_value_season.id)
                     for have in have_prod:
-                        print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n'
+                        # print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n'
                         if len(have.attribute_value_ids) == len(att_ids):
                             a = set(have.attribute_value_ids)
                             b = set(att_ids)
                             diff = a.difference(b)
-                            print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n',diff
+                            # print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n',diff
                             if diff is False:
                                 print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн',have_prod
                                 if row[3].value:
