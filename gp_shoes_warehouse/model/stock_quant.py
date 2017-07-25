@@ -79,14 +79,23 @@ class Picking(models.Model):
     def _default_stock_picking(self):
         # if self.location_id:
             # warehouse = self.env['stock.warehouse'].search([('lot_stock_id', '=', self.location_id.id)], limit=1)
-        picking_type = self.env['stock.picking.type'].search([('id', '=',int(5)),
-                                                              ('code', '=', 'internal')], limit=1)
+        picking_type = self.env['stock.picking.type'].search([('active', '=',True),
+                                                              ('code', '=', 'internal'),
+                                                             ('warehouse_id', '=',self.env.user.allowed_warehouses[0].id)], limit=1)
         return picking_type
+
+    @api.model
+    def _default_location_id(self):
+        company_user = self.env.user.company_id
+        warehouse = self.env['stock.warehouse'].search([('company_id', '=', company_user.id)], limit=1)
+        if warehouse:
+            return self.env.user.allowed_warehouses[0].lot_stock_id.id
+        else:
+            raise UserError(_('You must define a warehouse for the company: %s.') % (company_user.name,))
 
     location_id = fields.Many2one(
             'stock.location', "Source Location Zone",
-            default=lambda self: self.env['stock.picking.type'].browse(
-                self._context.get('default_picking_type_id')).default_location_src_id,
+            default=_default_location_id,
             readonly=True, required=True,
             states={'draft': [('readonly', False)]}, domain = "[('usage', '=', 'internal')]")
     location_dest_id = fields.Many2one(
