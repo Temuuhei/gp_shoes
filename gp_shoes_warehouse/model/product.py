@@ -198,7 +198,7 @@ class ProductTemplate(models.Model):
                 else:
                     rm = product_obj.search ([('default_code','=','')])
                     if rm:
-                        rm.unlink()
+                         rm.unlink()
 
 
 class ProductAttributevalue(models.Model):

@@ -100,3 +100,24 @@ class Picking(models.Model):
         required=True,
         states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain = "[('code', '=', 'internal')]",
         default= _default_stock_picking)
+
+class Inventory(models.Model):
+    _name = "stock.inventory"
+    _description = "Inventory"
+    _inherit = "stock.inventory"
+
+    @api.model
+    def _default_location_id(self):
+        company_user = self.env.user.company_id
+        warehouse = self.env['stock.warehouse'].search([('company_id', '=', company_user.id)], limit=1)
+        if warehouse:
+            return self.env.user.allowed_warehouses[0].lot_stock_id.id
+        else:
+            raise UserError(_('You must define a warehouse for the company: %s.') % (company_user.name,))
+
+
+    location_id = fields.Many2one(
+        'stock.location', 'Inventoried Location',
+        readonly=True, required=True,
+        states={'draft': [('readonly', False)]},
+        default=_default_location_id)
