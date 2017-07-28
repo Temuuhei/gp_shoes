@@ -151,7 +151,7 @@ class stock_inventory_statement(models.Model):
             if wiz['cost']:
                 if len(warehouses) > 1:
                     headers[0] += [u'НИЙТ', None, None, None, None, None, None, None, None, None, None, None, None]
-                    headers[1] += [u'Эхний үлдэгдэл', None, None, u'Орлого', None, None, u'Зарлага', None, None, u'Үнэ өөрчлөлт', u'Эцсийн үлдэгдэл', None, None]
+                    headers[1] += [u'Эхний үлдэгдэл', None, None, u'Нэмэлт', None, None, u'Хасалт', None, None, u'Үнэ өөрчлөлт', u'Эцсийн үлдэгдэл', None, None]
                     headers[2] += [u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн', u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн',
                                    u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн', None, u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн']
                     header_span += [((colx, 0), (colx + 12, 0)), ((colx, 1), (colx + 2, 1)),
@@ -160,7 +160,7 @@ class stock_inventory_statement(models.Model):
                     widths += [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
                 for wh in warehouses:
                     headers[0] += [wh.name, None, None, None, None, None, None, None, None, None, None, None, None, None, None]
-                    headers[1] += [u'Худалдах үнэ', u'Эхний үлдэгдэл', None, None, u'Орлого', None, None, u'Зарлага', None, None, u'Үнэ өөрчлөлт', u'Эцсийн үлдэгдэл', None, None]
+                    headers[1] += [u'Худалдах үнэ', u'Эхний үлдэгдэл', None, None, u'Нэмэлт', None, None, u'Хасалт', None, None, u'Үнэ өөрчлөлт', u'Эцсийн үлдэгдэл', None, None]
                     headers[2] += [None, u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн', u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн',
                                    u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн', None, u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн']
                     header_span += [((colx, 0), (colx + 13, 0)), ((colx, 1), (colx, 2)), ((colx + 1, 1), (colx + 3, 1)),
@@ -170,7 +170,7 @@ class stock_inventory_statement(models.Model):
             else:
                 if len(warehouses) > 1:
                     headers[0] += [u'НИЙТ', None, None, None, None, None, None, None, None]
-                    headers[1] += [u'Эхний үлдэгдэл', None, u'Орлого', None, u'Зарлага', None, u'Үнэ өөрчлөлт', u'Эцсийн үлдэгдэл', None]
+                    headers[1] += [u'Эхний үлдэгдэл', None, u'Нэмэлт', None, u'Хасалт', None, u'Үнэ өөрчлөлт', u'Эцсийн үлдэгдэл', None]
                     headers[2] += [u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Тоо хэмжээ', u'Зарах үнийн дүн',
                                    u'Тоо хэмжээ', u'Зарах үнийн дүн', None, u'Тоо хэмжээ', u'Зарах үнийн дүн']
                     header_span += [((colx, 0), (colx + 8, 0)), ((colx, 1), (colx + 1, 1)), ((colx + 2, 1), (colx + 3, 1)), ((colx + 4, 1), (colx + 5, 1)),
@@ -179,7 +179,7 @@ class stock_inventory_statement(models.Model):
                     widths += [4, 4, 4, 4, 4, 4, 4, 4, 4]
                 for wh in warehouses:
                     headers[0] += [wh.name, None, None, None, None, None, None, None, None, None]
-                    headers[1] += [u'Худалдах үнэ', u'Эхний үлдэгдэл', None, u'Орлого', None, u'Зарлага', None, u'Үнэ өөрчлөлт', u'Эцсийн үлдэгдэл', None]
+                    headers[1] += [u'Худалдах үнэ', u'Эхний үлдэгдэл', None, u'Нэмэлт', None, u'Хасалт', None, u'Үнэ өөрчлөлт', u'Эцсийн үлдэгдэл', None]
                     headers[2] += [None, u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Тоо хэмжээ', u'Зарах үнийн дүн',
                                    u'Тоо хэмжээ', u'Зарах үнийн дүн', None, u'Тоо хэмжээ', u'Зарах үнийн дүн']
                     header_span += [((colx, 0), (colx + 9, 0)), ((colx, 1), (colx, 2)), ((colx + 1, 1), (colx + 2, 1)), ((colx + 3, 1), (colx + 4, 1)),
