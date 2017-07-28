@@ -103,7 +103,7 @@ class StockProductInitial(models.TransientModel):
                     att_ids = []
                     if row[2].value:
                         product_attribute_value_size = self.env['product.attribute.value'].search(
-                            [('name', '=', str(row[2].value)[:4])])
+                            [('name', '=', str(row[2].value)[:2])])
                         print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
                         if product_attribute_value_size:
                             att_ids.append(product_attribute_value_size[0].id)
@@ -175,7 +175,7 @@ class StockProductInitial(models.TransientModel):
                     att_ids = []
                     check = True
                     product_attribute_value_size = self.env['product.attribute.value'].search(
-                        [('name', '=', str(row[2].value)[:4])])
+                        [('name', '=', str(row[2].value)[:2])])
                     product_attribute_value_season = self.env['product.attribute.value'].search(
                         [('name', '=', str(row[4].value))])
                     if product_attribute_value_size:
