@@ -49,7 +49,7 @@ class stock_inventory_statement(models.Model):
     warehouse_ids = fields.Many2many('stock.warehouse', 'stock_inventory_statement_warehouse_rel', 'wizard_id', 'warehouse_id', 'Warehouse')
     prod_categ_ids = fields.Many2many('product.category', 'stock_inventory_statement_prod_categ_rel', 'wizard_id', 'prod_categ_id', 'Product Category')  # domain=['|',('parent_id','=',False),('parent_id.parent_id','=',False)]),
     product_ids = fields.Many2many('product.product', 'stock_inventory_statement_product_rel', 'wizard_id', 'product_id', 'Product')
-    income_expense = fields.Boolean('Show Income and Expenditure?', default = False,invisible= True)
+    income_expense = fields.Boolean('Show Income and Expenditure?')
     partner_ids = fields.Many2many('res.partner', 'stock_inventory_statement_partner_rel', 'wizard_id', 'partner_id', 'Partner')
     grouping = fields.Selection(get_group_by, 'Grouping')
     sorting = fields.Selection([('default_code', 'Default Code'),
