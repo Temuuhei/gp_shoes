@@ -28,7 +28,7 @@ class StockProductInitial(models.TransientModel):
     _description = 'Stock Product Initial'
     
     date =  fields.Datetime('Date Of Inventory', required=True, default = date.today().strftime('%Y-%m-%d'))
-    location_id = fields.Many2one('stock.location', 'Warehouse', required=True)
+    location_id = fields.Many2one('stock.location', 'Warehouse', required=True, domain = "[('usage', '=', 'internal')]")
     data = fields.Binary('Excel File', required=True)
     type = fields.Selection([('default_code','Default code'),('name','Name')], 'Import type', required=True, default = 'default_code')
     categ_id = fields.Many2one('product.category', u'Барааны ангилал', required=True)
@@ -103,7 +103,7 @@ class StockProductInitial(models.TransientModel):
                     att_ids = []
                     if row[2].value:
                         product_attribute_value_size = self.env['product.attribute.value'].search(
-                            [('name', '=', str(row[2].value)[:2])])
+                            [('name', '=', str(row[2].value)[:4])])
                         print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
                         if product_attribute_value_size:
                             att_ids.append(product_attribute_value_size[0].id)
@@ -175,7 +175,7 @@ class StockProductInitial(models.TransientModel):
                     att_ids = []
                     check = True
                     product_attribute_value_size = self.env['product.attribute.value'].search(
-                        [('name', '=', str(row[2].value)[:2])])
+                        [('name', '=', str(row[2].value)[:4])])
                     product_attribute_value_season = self.env['product.attribute.value'].search(
                         [('name', '=', str(row[4].value))])
                     if product_attribute_value_size:

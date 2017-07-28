@@ -8,6 +8,9 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.exceptions import UserError
 
 import logging
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 _logger = logging.getLogger(__name__)
 
@@ -128,5 +131,5 @@ class Inventory(models.Model):
     location_id = fields.Many2one(
         'stock.location', 'Inventoried Location',
         readonly=True, required=True,
-        states={'draft': [('readonly', False)]},
+        states={'draft': [('readonly', False)]}, domain = "[('code', '=', 'internal')]",
         default=_default_location_id)
