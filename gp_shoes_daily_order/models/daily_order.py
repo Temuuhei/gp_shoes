@@ -125,7 +125,7 @@ class SaleOrder(models.Model):
                             'date': self.date_order,
                             'state': 'draft',
                             'product_qty': qty,
-                            'actice': True,
+                            'active': True,
                             'name':u'%s-ны %s Дугаартай Борлуулалтын захиалгаас шууд захиалга үүсэв'%(self.date_order, self.name)
 
                         }
