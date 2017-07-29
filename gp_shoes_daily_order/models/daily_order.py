@@ -41,6 +41,11 @@ class DailyOrder(models.Model):
         'stock.location', "Захиалсан салбар",
         readonly=True, required=True,
         states={'draft': [('readonly', False)]}, domain="[('usage', '=', 'internal')]")
+    origin = fields.Char('Үүсэл')
+    active = fields.Boolean('Archive')
+
+    def to_archive(self):
+        self.update({'active': False})
 
     def confirm_order(self):
         print'Confirm action here'
@@ -87,7 +92,8 @@ class DailyOrder(models.Model):
                 for q in qty_obj:
                     qty += q.qty
                 self.update({'state':'done',
-                             'product_qty':qty})
+                             'product_qty':qty,
+                             'origin':new_picking.name})
 
 class StockWarehouse(models.Model):
     _inherit = "stock.warehouse"
@@ -119,6 +125,7 @@ class SaleOrder(models.Model):
                             'date': self.date_order,
                             'state': 'draft',
                             'product_qty': qty,
+                            'actice': True,
                             'name':u'%s-ны %s Дугаартай Борлуулалтын захиалгаас шууд захиалга үүсэв'%(self.date_order, self.name)
 
                         }

@@ -33,7 +33,10 @@
                     <field name="name"/>
                     <field name="date"/>
                     <field name="state"/>
+                    <field name="active" invisbile = "True"/>
+                    <field name="origin"/>
                     <button name="confirm_order" string="Confirm" type="object" help="calls python function" states="draft" />
+                    <button name="to_archive" string="Archive" type="object" help="calls python function" states="draft" />
                 </tree>
             </field>
         </record>
@@ -58,6 +61,7 @@
                       <group colspan="4">
                           <field name="name"/>
                           <field name="date"/>
+                          <field name="active"/>
                       </group>
                   </sheet>
                 </form>
