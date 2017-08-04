@@ -22,7 +22,6 @@ import logging
 from operator import itemgetter
 
 
-
 class StockProductInitial(models.TransientModel):
     _name = 'stock.product.initial'
     _description = 'Stock Product Initial'
@@ -315,5 +314,13 @@ class StockProductInitial(models.TransientModel):
                 rowi += 1
             except IndexError:
                 raise UserError(_('Excel sheet must be 6 columned : Code, Price,Size,Qty,Season,Cost: error on row %s ' % rowi))
-        return True
-
+        return {
+            'name': _(u'Амжилттай импортлолоо'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'stock.product.initial',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+            'target':'new',
+            'nodestroy': True,
+        }

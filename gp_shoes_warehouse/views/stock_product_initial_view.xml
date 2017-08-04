@@ -1,5 +1,29 @@
 <openerp>
     <data>
+
+        <record id="action_excel_output_view" model="ir.ui.view">
+            <field name="name">action.import.output.view</field>
+            <field name="model">stock.product.initial</field>
+            <field name="arch" type="xml">
+	            <form string="Report Output">
+	                <separator string="АМЖИЛТТАЙ ИМПОРТЛОЛОО" colspan="4"/>
+	                <footer>
+                        <button special="cancel" string="Close" type="object" class="oe_link"/>
+                    </footer>
+	            </form>
+            </field>
+        </record>
+
+
+        <record id="action_report_excel_output" model="ir.actions.act_window">
+            <field name="name">Excel Report Output</field>
+            <field name="res_model">stock.product.initial</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
         <record id="view_stock_product_initial" model="ir.ui.view">
             <field name="name">stock.product.initial.form</field>
             <field name="model">stock.product.initial</field>
