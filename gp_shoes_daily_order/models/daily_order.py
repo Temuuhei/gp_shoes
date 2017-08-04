@@ -49,7 +49,6 @@ class DailyOrder(models.Model):
         self.update({'active': False})
 
     def ready_order(self):
-        print'Get Ready action here'
         stock_move = []
         qty = 0
         for item in self:
@@ -96,7 +95,6 @@ class DailyOrder(models.Model):
                              'origin':new_picking.name})
 
     def confirm_order(self):
-        print'Confirm action here'
         stock_move = []
         qty = 0
         for item in self:
@@ -156,7 +154,6 @@ class SaleOrder(models.Model):
         module_id = self.env['ir.module.module'].search([('name','=','gp_shoes_daily_order'),
                                                          ('state','=','installed')])
         if module_id:
-            print'Code here'
             if self.order_line:
                 for line in self.order_line:
                     qty = 0
@@ -178,7 +175,6 @@ class SaleOrder(models.Model):
 
                         }
                         do_obj = self.env['daily.order'].create(vals)
-                        print'Daily Order Created ======>',do_obj
                     else:
                         raise UserError(_(
                             'Main Warehouse doesnt detected!! \n Configure the main warehouse!'))
