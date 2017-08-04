@@ -54,7 +54,7 @@
                         <field name="in_date"/>
                         <field name="reservation_id"/>
                         <field name="propagated_from_id"/>
-                        <field digits="(14, 0)" name="inventory_value"/>
+                        <field digits="(14, 0)" name="inventory_value" groups ="base.group_erp_manager"/>
                     </group>
                 </group>
                 <group>
@@ -90,7 +90,7 @@
                 <field name="package_id" groups="stock.group_tracking_lot"/>
                 <field name="packaging_type_id" invisible="1"/>
                 <field name="in_date"/>
-                <field digits="(14, 0)" name="inventory_value" sum="Total"/>
+                <field digits="(14, 0)" name="inventory_value" sum="Total" groups ="base.group_erp_manager"/>
                 <field name="reservation_id" invisible='1'/>
                 <field name="propagated_from_id" invisible='1'/>
                 <field name='company_id' groups="base.group_multi_company"/>
@@ -153,11 +153,11 @@
     <menuitem id="menu_quants_gp" name= "Агуулах"  sequence="1" parent = "menu_quants_gp_main" />
     <menuitem id="menu_main_so_gp" name= "Борлуулалт"  sequence="2" parent = "menu_quants_gp_main" />
     <menuitem id="menu_so_gp" name= "Борлуулалт"  sequence="2" parent = "menu_main_so_gp" action="sale.action_orders"/>
-    <menuitem id="menu_so_report_gp" name= "Тайлан"  sequence="3" parent = "menu_main_so_gp" action="sale.action_order_report_all"/>
+    <menuitem id="menu_so_report_gp" name= "Тайлан"  sequence="3" parent = "menu_main_so_gp" action="sale.action_order_report_all" groups ="base.group_erp_manager"/>
     <menuitem id="menu_main_po_gp" name= "Бараа орлогодох"  sequence="3" parent = "menu_quants_gp_main" />
     <menuitem id="menu_po_gp" name= "Бараа орлогодох"  sequence="3" parent = "menu_main_po_gp" action="purchase.purchase_form_action" />
-    <menuitem id="menu_po_report_gp" name= "Тайлан"  sequence="4" parent = "menu_main_po_gp" action="purchase.action_purchase_order_report_all" />
-    <menuitem id="menu_consume_gp" name= "Бараа зарлагадах"  sequence="2" parent = "menu_quants_gp" action="stock.action_stock_scrap"/>
+    <menuitem id="menu_po_report_gp" name= "Тайлан"  sequence="4" parent = "menu_main_po_gp" action="purchase.action_purchase_order_report_all" groups ="base.group_erp_manager"/>
+    <menuitem id="menu_consume_gp" name= "Бараа зарлагадах"  sequence="2" parent = "menu_quants_gp" action="stock.action_stock_scrap" groups ="base.group_erp_manager"/>
     <menuitem id="menu_transit_gp" name= "Бараа шилжүүлэх"  sequence="3" parent = "menu_quants_gp" action="stock.action_picking_tree_all"/>
     <menuitem id="menu_dashboard_gp" name= "Агуулахын мэдээлэл"  sequence="4" parent = "menu_quants_gp" action="stock.stock_picking_type_action"/>
     <menuitem id="menu_product_template_gp" name= "Бараа"  sequence="5" parent = "menu_quants_gp" action="product.product_template_action"/>
@@ -237,6 +237,7 @@
                 </tree>
             </field>
         </record>
+
 
     <!--Stock Inventory-->
      <record id="stock.view_inventory_form" model="ir.ui.view">

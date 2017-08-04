@@ -34,6 +34,7 @@ class DailyOrder(models.Model):
 
     state = fields.Selection([
         ('draft', 'Draft'),
+        ('pending', 'Pending'),
         ('done', 'Done'),
         ('cancel', 'Cancelled'),
     ],  string='Төлөв', readonly=True, copy=False, store=True, default='draft')
@@ -46,6 +47,53 @@ class DailyOrder(models.Model):
 
     def to_archive(self):
         self.update({'active': False})
+
+    def ready_order(self):
+        print'Get Ready action here'
+        stock_move = []
+        qty = 0
+        for item in self:
+            main_warehouse = self.env['stock.warehouse'].search([('main_warehouse','=',True)])[0]
+            if main_warehouse:
+                picking_type = self.env['stock.picking.type'].search([('warehouse_id', '=', main_warehouse.id),
+                                                                      ('code', '=', 'internal')], limit=1)
+                outgoing_location = self.env['stock.picking.type'].search([('warehouse_id', '=', main_warehouse.id),
+                                                                           ('code', '=', 'outgoing')], limit=1)
+
+                stock_move.append((0, 0, {'product_id': item.product_id.id,
+                                          'product_uom_qty': 1,
+                                          'state': 'draft',
+                                          'product_uom': item.product_id.product_tmpl_id.uom_id.id,
+                                          'procure_method': 'make_to_stock',
+                                          'location_id': main_warehouse.lot_stock_id.id,
+                                          'location_dest_id': item.location_id.id,
+                                          'company_id': 1,
+                                          'date_expected': item.date,
+                                          'date': item.date,
+                                          'name': item.product_id.product_tmpl_id.name,
+                                          'scrapped': False,
+                                          }))
+                vals={
+                    'location_id':main_warehouse.lot_stock_id.id,
+                    'picking_type_id':picking_type.id,
+                    'move_type':'direct',
+                    'company_id':1,
+                    'location_dest_id':item.location_id.id,
+                    'date': item.date,
+                    'note':u'%s-ны Өдрийн захиалгаас үүсэв'%(self.date),
+                    'origin':u'%s-ны Өдрийн захиалгаас үүсэв'%(self.date),
+                    'move_lines': stock_move,
+                }
+                new_picking = self.env['stock.picking'].create(vals)
+                wiz_act = new_picking.action_confirm()
+                wiz_act = new_picking.force_assign()
+                qty_obj = self.env['stock.quant'].search([('product_id', '=', item.product_id.id),
+                                                          ('location_id', '=', main_warehouse.lot_stock_id.id)])
+                for q in qty_obj:
+                    qty += q.qty
+                self.update({'state':'pending',
+                             'product_qty':qty,
+                             'origin':new_picking.name})
 
     def confirm_order(self):
         print'Confirm action here'
