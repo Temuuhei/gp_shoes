@@ -51,8 +51,8 @@ class Quant(models.Model):
                                       'location_id': item.location_id.id,
                                       'location_dest_id': outgoing_location.id,
                                       'company_id': item.company_id.id,
-                                      'date_expected': item.in_date,
-                                      'date': item.in_date,
+                                      'date_expected': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                      'date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                       'name': item.product_tmp_id,
                                       'scrapped': False,
                                       }))
@@ -69,6 +69,7 @@ class Quant(models.Model):
                         'default_location_id': outgoing_location.id,
                         'default_location_dest_id': False,
                         'default_origin':'Тайлбар бичнэ үү...',
+                        'default_min_date':datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                         'default_move_lines': stock_move,
                     }
 
