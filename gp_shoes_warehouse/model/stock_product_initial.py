@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
-#    Asterisk Technologies LLC, Enterprise Management Solution    
 #    Copyright (C) 2007-2013 Game of Code LLC Co.,ltd (<http://www.erp.mn>). All Rights Reserved
 #
 #    Email : temuujintsogt@gmail.com
@@ -31,6 +30,7 @@ class StockProductInitial(models.TransientModel):
     data = fields.Binary('Excel File', required=True)
     type = fields.Selection([('default_code','Default code'),('name','Name')], 'Import type', required=True, default = 'default_code')
     categ_id = fields.Many2one('product.category', u'Барааны ангилал', required=True)
+    is_initial = fields.Boolean(u'Эхний үлдэгдэл эсэх',default = False)
     # _defaults = {
     #     'type':'default_code',
     # }
@@ -46,6 +46,8 @@ class StockProductInitial(models.TransientModel):
         inventory_obj = self.env['stock.inventory']
         inventory_line_obj = self.env['stock.inventory.line']
         Inventory = self.env['stock.inventory']
+        Warehouse = self.env['stock.warehouse']
+        immediate = self.env['stock.immediate.transfer']
         product_att = self.env['product.attribute.value']
         product_uoms = {u'ш': 'Unit(s)'}
 
@@ -64,161 +66,132 @@ class StockProductInitial(models.TransientModel):
         # print '\n\n\n\n ROWS', nrows
 
         rowi = 1
+        if wiz.is_initial is True:
+            while rowi < nrows:
+                try:
+                    row = sheet.row(rowi)
+                    code = row[0].value
+                    # print'Internal Code \n\n\n',code
+                    product_type = 'product'
+                    product_supply_method = 'buy'
+                    product_procure_method = 'make_to_stock'
+                    product_sale_ok = True
+                    product_purchase_ok = True
+                    product_cost_method = 'average'
+                    product_valuation = 'real_time'
 
-        while rowi < nrows:
-            try:
-                row = sheet.row(rowi)
-                code = row[0].value
-                # print'Internal Code \n\n\n',code
-                product_type = 'product'
-                product_supply_method = 'buy'
-                product_procure_method = 'make_to_stock'
-                product_sale_ok = True
-                product_purchase_ok = True
-                product_cost_method = 'average'
-                product_valuation = 'real_time'
-
-                have_prod = product_obj.search([('default_code', '=', row[0].value)])
-                if not have_prod:
-                    print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
-                    values_pro_tmp = {
-                        'name': sheet.name,
-                        'default_code': row[0].value,
-                        'categ_id': self.categ_id.id,
-                        'standard_price':row[5].value or 9999,
-                        'list_price':row[1].value or 9999,
-                        'uom_id': 1,
-                        'type': product_type,
-                        'purchase_line_warn': 'no-message',
-                        'sale_line_warn': 'no-message',
-                        'tracking': 'none',
-                        'purchase_ok': True,
-                        'sale_ok': True,
-                        'company_id': 1,
-                    }
-                    # print'\n\n\n\n Values',values_pro_tmp
-                    product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
-                    print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,row[0].value
-                    att_ids = []
-                    if row[2].value:
-                        product_attribute_value_size = self.env['product.attribute.value'].search(
-                            [('name', '=', str(row[2].value)[:2])])
-                        print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
-                        if product_attribute_value_size:
-                            att_ids.append(product_attribute_value_size[0].id)
-                        product_att_line = self.env['product.attribute.line'].search(
-                            [('product_tmpl_id', '=', product_tmpl_id.id),
-                             ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
-                        print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
-                        if not product_att_line:
-                            product_att_line = self.env['product.attribute.line'].create(
-                                {'product_tmpl_id': product_tmpl_id.id,
-                                 'attribute_id':
-                                     product_attribute_value_size[0].attribute_id.id})
-                            print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
-                        print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
-                        product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
-                        #                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
-
-                        print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
-                        if row[4].value:
-                            print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
-                            product_attribute_value_season = self.env['product.attribute.value'].search(
-                                [('name', '=', str(row[4].value))])
-                            if product_attribute_value_season:
-                                att_ids.append(product_attribute_value_season.id)
+                    have_prod = product_obj.search([('default_code', '=', row[0].value)])
+                    if not have_prod:
+                        print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
+                        values_pro_tmp = {
+                            'name': sheet.name,
+                            'default_code': row[0].value,
+                            'categ_id': self.categ_id.id,
+                            'standard_price':row[5].value or 9999,
+                            'list_price':row[1].value or 9999,
+                            'uom_id': 1,
+                            'type': product_type,
+                            'purchase_line_warn': 'no-message',
+                            'sale_line_warn': 'no-message',
+                            'tracking': 'none',
+                            'purchase_ok': True,
+                            'sale_ok': True,
+                            'company_id': 1,
+                        }
+                        # print'\n\n\n\n Values',values_pro_tmp
+                        product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
+                        print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,row[0].value
+                        att_ids = []
+                        if row[2].value:
+                            product_attribute_value_size = self.env['product.attribute.value'].search(
+                                [('name', '=', str(row[2].value)[:2])])
+                            print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
+                            if product_attribute_value_size:
+                                att_ids.append(product_attribute_value_size[0].id)
                             product_att_line = self.env['product.attribute.line'].search(
                                 [('product_tmpl_id', '=', product_tmpl_id.id),
-                                 ('attribute_id', '=', product_attribute_value_season.attribute_id.id)])
+                                 ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
+                            print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
                             if not product_att_line:
                                 product_att_line = self.env['product.attribute.line'].create(
                                     {'product_tmpl_id': product_tmpl_id.id,
                                      'attribute_id':
-                                         product_attribute_value_season.attribute_id.id})
-                                print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
-                            product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
+                                         product_attribute_value_size[0].attribute_id.id})
+                                print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
+                            print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
+                            product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
+                            #                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
+
+                            print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
+                            if row[4].value:
+                                print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
+                                product_attribute_value_season = self.env['product.attribute.value'].search(
+                                    [('name', '=', str(row[4].value))])
+                                if product_attribute_value_season:
+                                    att_ids.append(product_attribute_value_season.id)
+                                product_att_line = self.env['product.attribute.line'].search(
+                                    [('product_tmpl_id', '=', product_tmpl_id.id),
+                                     ('attribute_id', '=', product_attribute_value_season.attribute_id.id)])
+                                if not product_att_line:
+                                    product_att_line = self.env['product.attribute.line'].create(
+                                        {'product_tmpl_id': product_tmpl_id.id,
+                                         'attribute_id':
+                                             product_attribute_value_season.attribute_id.id})
+                                    print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
+                                product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
 
 
-                        product_id = product_obj.create({
-                            'product_tmpl_id': product_tmpl_id.id,
-                            'active': True,
-                            'valuation': product_valuation,
-                            'default_code': code,
-                            'standart_price': row[5].value or 9999,
-                            'attribute_value_ids': [(6, 0, att_ids)],
-                        })
-                    if row[3].value:
-                        print'Агуулахын код'
-                        line_data = {
-                            'product_qty': row[3].value,
-                            'location_id': wiz.location_id.id,
-                            'product_id': product_id.id,
-                            'product_uom_id': product_id.uom_id.id,
-                            'theoretical_qty': 0,
-                            'prod_lot_id': None,
-                        }
-                        # print'\n\n %s \n\n' % line_data
-                        inventory_filter = 'product'
-                        inventory = Inventory.create({
-                            'name': _('INV- %s: %s -%s') %(wiz.location_id,product_id.name,product_id.default_code),
-                            'filter': inventory_filter,
-                            'product_id': product_id.id,
-                            'location_id': wiz.location_id.id,
-                            'lot_id': None,
-                            'line_ids': [(0, 0, line_data)],
-                        })
-                        inventory.action_done()
-                        print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
-                else:
-                    print'Зүгээр БАРААНЫ ТОО ХЭМЖЭЭГ ӨӨРЧИЛЖ БАЙНА ------------------------------',row
-                    att_ids = []
-                    check = True
-                    product_attribute_value_size = self.env['product.attribute.value'].search(
-                        [('name', '=', str(row[2].value)[:2])])
-                    product_attribute_value_season = self.env['product.attribute.value'].search(
-                        [('name', '=', str(row[4].value))])
-                    if product_attribute_value_size:
-                        att_ids.append(product_attribute_value_size.id)
-                        if product_attribute_value_season:
-                            att_ids.append(product_attribute_value_season.id)
-                    for have in have_prod:
-                        # print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n'
-                        if len(have.attribute_value_ids) == len(att_ids):
-                            a = set(have.attribute_value_ids)
-                            b = set(att_ids)
-                            diff = a.difference(b)
-                            # print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n',diff
-                            if diff is False:
-                                print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн',have_prod
-                                if row[3].value:
-                                    # print'Агуулахын код'
-                                    line_data = {
-                                        'product_qty': row[3].value,
-                                        'location_id': wiz.location_id.id,
-                                        'product_id': have.id,
-                                        'product_uom_id': have.uom_id.id,
-                                        'theoretical_qty': 0,
-                                        'prod_lot_id': None,
-                                    }
-                                    # print'\n\n %s \n\n' % line_data
-                                    inventory_filter = 'product'
-                                    inventory = Inventory.create({
-                                        'name': _('INV- %s: %s -%s') % (
-                                            wiz.location_id, have.name, have.default_code),
-                                        'filter': inventory_filter,
-                                        'product_id': have.id,
-                                        'location_id': wiz.location_id.id,
-                                        'lot_id': None,
-                                        'line_ids': [(0, 0, line_data)],
-                                    })
-                                    inventory.action_done()
-                                    print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
-                                    check = False
-                                    break
-                    for have in have_prod:
-                        if len(have.attribute_value_ids) == len(att_ids):
-                            for a in have.attribute_value_ids:
-                                if a.id in att_ids:
+                            product_id = product_obj.create({
+                                'product_tmpl_id': product_tmpl_id.id,
+                                'active': True,
+                                'valuation': product_valuation,
+                                'default_code': code,
+                                'standart_price': row[5].value or 9999,
+                                'attribute_value_ids': [(6, 0, att_ids)],
+                            })
+                        if row[3].value:
+                            print'Агуулахын код'
+                            line_data = {
+                                'product_qty': row[3].value,
+                                'location_id': wiz.location_id.id,
+                                'product_id': product_id.id,
+                                'product_uom_id': product_id.uom_id.id,
+                                'theoretical_qty': 0,
+                                'prod_lot_id': None,
+                            }
+                            # print'\n\n %s \n\n' % line_data
+                            inventory_filter = 'product'
+                            inventory = Inventory.create({
+                                'name': _('INV- %s: %s -%s') %(wiz.location_id,product_id.name,product_id.default_code),
+                                'filter': inventory_filter,
+                                'product_id': product_id.id,
+                                'location_id': wiz.location_id.id,
+                                'lot_id': None,
+                                'line_ids': [(0, 0, line_data)],
+                            })
+                            inventory.action_done()
+                            print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
+                    else:
+                        print'Зүгээр БАРААНЫ ТОО ХЭМЖЭЭГ ӨӨРЧИЛЖ БАЙНА ------------------------------',row
+                        att_ids = []
+                        check = True
+                        product_attribute_value_size = self.env['product.attribute.value'].search(
+                            [('name', '=', str(row[2].value)[:2])])
+                        product_attribute_value_season = self.env['product.attribute.value'].search(
+                            [('name', '=', str(row[4].value))])
+                        if product_attribute_value_size:
+                            att_ids.append(product_attribute_value_size.id)
+                            if product_attribute_value_season:
+                                att_ids.append(product_attribute_value_season.id)
+                        for have in have_prod:
+                            # print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n'
+                            if len(have.attribute_value_ids) == len(att_ids):
+                                a = set(have.attribute_value_ids)
+                                b = set(att_ids)
+                                diff = a.difference(b)
+                                # print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n',diff
+                                if diff is False:
+                                    print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн',have_prod
                                     if row[3].value:
                                         # print'Агуулахын код'
                                         line_data = {
@@ -241,79 +214,301 @@ class StockProductInitial(models.TransientModel):
                                             'line_ids': [(0, 0, line_data)],
                                         })
                                         inventory.action_done()
-                                        check = False
                                         print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
+                                        check = False
+                                        break
+                        for have in have_prod:
+                            if len(have.attribute_value_ids) == len(att_ids):
+                                for a in have.attribute_value_ids:
+                                    if a.id in att_ids:
+                                        if row[3].value:
+                                            # print'Агуулахын код'
+                                            line_data = {
+                                                'product_qty': row[3].value,
+                                                'location_id': wiz.location_id.id,
+                                                'product_id': have.id,
+                                                'product_uom_id': have.uom_id.id,
+                                                'theoretical_qty': 0,
+                                                'prod_lot_id': None,
+                                            }
+                                            # print'\n\n %s \n\n' % line_data
+                                            inventory_filter = 'product'
+                                            inventory = Inventory.create({
+                                                'name': _('INV- %s: %s -%s') % (
+                                                    wiz.location_id, have.name, have.default_code),
+                                                'filter': inventory_filter,
+                                                'product_id': have.id,
+                                                'location_id': wiz.location_id.id,
+                                                'lot_id': None,
+                                                'line_ids': [(0, 0, line_data)],
+                                            })
+                                            inventory.action_done()
+                                            check = False
+                                            print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
 
-                    if check == True:
-                        print'ШИНЭЭР БАРАААА ҮҮСГЭЖ бАЙНА 00000000000000000000000000000000000000000000'
-                        new_att_ids =[]
-                        product_att_line = self.env['product.attribute.line'].search(
-                            [('product_tmpl_id', '=', have_prod[0].product_tmpl_id.id),
-                             ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
-                        print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
-                        if not product_att_line:
-                            product_att_line = self.env['product.attribute.line'].create(
-                                {'product_tmpl_id': have_prod[0].product_tmpl_id.id,
-                                 'attribute_id':
-                                     product_attribute_value_size[0].attribute_id.id})
-                        new_att_ids.append(product_attribute_value_size[0].id)
-                        print'GOYYYYYYYYYYYYYYYYYYYYYYYYYYYy',product_att_line.value_ids
-                        if product_attribute_value_size not in product_att_line.value_ids:
-                            print'Нэмэгдсэн Product Attribute Line ------------------->', product_att_line
-                            print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
-                            product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
-                        if row[4].value:
-                            print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
-                            product_attribute_value_season = self.env['product.attribute.value'].search(
-                                [('name', '=', str(row[4].value))])
+                        if check == True:
+                            print'ШИНЭЭР БАРАААА ҮҮСГЭЖ бАЙНА 00000000000000000000000000000000000000000000'
+                            new_att_ids =[]
                             product_att_line = self.env['product.attribute.line'].search(
                                 [('product_tmpl_id', '=', have_prod[0].product_tmpl_id.id),
-                                 ('attribute_id', '=', product_attribute_value_season.attribute_id.id)])
+                                 ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
+                            print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
                             if not product_att_line:
                                 product_att_line = self.env['product.attribute.line'].create(
                                     {'product_tmpl_id': have_prod[0].product_tmpl_id.id,
                                      'attribute_id':
-                                         product_attribute_value_season.attribute_id.id})
+                                         product_attribute_value_size[0].attribute_id.id})
+                            new_att_ids.append(product_attribute_value_size[0].id)
+                            print'GOYYYYYYYYYYYYYYYYYYYYYYYYYYYy',product_att_line.value_ids
+                            if product_attribute_value_size not in product_att_line.value_ids:
+                                print'Нэмэгдсэн Product Attribute Line ------------------->', product_att_line
+                                print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
+                                product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
+                            if row[4].value:
+                                print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
+                                product_attribute_value_season = self.env['product.attribute.value'].search(
+                                    [('name', '=', str(row[4].value))])
+                                product_att_line = self.env['product.attribute.line'].search(
+                                    [('product_tmpl_id', '=', have_prod[0].product_tmpl_id.id),
+                                     ('attribute_id', '=', product_attribute_value_season.attribute_id.id)])
+                                if not product_att_line:
+                                    product_att_line = self.env['product.attribute.line'].create(
+                                        {'product_tmpl_id': have_prod[0].product_tmpl_id.id,
+                                         'attribute_id':
+                                             product_attribute_value_season.attribute_id.id})
 
-                                print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
-                            new_att_ids.append(product_attribute_value_season[0].attribute_id.id)
-                            product_att_line.value_ids = [(6, 0, product_attribute_value_season[0].ids)]
+                                    print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
+                                new_att_ids.append(product_attribute_value_season[0].attribute_id.id)
+                                product_att_line.value_ids = [(6, 0, product_attribute_value_season[0].ids)]
 
-                            # print'\n\nTemka', have
-                        product_id = product_obj.create({
-                            'product_tmpl_id': have_prod[0].product_tmpl_id.id,
-                            'active': True,
-                            'valuation': product_valuation,
-                            'default_code': code,
-                            'standart_price': row[1].value or 9999,
-                            'attribute_value_ids': [(6, 0, new_att_ids)],
-                        })
-                        if row[3].value is not None:
-                            print'Агуулахын код'
-                            line_data = {
-                                'product_qty': row[3].value,
-                                'location_id': wiz.location_id.id,
-                                'product_id': product_id.id,
-                                'product_uom_id': product_id.uom_id.id,
-                                'theoretical_qty': 0,
-                                'prod_lot_id': None,
-                            }
-                            # print'\n\n %s \n\n' % line_data
-                            inventory_filter = 'product'
-                            inventory = Inventory.create({
-                                'name': _('INV-%s: %s - %s') % (
-                                    wiz.location_id, product_id.name, product_id.default_code),
-                                'filter': inventory_filter,
-                                'product_id': product_id.id,
-                                'location_id': wiz.location_id.id,
-                                'lot_id': None,
-                                'line_ids': [(0, 0, line_data)],
+                                # print'\n\nTemka', have
+                            product_id = product_obj.create({
+                                'product_tmpl_id': have_prod[0].product_tmpl_id.id,
+                                'active': True,
+                                'valuation': product_valuation,
+                                'default_code': code,
+                                'standart_price': row[1].value or 9999,
+                                'attribute_value_ids': [(6, 0, new_att_ids)],
                             })
-                            inventory.action_done()
-                            print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ $$$$$$$$$$$$'
-                rowi += 1
-            except IndexError:
-                raise UserError(_('Excel sheet must be 6 columned : Code, Price,Size,Qty,Season,Cost: error on row %s ' % rowi))
+                            if row[3].value is not None:
+                                print'Агуулахын код'
+                                line_data = {
+                                    'product_qty': row[3].value,
+                                    'location_id': wiz.location_id.id,
+                                    'product_id': product_id.id,
+                                    'product_uom_id': product_id.uom_id.id,
+                                    'theoretical_qty': 0,
+                                    'prod_lot_id': None,
+                                }
+                                # print'\n\n %s \n\n' % line_data
+                                inventory_filter = 'product'
+                                inventory = Inventory.create({
+                                    'name': _('INV-%s: %s - %s') % (
+                                        wiz.location_id, product_id.name, product_id.default_code),
+                                    'filter': inventory_filter,
+                                    'product_id': product_id.id,
+                                    'location_id': wiz.location_id.id,
+                                    'lot_id': None,
+                                    'line_ids': [(0, 0, line_data)],
+                                })
+                                inventory.action_done()
+                                print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ $$$$$$$$$$$$'
+                    rowi += 1
+                except IndexError:
+                    raise UserError(_('Excel sheet must be 6 columned : Code, Price,Size,Qty,Season,Cost: error on row %s ' % rowi))
+
+        else:
+            print'Code here for Stock picking and move'
+            while rowi < nrows:
+                try:
+                    row = sheet.row(rowi)
+                    code = row[0].value
+                    # print'Internal Code \n\n\n',code
+                    product_type = 'product'
+                    product_supply_method = 'buy'
+                    product_procure_method = 'make_to_stock'
+                    product_sale_ok = True
+                    product_purchase_ok = True
+                    product_cost_method = 'average'
+                    product_valuation = 'real_time'
+
+                    have_prod = product_obj.search([('default_code', '=', row[0].value)])
+                    if not have_prod:
+                        print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
+                        values_pro_tmp = {
+                            'name': sheet.name,
+                            'default_code': row[0].value,
+                            'categ_id': self.categ_id.id,
+                            'standard_price':row[5].value or 9999,
+                            'list_price':row[1].value or 9999,
+                            'uom_id': 1,
+                            'type': product_type,
+                            'purchase_line_warn': 'no-message',
+                            'sale_line_warn': 'no-message',
+                            'tracking': 'none',
+                            'purchase_ok': True,
+                            'sale_ok': True,
+                            'company_id': 1,
+                        }
+                        # print'\n\n\n\n Values',values_pro_tmp
+                        product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
+                        print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,row[0].value
+                        att_ids = []
+                        if row[2].value:
+                            product_attribute_value_size = self.env['product.attribute.value'].search(
+                                [('name', '=', str(row[2].value)[:2])])
+                            print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
+                            if product_attribute_value_size:
+                                att_ids.append(product_attribute_value_size[0].id)
+                            product_att_line = self.env['product.attribute.line'].search(
+                                [('product_tmpl_id', '=', product_tmpl_id.id),
+                                 ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
+                            print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
+                            if not product_att_line:
+                                product_att_line = self.env['product.attribute.line'].create(
+                                    {'product_tmpl_id': product_tmpl_id.id,
+                                     'attribute_id':
+                                         product_attribute_value_size[0].attribute_id.id})
+                                print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
+                            print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
+                            product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
+                            #                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
+
+                            print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
+                            if row[4].value:
+                                print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
+                                product_attribute_value_season = self.env['product.attribute.value'].search(
+                                    [('name', '=', str(row[4].value))])
+                                if product_attribute_value_season:
+                                    att_ids.append(product_attribute_value_season.id)
+                                product_att_line = self.env['product.attribute.line'].search(
+                                    [('product_tmpl_id', '=', product_tmpl_id.id),
+                                     ('attribute_id', '=', product_attribute_value_season.attribute_id.id)])
+                                if not product_att_line:
+                                    product_att_line = self.env['product.attribute.line'].create(
+                                        {'product_tmpl_id': product_tmpl_id.id,
+                                         'attribute_id':
+                                             product_attribute_value_season.attribute_id.id})
+                                    print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
+                                product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
+
+
+                            product_id = product_obj.create({
+                                'product_tmpl_id': product_tmpl_id.id,
+                                'active': True,
+                                'valuation': product_valuation,
+                                'default_code': code,
+                                'standart_price': row[5].value or 9999,
+                                'attribute_value_ids': [(6, 0, att_ids)],
+                            })
+                        if row[3].value:
+                            wh = Warehouse.search([('lot_stock_id', '=', wiz.location_id.id)])[0]
+                            if wh:
+                                print'wh\n\n\n\n',wh
+                                incoming_picking_type = self.env['stock.picking.type'].search(
+                                    [('warehouse_id', '=', wh.id),
+                                     ('code', '=', 'incoming')], limit=1)
+                                stock_move = []
+                                stock_move.append((0, 0, {'product_id': product_id.id,
+                                                          'product_uom_qty':int(row[3].value),
+                                                          'ordered_qty':int(row[3].value),
+                                                          'state': 'draft',
+                                                          'product_uom': product_id.product_tmpl_id.uom_id.id,
+                                                          'procure_method': 'make_to_stock',
+                                                          'location_id': 8,
+                                                          'location_dest_id': wiz.location_id.id,
+                                                          'company_id': 1,
+                                                          'date_expected': wiz.date,
+                                                          'date': wiz.date,
+                                                          'name': product_id.product_tmpl_id.name,
+                                                          'scrapped': False,
+                                                          'to_refund_so': False,
+                                                          }))
+                                print 'Stock move \n\n\n ----------------',stock_move
+                                vals = {
+                                    'location_id': 8,
+                                    'partner_id':9,
+                                    'picking_type_id': incoming_picking_type.id,
+                                    'move_type': 'direct',
+                                    'company_id': 1,
+                                    'location_dest_id': wiz.location_id.id,
+                                    'date': wiz.date,
+                                    'note': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (wiz.date),
+                                    'origin': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (wiz.date),
+                                    'move_lines': stock_move,
+                                }
+                                picking_obj = self.env['stock.picking']
+                                new_picking = picking_obj.create(vals)
+                                print'New Picking -----------------------',new_picking
+                                wiz_act = new_picking.do_new_transfer()
+                                wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
+                                wiz.process()
+                                print'***** Харилцагчаас худалдан авалт хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон'
+
+                    else:
+                        print'Системд бүртгэлтэй байгаа барааны тоо хэмжээг ХА аар нэмж байна------------------------------', row
+                        att_ids = []
+                        check = True
+                        product_attribute_value_size = self.env['product.attribute.value'].search(
+                            [('name', '=', str(row[2].value)[:2])])
+                        product_attribute_value_season = self.env['product.attribute.value'].search(
+                            [('name', '=', str(row[4].value))])
+                        if product_attribute_value_size:
+                            att_ids.append(product_attribute_value_size.id)
+                            if product_attribute_value_season:
+                                att_ids.append(product_attribute_value_season.id)
+                        for have in have_prod:
+                            # print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n'
+                            if len(have.attribute_value_ids) == len(att_ids):
+                                a = set(have.attribute_value_ids)
+                                b = set(att_ids)
+                                diff = a.difference(b)
+                                # print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n',diff
+                                if diff is False:
+                                    print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн', have_prod
+                                    if row[3].value:
+                                        wh = self.env['stock.warehouse'].search([('lot_stock_id', '=', wiz.location_id)])[0]
+                                        if wh:
+                                            picking_type = self.env['stock.picking.type'].search(
+                                                [('warehouse_id', '=', wh.id),
+                                                 ('code', '=', 'incoming')], limit=1)
+                                            stock_move = []
+                                            stock_move.append((0, 0, {'product_id': have.id,
+                                                                      'product_uom_qty': int(row[3].value),
+                                                                      'ordered_qty': int(row[3].value),
+                                                                      'state': 'draft',
+                                                                      'product_uom': have.product_tmpl_id.uom_id.id,
+                                                                      'procure_method': 'make_to_stock',
+                                                                      'location_id': 8,
+                                                                      'location_dest_id': wiz.location_id.id,
+                                                                      'company_id': 1,
+                                                                      'date_expected': wiz.date,
+                                                                      'date': wiz.date,
+                                                                      'name': have.product_tmpl_id.name,
+                                                                      'scrapped': False,
+                                                                      }))
+                                            vals = {
+                                                'location_id': 8,
+                                                'picking_type_id': picking_type.id,
+                                                'move_type': 'direct',
+                                                'company_id': 1,
+                                                'location_dest_id': wiz.location_id.id,
+                                                'date': wiz.date,
+                                                'note': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (wiz.date),
+                                                'origin': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (wiz.date),
+                                                'move_lines': stock_move,
+                                            }
+                                            new_picking = self.env['stock.picking'].create(vals)
+                                            wiz_act = new_picking.do_new_transfer()
+                                            wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
+                                            wiz.process()
+                                            print'***** Харилцагчаас худалдан авалт хийж барааны гарт байгаа хэмжээг нэмлээ БАЙСАН БАРАА'
+
+                    rowi += 1
+                except IndexError:
+                    raise UserError(
+                        _('Excel sheet must be 6 columned : Code, Price,Size,Qty,Season,Cost: error on row %s ' % rowi))
+
         return {
             'name': _(u'Амжилттай импортлолоо'),
             'view_type': 'form',

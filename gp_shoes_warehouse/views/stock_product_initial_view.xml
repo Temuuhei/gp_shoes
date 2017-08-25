@@ -36,6 +36,7 @@
                         <field name="location_id" colspan="4"/>
                         <field name="categ_id" colspan="4"/>
                         <field name="data" colspan="4"/>
+                        <field name="is_initial" colspan="4"/>
                     </group>
                     <group colspan="4" col="6">
                         <label string="" colspan="2"/>
