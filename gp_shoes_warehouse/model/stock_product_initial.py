@@ -320,6 +320,7 @@ class StockProductInitial(models.TransientModel):
         else:
             print'Code here for Stock picking and move'
             while rowi < nrows:
+                print'\n\n ROWWWWWWW %s \n\n'%rowi
                 try:
                     row = sheet.row(rowi)
                     code = row[0].value
@@ -401,8 +402,9 @@ class StockProductInitial(models.TransientModel):
                                 'standart_price': row[5].value or 9999,
                                 'attribute_value_ids': [(6, 0, att_ids)],
                             })
+                            print'\n\n new product: %s \n\n'%product_id
                         if row[3].value:
-                            wh = Warehouse.search([('lot_stock_id', '=', wiz.location_id.id)])[0]
+                            wh = Warehouse.search([('lot_stock_id', '=', self.location_id.id)])[0]
                             if wh:
                                 print'wh\n\n\n\n',wh
                                 incoming_picking_type = self.env['stock.picking.type'].search(
@@ -416,10 +418,10 @@ class StockProductInitial(models.TransientModel):
                                                           'product_uom': product_id.product_tmpl_id.uom_id.id,
                                                           'procure_method': 'make_to_stock',
                                                           'location_id': 8,
-                                                          'location_dest_id': wiz.location_id.id,
+                                                          'location_dest_id': self.location_id.id,
                                                           'company_id': 1,
-                                                          'date_expected': wiz.date,
-                                                          'date': wiz.date,
+                                                          'date_expected': self.date,
+                                                          'date': self.date,
                                                           'name': product_id.product_tmpl_id.name,
                                                           'scrapped': False,
                                                           'to_refund_so': False,
@@ -431,10 +433,10 @@ class StockProductInitial(models.TransientModel):
                                     'picking_type_id': incoming_picking_type.id,
                                     'move_type': 'direct',
                                     'company_id': 1,
-                                    'location_dest_id': wiz.location_id.id,
-                                    'date': wiz.date,
-                                    'note': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (wiz.date),
-                                    'origin': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (wiz.date),
+                                    'location_dest_id': self.location_id.id,
+                                    'date': self.date,
+                                    'note': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (self.date),
+                                    'origin': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (self.date),
                                     'move_lines': stock_move,
                                 }
                                 picking_obj = self.env['stock.picking']
