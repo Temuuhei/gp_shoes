@@ -324,7 +324,6 @@ class StockProductInitial(models.TransientModel):
                 try:
                     row = sheet.row(rowi)
                     code = row[0].value
-                    # print'Internal Code \n\n\n',code
                     product_type = 'product'
                     product_supply_method = 'buy'
                     product_procure_method = 'make_to_stock'
@@ -351,7 +350,6 @@ class StockProductInitial(models.TransientModel):
                             'sale_ok': True,
                             'company_id': 1,
                         }
-                        # print'\n\n\n\n Values',values_pro_tmp
                         product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
                         print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,row[0].value
                         att_ids = []
@@ -460,12 +458,16 @@ class StockProductInitial(models.TransientModel):
                             if product_attribute_value_season:
                                 att_ids.append(product_attribute_value_season.id)
                         for have in have_prod:
-                            # print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n'
-                            if len(have.attribute_value_ids) == len(att_ids):
-                                a = set(have.attribute_value_ids)
+                            print '\n\n for have in have_prod: %s \n\n'%have_prod
+                            print '\n\n have.attribute_value_ids: %s, att_ids: %s \n\n' % (len(have.attribute_value_ids),len(att_ids))
+
+        # len uur bval yaahuu-----------------------------------------------
+                            if len(have.attribute_value_ids) == len(att_ids):#lenuur bval yaahuu
+                                print '\n\n a and b len are same \n\n'
+                                a = set(have.attribute_value_ids.ids)#ids bhgu bsn bolhoor id.nuud ni adilhan bsn ch gsn zuruutei yum shig ajillaj bsn
                                 b = set(att_ids)
                                 diff = a.difference(b)
-                                # print 'RIGHTTTTTTTTTTTTTTTTTTTTTTTTT\n\n\n',diff
+        # diff true bh yum bol yaahiin--------------------------------------
                                 if diff is False:
                                     print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн', have_prod
                                     if row[3].value:
@@ -501,6 +503,7 @@ class StockProductInitial(models.TransientModel):
                                                 'move_lines': stock_move,
                                             }
                                             new_picking = self.env['stock.picking'].create(vals)
+                                            print'\n\n new picking: %s \n\n'%new_picking
                                             wiz_act = new_picking.do_new_transfer()
                                             wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
                                             wiz.process()
