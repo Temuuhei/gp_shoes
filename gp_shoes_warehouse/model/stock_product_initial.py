@@ -450,13 +450,14 @@ class StockProductInitial(models.TransientModel):
                         att_ids = []
                         check = True
                         product_attribute_value_size = self.env['product.attribute.value'].search(
-                            [('name', '=', str(row[2].value)[:2])])
+                            [('name', '=', str(row[2].value)[:4])])
                         product_attribute_value_season = self.env['product.attribute.value'].search(
                             [('name', '=', str(row[4].value))])
                         if product_attribute_value_size:
                             att_ids.append(product_attribute_value_size.id)
                             if product_attribute_value_season:
                                 att_ids.append(product_attribute_value_season.id)
+                        prod_id = 0
                         for have in have_prod:
                             print '\n\n for have in have_prod: %s \n\n'%have_prod
                             print '\n\n have.attribute_value_ids: %s, att_ids: %s \n\n' % (len(have.attribute_value_ids),len(att_ids))
@@ -464,50 +465,145 @@ class StockProductInitial(models.TransientModel):
         # len uur bval yaahuu-----------------------------------------------
                             if len(have.attribute_value_ids) == len(att_ids):#lenuur bval yaahuu
                                 print '\n\n a and b len are same \n\n'
-                                a = set(have.attribute_value_ids.ids)#ids bhgu bsn bolhoor id.nuud ni adilhan bsn ch gsn zuruutei yum shig ajillaj bsn
+                                a = set(have.attribute_value_ids.ids)
+                                #ids bhgu bsn bolhoor id.nuud ni adilhan bsn ch gsn zuruutei yum shig ajillaj bsn
                                 b = set(att_ids)
                                 diff = a.difference(b)
+                                print'AAAAAAAAAAAAAAAAAAAAAAAAAAA',a
+                                print'BBBBBBBBBBBBBBBBBBBBBBBBBBBBB',b
+                                print'DIFFFFFFFFFFFFFFFFFFFFFFFFFFFF',diff
         # diff true bh yum bol yaahiin--------------------------------------
-                                if diff is False:
-                                    print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн', have_prod
-                                    if row[3].value:
-                                        wh = self.env['stock.warehouse'].search([('lot_stock_id', '=', wiz.location_id)])[0]
-                                        if wh:
-                                            picking_type = self.env['stock.picking.type'].search(
-                                                [('warehouse_id', '=', wh.id),
-                                                 ('code', '=', 'incoming')], limit=1)
-                                            stock_move = []
-                                            stock_move.append((0, 0, {'product_id': have.id,
-                                                                      'product_uom_qty': int(row[3].value),
-                                                                      'ordered_qty': int(row[3].value),
-                                                                      'state': 'draft',
-                                                                      'product_uom': have.product_tmpl_id.uom_id.id,
-                                                                      'procure_method': 'make_to_stock',
-                                                                      'location_id': 8,
-                                                                      'location_dest_id': wiz.location_id.id,
-                                                                      'company_id': 1,
-                                                                      'date_expected': wiz.date,
-                                                                      'date': wiz.date,
-                                                                      'name': have.product_tmpl_id.name,
-                                                                      'scrapped': False,
-                                                                      }))
-                                            vals = {
-                                                'location_id': 8,
-                                                'picking_type_id': picking_type.id,
-                                                'move_type': 'direct',
-                                                'company_id': 1,
-                                                'location_dest_id': wiz.location_id.id,
-                                                'date': wiz.date,
-                                                'note': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (wiz.date),
-                                                'origin': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (wiz.date),
-                                                'move_lines': stock_move,
-                                            }
-                                            new_picking = self.env['stock.picking'].create(vals)
-                                            print'\n\n new picking: %s \n\n'%new_picking
-                                            wiz_act = new_picking.do_new_transfer()
-                                            wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
-                                            wiz.process()
-                                            print'***** Харилцагчаас худалдан авалт хийж барааны гарт байгаа хэмжээг нэмлээ БАЙСАН БАРАА'
+                                if len(diff) == 0:
+                                    # print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн', have_prod
+                                    # if row[2].value:
+                                    #     product_attribute_value_size = self.env['product.attribute.value'].search(
+                                    #         [('name', '=', str(row[2].value)[:4])])
+                                    #     if product_attribute_value_size in have.attribute_value_ids:
+                                    print'-------------------РАЗМЕР-------------------------',product_attribute_value_size.name
+                                    prod_id = have.id
+                                    break
+                                else:
+                                    print'================================DIFFERENCE TRUE'
+                                    prod_id = 0
+                        if prod_id == 0:
+                            print'\n\n if prod is 0 \n\n'
+                            att_id = []
+                            if row[2].value:
+                                product_attribute_value_size = self.env['product.attribute.value'].search(
+                                    [('name', '=', str(row[2].value)[:4])])
+                                print'\n\n size of this is: %s \n\n'%product_attribute_value_size
+
+                                if product_attribute_value_size:
+                                    att_id.append(product_attribute_value_size.id)
+                                    print'\n\n att_id: %s \n\n' % att_id
+                                else:
+                                    vals ={
+                                        'name': str(row[2].value)[:4],
+                                        'attribute_id': 1
+                                    }
+
+                                    new_att_value = self.env['product.attribute.value'].create(vals)
+                                    print'-------------------РАЗМЕР-------------------------', new_att_value.name
+                                    att_id.append(new_att_value.id)
+                                if row[4].value:
+                                    product_attribute_value_season = self.env['product.attribute.value'].search(
+                                            [('name', '=', str(row[4].value))])
+                                    print'\n\n season of this is: %s \n\n' % product_attribute_value_season
+                                    if product_attribute_value_season:
+                                        att_id.append(product_attribute_value_season.id)
+                                    else:
+                                        raise UserError(
+                                            _(
+                                                'Ийм нэртэй аттрибут системд бүртгэлгүй байна %s ' % row[4].value))
+                                product_id = product_obj.create({
+                                    'product_tmpl_id': have.product_tmpl_id.id,
+                                    'active': True,
+                                    'valuation': product_valuation,
+                                    'attribute_value_ids': [(6, 0, att_id)],
+                                    'default_code': have.default_code
+                                })
+                                print'\n\n product_id: %s \n\n'%product_id
+
+                                if row[3].value:
+                                    wh = self.env['stock.warehouse'].search([('lot_stock_id', '=', self.location_id.id)])[0]
+                                    if wh:
+                                        picking_type = self.env['stock.picking.type'].search(
+                                            [('warehouse_id', '=', wh.id),
+                                             ('code', '=', 'incoming')], limit=1)
+                                        stock_move = []
+                                        stock_move.append((0, 0, {'product_id': product_id.id,
+                                                                  'product_uom_qty': int(row[3].value),
+                                                                  'ordered_qty': int(row[3].value),
+                                                                  'state': 'draft',
+                                                                  'product_uom': have.product_tmpl_id.uom_id.id,
+                                                                  'procure_method': 'make_to_stock',
+                                                                  'location_id': 8,
+                                                                  'location_dest_id': self.location_id.id,
+                                                                  'company_id': 1,
+                                                                  'date_expected': self.date,
+                                                                  'date': self.date,
+                                                                  'name': have.product_tmpl_id.name,
+                                                                  'scrapped': False,
+                                                                  }))
+                                        vals = {
+                                            'location_id': 8,
+                                            'picking_type_id': picking_type.id,
+                                            'move_type': 'direct',
+                                            'company_id': 1,
+                                            'location_dest_id': self.location_id.id,
+                                            'date': self.date,
+                                            'note': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (self.date),
+                                            'origin': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (self.date),
+                                            'move_lines': stock_move,
+                                        }
+                                        new_picking = self.env['stock.picking'].create(vals)
+                                        print'\n\n new picking: %s \n\n'%new_picking.move_lines
+                                        wiz_act = new_picking.do_new_transfer()
+                                        wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
+                                        wiz.process()
+                                print'***** Харилцагчаас худалдан авалт хийж барааны гарт байгаа хэмжээг нэмлээ БАЙСАН БАРАА with Size'
+
+                        else:
+                            att_ids = []
+                            print'---------------------Байсан бараа ба шууд ХА аат барааны тоо хэмжээнд нөлөөлж байна'
+                            if row[3].value:
+                                wh = self.env['stock.warehouse'].search([('lot_stock_id', '=', self.location_id.id)])[0]
+                                if wh:
+                                    picking_type = self.env['stock.picking.type'].search(
+                                        [('warehouse_id', '=', wh.id),
+                                         ('code', '=', 'incoming')], limit=1)
+                                    stock_move = []
+                                    stock_move.append((0, 0, {'product_id': prod_id,
+                                                              'product_uom_qty': int(row[3].value),
+                                                              'ordered_qty': int(row[3].value),
+                                                              'state': 'draft',
+                                                              'product_uom': have.product_tmpl_id.uom_id.id,
+                                                              'procure_method': 'make_to_stock',
+                                                              'location_id': 8,
+                                                              'location_dest_id': self.location_id.id,
+                                                              'company_id': 1,
+                                                              'date_expected': self.date,
+                                                              'date': self.date,
+                                                              'name': have.product_tmpl_id.name,
+                                                              'scrapped': False,
+                                                              }))
+                                    vals = {
+                                        'location_id': 8,
+                                        'picking_type_id': picking_type.id,
+                                        'move_type': 'direct',
+                                        'company_id': 1,
+                                        'location_dest_id': self.location_id.id,
+                                        'date': self.date,
+                                        'note': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (self.date),
+                                        'origin': u'%s-ны Өдрийн экселээс бараа оруулах цэсээр үүсэв' % (self.date),
+                                        'move_lines': stock_move,
+                                    }
+                                    new_picking = self.env['stock.picking'].create(vals)
+                                    print'\n\n new picking: %s \n\n' % new_picking
+                                    wiz_act = new_picking.do_new_transfer()
+                                    wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
+                                    wiz.process()
+                            print'***** Харилцагчаас худалдан авалт хийж барааны гарт байгаа хэмжээг нэмлээ БАЙСАН БАРАА with Size'
 
                     rowi += 1
                 except IndexError:
