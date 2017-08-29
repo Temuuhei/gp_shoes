@@ -362,13 +362,13 @@ class StockProductInitial(models.TransientModel):
                                 product_att_line = self.env['product.attribute.line'].search(
                                     [('product_tmpl_id', '=', product_tmpl_id.id),
                                      ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
-                                if not product_att_line:
-                                    product_att_line = self.env['product.attribute.line'].create(
-                                        {'product_tmpl_id': product_tmpl_id.id,
-                                         'attribute_id':
-                                             product_attribute_value_size[0].attribute_id.id})
-                                    print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
-                                product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
+                                # if not product_att_line:
+                                #     product_att_line = self.env['product.attribute.line'].create(
+                                #         {'product_tmpl_id': product_tmpl_id.id,
+                                #          'attribute_id':
+                                #              product_attribute_value_size[0].attribute_id.id})
+                                #     print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
+                                # product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
                                 print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
                             else:
                                 vals = {
