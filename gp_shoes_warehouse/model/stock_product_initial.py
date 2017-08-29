@@ -359,10 +359,17 @@ class StockProductInitial(models.TransientModel):
                             print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
                             if product_attribute_value_size:
                                 att_ids.append(product_attribute_value_size[0].id)
-                            product_att_line = self.env['product.attribute.line'].search(
-                                [('product_tmpl_id', '=', product_tmpl_id.id),
-                                 ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
-                            print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
+                                product_att_line = self.env['product.attribute.line'].search(
+                                    [('product_tmpl_id', '=', product_tmpl_id.id),
+                                     ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
+                            else:
+                                vals = {
+                                    'name': str(row[2].value)[:4],
+                                    'attribute_id': 1
+                                }
+                                new_att_value = self.env['product.attribute.value'].create(vals)
+                                att_ids.append(new_att_value.id)
+                                print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
                             if not product_att_line:
                                 product_att_line = self.env['product.attribute.line'].create(
                                     {'product_tmpl_id': product_tmpl_id.id,
