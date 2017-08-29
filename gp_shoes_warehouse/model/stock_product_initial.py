@@ -362,6 +362,14 @@ class StockProductInitial(models.TransientModel):
                                 product_att_line = self.env['product.attribute.line'].search(
                                     [('product_tmpl_id', '=', product_tmpl_id.id),
                                      ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
+                                if not product_att_line:
+                                    product_att_line = self.env['product.attribute.line'].create(
+                                        {'product_tmpl_id': product_tmpl_id.id,
+                                         'attribute_id':
+                                             product_attribute_value_size[0].attribute_id.id})
+                                    print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
+                                product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
+                                print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
                             else:
                                 vals = {
                                     'name': str(row[2].value)[:4],
@@ -370,14 +378,6 @@ class StockProductInitial(models.TransientModel):
                                 new_att_value = self.env['product.attribute.value'].create(vals)
                                 att_ids.append(new_att_value.id)
                                 print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
-                            if not product_att_line:
-                                product_att_line = self.env['product.attribute.line'].create(
-                                    {'product_tmpl_id': product_tmpl_id.id,
-                                     'attribute_id':
-                                         product_attribute_value_size[0].attribute_id.id})
-                                print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
-                            print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
-                            product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
                             #                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
 
                             print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
