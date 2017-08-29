@@ -320,7 +320,7 @@ class StockProductInitial(models.TransientModel):
         else:
             print'Code here for Stock picking and move'
             while rowi < nrows:
-                print'\n\n ROWWWWWWW %s \n\n'%rowi
+                print'ROWWWWWWW %s'%rowi
                 try:
                     row = sheet.row(rowi)
                     code = row[0].value
@@ -400,11 +400,10 @@ class StockProductInitial(models.TransientModel):
                                 'standart_price': row[5].value or 9999,
                                 'attribute_value_ids': [(6, 0, att_ids)],
                             })
-                            print'\n\n new product: %s \n\n'%product_id
+                            print'new product: %s'%product_id
                         if row[3].value:
                             wh = Warehouse.search([('lot_stock_id', '=', self.location_id.id)])[0]
                             if wh:
-                                print'wh\n\n\n\n',wh
                                 incoming_picking_type = self.env['stock.picking.type'].search(
                                     [('warehouse_id', '=', wh.id),
                                      ('code', '=', 'incoming')], limit=1)
@@ -459,19 +458,16 @@ class StockProductInitial(models.TransientModel):
                                 att_ids.append(product_attribute_value_season.id)
                         prod_id = 0
                         for have in have_prod:
-                            print '\n\n for have in have_prod: %s \n\n'%have_prod
-                            print '\n\n have.attribute_value_ids: %s, att_ids: %s \n\n' % (len(have.attribute_value_ids),len(att_ids))
+                            # print '\n\n for have in have_prod: %s \n\n'%have_prod
+                            # print '\n\n have.attribute_value_ids: %s, att_ids: %s \n\n' % (len(have.attribute_value_ids),len(att_ids))
 
         # len uur bval yaahuu-----------------------------------------------
                             if len(have.attribute_value_ids) == len(att_ids):#lenuur bval yaahuu
-                                print '\n\n a and b len are same \n\n'
+                                # print '\n\n a and b len are same \n\n'
                                 a = set(have.attribute_value_ids.ids)
                                 #ids bhgu bsn bolhoor id.nuud ni adilhan bsn ch gsn zuruutei yum shig ajillaj bsn
                                 b = set(att_ids)
                                 diff = a.difference(b)
-                                print'AAAAAAAAAAAAAAAAAAAAAAAAAAA',a
-                                print'BBBBBBBBBBBBBBBBBBBBBBBBBBBBB',b
-                                print'DIFFFFFFFFFFFFFFFFFFFFFFFFFFFF',diff
         # diff true bh yum bol yaahiin--------------------------------------
                                 if len(diff) == 0:
                                     # print'-------------------- Энэ бараа байсан ба шууд Барааны тоо хэмжээг л өөрчилсөн', have_prod
@@ -522,7 +518,7 @@ class StockProductInitial(models.TransientModel):
                                     'attribute_value_ids': [(6, 0, att_id)],
                                     'default_code': have.default_code
                                 })
-                                print'\n\n product_id: %s \n\n'%product_id
+                                # print'\n\n product_id: %s \n\n'%product_id
 
                                 if row[3].value:
                                     wh = self.env['stock.warehouse'].search([('lot_stock_id', '=', self.location_id.id)])[0]
@@ -557,7 +553,7 @@ class StockProductInitial(models.TransientModel):
                                             'move_lines': stock_move,
                                         }
                                         new_picking = self.env['stock.picking'].create(vals)
-                                        print'\n\n new picking: %s \n\n'%new_picking.move_lines
+                                        # print'\n\n new picking: %s \n\n'%new_picking.move_lines
                                         wiz_act = new_picking.do_new_transfer()
                                         wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
                                         wiz.process()
