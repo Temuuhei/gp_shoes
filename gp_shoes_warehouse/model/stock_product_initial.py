@@ -104,8 +104,8 @@ class StockProductInitial(models.TransientModel):
                         att_ids = []
                         if row[2].value:
                             product_attribute_value_size = self.env['product.attribute.value'].search(
-                                [('name', '=', str(row[2].value)[:2])])
-                            print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
+                                [('name', '=', str(int(row[2].value)))])
+                            print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(int(row[2].value)),product_attribute_value_size)
                             if product_attribute_value_size:
                                 att_ids.append(product_attribute_value_size[0].id)
                             product_att_line = self.env['product.attribute.line'].search(
@@ -176,7 +176,7 @@ class StockProductInitial(models.TransientModel):
                         att_ids = []
                         check = True
                         product_attribute_value_size = self.env['product.attribute.value'].search(
-                            [('name', '=', str(row[2].value)[:2])])
+                            [('name', '=', str(int(row[2].value)))])
                         product_attribute_value_season = self.env['product.attribute.value'].search(
                             [('name', '=', str(row[4].value))])
                         if product_attribute_value_size:
@@ -355,29 +355,22 @@ class StockProductInitial(models.TransientModel):
                         att_ids = []
                         if row[2].value:
                             product_attribute_value_size = self.env['product.attribute.value'].search(
-                                [('name', '=', str(row[2].value)[:2])])
-                            print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(row[2].value)[:2],product_attribute_value_size)
+                                [('name', '=', str(int(row[2].value)))])
+                            print'Дараах утгатай %s %s-н id-тай барааны шинж байгаа эсэхийг шалгаж эхэлж байна' %(str(int(row[2].value)),product_attribute_value_size)
                             if product_attribute_value_size:
                                 att_ids.append(product_attribute_value_size[0].id)
-                                product_att_line = self.env['product.attribute.line'].search(
-                                    [('product_tmpl_id', '=', product_tmpl_id.id),
-                                     ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
-                                # if not product_att_line:
-                                #     product_att_line = self.env['product.attribute.line'].create(
-                                #         {'product_tmpl_id': product_tmpl_id.id,
-                                #          'attribute_id':
-                                #              product_attribute_value_size[0].attribute_id.id})
-                                #     print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
-                                # product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
-                                print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
-                            else:
-                                vals = {
-                                    'name': str(row[2].value)[:4],
-                                    'attribute_id': 1
-                                }
-                                new_att_value = self.env['product.attribute.value'].create(vals)
-                                att_ids.append(new_att_value.id)
-                                print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
+                            product_att_line = self.env['product.attribute.line'].search(
+                                [('product_tmpl_id', '=', product_tmpl_id.id),
+                                 ('attribute_id', '=', product_attribute_value_size[0].attribute_id.id)])
+                            print'Барааны хувилбар буюу Product Template-д шинжийг нэмж эхэлж байа ====================='
+                            if not product_att_line:
+                                product_att_line = self.env['product.attribute.line'].create(
+                                    {'product_tmpl_id': product_tmpl_id.id,
+                                     'attribute_id':
+                                         product_attribute_value_size[0].attribute_id.id})
+                                print'Нэмэгдсэн Product Attribute Line ------------------->',product_att_line
+                            print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
+                            product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
                             #                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
 
                             print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
@@ -456,7 +449,7 @@ class StockProductInitial(models.TransientModel):
                         att_ids = []
                         check = True
                         product_attribute_value_size = self.env['product.attribute.value'].search(
-                            [('name', '=', str(row[2].value)[:4])])
+                            [('name', '=', str(int(row[2].value)))])
                         product_attribute_value_season = self.env['product.attribute.value'].search(
                             [('name', '=', str(row[4].value))])
                         if product_attribute_value_size:
@@ -493,7 +486,7 @@ class StockProductInitial(models.TransientModel):
                             att_id = []
                             if row[2].value:
                                 product_attribute_value_size = self.env['product.attribute.value'].search(
-                                    [('name', '=', str(row[2].value)[:4])])
+                                    [('name', '=', str(int(row[2].value)))])
                                 print'\n\n size of this is: %s \n\n'%product_attribute_value_size
 
                                 if product_attribute_value_size:
@@ -501,7 +494,7 @@ class StockProductInitial(models.TransientModel):
                                     print'\n\n att_id: %s \n\n' % att_id
                                 else:
                                     vals ={
-                                        'name': str(row[2].value)[:4],
+                                        'name': str(int(row[2].value)),
                                         'attribute_id': 1
                                     }
 
@@ -519,7 +512,7 @@ class StockProductInitial(models.TransientModel):
                                             _(
                                                 'Ийм нэртэй аттрибут системд бүртгэлгүй байна %s ' % row[4].value))
                                 product_id = product_obj.create({
-                                    'product_tmpl_id': have.product_tmpl_id.id,
+                                    'product_tmpl_id': have[0].product_tmpl_id.id,
                                     'active': True,
                                     'valuation': product_valuation,
                                     'attribute_value_ids': [(6, 0, att_id)],
