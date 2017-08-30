@@ -423,7 +423,7 @@ class StockProductInitial(models.TransientModel):
                                                           'scrapped': False,
                                                           'to_refund_so': False,
                                                           }))
-                                print 'Stock move \n\n\n ----------------',stock_move
+                                print 'Stock move ----------------',stock_move
                                 vals = {
                                     'location_id': 8,
                                     'partner_id':9,
@@ -504,7 +504,7 @@ class StockProductInitial(models.TransientModel):
                                 if row[4].value:
                                     product_attribute_value_season = self.env['product.attribute.value'].search(
                                             [('name', '=', str(row[4].value))])
-                                    print'\n\n season of this is: %s \n\n' % product_attribute_value_season
+                                    # print'\n\n season of this is: %s \n\n' % product_attribute_value_season
                                     if product_attribute_value_season:
                                         att_id.append(product_attribute_value_season.id)
                                     else:
@@ -595,7 +595,7 @@ class StockProductInitial(models.TransientModel):
                                         'move_lines': stock_move,
                                     }
                                     new_picking = self.env['stock.picking'].create(vals)
-                                    print'\n\n new picking: %s \n\n' % new_picking
+                                    # print'\n\n new picking: %s \n\n' % new_picking
                                     wiz_act = new_picking.do_new_transfer()
                                     wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
                                     wiz.process()
