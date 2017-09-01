@@ -482,16 +482,16 @@ class StockProductInitial(models.TransientModel):
                                     print'================================DIFFERENCE TRUE'
                                     prod_id = 0
                         if prod_id == 0:
-                            print'\n\n if prod is 0 \n\n'
+                            # print'\n\n if prod is 0 \n\n'
                             att_id = []
                             if row[2].value:
                                 product_attribute_value_size = self.env['product.attribute.value'].search(
                                     [('name', '=', str(int(row[2].value)))])
-                                print'\n\n size of this is: %s \n\n'%product_attribute_value_size
+                                # print'\n\n size of this is: %s \n\n'%product_attribute_value_size
 
                                 if product_attribute_value_size:
                                     att_id.append(product_attribute_value_size.id)
-                                    print'\n\n att_id: %s \n\n' % att_id
+                                    # print'\n\n att_id: %s \n\n' % att_id
                                 else:
                                     vals ={
                                         'name': str(int(row[2].value)),
