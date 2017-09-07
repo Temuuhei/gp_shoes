@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
+from datetime import datetime
 
 import odoo.addons.decimal_precision as dp
 
@@ -67,8 +68,8 @@ class DailyOrder(models.Model):
                                           'location_id': main_warehouse.lot_stock_id.id,
                                           'location_dest_id': item.location_id.id,
                                           'company_id': 1,
-                                          'date_expected': item.date,
-                                          'date': item.date,
+                                          'date_expected': datetime.now(),
+                                          'date': datetime.now(),
                                           'name': item.product_id.product_tmpl_id.name,
                                           'scrapped': False,
                                           }))
@@ -78,7 +79,7 @@ class DailyOrder(models.Model):
                     'move_type':'direct',
                     'company_id':1,
                     'location_dest_id':item.location_id.id,
-                    'date': item.date,
+                    'date': datetime.now(),
                     'note':u'%s-ны Өдрийн захиалгаас үүсэв'%(self.date),
                     'origin':u'%s-ны Өдрийн захиалгаас үүсэв'%(self.date),
                     'move_lines': stock_move,
@@ -113,8 +114,8 @@ class DailyOrder(models.Model):
                                           'location_id': main_warehouse.lot_stock_id.id,
                                           'location_dest_id': item.location_id.id,
                                           'company_id': 1,
-                                          'date_expected': item.date,
-                                          'date': item.date,
+                                          'date_expected': datetime.now(),
+                                          'date': datetime.now(),
                                           'name': item.product_id.product_tmpl_id.name,
                                           'scrapped': False,
                                           }))
@@ -124,7 +125,7 @@ class DailyOrder(models.Model):
                     'move_type':'direct',
                     'company_id':1,
                     'location_dest_id':item.location_id.id,
-                    'date': item.date,
+                    'date': datetime.now(),
                     'note':u'%s-ны Өдрийн захиалгаас үүсэв'%(self.date),
                     'origin':u'%s-ны Өдрийн захиалгаас үүсэв'%(self.date),
                     'move_lines': stock_move,
