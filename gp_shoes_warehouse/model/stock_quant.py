@@ -97,6 +97,26 @@ class Picking(models.Model):
         else:
             raise UserError(_('You must define a warehouse for the company: %s.') % (company_user.name,))
 
+    @api.model
+    def _compute_your_picking(self):
+        if self:
+            for s in self:
+                print '\n\n\ncreate: %s, uid; %s\n\n\n'%(s.create_uid,self.env.uid)
+                if s.create_uid.id == self.env.uid:
+                    s.inv = False
+                    print '\n\n 1-----------'
+                else:
+                    if  s.state in ('draft','done'):
+                        print '\n\n 2-----------'
+                        s.inv = False
+                    else:
+                        print '\n\n 3-----------'
+                        s.inv = True
+
+                print '\n\n\n\n\n\n',s.inv
+            return True
+
+
     location_id = fields.Many2one(
             'stock.location', "Source Location Zone",
             default=_default_location_id,
@@ -113,6 +133,7 @@ class Picking(models.Model):
         required=True,
         states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain = "[('code', '=', 'internal')]",
         default= _default_stock_picking)
+    inv = fields.Boolean('Create user',compute='_compute_your_picking')
 
 class Inventory(models.Model):
     _name = "stock.inventory"
