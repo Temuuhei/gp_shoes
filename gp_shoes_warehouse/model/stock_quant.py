@@ -101,19 +101,19 @@ class Picking(models.Model):
     def _compute_your_picking(self):
         if self:
             for s in self:
-                print '\n\n\ncreate: %s, uid; %s\n\n\n'%(s.create_uid,self.env.uid)
+                # print '\n\n\ncreate: %s, uid; %s\n\n\n'%(s.create_uid,self.env.uid)
                 if s.create_uid.id == self.env.uid:
                     s.inv = False
-                    print '\n\n 1-----------'
+                    # print '\n\n 1-----------'
                 else:
                     if  s.state in ('draft','done'):
-                        print '\n\n 2-----------'
+                        # print '\n\n 2-----------'
                         s.inv = False
                     else:
-                        print '\n\n 3-----------'
+                        # print '\n\n 3-----------'
                         s.inv = True
 
-                print '\n\n\n\n\n\n',s.inv
+                # print '\n\n\n\n\n\n',s.inv
             return True
 
 
