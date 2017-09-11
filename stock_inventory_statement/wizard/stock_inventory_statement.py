@@ -321,7 +321,7 @@ class stock_inventory_statement(models.Model):
             parent_select = ""
             parent_groupby = ""
             if wiz['prod_categ_ids']:
-                categ_ids = self.pool.get('product.category').search(cr, uid, [('parent_id', 'child_of', wiz['prod_categ_ids'])], context=context)
+                categ_ids = self.pool.get('product.category').search([('parent_id', 'child_of', wiz['prod_categ_ids'])], context=context)
                 where += " AND pt.categ_id in (" + ','.join(map(str, categ_ids)) + ") "
             if wiz['product_ids']:
                 where += " AND pp.id in (" + ','.join(map(str, wiz['product_ids'])) + ") "
