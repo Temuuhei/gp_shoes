@@ -37,7 +37,7 @@
                     <field name="origin"/>
                     <button name="ready_order" string="Ready" type="object" help="calls python function" states="draft" />
                     <button name="confirm_order" string="Confirm" type="object" help="calls python function" states="draft" />
-                    <button name="to_archive" string="Archive" type="object" help="calls python function" states="draft" />
+                    <button name="to_archive" string="Archive" type="object" help="calls python function" states="draft,pending,done" />
                 </tree>
             </field>
         </record>
