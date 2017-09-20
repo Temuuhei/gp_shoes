@@ -200,6 +200,20 @@ class ProductTemplate(models.Model):
                     # if rm:
                     #      rm.unlink()
 
+    @api.multi
+    def write(self, vals):
+        tools.image_resize_images(vals)
+        if 'attribute_line_ids' in vals or vals.get('active'):
+            self.create_variant_ids()
+        if 'active' in vals and not vals.get('active'):
+            self.with_contextPy n vals:
+            products = self.env['product.product'].search([('active','=',True),('product_tmpl_id','=',self.id)])
+            if products:
+                for pro in products:
+                    pro.write({'default_code': vals.get('default_code')})
+        res = super(ProductTemplate, self).write(vals)
+        return res
+
 
 class ProductAttributevalue(models.Model):
     _name = "product.attribute.value"
