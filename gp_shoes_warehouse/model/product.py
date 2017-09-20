@@ -206,7 +206,8 @@ class ProductTemplate(models.Model):
         if 'attribute_line_ids' in vals or vals.get('active'):
             self.create_variant_ids()
         if 'active' in vals and not vals.get('active'):
-            self.with_contextPy n vals:
+            self.with_context(active_test=False).mapped('product_variant_ids').write({'active': vals.get('active')})
+        if 'default_code' in vals:
             products = self.env['product.product'].search([('active','=',True),('product_tmpl_id','=',self.id)])
             if products:
                 for pro in products:
