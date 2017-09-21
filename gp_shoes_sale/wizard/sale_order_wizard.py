@@ -58,7 +58,7 @@ class SaleOrderCashRegister(models.TransientModel):
         #     Борлуулалтаас үүссэн Барааны хөдөлгөөнийг шууд батлах
             stock_picking = self.env['stock.picking'].search([('origin','=', so.name)])
             if stock_picking:
-                for s in stock_picking:
+                for s in stock_picking:  
                     wiz_act = s.do_new_transfer()
                     wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
                     wiz.process()

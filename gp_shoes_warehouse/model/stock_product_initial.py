@@ -70,7 +70,7 @@ class StockProductInitial(models.TransientModel):
             while rowi < nrows:
                 try:
                     row = sheet.row(rowi)
-                    code = row[0].value
+                    code = str(row[0].value)
                     # print'Internal Code \n\n\n',code
                     product_type = 'product'
                     product_supply_method = 'buy'
@@ -80,7 +80,7 @@ class StockProductInitial(models.TransientModel):
                     product_cost_method = 'average'
                     product_valuation = 'real_time'
 
-                    have_prod = product_obj.search([('default_code', '=', row[0].value)])
+                    have_prod = product_obj.search([('default_code', '=', str(row[0].value))])
                     if not have_prod:
                         print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
                         values_pro_tmp = {
@@ -100,7 +100,7 @@ class StockProductInitial(models.TransientModel):
                         }
                         # print'\n\n\n\n Values',values_pro_tmp
                         product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
-                        print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,row[0].value
+                        print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,str(row[0].value)
                         att_ids = []
                         if row[2].value:
                             product_attribute_value_size = self.env['product.attribute.value'].search(
@@ -323,7 +323,7 @@ class StockProductInitial(models.TransientModel):
                 print'ROWWWWWWW %s'%rowi
                 try:
                     row = sheet.row(rowi)
-                    code = row[0].value
+                    code = str(row[0].value)
                     product_type = 'product'
                     product_supply_method = 'buy'
                     product_procure_method = 'make_to_stock'
@@ -332,12 +332,12 @@ class StockProductInitial(models.TransientModel):
                     product_cost_method = 'average'
                     product_valuation = 'real_time'
 
-                    have_prod = product_obj.search([('default_code', '=', row[0].value)])
+                    have_prod = product_obj.search([('default_code', '=', str(row[0].value))])
                     if not have_prod:
                         print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
                         values_pro_tmp = {
                             'name': sheet.name,
-                            'default_code': row[0].value,
+                            'default_code': str(row[0].value),
                             'categ_id': self.categ_id.id,
                             'standard_price':row[5].value or 9999,
                             'list_price':row[1].value or 9999,
@@ -351,7 +351,7 @@ class StockProductInitial(models.TransientModel):
                             'company_id': 1,
                         }
                         product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
-                        print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,row[0].value
+                        print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,str(row[0].value)
                         att_ids = []
                         if row[2].value:
                             product_attribute_value_size = self.env['product.attribute.value'].search(
