@@ -290,6 +290,7 @@ class stock_inventory_statement(models.Model):
         warehouses = self.env['stock.warehouse'].browse(wiz['warehouse_ids'])
         company = self.env['res.company'].browse(wiz['company_id'][0])
         attributes = self.env['product.attribute']
+        categ_obj = self.env['product.category']
         titles = []
         data = []
         row_span = {}
@@ -321,7 +322,7 @@ class stock_inventory_statement(models.Model):
             parent_select = ""
             parent_groupby = ""
             if wiz['prod_categ_ids']:
-                categ_ids = self.pool.get('product.category').search([('parent_id', 'child_of', wiz['prod_categ_ids'])], context=context)
+                categ_ids = categ_obj.search([('parent_id', 'child_of', wiz['prod_categ_ids'])])
                 where += " AND pt.categ_id in (" + ','.join(map(str, categ_ids)) + ") "
             if wiz['product_ids']:
                 where += " AND pp.id in (" + ','.join(map(str, wiz['product_ids'])) + ") "
