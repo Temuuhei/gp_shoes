@@ -648,7 +648,9 @@ class stock_inventory_statement(models.Model):
                 if company:
                     ctx.update({'warehouse': wh.id})
                 if wiz['cost']:
-                    warehouse_cost_dict[wh.id] = product_obj.price_get(prod_ids, ptype='standard_price')
+
+                    # warehouse_cost_dict[wh.id] = product_obj.price_get(prod_ids, ptype='standard_price')
+                    warehouse_cost_dict[wh.id] = product_obj.price_get(prod_ids)
                 prices[wh.id] = product_obj.price_get(prod_ids)
 
             row = ['']
