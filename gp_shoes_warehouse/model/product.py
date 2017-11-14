@@ -215,6 +215,37 @@ class ProductTemplate(models.Model):
         res = super(ProductTemplate, self).write(vals)
         return res
 
+    @api.multi
+    def _set_template_price(self):
+        if self._context.get('uom'):
+            for template in self:
+                value = self.env['product.uom'].browse(self._context['uom'])._compute_price(template.price,
+                                                                                            template.uom_id)
+                template.write({'list_price': value})
+        else:
+            self.write({'list_price': self.price})
+
+    @api.depends('product_variant_ids', 'product_variant_ids.standard_price')
+    def _compute_standard_price(self):
+        unique_variants = self.filtered(lambda template: len(template.product_variant_ids) >= 1)
+        for template in unique_variants:
+            for tmp in self.product_variant_ids:
+                tmp.standard_price =  self.standard_price
+                # self.standard_price = tmp.standard_price
+            # template.standard_price = template.product_variant_ids.standard_price
+        for template in (self - unique_variants):
+            template.standard_price = 0.0
+
+    @api.one
+    def _set_standard_price(self):
+        if len(self.product_variant_ids) >= 1:
+            for tmp in self.product_variant_ids:
+                tmp.standard_price = self.standard_price
+
+    def _search_standard_price(self, operator, value):
+        products = self.env['product.product'].search([('standard_price', operator, value)], limit=None)
+        return [('id', 'in', products.mapped('product_tmpl_id').ids)]
+
 
 class ProductAttributevalue(models.Model):
     _name = "product.attribute.value"

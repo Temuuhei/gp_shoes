@@ -17,6 +17,11 @@
                                 <separator string="Allowed Warehouses" colspan="2"/>
                                 <field name="allowed_warehouses" widget="many2many_tags" nolabel="1" />
                             </group>
+                             <group colspan="1" col="2">
+                                <separator string="Размераар хайх агуулахууд" colspan="2"/>
+                                <field name="allowed_wh" widget="many2many_tags" nolabel="1" />
+                            </group>
+
                         </group>
                     </xpath>
                 </field>
