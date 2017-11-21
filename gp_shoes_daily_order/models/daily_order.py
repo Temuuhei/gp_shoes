@@ -32,6 +32,7 @@ class DailyOrder(models.Model):
     product_id = fields.Many2one('product.product', string='Бараа', domain=[('sale_ok', '=', True)],
                                  change_default=True, ondelete='restrict', required=True)
     product_qty = fields.Float(string='Төв агуулахын нөөц', digits=dp.get_precision('Product Qty'), required=True)
+    virtual_available = fields.Float(related='product_id.virtual_available', store=True, readonly=True, copy=False, string='Forecasted Quantity')
 
     state = fields.Selection([
         ('draft', 'Draft'),

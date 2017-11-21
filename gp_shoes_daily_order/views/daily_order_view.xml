@@ -9,11 +9,13 @@
                 <field name="location_id"/>
                 <field name="product_id"/>
                 <field name="product_qty"/>
+                <!--<field name="virtual_available"/>-->
                 <field name="state"/>
                 <group expand='0' string='Group by...'>
                     <filter string='Location' name="locationgroup" domain="[]" context="{'group_by': 'location_id'}"/>
                     <filter string='Product' name="productgroup" context="{'group_by': 'product_id'}"/>
                     <filter string='Product Qty' name="productqtygroup" context="{'group_by': 'product_qty'}"/>
+                    <!--<filter string='Product Forecast Qty' name="forecastproductqtygroup" context="{'group_by': 'virtual_available'}"/>-->
                     <filter string='State' name="stategroup" context="{'group_by': 'state'}"/>
                     <filter string='Date' name="dategroup" context="{'group_by': 'date'}"/>
                </group>
@@ -30,6 +32,7 @@
                     <field name="location_id"/>
                     <field name="product_id"/>
                     <field digits="(14, 0)" name="product_qty"/>
+                    <field digits="(14, 0)" name="virtual_available"/>
                     <field name="name"/>
                     <field name="date"/>
                     <field name="state"/>
@@ -58,6 +61,7 @@
                         <field name="location_id"/>
                         <field name="product_id"/>
                         <field digits="(14, 0)" name="product_qty"/>
+                        <field digits="(14, 0)" name="virtual_available"/>
                     </group>
                       <group colspan="4">
                           <field name="name"/>
