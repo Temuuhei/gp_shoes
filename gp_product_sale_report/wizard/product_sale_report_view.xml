@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_product_sale_report" model="ir.ui.view">
+            <field name="name">view.product.sale.report</field>
+            <field name="model">product.sale.report</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Report product sale">
+                    <group>
+                        <field name="stock_warehouse"/>
+                        <field name="date_from"/>
+                        <field name="date_until"/>
+                    </group>
+                    <footer>
+                        <button class="oe_highlight" name="export_report" string="Export" type="object"/>
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_product_sale_report" model="ir.actions.act_window">
+            <field name="name">Product sale report</field>
+            <field name="res_model">product.sale.report</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_product_sale_report"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_product_sale_report"
+                  action="action_product_sale_report"
+                  parent="stock.menu_warehouse_report"
+                  groups="stock.group_stock_manager"/>
+    </data>
+</odoo>
