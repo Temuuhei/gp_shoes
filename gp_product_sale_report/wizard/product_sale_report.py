@@ -123,12 +123,20 @@ class ProductSaleReport(models.TransientModel):
 
                 daily = (((dateFrom-dateUntil).days) * -1) + 2
                 for eachDate in range(0, daily):
+                    inData = ''
+                    if in_data:
+                        for i in in_data:
+                            in_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
+                            in_dt = in_dt.replace(hour=00, minute=00, second=00)
+                            if in_dt == initial_date:
+                                inData += ',\n%s: %s' % (i['name'], i['in_qty']) if inData else '%s: %s' % (i['name'], i['in_qty'])
                     data[initial_date.strftime("%Y-%m-%d")] = {'qty_delivered': 0,
                                                                'picking_name': '',
                                                                'cash_payment': 0,
                                                                'card_payment': 0,
-                                                               'product_uom_qty': 0
-                                                               }
+                                                               'product_uom_qty': 0,
+                                                               'out_data': '',
+                                                               'in_data': inData}
                     for soLine in so_data:
                         dt = datetime.strptime(soLine['min_date'], '%Y-%m-%d %H:%M:%S')
                         dt = dt.replace(hour=00, minute=00, second=00)
@@ -217,7 +225,7 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc+1, line[hd]['card_payment'])
                         sheet.write(rowx, colx + colc+2, line[hd]['cash_payment'])
                         sheet.write(rowx, colx + colc+3, '')
-                        sheet.write(rowx, colx + colc+4, line[hd]['product_uom_qty'])
+                        sheet.write(rowx, colx + colc+4, line[hd]['in_data'])
                         cold += 1
                         colc = cold
 
