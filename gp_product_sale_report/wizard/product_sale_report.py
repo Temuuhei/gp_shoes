@@ -86,6 +86,7 @@ class ProductSaleReport(models.TransientModel):
                                         JOIN stock_move AS sm
                                            ON sm.picking_id = sp.id
                                     WHERE so.state = 'done'
+                                      AND sp.state = 'done'
                                       AND sol.product_id = %s 
                                       AND so.warehouse_id = %s 
                                       %s
@@ -109,6 +110,25 @@ class ProductSaleReport(models.TransientModel):
                 in_data = self._cr.dictfetchall()
                 print '\n___ data3 ___ ', in_data
 
+                self._cr.execute("""SELECT sp.name AS name,
+                                           sp.min_date AS min_date,
+                                           sm.product_uom_qty AS out_qty,
+                                           sm.product_id AS product_id
+                                    FROM stock_picking AS sp
+                                        JOIN stock_move AS sm
+                                            ON sm.picking_id = sp.id
+                                        JOIN stock_location AS sl
+                                            ON sl.id = sp.location_id
+                                    WHERE sp.state = 'done'
+                                          AND sp.location_dest_id not in (SELECT id FROM stock_location WHERE usage = 'customer')
+                                          AND sp.location_id = %s
+                                          AND sm.product_id = %s
+                                      %s
+                                 """
+                                 % (self.stock_warehouse.lot_stock_id.id, each_data['product_id'], where_date_sp))
+                out_data = self._cr.dictfetchall()
+                print '\n___ dataOUT ___ ', out_data
+
                 # prepare data
                 data['code'] = each_data['code']
                 data['product'] = each_data['name']
@@ -130,12 +150,19 @@ class ProductSaleReport(models.TransientModel):
                             in_dt = in_dt.replace(hour=00, minute=00, second=00)
                             if in_dt == initial_date:
                                 inData += ',\n%s: %s' % (i['name'], i['in_qty']) if inData else '%s: %s' % (i['name'], i['in_qty'])
+                    outData = ''
+                    if out_data:
+                        for i in out_data:
+                            out_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
+                            out_dt = in_dt.replace(hour=00, minute=00, second=00)
+                            if out_dt == initial_date:
+                                outData += ',\n%s: %s' % (i['name'], i['out_qty']) if outData else '%s: %s' % (i['name'], i['out_qty'])
                     data[initial_date.strftime("%Y-%m-%d")] = {'qty_delivered': 0,
                                                                'picking_name': '',
                                                                'cash_payment': 0,
                                                                'card_payment': 0,
                                                                'product_uom_qty': 0,
-                                                               'out_data': '',
+                                                               'out_data': outData,
                                                                'in_data': inData}
                     for soLine in so_data:
                         dt = datetime.strptime(soLine['min_date'], '%Y-%m-%d %H:%M:%S')
@@ -224,7 +251,7 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc, line[hd]['qty_delivered'])
                         sheet.write(rowx, colx + colc+1, line[hd]['card_payment'])
                         sheet.write(rowx, colx + colc+2, line[hd]['cash_payment'])
-                        sheet.write(rowx, colx + colc+3, '')
+                        sheet.write(rowx, colx + colc+3, line[hd]['out_data'])
                         sheet.write(rowx, colx + colc+4, line[hd]['in_data'])
                         cold += 1
                         colc = cold
