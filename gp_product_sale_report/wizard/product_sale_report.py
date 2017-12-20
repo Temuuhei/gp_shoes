@@ -154,7 +154,7 @@ class ProductSaleReport(models.TransientModel):
                     if out_data:
                         for i in out_data:
                             out_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
-                            out_dt = in_dt.replace(hour=00, minute=00, second=00)
+                            out_dt = out_dt.replace(hour=00, minute=00, second=00)
                             if out_dt == initial_date:
                                 outData += ',\n%s: %s' % (i['name'], i['out_qty']) if outData else '%s: %s' % (i['name'], i['out_qty'])
                     data[initial_date.strftime("%Y-%m-%d")] = {'qty_delivered': 0,
@@ -164,15 +164,16 @@ class ProductSaleReport(models.TransientModel):
                                                                'product_uom_qty': 0,
                                                                'out_data': outData,
                                                                'in_data': inData}
-                    for soLine in so_data:
-                        dt = datetime.strptime(soLine['min_date'], '%Y-%m-%d %H:%M:%S')
-                        dt = dt.replace(hour=00, minute=00, second=00)
-                        if soLine['order_name'] == soLine['origin'] and dt == initial_date and soLine['product_id'] == each_data['product_id']:
-                            data[initial_date.strftime("%Y-%m-%d")]['qty_delivered'] = soLine['qty_delivered']
-                            data[initial_date.strftime("%Y-%m-%d")]['picking_name'] = soLine['picking_name']
-                            data[initial_date.strftime("%Y-%m-%d")]['cash_payment'] = soLine['cash_payment']
-                            data[initial_date.strftime("%Y-%m-%d")]['card_payment'] = soLine['card_payment']
-                            data[initial_date.strftime("%Y-%m-%d")]['product_uom_qty'] = soLine['product_uom_qty']
+                    if so_data:
+                        for soLine in so_data:
+                            dt = datetime.strptime(soLine['min_date'], '%Y-%m-%d %H:%M:%S')
+                            dt = dt.replace(hour=00, minute=00, second=00)
+                            if soLine['order_name'] == soLine['origin'] and dt == initial_date and soLine['product_id'] == each_data['product_id']:
+                                data[initial_date.strftime("%Y-%m-%d")]['qty_delivered'] = soLine['qty_delivered']
+                                data[initial_date.strftime("%Y-%m-%d")]['picking_name'] = soLine['picking_name']
+                                data[initial_date.strftime("%Y-%m-%d")]['cash_payment'] = soLine['cash_payment']
+                                data[initial_date.strftime("%Y-%m-%d")]['card_payment'] = soLine['card_payment']
+                                data[initial_date.strftime("%Y-%m-%d")]['product_uom_qty'] = soLine['product_uom_qty']
                     initial_date = dateFrom + timedelta(days=eachDate)
                 dataLine.append(data)
         print '\n___ data4 ___ ', dataLine
