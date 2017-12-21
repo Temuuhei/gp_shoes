@@ -83,6 +83,7 @@
                 <field name="product_tmp_id"/>
                 <field name="product_id"/>
                 <field digits="(14, 0)" name="qty" sum="Total" groups ="base.group_erp_manager"/>
+                <field digits="(14, 0)" name="qty"/>
                 <field name="product_uom_id" groups="product.group_uom"/>
                 <field name="location_id"/>
                 <field name="owner_id" groups="stock.group_tracking_owner"/>

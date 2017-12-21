@@ -2,15 +2,13 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import re
-
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import ValidationError
 from odoo.osv import expression
 import itertools
 import psycopg2
-
+import decimal
 import odoo.addons.decimal_precision as dp
-
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import ValidationError, except_orm
 import odoo.addons.decimal_precision as dp
@@ -21,10 +19,24 @@ class ProductProduct(models.Model):
     _inherit = ['product.product']
     _order = 'default_code, id'
 
-    old_code = fields.Float('Old Code')
+
+
+    old_code = fields.Integer('Old Code',compute='_compute_code', store = True)
     # _sql_constraints = [
     #     ('old_code', 'unique(old_code)', "Another product already exists with this old code number!"),
     # ]
+
+    @api.depends('default_code')
+    def _compute_code(self):
+        for record in self:
+            if record.default_code:
+                re.findall("\d+", record.default_code)
+                match = re.findall("\d+", record.default_code)
+                for x in match:
+                    record.old_code = x[0]
+                print 'OLD CODE \n\n',record.old_code
+
+
 
     @api.multi
     def name_get(self):
@@ -141,6 +153,7 @@ class ProductTemplate(models.Model):
              'A service is a non-material product you provide.\n'
              'A digital content is a non-material product you sell online. The files attached to the products are the one that are sold on '
              'the e-commerce such as e-books, music, pictures,... The "Digital Product" module has to be installed.')
+
     @api.multi
     def create_variant_ids(self):
         Product = self.env["product.product"]
@@ -187,11 +200,15 @@ class ProductTemplate(models.Model):
                         variant.write({'active': False})
                         pass
             return True
+
     def action_reload_product_tmp(self):
         product_obj = self.env['product.product'].search([('active','=',True)])
         product_tmp_obj = self.env['product.template']
         for pro in product_obj:
             if pro.default_code and pro.product_tmpl_id:
+                float_code = int(pro.default_code)
+                print 'Default code \n',pro.default_code
+                print 'Float Default code \n',float_code
                 tmp = product_tmp_obj.search([('id','=',pro.product_tmpl_id.id)])
                 if tmp and tmp.default_code == '':
                     tmp.write({'default_code':pro.default_code})
