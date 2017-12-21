@@ -25,7 +25,7 @@ class ProductSaleReport(models.TransientModel):
     @api.multi
     def export_report(self):
         dataLine = []
-        print '\n\n\n ___ REPORT ___ ',self.stock_warehouse.lot_stock_id.id
+        # print '\n\n\n ___ REPORT ___ ',self.stock_warehouse.lot_stock_id.id
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pp.default_code AS code,
                                    pt.name AS name,
@@ -45,7 +45,7 @@ class ProductSaleReport(models.TransientModel):
                                    pt.list_price"""
                          % (self.stock_warehouse.lot_stock_id.id))
         data_quant = self._cr.dictfetchall()
-        print '\n___ data1 ___ ', data_quant
+        # print '\n___ data1 ___ ', data_quant
 
         report_date = ''
         where_date_so = ''
@@ -93,7 +93,7 @@ class ProductSaleReport(models.TransientModel):
                                  """
                                  % (each_data['product_id'], self.stock_warehouse.id, where_date_so))
                 so_data = self._cr.dictfetchall()
-                print '\n___ data2 ___ ', so_data
+                # print '\n___ data2 ___ ', so_data
                 self._cr.execute("""SELECT sp.name AS name,
                                            sp.min_date AS min_date,
                                            sm.product_uom_qty AS in_qty,
@@ -108,7 +108,7 @@ class ProductSaleReport(models.TransientModel):
                                  """
                                  % (self.stock_warehouse.lot_stock_id.id, each_data['product_id'], where_date_sp))
                 in_data = self._cr.dictfetchall()
-                print '\n___ data3 ___ ', in_data
+                # print '\n___ data3 ___ ', in_data
 
                 self._cr.execute("""SELECT sp.name AS name,
                                            sp.min_date AS min_date,
@@ -127,7 +127,7 @@ class ProductSaleReport(models.TransientModel):
                                  """
                                  % (self.stock_warehouse.lot_stock_id.id, each_data['product_id'], where_date_sp))
                 out_data = self._cr.dictfetchall()
-                print '\n___ dataOUT ___ ', out_data
+                # print '\n___ dataOUT ___ ', out_data
 
                 # prepare data
                 data['code'] = each_data['code']
@@ -175,7 +175,7 @@ class ProductSaleReport(models.TransientModel):
                             data[initial_date.strftime("%Y-%m-%d")]['product_uom_qty'] = soLine['product_uom_qty']
                     initial_date = dateFrom + timedelta(days=eachDate)
                 dataLine.append(data)
-        print '\n___ data4 ___ ', dataLine
+        # print '\n___ data4 ___ ', dataLine
 
         # create workbook
         book = xlwt.Workbook(encoding='utf8')
