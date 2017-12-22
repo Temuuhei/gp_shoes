@@ -143,11 +143,13 @@ class ProductSaleReport(models.TransientModel):
                 data['price'] = each_data['price']
                 data['sub_total'] = {}
 
-                total_in = 0
-                total_out = 0
                 total_qty = 0
                 total_size = ''
+                total_in = 0
+                total_out = 0
                 for eachDate in range(0, daily):
+                    inInt = 0
+                    outInt = 0
                     dataDate = datetime.strftime(dateFrom + timedelta(days=eachDate), '%Y-%m-%d')
                     dataDateTime = dateFrom + timedelta(days=eachDate)
                     inData = ''
@@ -157,6 +159,7 @@ class ProductSaleReport(models.TransientModel):
                             in_dt = in_dt.replace(hour=00, minute=00, second=00)
                             if in_dt == dataDateTime:
                                 inData += ',\n%s: %s' % (i['name'], i['in_qty']) if inData else '%s: %s' % (i['name'], i['in_qty'])
+                                inInt += i['in_qty']
                                 # total
                                 total_in += i['in_qty']
                     outData = ''
@@ -166,6 +169,7 @@ class ProductSaleReport(models.TransientModel):
                             out_dt = out_dt.replace(hour=00, minute=00, second=00)
                             if out_dt == dataDateTime:
                                 outData += ',\n%s: %s' % (i['name'], i['out_qty']) if outData else '%s: %s' % (i['name'], i['out_qty'])
+                                outInt += i['out_qty']
                                 # total
                                 total_out += i['out_qty']
                     data[dataDate] = {'qty_delivered': 0,
@@ -187,8 +191,8 @@ class ProductSaleReport(models.TransientModel):
                                 data[dataDate]['cash_payment'] += soLine['cash_payment']
                                 data[dataDate]['card_payment'] += soLine['card_payment']
                                 data[dataDate]['product_uom_qty'] += soLine['product_uom_qty']
-                                data[dataDate]['inInt'] = total_in
-                                data[dataDate]['outInt'] = total_out
+                                data[dataDate]['inInt'] = inInt
+                                data[dataDate]['outInt'] = outInt
                                 # total
                                 total_size = soLine['size']
                                 total_qty += soLine['qty_delivered']
@@ -264,6 +268,8 @@ class ProductSaleReport(models.TransientModel):
             ttl_qty = 0
             total = 0
             for l in dataLine:
+                outInt = 0
+                inInt = 0
                 dailySubTotal['ttlQuant'] += l['quantity']
                 for d in header_daily:
                     dailySubTotal[d]['qty'] += l[d]['qty_delivered']
