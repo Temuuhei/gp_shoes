@@ -257,6 +257,7 @@ class ProductSaleReport(models.TransientModel):
             ttl_out = 0
             ttl_in = 0
             ttl_qty = 0
+            total = 0
             for l in dataLine:
                 dailySubTotal['ttlQuant'] += l['quantity']
                 for d in header_daily:
@@ -265,12 +266,14 @@ class ProductSaleReport(models.TransientModel):
                     dailySubTotal[d]['card'] += l[d]['card_payment']
                     dailySubTotal[d]['in'] += 0
                     dailySubTotal[d]['out'] += 0
+                    total += l[d]['cash_payment'] + l[d]['card_payment']
                 ttl_out += l['sub_total']['total_out']
                 ttl_in += l['sub_total']['total_in']
                 ttl_qty += l['sub_total']['total_qty']
             dailySubTotal['total_out'] = ttl_out
             dailySubTotal['total_in'] = ttl_in
             dailySubTotal['total_qty'] = ttl_qty
+            dailySubTotal['total'] = total
 
         # define title and header
         title_list = [('Code'), ('Product'), ('Color'), ('Cost'), ('Quantity'), ('Price')]
@@ -366,6 +369,8 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write(rowx, colx+coli, dailySubTotal['total_qty'])
                 sheet.write(rowx, colx+coli+1, dailySubTotal['total_out'])
                 sheet.write(rowx, colx+coli+2, dailySubTotal['total_in'])
+                sheet.write(rowx+4, colx+coli+1, _('Total: '))
+                sheet.write(rowx+4, colx+coli+2, dailySubTotal['total'])
 
 
         # prepare file data
