@@ -80,7 +80,12 @@ class ProductSaleReport(models.TransientModel):
                                            sol.cash_payment AS cash_payment,
                                            sol.card_payment AS card_payment,
                                            sm.product_uom_qty AS product_uom_qty,
-                                           sm.product_id AS product_id
+                                           sm.product_id AS product_id,
+                                           (SELECT name FROM product_attribute_value pav 
+                                                JOIN product_attribute_value_product_product_rel pavr 
+                                                    ON pavr.product_attribute_value_id = pav.id 
+                                            WHERE pavr.product_product_id=%s 
+                                                ORDER BY pav.id ASC LIMIT 1) as size
                                     FROM sale_order AS so
                                         JOIN sale_order_line AS sol
                                            ON sol.order_id = so.id
@@ -93,7 +98,7 @@ class ProductSaleReport(models.TransientModel):
                                       AND sol.product_id = %s 
                                       AND so.warehouse_id = %s 
                                       %s"""
-                                 % (each_data['product_id'], self.stock_warehouse.id, where_date_so))
+                                 % (each_data['product_id'], each_data['product_id'], self.stock_warehouse.id, where_date_so))
                 so_data = self._cr.dictfetchall()
 
                 self._cr.execute("""SELECT sp.name AS name,
@@ -141,6 +146,7 @@ class ProductSaleReport(models.TransientModel):
                 total_in = 0
                 total_out = 0
                 total_qty = 0
+                total_size = ''
                 for eachDate in range(0, daily):
                     dataDate = datetime.strftime(dateFrom + timedelta(days=eachDate), '%Y-%m-%d')
                     dataDateTime = dateFrom + timedelta(days=eachDate)
@@ -180,15 +186,17 @@ class ProductSaleReport(models.TransientModel):
                                 data[dataDate]['card_payment'] += soLine['card_payment']
                                 data[dataDate]['product_uom_qty'] += soLine['product_uom_qty']
                                 # total
+                                total_size = soLine['size']
                                 total_qty += soLine['qty_delivered']
                 data['sub_total']['total_in'] = total_in
                 data['sub_total']['total_out'] = total_out
                 data['sub_total']['total_qty'] = total_qty
+                data['sub_total']['total_size'] = total_size
                 dataLine.append(data)
         print '\n___ ConditioN ___ ', self.stock_warehouse.lot_stock_id.id, self.stock_warehouse.id
         print '\n___ data ___ '
         for kkk in dataLine:
-            print kkk
+            print kkk['sub_total']
         print '\n___ data ___ '
 
         # create workbook
@@ -229,6 +237,7 @@ class ProductSaleReport(models.TransientModel):
                         dataEachPrdDict['sub_total']['total_qty'] += d['sub_total']['total_qty']
                         dataEachPrdDict['sub_total']['total_in'] += d['sub_total']['total_in']
                         dataEachPrdDict['sub_total']['total_out'] += d['sub_total']['total_out']
+                        dataEachPrdDict['sub_total']['total_size'] += ", "+d['sub_total']['total_size'] if dataEachPrdDict['sub_total']['total_size'] else d['sub_total']['total_size']
                     else:
                         dataEachPrdList.append(dataEachPrdDict)
                         dataEachPrdDict = d
@@ -310,7 +319,7 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc, line['sub_total']['total_qty'])
                         sheet.write(rowx, colx + colc+1, line['sub_total']['total_out'])
                         sheet.write(rowx, colx + colc+2, line['sub_total']['total_in'])
-                        sheet.write(rowx, colx + colc+3, line['sub_total']['total_in'])
+                        sheet.write(rowx, colx + colc+3, line['sub_total']['total_size'])
 
                 rowx += 1
 
