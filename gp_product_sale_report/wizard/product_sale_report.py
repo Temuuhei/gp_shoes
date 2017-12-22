@@ -193,11 +193,6 @@ class ProductSaleReport(models.TransientModel):
                 data['sub_total']['total_qty'] = total_qty
                 data['sub_total']['total_size'] = total_size
                 dataLine.append(data)
-        print '\n___ ConditioN ___ ', self.stock_warehouse.lot_stock_id.id, self.stock_warehouse.id
-        print '\n___ data ___ '
-        for kkk in dataLine:
-            print kkk['sub_total']
-        print '\n___ data ___ '
 
         # create workbook
         book = xlwt.Workbook(encoding='utf8')
@@ -247,9 +242,35 @@ class ProductSaleReport(models.TransientModel):
                     template = d['template']
                 if lenb == lena:
                     dataEachPrdList.append(dataEachPrdDict)
-            print '\n11111 ',len(dataLine), len(dataEachPrdList)
             dataLine = dataEachPrdList
-        print '\n22222 ',dataLine,'\n'
+
+            # Daily total
+            dailySubTotal = {'ttlQuant': 0}
+            dailyTotal = {}
+            for d in header_daily:
+                # total prepare empty
+                dailySubTotal[d] = {'qty': 0,
+                                    'cash': 0,
+                                    'card': 0,
+                                    'in': 0,
+                                    'out': 0}
+            ttl_out = 0
+            ttl_in = 0
+            ttl_qty = 0
+            for l in dataLine:
+                dailySubTotal['ttlQuant'] += l['quantity']
+                for d in header_daily:
+                    dailySubTotal[d]['qty'] += l[d]['qty_delivered']
+                    dailySubTotal[d]['cash'] += l[d]['cash_payment']
+                    dailySubTotal[d]['card'] += l[d]['card_payment']
+                    dailySubTotal[d]['in'] += 0
+                    dailySubTotal[d]['out'] += 0
+                ttl_out += l['sub_total']['total_out']
+                ttl_in += l['sub_total']['total_in']
+                ttl_qty += l['sub_total']['total_qty']
+            dailySubTotal['total_out'] = ttl_out
+            dailySubTotal['total_in'] = ttl_in
+            dailySubTotal['total_qty'] = ttl_qty
 
         # define title and header
         title_list = [('Code'), ('Product'), ('Color'), ('Cost'), ('Quantity'), ('Price')]
@@ -320,8 +341,32 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc+1, line['sub_total']['total_out'])
                         sheet.write(rowx, colx + colc+2, line['sub_total']['total_in'])
                         sheet.write(rowx, colx + colc+3, line['sub_total']['total_size'])
-
                 rowx += 1
+
+            if dailySubTotal:
+                rowx += 1
+                sheet.write(rowx+1, colx, _("Product Quintity: "))
+                sheet.write(rowx+1, colx + 4, dailySubTotal['ttlQuant'])
+                sheet.write(rowx+2, colx, _("Daily Sale: "))
+                sheet.write(rowx+3, colx, _("Daily Sale Quantity: "))
+                sheet.write(rowx+4, colx, _("Daily warehouse out: "))
+                sheet.write(rowx+5, colx, _("Daily warehouse in: "))
+
+                coli = len(title_list)
+                colj = len(title_list)
+                for hd in header_daily:
+                    colj += 4
+                    sheet.write(rowx+3, colx+coli, dailySubTotal[hd]['qty'])
+                    sheet.write(rowx+2, colx+coli+1, dailySubTotal[hd]['cash'])
+                    sheet.write(rowx+2, colx+coli+2, dailySubTotal[hd]['card'])
+                    sheet.write(rowx+4, colx+coli+3, dailySubTotal[hd]['out'])
+                    sheet.write(rowx+5, colx+coli+4, dailySubTotal[hd]['in'])
+                    colj += 1
+                    coli = colj
+                sheet.write(rowx, colx+coli, dailySubTotal['total_qty'])
+                sheet.write(rowx, colx+coli+1, dailySubTotal['total_out'])
+                sheet.write(rowx, colx+coli+2, dailySubTotal['total_in'])
+
 
         # prepare file data
         io_buffer = StringIO()
