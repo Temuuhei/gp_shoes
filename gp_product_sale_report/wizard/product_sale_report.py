@@ -174,7 +174,9 @@ class ProductSaleReport(models.TransientModel):
                                       'card_payment': 0,
                                       'product_uom_qty': 0,
                                       'out_data': outData,
-                                      'in_data': inData}
+                                      'in_data': inData,
+                                      'inInt': 0,
+                                      'outInt': 0}
                     if so_data:
                         for soLine in so_data:
                             dt = datetime.strptime(soLine['min_date'], '%Y-%m-%d %H:%M:%S')
@@ -185,6 +187,8 @@ class ProductSaleReport(models.TransientModel):
                                 data[dataDate]['cash_payment'] += soLine['cash_payment']
                                 data[dataDate]['card_payment'] += soLine['card_payment']
                                 data[dataDate]['product_uom_qty'] += soLine['product_uom_qty']
+                                data[dataDate]['inInt'] = total_in
+                                data[dataDate]['outInt'] = total_out
                                 # total
                                 total_size = soLine['size']
                                 total_qty += soLine['qty_delivered']
@@ -207,7 +211,6 @@ class ProductSaleReport(models.TransientModel):
         colx = 0
 
         header_daily = []
-
         for eachDl in range(0, daily):
             dataDate = datetime.strftime(dateFrom + timedelta(days=eachDl), '%Y-%m-%d')
             header_daily.append(dataDate)
@@ -229,6 +232,8 @@ class ProductSaleReport(models.TransientModel):
                             dataEachPrdDict[everyDl]['card_payment'] += d[everyDl]['card_payment']
                             dataEachPrdDict[everyDl]['out_data'] += ",\n"+d[everyDl]['out_data'] if dataEachPrdDict[everyDl]['out_data'] else d[everyDl]['out_data']
                             dataEachPrdDict[everyDl]['in_data'] += ",\n"+d[everyDl]['in_data'] if dataEachPrdDict[everyDl]['in_data'] else d[everyDl]['in_data']
+                            dataEachPrdDict[everyDl]['inInt'] += d[everyDl]['inInt']
+                            dataEachPrdDict[everyDl]['outInt'] += d[everyDl]['outInt']
                         dataEachPrdDict['sub_total']['total_qty'] += d['sub_total']['total_qty']
                         dataEachPrdDict['sub_total']['total_in'] += d['sub_total']['total_in']
                         dataEachPrdDict['sub_total']['total_out'] += d['sub_total']['total_out']
@@ -264,8 +269,8 @@ class ProductSaleReport(models.TransientModel):
                     dailySubTotal[d]['qty'] += l[d]['qty_delivered']
                     dailySubTotal[d]['cash'] += l[d]['cash_payment']
                     dailySubTotal[d]['card'] += l[d]['card_payment']
-                    dailySubTotal[d]['in'] += 0
-                    dailySubTotal[d]['out'] += 0
+                    dailySubTotal[d]['in'] += l[d]['inInt']
+                    dailySubTotal[d]['out'] += l[d]['outInt']
                     total += l[d]['cash_payment'] + l[d]['card_payment']
                 ttl_out += l['sub_total']['total_out']
                 ttl_in += l['sub_total']['total_in']
