@@ -24,15 +24,22 @@ class ProductSaleReport(models.TransientModel):
 
     @api.multi
     def export_report(self):
+        dataDict = {}
         dataLine = []
-        print '\n\n\n ___ REPORT ___ ',self.stock_warehouse.lot_stock_id.id
+        dataLineTmpl = []
+        initial_date = datetime.strptime(self.date_from, '%Y-%m-%d')
+        dateFrom = datetime.strptime(self.date_from, '%Y-%m-%d')
+        dateUntil = datetime.strptime(self.date_until, '%Y-%m-%d')
+        daily = (((dateFrom - dateUntil).days) * -1) + 1
         self._cr.execute("""SELECT pp.id AS product_id,
-                                   pp.default_code AS code,
+                                   pt.default_code AS code,
                                    pt.name AS name,
                                    pp.id AS color,
-                                   pp.id AS cost,
+                                   pt.id AS cost,
                                    COALESCE(SUM(sq.qty), 0) AS quantity,
-                                   pt.list_price AS price
+                                   pt.list_price AS price,
+                                   pp.product_tmpl_id AS tmpl,
+                                   pt.id AS template
                             FROM stock_quant AS sq
                                 JOIN product_product AS pp
                                    ON pp.id = sq.product_id
@@ -42,30 +49,26 @@ class ProductSaleReport(models.TransientModel):
                                 GROUP BY pp.id, 
                                    pp.default_code,
                                    pt.name,
-                                   pt.list_price"""
+                                   pt.list_price,
+                                   pt.id 
+                                   ORDER BY pt.id"""
                          % (self.stock_warehouse.lot_stock_id.id))
         data_quant = self._cr.dictfetchall()
-        print '\n___ data1 ___ ', data_quant
 
         report_date = ''
         where_date_so = ''
         where_date_sp = ''
-        if self.date_from:
-            where_date_so += 'AND so.confirmation_date >= %s' % ("'" + self.date_from + "'")
-            where_date_sp += 'AND sp.min_date >= %s' % ("'" + self.date_from + "'")
-            report_date += self.date_from
-        if self.date_until:
-            where_date_so += 'AND so.confirmation_date <= %s' % ("'" + self.date_until + "'")
-            where_date_sp += 'AND sp.min_date <= %s' % ("'" + self.date_until + "'")
-            if report_date:
-                report_date += ' ~ '
-                where_date_so = 'AND so.confirmation_date BETWEEN %s AND %s' %("'"+self.date_from+"'", "'"+self.date_until+"'")
-                where_date_sp = 'AND sp.min_date BETWEEN %s AND %s' %("'"+self.date_from+"'", "'"+self.date_until+"'")
-            report_date += self.date_until
+        if self.date_from and self.date_until:
+            fm_dt = self.date_from+' 00:00:00'
+            un_dt = self.date_until+' 23:59:59'
+            where_date_so = 'AND so.confirmation_date BETWEEN %s AND %s' %("'"+fm_dt+"'", "'"+un_dt+"'")
+            where_date_sp = 'AND sp.min_date BETWEEN %s AND %s' %("'"+fm_dt+"'", "'"+un_dt+"'")
+            report_date += self.date_from + ' ~ ' + self.date_until
+
         if data_quant:
             for each_data in data_quant:
                 data = {}
-
+                data_total = {}
                 self._cr.execute("""SELECT so.id AS sale_order_id,
                                            so.name AS order_name,
                                            sp.id AS stock_picking_id,
@@ -89,11 +92,10 @@ class ProductSaleReport(models.TransientModel):
                                       AND sp.state = 'done'
                                       AND sol.product_id = %s 
                                       AND so.warehouse_id = %s 
-                                      %s
-                                 """
+                                      %s"""
                                  % (each_data['product_id'], self.stock_warehouse.id, where_date_so))
                 so_data = self._cr.dictfetchall()
-                print '\n___ data2 ___ ', so_data
+
                 self._cr.execute("""SELECT sp.name AS name,
                                            sp.min_date AS min_date,
                                            sm.product_uom_qty AS in_qty,
@@ -104,11 +106,9 @@ class ProductSaleReport(models.TransientModel):
                                     WHERE sp.state = 'done'
                                           AND sp.location_dest_id = %s
                                           AND sm.product_id = %s
-                                      %s
-                                 """
+                                      %s"""
                                  % (self.stock_warehouse.lot_stock_id.id, each_data['product_id'], where_date_sp))
                 in_data = self._cr.dictfetchall()
-                print '\n___ data3 ___ ', in_data
 
                 self._cr.execute("""SELECT sp.name AS name,
                                            sp.min_date AS min_date,
@@ -120,63 +120,76 @@ class ProductSaleReport(models.TransientModel):
                                         JOIN stock_location AS sl
                                             ON sl.id = sp.location_id
                                     WHERE sp.state = 'done'
-                                          AND sp.location_dest_id not in (SELECT id FROM stock_location WHERE usage = 'customer')
                                           AND sp.location_id = %s
                                           AND sm.product_id = %s
-                                      %s
-                                 """
+                                      %s"""
                                  % (self.stock_warehouse.lot_stock_id.id, each_data['product_id'], where_date_sp))
+                # AND sp.location_dest_id not in (SELECT id FROM stock_location WHERE usage = 'customer')
+
                 out_data = self._cr.dictfetchall()
-                print '\n___ dataOUT ___ ', out_data
 
                 # prepare data
                 data['code'] = each_data['code']
                 data['product'] = each_data['name']
+                data['template'] = each_data['template']
                 data['color'] = each_data['color']
                 data['cost'] = each_data['cost']
                 data['quantity'] = each_data['quantity']
                 data['price'] = each_data['price']
+                data['sub_total'] = {}
 
-                initial_date = datetime.strptime(self.date_from, '%Y-%m-%d')
-                dateFrom = datetime.strptime(self.date_from, '%Y-%m-%d')
-                dateUntil = datetime.strptime(self.date_until, '%Y-%m-%d')
-
-                daily = (((dateFrom-dateUntil).days) * -1) + 2
+                total_in = 0
+                total_out = 0
+                total_qty = 0
                 for eachDate in range(0, daily):
+                    dataDate = datetime.strftime(dateFrom + timedelta(days=eachDate), '%Y-%m-%d')
+                    dataDateTime = dateFrom + timedelta(days=eachDate)
                     inData = ''
                     if in_data:
                         for i in in_data:
                             in_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
                             in_dt = in_dt.replace(hour=00, minute=00, second=00)
-                            if in_dt == initial_date:
+                            if in_dt == dataDateTime:
                                 inData += ',\n%s: %s' % (i['name'], i['in_qty']) if inData else '%s: %s' % (i['name'], i['in_qty'])
+                                # total
+                                total_in += i['in_qty']
                     outData = ''
                     if out_data:
                         for i in out_data:
                             out_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
                             out_dt = out_dt.replace(hour=00, minute=00, second=00)
-                            if out_dt == initial_date:
+                            if out_dt == dataDateTime:
                                 outData += ',\n%s: %s' % (i['name'], i['out_qty']) if outData else '%s: %s' % (i['name'], i['out_qty'])
-                    data[initial_date.strftime("%Y-%m-%d")] = {'qty_delivered': 0,
-                                                               'picking_name': '',
-                                                               'cash_payment': 0,
-                                                               'card_payment': 0,
-                                                               'product_uom_qty': 0,
-                                                               'out_data': outData,
-                                                               'in_data': inData}
+                                # total
+                                total_out += i['out_qty']
+                    data[dataDate] = {'qty_delivered': 0,
+                                      'picking_name': '',
+                                      'cash_payment': 0,
+                                      'card_payment': 0,
+                                      'product_uom_qty': 0,
+                                      'out_data': outData,
+                                      'in_data': inData}
                     if so_data:
                         for soLine in so_data:
                             dt = datetime.strptime(soLine['min_date'], '%Y-%m-%d %H:%M:%S')
                             dt = dt.replace(hour=00, minute=00, second=00)
-                            if soLine['order_name'] == soLine['origin'] and dt == initial_date and soLine['product_id'] == each_data['product_id']:
-                                data[initial_date.strftime("%Y-%m-%d")]['qty_delivered'] = soLine['qty_delivered']
-                                data[initial_date.strftime("%Y-%m-%d")]['picking_name'] = soLine['picking_name']
-                                data[initial_date.strftime("%Y-%m-%d")]['cash_payment'] = soLine['cash_payment']
-                                data[initial_date.strftime("%Y-%m-%d")]['card_payment'] = soLine['card_payment']
-                                data[initial_date.strftime("%Y-%m-%d")]['product_uom_qty'] = soLine['product_uom_qty']
-                    initial_date = dateFrom + timedelta(days=eachDate)
+                            if soLine['order_name'] == soLine['origin'] and dt == dataDateTime and soLine['product_id'] == each_data['product_id']:
+                                data[dataDate]['qty_delivered'] += soLine['qty_delivered']
+                                data[dataDate]['picking_name'] = soLine['picking_name']
+                                data[dataDate]['cash_payment'] += soLine['cash_payment']
+                                data[dataDate]['card_payment'] += soLine['card_payment']
+                                data[dataDate]['product_uom_qty'] += soLine['product_uom_qty']
+                                # total
+                                total_qty += soLine['qty_delivered']
+                data['sub_total']['total_in'] = total_in
+                data['sub_total']['total_out'] = total_out
+                data['sub_total']['total_qty'] = total_qty
                 dataLine.append(data)
-        print '\n___ data4 ___ ', dataLine
+        print '\n___ ConditioN ___ ', self.stock_warehouse.lot_stock_id.id, self.stock_warehouse.id
+        print '\n___ data ___ '
+        for kkk in dataLine:
+            print kkk
+        print '\n___ data ___ '
 
         # create workbook
         book = xlwt.Workbook(encoding='utf8')
@@ -190,12 +203,44 @@ class ProductSaleReport(models.TransientModel):
         rowx = 0
         colx = 0
 
-        initial_dl = datetime.strptime(self.date_from, '%Y-%m-%d')
-        dl = (((dateFrom-dateUntil).days) * -1) + 2
         header_daily = []
-        for eachDl in range(1, dl):
-            header_daily.append(initial_dl.strftime("%Y-%m-%d"))
-            initial_dl = dateFrom + timedelta(days=eachDl)
+
+        for eachDl in range(0, daily):
+            dataDate = datetime.strftime(dateFrom + timedelta(days=eachDl), '%Y-%m-%d')
+            header_daily.append(dataDate)
+
+        if dataLine:
+            dataEachPrdList = []
+            dataEachPrdDict = {}
+            template = False
+            lena = 0
+            lenb = len(dataLine)
+            for d in dataLine:
+                lena += 1
+                if template:
+                    if template == d['template']:
+                        dataEachPrdDict['quantity'] += d['quantity']
+                        for everyDl in header_daily:
+                            dataEachPrdDict[everyDl]['qty_delivered'] += d[everyDl]['qty_delivered']
+                            dataEachPrdDict[everyDl]['cash_payment'] += d[everyDl]['cash_payment']
+                            dataEachPrdDict[everyDl]['card_payment'] += d[everyDl]['card_payment']
+                            dataEachPrdDict[everyDl]['out_data'] += ",\n"+d[everyDl]['out_data'] if dataEachPrdDict[everyDl]['out_data'] else d[everyDl]['out_data']
+                            dataEachPrdDict[everyDl]['in_data'] += ",\n"+d[everyDl]['in_data'] if dataEachPrdDict[everyDl]['in_data'] else d[everyDl]['in_data']
+                        dataEachPrdDict['sub_total']['total_qty'] += d['sub_total']['total_qty']
+                        dataEachPrdDict['sub_total']['total_in'] += d['sub_total']['total_in']
+                        dataEachPrdDict['sub_total']['total_out'] += d['sub_total']['total_out']
+                    else:
+                        dataEachPrdList.append(dataEachPrdDict)
+                        dataEachPrdDict = d
+                        template = d['template']
+                else:
+                    dataEachPrdDict = d
+                    template = d['template']
+                if lenb == lena:
+                    dataEachPrdList.append(dataEachPrdDict)
+            print '\n11111 ',len(dataLine), len(dataEachPrdList)
+            dataLine = dataEachPrdList
+        print '\n22222 ',dataLine,'\n'
 
         # define title and header
         title_list = [('Code'), ('Product'), ('Color'), ('Cost'), ('Quantity'), ('Price')]
@@ -229,6 +274,11 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'From warehouse', style_title)
                 cola += 1
                 coly = cola
+            sheet.write_merge(rowx, rowx, coly, cola+3, 'Total', style_title)
+            sheet.write(rowx + 1, coly, 'Sold quantity', style_title)
+            sheet.write(rowx + 1, coly + 1, 'Returned', style_title)
+            sheet.write(rowx + 1, coly + 2, 'From warehouse', style_title)
+            sheet.write(rowx + 1, coly + 3, 'Residual', style_title)
         sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Main info', style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
@@ -250,15 +300,19 @@ class ProductSaleReport(models.TransientModel):
                     for hd in header_daily:
                         cold += 4
                         sheet.write(rowx, colx + colc, line[hd]['qty_delivered'])
-                        sheet.write(rowx, colx + colc+1, line[hd]['card_payment'])
-                        sheet.write(rowx, colx + colc+2, line[hd]['cash_payment'])
+                        sheet.write(rowx, colx + colc+1, line[hd]['cash_payment'])
+                        sheet.write(rowx, colx + colc+2, line[hd]['card_payment'])
                         sheet.write(rowx, colx + colc+3, line[hd]['out_data'])
                         sheet.write(rowx, colx + colc+4, line[hd]['in_data'])
                         cold += 1
                         colc = cold
+                    if line['sub_total']:
+                        sheet.write(rowx, colx + colc, line['sub_total']['total_qty'])
+                        sheet.write(rowx, colx + colc+1, line['sub_total']['total_out'])
+                        sheet.write(rowx, colx + colc+2, line['sub_total']['total_in'])
+                        sheet.write(rowx, colx + colc+3, line['sub_total']['total_in'])
 
                 rowx += 1
-
 
         # prepare file data
         io_buffer = StringIO()
@@ -271,5 +325,4 @@ class ProductSaleReport(models.TransientModel):
         report_excel_output.filedata = filedata
 
         # call export function
-
         return report_excel_output.export_report()
