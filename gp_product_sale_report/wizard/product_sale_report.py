@@ -369,9 +369,8 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write(rowx, colx+coli, dailySubTotal['total_qty'])
                 sheet.write(rowx, colx+coli+1, dailySubTotal['total_out'])
                 sheet.write(rowx, colx+coli+2, dailySubTotal['total_in'])
-                sheet.write(rowx+4, colx+coli+1, _('Total: '))
-                sheet.write(rowx+4, colx+coli+2, dailySubTotal['total'])
-
+                sheet.write(rowx+2, colx+coli+1, _('Total: '))
+                sheet.write(rowx+2, colx+coli+2, dailySubTotal['total'])
 
         # prepare file data
         io_buffer = StringIO()
