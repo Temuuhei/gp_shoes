@@ -28,11 +28,15 @@ class ProductSaleReport(models.TransientModel):
     def export_report(self):
         dataDict = {}
         dataLine = []
+<<<<<<< HEAD
         dataLineTmpl = []
         initial_date = datetime.strptime(self.date_from, '%Y-%m-%d')
         dateFrom = datetime.strptime(self.date_from, '%Y-%m-%d')
         dateUntil = datetime.strptime(self.date_until, '%Y-%m-%d')
         daily = (((dateFrom - dateUntil).days) * -1) + 1
+=======
+        # print '\n\n\n ___ REPORT ___ ',self.stock_warehouse.lot_stock_id.id
+>>>>>>> 37cb37601b358aff55ff8ffe3090f86082eefe4a
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.default_code AS code,
                                    pt.name AS name,
@@ -57,6 +61,10 @@ class ProductSaleReport(models.TransientModel):
                                     pt.default_code_integer"""
                          % (self.stock_warehouse.lot_stock_id.id))
         data_quant = self._cr.dictfetchall()
+<<<<<<< HEAD
+=======
+        # print '\n___ data1 ___ ', data_quant
+>>>>>>> 37cb37601b358aff55ff8ffe3090f86082eefe4a
 
         report_date = ''
         where_date_so = ''
@@ -103,7 +111,11 @@ class ProductSaleReport(models.TransientModel):
                                       %s"""
                                  % (each_data['product_id'], each_data['product_id'], self.stock_warehouse.id, where_date_so))
                 so_data = self._cr.dictfetchall()
+<<<<<<< HEAD
 
+=======
+                # print '\n___ data2 ___ ', so_data
+>>>>>>> 37cb37601b358aff55ff8ffe3090f86082eefe4a
                 self._cr.execute("""SELECT sp.name AS name,
                                            sp.min_date AS min_date,
                                            sm.product_uom_qty AS in_qty,
@@ -117,6 +129,10 @@ class ProductSaleReport(models.TransientModel):
                                       %s"""
                                  % (self.stock_warehouse.lot_stock_id.id, each_data['product_id'], where_date_sp))
                 in_data = self._cr.dictfetchall()
+<<<<<<< HEAD
+=======
+                # print '\n___ data3 ___ ', in_data
+>>>>>>> 37cb37601b358aff55ff8ffe3090f86082eefe4a
 
                 self._cr.execute("""SELECT sp.name AS name,
                                            sp.min_date AS min_date,
@@ -135,6 +151,10 @@ class ProductSaleReport(models.TransientModel):
                 # AND sp.location_dest_id not in (SELECT id FROM stock_location WHERE usage = 'customer')
 
                 out_data = self._cr.dictfetchall()
+<<<<<<< HEAD
+=======
+                # print '\n___ dataOUT ___ ', out_data
+>>>>>>> 37cb37601b358aff55ff8ffe3090f86082eefe4a
 
                 # prepare data
                 data['code'] = each_data['code']
@@ -204,6 +224,10 @@ class ProductSaleReport(models.TransientModel):
                 data['sub_total']['total_qty'] = total_qty
                 data['sub_total']['total_size'] = total_size
                 dataLine.append(data)
+<<<<<<< HEAD
+=======
+        # print '\n___ data4 ___ ', dataLine
+>>>>>>> 37cb37601b358aff55ff8ffe3090f86082eefe4a
 
         # create workbook
         book = xlwt.Workbook(encoding='utf8')
