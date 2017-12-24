@@ -20,9 +20,9 @@ base_style = xlwt.easyxf('align: wrap yes')
 class ProductSaleReport(models.TransientModel):
     _name = 'product.sale.report'
 
-    stock_warehouse = fields.Many2one('stock.warehouse', 'Stock warehouse')
-    date_from = fields.Date('Date from')
-    date_until = fields.Date('Date until')
+    stock_warehouse = fields.Many2one('stock.warehouse', 'Stock warehouse', required=True)
+    date_from = fields.Date('Date from', required=True)
+    date_until = fields.Date('Date until', required=True)
 
     @api.multi
     def export_report(self):

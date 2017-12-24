@@ -27,8 +27,9 @@ class ProductTemplate(models.Model):
         integers = ['0','1','2','3','4','5','6','7','8','9']
         intStr = ''
         for obj in self:
-            for char in obj.default_code:
-                if char in integers:
-                    intStr += char
+            if obj.default_code:
+                for char in obj.default_code:
+                    if char in integers:
+                        intStr += char
             if intStr:
                 obj.default_code_integer = int(intStr)
