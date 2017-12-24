@@ -32,7 +32,7 @@
 
         <menuitem id="menu_product_sale_report"
                   action="action_product_sale_report"
-                  parent="stock.menu_warehouse_report"
+                  parent="gp_shoes_warehouse.menu_report"
                   groups="stock.group_stock_manager"/>
     </data>
 </odoo>
