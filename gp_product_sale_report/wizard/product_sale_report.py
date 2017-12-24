@@ -13,6 +13,8 @@ style_title = xlwt.easyxf('font: bold 1, name Tahoma, height 160;'
                           'pattern: pattern solid, pattern_fore_colour gray25, pattern_back_colour black;')
 style_filter = xlwt.easyxf('font: bold 1, name Tahoma, height 220;'
                           'align: vertical center, horizontal center, wrap on;')
+style_footer = xlwt.easyxf('font: bold 1, name Tahoma, height 160;'
+                          'align: vertical center, horizontal center, wrap on;')
 base_style = xlwt.easyxf('align: wrap yes')
 
 class ProductSaleReport(models.TransientModel):
@@ -34,8 +36,8 @@ class ProductSaleReport(models.TransientModel):
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.default_code AS code,
                                    pt.name AS name,
-                                   pp.id AS color,
-                                   pt.id AS cost,
+                                   pt.id AS color,
+                                   pt.standard_price_report AS cost,
                                    COALESCE(SUM(sq.qty), 0) AS quantity,
                                    pt.list_price AS price,
                                    pp.product_tmpl_id AS tmpl,
@@ -51,7 +53,8 @@ class ProductSaleReport(models.TransientModel):
                                    pt.name,
                                    pt.list_price,
                                    pt.id 
-                                   ORDER BY pt.id"""
+                                   ORDER BY pt.id,
+                                    pt.default_code_integer"""
                          % (self.stock_warehouse.lot_stock_id.id))
         data_quant = self._cr.dictfetchall()
 
@@ -314,15 +317,15 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write_merge(rowx+1, rowx+1, coly, coly, 'Sold quantity', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+1, coly+1, 'Sold cash', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+2, coly+2, 'Sold card', style_title)
-                sheet.write_merge(rowx+1, rowx+1, coly+3, coly+3, 'Returned', style_title)
-                sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'From warehouse', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+3, coly+3, 'Warehouse out', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'Warehouse in', style_title)
                 cola += 1
                 coly = cola
             sheet.write_merge(rowx, rowx, coly, cola+3, 'Total', style_title)
             sheet.write(rowx + 1, coly, 'Sold quantity', style_title)
-            sheet.write(rowx + 1, coly + 1, 'Returned', style_title)
-            sheet.write(rowx + 1, coly + 2, 'From warehouse', style_title)
-            sheet.write(rowx + 1, coly + 3, 'Residual', style_title)
+            sheet.write(rowx + 1, coly + 1, 'Warehouse out', style_title)
+            sheet.write(rowx + 1, coly + 2, 'Warehouse in', style_title)
+            sheet.write(rowx + 1, coly + 3, 'Size', style_title)
         sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Main info', style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
@@ -334,7 +337,7 @@ class ProductSaleReport(models.TransientModel):
             for line in dataLine:
                 sheet.write(rowx, colx, line['code'])
                 sheet.write(rowx, colx + 1, line['product'])
-                sheet.write(rowx, colx + 2, line['color'])
+                sheet.write(rowx, colx + 2, line['sub_total']['total_size'])
                 sheet.write(rowx, colx + 3, line['cost'])
                 sheet.write(rowx, colx + 4, line['quantity'])
                 sheet.write(rowx, colx + 5, line['price'])
@@ -359,29 +362,29 @@ class ProductSaleReport(models.TransientModel):
 
             if dailySubTotal:
                 rowx += 1
-                sheet.write(rowx+1, colx, _("Product Quintity: "))
-                sheet.write(rowx+1, colx + 4, dailySubTotal['ttlQuant'])
-                sheet.write(rowx+2, colx, _("Daily Sale: "))
-                sheet.write(rowx+3, colx, _("Daily Sale Quantity: "))
-                sheet.write(rowx+4, colx, _("Daily warehouse out: "))
-                sheet.write(rowx+5, colx, _("Daily warehouse in: "))
+                sheet.write(rowx+1, colx, _("Product Quintity: "), style_footer)
+                sheet.write(rowx+1, colx + 4, dailySubTotal['ttlQuant'], style_footer)
+                sheet.write(rowx+2, colx, _("Daily Sale: "), style_footer)
+                sheet.write(rowx+3, colx, _("Daily Sale Quantity: "), style_footer)
+                sheet.write(rowx+4, colx, _("Daily warehouse out: "), style_footer)
+                sheet.write(rowx+5, colx, _("Daily warehouse in: "), style_footer)
 
                 coli = len(title_list)
                 colj = len(title_list)
                 for hd in header_daily:
                     colj += 4
-                    sheet.write(rowx+3, colx+coli, dailySubTotal[hd]['qty'])
-                    sheet.write(rowx+2, colx+coli+1, dailySubTotal[hd]['cash'])
-                    sheet.write(rowx+2, colx+coli+2, dailySubTotal[hd]['card'])
-                    sheet.write(rowx+4, colx+coli+3, dailySubTotal[hd]['out'])
-                    sheet.write(rowx+5, colx+coli+4, dailySubTotal[hd]['in'])
+                    sheet.write(rowx+3, colx+coli, dailySubTotal[hd]['qty'], style_footer)
+                    sheet.write(rowx+2, colx+coli+1, dailySubTotal[hd]['cash'], style_footer)
+                    sheet.write(rowx+2, colx+coli+2, dailySubTotal[hd]['card'], style_footer)
+                    sheet.write(rowx+4, colx+coli+3, dailySubTotal[hd]['out'], style_footer)
+                    sheet.write(rowx+5, colx+coli+4, dailySubTotal[hd]['in'], style_footer)
                     colj += 1
                     coli = colj
-                sheet.write(rowx, colx+coli, dailySubTotal['total_qty'])
-                sheet.write(rowx, colx+coli+1, dailySubTotal['total_out'])
-                sheet.write(rowx, colx+coli+2, dailySubTotal['total_in'])
-                sheet.write(rowx+2, colx+coli+1, _('Total: '))
-                sheet.write(rowx+2, colx+coli+2, dailySubTotal['total'])
+                sheet.write(rowx, colx+coli, dailySubTotal['total_qty'], style_footer)
+                sheet.write(rowx, colx+coli+1, dailySubTotal['total_out'], style_footer)
+                sheet.write(rowx, colx+coli+2, dailySubTotal['total_in'], style_footer)
+                sheet.write(rowx+2, colx+coli+1, _('Total: '), style_footer)
+                sheet.write(rowx+2, colx+coli+2, dailySubTotal['total'], style_footer)
 
         # prepare file data
         io_buffer = StringIO()
