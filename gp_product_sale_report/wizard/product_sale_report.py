@@ -41,7 +41,12 @@ class ProductSaleReport(models.TransientModel):
                                    COALESCE(SUM(sq.qty), 0) AS quantity,
                                    pt.list_price AS price,
                                    pp.product_tmpl_id AS tmpl,
-                                   pt.id AS template
+                                   pt.id AS template,
+                                   (SELECT name FROM product_attribute_value pav 
+                                        JOIN product_attribute_value_product_product_rel pavr 
+                                            ON pavr.product_attribute_value_id = pav.id 
+                                    WHERE pavr.product_product_id= pp.id
+                                        ORDER BY pav.id ASC LIMIT 1) as size
                             FROM stock_quant AS sq
                                 JOIN product_product AS pp
                                    ON pp.id = sq.product_id
@@ -83,12 +88,7 @@ class ProductSaleReport(models.TransientModel):
                                            sol.cash_payment AS cash_payment,
                                            sol.card_payment AS card_payment,
                                            sm.product_uom_qty AS product_uom_qty,
-                                           sm.product_id AS product_id,
-                                           (SELECT name FROM product_attribute_value pav 
-                                                JOIN product_attribute_value_product_product_rel pavr 
-                                                    ON pavr.product_attribute_value_id = pav.id 
-                                            WHERE pavr.product_product_id=%s 
-                                                ORDER BY pav.id ASC LIMIT 1) as size
+                                           sm.product_id AS product_id
                                     FROM sale_order AS so
                                         JOIN sale_order_line AS sol
                                            ON sol.order_id = so.id
@@ -101,7 +101,7 @@ class ProductSaleReport(models.TransientModel):
                                       AND sol.product_id = %s 
                                       AND so.warehouse_id = %s 
                                       %s"""
-                                 % (each_data['product_id'], each_data['product_id'], self.stock_warehouse.id, where_date_so))
+                                 % (each_data['product_id'], self.stock_warehouse.id, where_date_so))
                 so_data = self._cr.dictfetchall()
 
                 self._cr.execute("""SELECT sp.name AS name,
@@ -144,6 +144,7 @@ class ProductSaleReport(models.TransientModel):
                 data['cost'] = each_data['cost']
                 data['quantity'] = each_data['quantity']
                 data['price'] = each_data['price']
+                data['size'] = each_data['size']
                 data['sub_total'] = {}
 
                 total_qty = 0
@@ -197,7 +198,7 @@ class ProductSaleReport(models.TransientModel):
                                 data[dataDate]['inInt'] = inInt
                                 data[dataDate]['outInt'] = outInt
                                 # total
-                                total_size = soLine['size']
+                                total_size = each_data['size']
                                 total_qty += soLine['qty_delivered']
                 data['sub_total']['total_in'] = total_in
                 data['sub_total']['total_out'] = total_out
@@ -233,6 +234,7 @@ class ProductSaleReport(models.TransientModel):
                 if template:
                     if template == d['template']:
                         dataEachPrdDict['quantity'] += d['quantity']
+                        dataEachPrdDict['size'] += ", "+d['size'] if dataEachPrdDict['size'] else d['size']
                         for everyDl in header_daily:
                             dataEachPrdDict[everyDl]['qty_delivered'] += d[everyDl]['qty_delivered']
                             dataEachPrdDict[everyDl]['cash_payment'] += d[everyDl]['cash_payment']
@@ -337,7 +339,7 @@ class ProductSaleReport(models.TransientModel):
             for line in dataLine:
                 sheet.write(rowx, colx, line['code'])
                 sheet.write(rowx, colx + 1, line['product'])
-                sheet.write(rowx, colx + 2, line['sub_total']['total_size'])
+                sheet.write(rowx, colx + 2, line['size'])
                 sheet.write(rowx, colx + 3, line['cost'])
                 sheet.write(rowx, colx + 4, line['quantity'])
                 sheet.write(rowx, colx + 5, line['price'])
