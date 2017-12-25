@@ -290,7 +290,7 @@ class ProductSaleReport(models.TransientModel):
             dailySubTotal['total'] = total
 
         # define title and header
-        title_list = [('Code'), ('Product'), ('Color'), ('Cost'), ('Quantity'), ('Price')]
+        title_list = [('Шинэ код'), ('Бараа нэр'), ('Өнгө'), ('Үндсэн үнэ ₮'), ('Тоо, ш'), ('Зарах үнэ')]
         colx_number = len(title_list) - 1
 
         # create header
@@ -314,19 +314,19 @@ class ProductSaleReport(models.TransientModel):
             for x in range(0, len(header_daily)):
                 cola += 4
                 sheet.write_merge(rowx, rowx, coly, cola, header_daily[x], style_title)
-                sheet.write_merge(rowx+1, rowx+1, coly, coly, 'Sold quantity', style_title)
-                sheet.write_merge(rowx+1, rowx+1, coly+1, coly+1, 'Sold cash', style_title)
-                sheet.write_merge(rowx+1, rowx+1, coly+2, coly+2, 'Sold card', style_title)
-                sheet.write_merge(rowx+1, rowx+1, coly+3, coly+3, 'Warehouse out', style_title)
-                sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'Warehouse in', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly, coly, 'Зарсан ш', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+1, coly+1, 'Зарсан үнэ, бэлнээр ₮', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+2, coly+2, 'Зарсан үнэ, картаар ₮', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+3, coly+3, 'Буцсан, ш', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'Агуулахаас , ш', style_title)
                 cola += 1
                 coly = cola
-            sheet.write_merge(rowx, rowx, coly, cola+3, 'Total', style_title)
-            sheet.write(rowx + 1, coly, 'Sold quantity', style_title)
-            sheet.write(rowx + 1, coly + 1, 'Warehouse out', style_title)
-            sheet.write(rowx + 1, coly + 2, 'Warehouse in', style_title)
-            sheet.write(rowx + 1, coly + 3, 'Size', style_title)
-        sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Main info', style_title)
+            sheet.write_merge(rowx, rowx, coly, cola+3, 'Нийт', style_title)
+            sheet.write(rowx + 1, coly, 'Зарсан, ш', style_title)
+            sheet.write(rowx + 1, coly + 1, 'Буцаалт, ш', style_title)
+            sheet.write(rowx + 1, coly + 2, 'Агуулахаас , Ш', style_title)
+            sheet.write(rowx + 1, coly + 3, 'Размерууд', style_title)
+        sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Үндсэн мэдээлэл', style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
             sheet.write_merge(rowx, rowx, i, i, title_list[i], style_title)
