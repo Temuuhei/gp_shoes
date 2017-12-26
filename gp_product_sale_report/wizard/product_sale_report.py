@@ -48,6 +48,7 @@ class ProductSaleReport(models.TransientModel):
 
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.default_code AS code,
+                                   pt.default_code_integer AS codeint,
                                    pt.name AS name,
                                    pt.id AS color,
                                    pt.standard_price_report AS cost,
@@ -193,6 +194,7 @@ class ProductSaleReport(models.TransientModel):
 
                 # prepare data
                 data['code'] = each_data['code']
+                data['codeInt'] = each_data['codeint']
                 data['product'] = each_data['name']
                 data['template'] = each_data['template']
                 data['color'] = each_data['color']
@@ -291,7 +293,6 @@ class ProductSaleReport(models.TransientModel):
                     if template == d['template']:
                         dataEachPrdDict['quantity'] += d['quantity']
                         dataEachPrdDict['firstQty'] += d['firstQty']
-                        sz = d['size'] or ''
                         dataEachPrdDict['size'] += ", "+d['size'] if dataEachPrdDict['size'] else d['size']
                         for everyDl in header_daily:
                             dataEachPrdDict[everyDl]['qty_delivered'] += d[everyDl]['qty_delivered']
@@ -314,7 +315,7 @@ class ProductSaleReport(models.TransientModel):
                     template = d['template']
                 if lenb == lena:
                     dataEachPrdList.append(dataEachPrdDict)
-            dataLine = dataEachPrdList
+            dataLine = sorted(dataEachPrdList, key=lambda k: k['codeInt'])
 
             # Daily total
             dailySubTotal = {'ttlQuant': 0,'ttlFirstQuant': 0}
