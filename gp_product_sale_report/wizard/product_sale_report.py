@@ -129,7 +129,6 @@ class ProductSaleReport(models.TransientModel):
         #         data_first_quant = self._cr.dictfetchall()
         #         de.update({'first_quant': data_first_quant[0]['qty']})
         if data_quant:
-            print '\n ___', data_quant
             for each_data in data_quant:
                 data = {}
                 data_total = {}
@@ -199,9 +198,9 @@ class ProductSaleReport(models.TransientModel):
                 data['color'] = each_data['color']
                 data['cost'] = each_data['cost']
                 data['quantity'] = each_data['quantity']
+                data['firstQty'] = each_data['firstqty']
                 data['price'] = each_data['price']
                 data['size'] = each_data['size']
-                data['firstQty'] = each_data['firstqty']
                 data['sub_total'] = {}
 
                 total_qty = 0
@@ -318,7 +317,7 @@ class ProductSaleReport(models.TransientModel):
             dataLine = dataEachPrdList
 
             # Daily total
-            dailySubTotal = {'ttlQuant': 0}
+            dailySubTotal = {'ttlQuant': 0,'ttlFirstQuant': 0}
             dailyTotal = {}
             for d in header_daily:
                 # total prepare empty
@@ -335,6 +334,7 @@ class ProductSaleReport(models.TransientModel):
                 outInt = 0
                 inInt = 0
                 dailySubTotal['ttlQuant'] += l['quantity']
+                dailySubTotal['ttlFirstQuant'] += l['firstQty']
                 for d in header_daily:
                     dailySubTotal[d]['qty'] += l[d]['qty_delivered']
                     dailySubTotal[d]['cash'] += l[d]['cash_payment']
@@ -425,8 +425,8 @@ class ProductSaleReport(models.TransientModel):
 
             if dailySubTotal:
                 rowx += 1
-                sheet.write(rowx+1, colx, _("Product Quintity: "), style_footer)
-                sheet.write(rowx+1, colx + 4, dailySubTotal['ttlQuant'], style_footer)
+                sheet.write(rowx, colx, _("Product Quintity: "), style_footer)
+                sheet.write(rowx, colx + 4, dailySubTotal['ttlFirstQuant'], style_footer)
                 sheet.write(rowx+2, colx, _("Daily Sale: "), style_footer)
                 sheet.write(rowx+3, colx, _("Daily Sale Quantity: "), style_footer)
                 sheet.write(rowx+4, colx, _("Daily warehouse out: "), style_footer)
@@ -446,6 +446,7 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write(rowx, colx+coli, dailySubTotal['total_qty'], style_footer)
                 sheet.write(rowx, colx+coli+1, dailySubTotal['total_out'], style_footer)
                 sheet.write(rowx, colx+coli+2, dailySubTotal['total_in'], style_footer)
+                sheet.write(rowx, colx+coli+3, dailySubTotal['ttlQuant'], style_footer)
                 sheet.write(rowx+2, colx+coli+1, _('Total: '), style_footer)
                 sheet.write(rowx+2, colx+coli+2, dailySubTotal['total'], style_footer)
 
