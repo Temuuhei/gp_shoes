@@ -21,20 +21,20 @@ class ProductProduct(models.Model):
 
 
 
-    old_code = fields.Integer('Old Code',compute='_compute_code', store = True)
+    # old_code = fields.Integer('Old Code',compute='_compute_code', store = True)
     # _sql_constraints = [
     #     ('old_code', 'unique(old_code)', "Another product already exists with this old code number!"),
     # ]
 
-    @api.depends('default_code')
-    def _compute_code(self):
-        for record in self:
-            if record.default_code:
-                re.findall("\d+", record.default_code)
-                match = re.findall("\d+", record.default_code)
-                for x in match:
-                    record.old_code = x[0]
-                print 'OLD CODE \n\n',record.old_code
+    # @api.depends('default_code')
+    # def _compute_code(self):
+    #     for record in self:
+    #         if record.default_code:
+    #             re.findall("\d+", record.default_code)
+    #             match = re.findall("\d+", record.default_code)
+    #             for x in match:
+    #                 record.old_code = x[0]
+    #             print 'OLD CODE \n\n',record.old_code
 
 
 
