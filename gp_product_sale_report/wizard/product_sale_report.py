@@ -33,6 +33,19 @@ class ProductSaleReport(models.TransientModel):
         dateFrom = datetime.strptime(self.date_from, '%Y-%m-%d')
         dateUntil = datetime.strptime(self.date_until, '%Y-%m-%d')
         daily = (((dateFrom - dateUntil).days) * -1) + 1
+
+        location = '('+str(self.stock_warehouse.lot_stock_id.id)+')'
+        report_date = ''
+        where_date_so = ''
+        where_date_sp = ''
+        if self.date_from and self.date_until:
+            initial_date_where = " and sm.date < '%s' " % (self.date_from + ' 00:00:00')
+            fm_dt = self.date_from + ' 00:00:00'
+            un_dt = self.date_until + ' 23:59:59'
+            where_date_so = 'AND so.confirmation_date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
+            where_date_sp = 'AND sp.min_date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
+            report_date += self.date_from + ' ~ ' + self.date_until
+
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.default_code AS code,
                                    pt.name AS name,
@@ -42,11 +55,31 @@ class ProductSaleReport(models.TransientModel):
                                    pt.list_price AS price,
                                    pp.product_tmpl_id AS tmpl,
                                    pt.id AS template,
-                                   (SELECT name FROM product_attribute_value pav 
+                                   coalesce((SELECT name FROM product_attribute_value pav 
                                         JOIN product_attribute_value_product_product_rel pavr 
                                             ON pavr.product_attribute_value_id = pav.id 
                                     WHERE pavr.product_product_id= pp.id
-                                        ORDER BY pav.id ASC LIMIT 1) as size
+                                        ORDER BY pav.id ASC LIMIT 1),'') as size,
+                                   (SELECT coalesce(sum(query.qty),0) as qty
+                                    FROM ((SELECT coalesce(sum(sm.product_qty),0) AS qty 
+                                           FROM stock_move sm 
+                                                JOIN product_product ppp 
+                                                    ON (pp.id=sm.product_id)
+                                           WHERE sm.state='done' 
+                                                 AND sm.location_id not in %s
+                                                 AND sm.location_dest_id in %s
+                                                 AND ppp.id = pp.id %s
+                                           GROUP BY sm.product_id)
+                                          union
+                                          (SELECT -coalesce(sum(sm.product_qty),0) AS qty
+                                           FROM stock_move sm
+                                                JOIN product_product ppp ON (pp.id=sm.product_id)
+                                           WHERE sm.state='done' 
+                                                 AND sm.location_id in %s
+                                                 AND sm.location_dest_id not in %s
+                                                 AND ppp.id = pp.id %s
+                                           GROUP BY sm.product_id)
+                                         ) AS query ) as firstqty
                             FROM stock_quant AS sq
                                 JOIN product_product AS pp
                                    ON pp.id = sq.product_id
@@ -60,20 +93,43 @@ class ProductSaleReport(models.TransientModel):
                                    pt.id 
                                    ORDER BY pt.id,
                                     pt.default_code_integer"""
-                         % (self.stock_warehouse.lot_stock_id.id))
+                         % (location,location,initial_date_where,
+                            location,location,initial_date_where,
+                            self.stock_warehouse.lot_stock_id.id))
         data_quant = self._cr.dictfetchall()
 
-        report_date = ''
-        where_date_so = ''
-        where_date_sp = ''
-        if self.date_from and self.date_until:
-            fm_dt = self.date_from+' 00:00:00'
-            un_dt = self.date_until+' 23:59:59'
-            where_date_so = 'AND so.confirmation_date BETWEEN %s AND %s' %("'"+fm_dt+"'", "'"+un_dt+"'")
-            where_date_sp = 'AND sp.min_date BETWEEN %s AND %s' %("'"+fm_dt+"'", "'"+un_dt+"'")
-            report_date += self.date_from + ' ~ ' + self.date_until
-
+        # if data_quant:
+        #     for de in data_quant:
+        #         self._cr.execute("""SELECT query.product_id as prod,
+        #                                 coalesce(sum(query.qty),0) as qty
+        #                             FROM ((SELECT sm.product_id,
+        #                                           coalesce(sum(sm.product_qty),0) AS qty
+        #                                    FROM stock_move sm
+        #                                         JOIN product_product pp
+        #                                             ON (pp.id=sm.product_id)
+        #                                    WHERE sm.state='done'
+        #                                          AND sm.location_id not in %s
+        #                                          AND sm.location_dest_id in %s
+        #                                          AND sm.product_id = %s
+        #                                    GROUP BY sm.product_id)
+        #                                   union
+        #                                   (SELECT sm.product_id,
+        #                                           -coalesce(sum(sm.product_qty),0) AS qty
+        #                                    FROM stock_move sm
+        #                                         JOIN product_product pp ON (pp.id=sm.product_id)
+        #                                    WHERE sm.state='done'
+        #                                          AND sm.location_id in %s
+        #                                          AND sm.location_dest_id not in %s
+        #                                          AND sm.product_id = %s
+        #                                    GROUP BY sm.product_id)
+        #                                  ) AS query
+        #                                    GROUP BY query.product_id"""
+        #                          % (location,location,de['product_id'],
+        #                             location,location,de['product_id']))
+        #         data_first_quant = self._cr.dictfetchall()
+        #         de.update({'first_quant': data_first_quant[0]['qty']})
         if data_quant:
+            print '\n ___', data_quant
             for each_data in data_quant:
                 data = {}
                 data_total = {}
@@ -145,6 +201,7 @@ class ProductSaleReport(models.TransientModel):
                 data['quantity'] = each_data['quantity']
                 data['price'] = each_data['price']
                 data['size'] = each_data['size']
+                data['firstQty'] = each_data['firstqty']
                 data['sub_total'] = {}
 
                 total_qty = 0
@@ -234,6 +291,8 @@ class ProductSaleReport(models.TransientModel):
                 if template:
                     if template == d['template']:
                         dataEachPrdDict['quantity'] += d['quantity']
+                        dataEachPrdDict['firstQty'] += d['firstQty']
+                        sz = d['size'] or ''
                         dataEachPrdDict['size'] += ", "+d['size'] if dataEachPrdDict['size'] else d['size']
                         for everyDl in header_daily:
                             dataEachPrdDict[everyDl]['qty_delivered'] += d[everyDl]['qty_delivered']
@@ -323,11 +382,12 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'Агуулахаас , ш', style_title)
                 cola += 1
                 coly = cola
-            sheet.write_merge(rowx, rowx, coly, cola+3, 'Нийт', style_title)
+            sheet.write_merge(rowx, rowx, coly, cola+4, 'Нийт', style_title)
             sheet.write(rowx + 1, coly, 'Зарсан, ш', style_title)
             sheet.write(rowx + 1, coly + 1, 'Буцаалт, ш', style_title)
             sheet.write(rowx + 1, coly + 2, 'Агуулахаас , Ш', style_title)
-            sheet.write(rowx + 1, coly + 3, 'Размерууд', style_title)
+            sheet.write(rowx + 1, coly + 3, 'Quantity', style_title)
+            sheet.write(rowx + 1, coly + 4, 'Размерууд', style_title)
         sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Үндсэн мэдээлэл', style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
@@ -341,7 +401,7 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write(rowx, colx + 1, line['product'])
                 sheet.write(rowx, colx + 2, line['size'])
                 sheet.write(rowx, colx + 3, line['cost'])
-                sheet.write(rowx, colx + 4, line['quantity'])
+                sheet.write(rowx, colx + 4, line['firstQty'])
                 sheet.write(rowx, colx + 5, line['price'])
                 if header_daily:
                     colc = len(title_list)
@@ -359,7 +419,8 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc, line['sub_total']['total_qty'])
                         sheet.write(rowx, colx + colc+1, line['sub_total']['total_out'])
                         sheet.write(rowx, colx + colc+2, line['sub_total']['total_in'])
-                        sheet.write(rowx, colx + colc+3, line['sub_total']['total_size'])
+                        sheet.write(rowx, colx + colc+3, line['quantity'])
+                        sheet.write(rowx, colx + colc+4, line['sub_total']['total_size'])
                 rowx += 1
 
             if dailySubTotal:
