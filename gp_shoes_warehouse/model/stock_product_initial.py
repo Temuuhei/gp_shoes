@@ -326,7 +326,7 @@ class StockProductInitial(models.TransientModel):
                     code = str(row[0].value)
                     product_type = 'product'
                     product_supply_method = 'buy'
-                    product_procure_method = 'make_to_stock'
+                    product_procure_method = 'make_to_stocёб k'
                     product_sale_ok = True
                     product_purchase_ok = True
                     product_cost_method = 'average'
