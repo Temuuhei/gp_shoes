@@ -152,7 +152,7 @@ class ProductSaleReport(models.TransientModel):
                                            ON sp.group_id = so.procurement_group_id
                                         JOIN stock_move AS sm
                                            ON sm.picking_id = sp.id
-                                    WHERE so.state = 'done'
+                                    WHERE so.state = 'sale'
                                       AND sp.state = 'done'
                                       AND sol.product_id = %s 
                                       AND so.warehouse_id = %s 
@@ -201,6 +201,7 @@ class ProductSaleReport(models.TransientModel):
                 data['cost'] = each_data['cost']
                 data['quantity'] = each_data['quantity']
                 data['firstQty'] = each_data['firstqty']
+                data['dummyFirstQty'] = str(each_data['size'])+": "+str(each_data['firstqty'])
                 data['price'] = each_data['price']
                 data['size'] = each_data['size']
                 data['sub_total'] = {}
@@ -293,6 +294,7 @@ class ProductSaleReport(models.TransientModel):
                     if template == d['template']:
                         dataEachPrdDict['quantity'] += d['quantity']
                         dataEachPrdDict['firstQty'] += d['firstQty']
+                        dataEachPrdDict['dummyFirstQty'] += ", "+d['dummyFirstQty'] if dataEachPrdDict['dummyFirstQty'] else d['dummyFirstQty']
                         dataEachPrdDict['size'] += ", "+d['size'] if dataEachPrdDict['size'] else d['size']
                         for everyDl in header_daily:
                             dataEachPrdDict[everyDl]['qty_delivered'] += d[everyDl]['qty_delivered']
@@ -400,7 +402,7 @@ class ProductSaleReport(models.TransientModel):
             for line in dataLine:
                 sheet.write(rowx, colx, line['code'])
                 sheet.write(rowx, colx + 1, line['product'])
-                sheet.write(rowx, colx + 2, line['size'])
+                sheet.write(rowx, colx + 2, line['dummyFirstQty'])
                 sheet.write(rowx, colx + 3, line['cost'])
                 sheet.write(rowx, colx + 4, line['firstQty'])
                 sheet.write(rowx, colx + 5, line['price'])
