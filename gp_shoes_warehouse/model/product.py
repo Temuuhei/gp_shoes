@@ -21,7 +21,7 @@ class ProductProduct(models.Model):
 
 
 
-    # old_code = fields.Integer('Old Code',compute='_compute_code', store = True)
+    old_code = fields.Integer('Old Code',compute='_compute_code', store = True)
     # _sql_constraints = [
     #     ('old_code', 'unique(old_code)', "Another product already exists with this old code number!"),
     # ]
