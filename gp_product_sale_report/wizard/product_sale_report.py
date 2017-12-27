@@ -152,7 +152,7 @@ class ProductSaleReport(models.TransientModel):
                                            ON sp.group_id = so.procurement_group_id
                                         JOIN stock_move AS sm
                                            ON sm.picking_id = sp.id
-                                    WHERE so.state = 'done'
+                                    WHERE so.state = 'sale'
                                       AND sp.state = 'done'
                                       AND sol.product_id = %s 
                                       AND so.warehouse_id = %s 
