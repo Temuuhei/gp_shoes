@@ -106,18 +106,18 @@
         </field>
     </record>
 
-     <record id="product_product_easy_form_injerit_on_gp_view" model="ir.ui.view">
-        <field name="name">product.product.easy.form</field>
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_normal_form_view"/>
-        <field name="arch" type="xml">
+     <!--<record id="product_product_easy_form_injerit_on_gp_view" model="ir.ui.view">-->
+        <!--<field name="name">product.product.easy.form</field>-->
+        <!--<field name="model">product.product</field>-->
+        <!--<field name="inherit_id" ref="product.product_normal_form_view"/>-->
+        <!--<field name="arch" type="xml">-->
 
-        <xpath expr='//field[@name="default_code"]' position="after">
-                <field name="old_code"/>
-        </xpath>
+        <!--<xpath expr='//field[@name="default_code"]' position="after">-->
+                <!--<field name="old_code"/>-->
+        <!--</xpath>-->
 
-        </field>
-    </record>
+        <!--</field>-->
+    <!--</record>-->
 
     <record id="product_product_tree_injerit_on_gp_view" model="ir.ui.view">
         <field name="name">product.product.tree</field>
@@ -135,7 +135,7 @@
         </xpath>
         <xpath expr='//tree/field[@name="attribute_value_ids"]' position="before">
                 <field name="default_code"/>
-                <field name="old_code"/>
+                <!--<field name="old_code"/>-->
         </xpath>
 
         </field>
