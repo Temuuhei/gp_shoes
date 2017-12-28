@@ -201,9 +201,10 @@ class ProductSaleReport(models.TransientModel):
                 data['cost'] = each_data['cost']
                 data['quantity'] = each_data['quantity']
                 data['firstQty'] = each_data['firstqty']
-                data['dummyFirstQty'] = str(each_data['size'])+": "+str(each_data['firstqty'])
+                data['dummyFirstQty'] = str(each_data['size'])+": "+str(int(each_data['firstqty']))
                 data['price'] = each_data['price']
                 data['size'] = each_data['size']
+                data['total_size_qty_detail'] = each_data['size'] +': '+ str(int(each_data['quantity']))
                 data['sub_total'] = {}
 
                 total_qty = 0
@@ -242,8 +243,8 @@ class ProductSaleReport(models.TransientModel):
                                       'product_uom_qty': 0,
                                       'out_data': outData,
                                       'in_data': inData,
-                                      'inInt': 0,
-                                      'outInt': 0}
+                                      'inInt': inInt,
+                                      'outInt': outInt}
                     if so_data:
                         for soLine in so_data:
                             dt = datetime.strptime(soLine['min_date'], '%Y-%m-%d %H:%M:%S')
@@ -295,6 +296,7 @@ class ProductSaleReport(models.TransientModel):
                         dataEachPrdDict['quantity'] += d['quantity']
                         dataEachPrdDict['firstQty'] += d['firstQty']
                         dataEachPrdDict['dummyFirstQty'] += ", "+d['dummyFirstQty'] if dataEachPrdDict['dummyFirstQty'] else d['dummyFirstQty']
+                        dataEachPrdDict['total_size_qty_detail'] += ", "+d['total_size_qty_detail'] if dataEachPrdDict['total_size_qty_detail'] else d['total_size_qty_detail']
                         dataEachPrdDict['size'] += ", "+d['size'] if dataEachPrdDict['size'] else d['size']
                         for everyDl in header_daily:
                             dataEachPrdDict[everyDl]['qty_delivered'] += d[everyDl]['qty_delivered']
@@ -376,21 +378,24 @@ class ProductSaleReport(models.TransientModel):
             coly = len(title_list)
             cola = len(title_list)
             for x in range(0, len(header_daily)):
-                cola += 4
+                cola += 6
                 sheet.write_merge(rowx, rowx, coly, cola, header_daily[x], style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly, coly, 'Зарсан ш', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+1, coly+1, 'Зарсан үнэ, бэлнээр ₮', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+2, coly+2, 'Зарсан үнэ, картаар ₮', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+3, coly+3, 'Буцсан, ш', style_title)
-                sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'Агуулахаас , ш', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'Буцсан, тэмдэглэл', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+5, coly+5, 'Агуулахаас, ш', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+6, coly+6, 'Агуулахаас, тэмдэглэл', style_title)
                 cola += 1
                 coly = cola
-            sheet.write_merge(rowx, rowx, coly, cola+4, 'Нийт', style_title)
+            sheet.write_merge(rowx, rowx, coly, cola+5, 'Нийт', style_title)
             sheet.write(rowx + 1, coly, 'Зарсан, ш', style_title)
             sheet.write(rowx + 1, coly + 1, 'Буцаалт, ш', style_title)
             sheet.write(rowx + 1, coly + 2, 'Агуулахаас , Ш', style_title)
             sheet.write(rowx + 1, coly + 3, 'Тоо ш', style_title)
-            sheet.write(rowx + 1, coly + 4, 'Размерууд', style_title)
+            sheet.write(rowx + 1, coly + 4, 'размерууд, ш', style_title)
+            sheet.write(rowx + 1, coly + 5, 'Борлуулсан размерууд', style_title)
         sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Үндсэн мэдээлэл', style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
@@ -410,12 +415,14 @@ class ProductSaleReport(models.TransientModel):
                     colc = len(title_list)
                     cold = len(title_list)
                     for hd in header_daily:
-                        cold += 4
+                        cold += 6
                         sheet.write(rowx, colx + colc, line[hd]['qty_delivered'])
                         sheet.write(rowx, colx + colc+1, line[hd]['cash_payment'])
                         sheet.write(rowx, colx + colc+2, line[hd]['card_payment'])
-                        sheet.write(rowx, colx + colc+3, line[hd]['out_data'])
-                        sheet.write(rowx, colx + colc+4, line[hd]['in_data'])
+                        sheet.write(rowx, colx + colc+3, line[hd]['outInt'])
+                        sheet.write(rowx, colx + colc+4, line[hd]['out_data'])
+                        sheet.write(rowx, colx + colc+5, line[hd]['inInt'])
+                        sheet.write(rowx, colx + colc+6, line[hd]['in_data'])
                         cold += 1
                         colc = cold
                     if line['sub_total']:
@@ -423,7 +430,8 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc+1, line['sub_total']['total_out'])
                         sheet.write(rowx, colx + colc+2, line['sub_total']['total_in'])
                         sheet.write(rowx, colx + colc+3, line['quantity'])
-                        sheet.write(rowx, colx + colc+4, line['sub_total']['total_size'])
+                        sheet.write(rowx, colx + colc+5, line['sub_total']['total_size'])
+                        sheet.write(rowx, colx + colc+4, line['total_size_qty_detail'])
                 rowx += 1
 
             if dailySubTotal:
@@ -438,12 +446,14 @@ class ProductSaleReport(models.TransientModel):
                 coli = len(title_list)
                 colj = len(title_list)
                 for hd in header_daily:
-                    colj += 4
+                    colj += 6
                     sheet.write(rowx+3, colx+coli, dailySubTotal[hd]['qty'], style_footer)
                     sheet.write(rowx+2, colx+coli+1, dailySubTotal[hd]['cash'], style_footer)
                     sheet.write(rowx+2, colx+coli+2, dailySubTotal[hd]['card'], style_footer)
                     sheet.write(rowx+4, colx+coli+3, dailySubTotal[hd]['out'], style_footer)
-                    sheet.write(rowx+5, colx+coli+4, dailySubTotal[hd]['in'], style_footer)
+                    sheet.write(rowx+4, colx+coli+4, '', style_footer)
+                    sheet.write(rowx+5, colx+coli+5, dailySubTotal[hd]['in'], style_footer)
+                    sheet.write(rowx+5, colx+coli+6, '', style_footer)
                     colj += 1
                     coli = colj
                 sheet.write(rowx, colx+coli, dailySubTotal['total_qty'], style_footer)
