@@ -354,7 +354,7 @@ class ProductSaleReport(models.TransientModel):
             dailySubTotal['total'] = total
 
         # define title and header
-        title_list = [('Шинэ код'), ('Бараа нэр'), ('Өнгө'), ('Үндсэн үнэ ₮'), ('Тоо, ш'), ('Зарах үнэ')]
+        title_list = [('Шинэ код'), ('Бараа нэр'), ('Размерууд'), ('Үндсэн үнэ ₮'), ('Тоо, ш'), ('Зарах үнэ')]
         colx_number = len(title_list) - 1
 
         # create header
@@ -389,7 +389,7 @@ class ProductSaleReport(models.TransientModel):
             sheet.write(rowx + 1, coly, 'Зарсан, ш', style_title)
             sheet.write(rowx + 1, coly + 1, 'Буцаалт, ш', style_title)
             sheet.write(rowx + 1, coly + 2, 'Агуулахаас , Ш', style_title)
-            sheet.write(rowx + 1, coly + 3, 'Quantity', style_title)
+            sheet.write(rowx + 1, coly + 3, 'Тоо ш', style_title)
             sheet.write(rowx + 1, coly + 4, 'Размерууд', style_title)
         sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Үндсэн мэдээлэл', style_title)
         rowx += 1
