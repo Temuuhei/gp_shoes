@@ -206,9 +206,9 @@ class ProductTemplate(models.Model):
         product_tmp_obj = self.env['product.template']
         for pro in product_obj:
             if pro.default_code and pro.product_tmpl_id:
-                float_code = int(pro.default_code)
+                # float_code = int(pro.default_code)
                 print 'Default code \n',pro.default_code
-                print 'Float Default code \n',float_code
+                # print 'Float Default code \n',float_code
                 tmp = product_tmp_obj.search([('id','=',pro.product_tmpl_id.id)])
                 if tmp and tmp.default_code == '':
                     tmp.write({'default_code':pro.default_code})
