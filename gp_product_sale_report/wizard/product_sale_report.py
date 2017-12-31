@@ -160,6 +160,13 @@ class ProductSaleReport(models.TransientModel):
                                  % (each_data['product_id'], self.stock_warehouse.id, where_date_so))
                 so_data = self._cr.dictfetchall()
 
+                where_out = ''
+                so_pickings = []
+                for so in so_data:
+                    so_pickings.append(so['stock_picking_id'])
+                if so_pickings:
+                    where_out = 'AND sp.id not in (%s)' % ', '.join(map(repr, tuple(so_pickings)))
+
                 self._cr.execute("""SELECT sp.name AS name,
                                            sp.min_date AS min_date,
                                            sm.product_uom_qty AS in_qty,
@@ -181,15 +188,12 @@ class ProductSaleReport(models.TransientModel):
                                     FROM stock_picking AS sp
                                         JOIN stock_move AS sm
                                             ON sm.picking_id = sp.id
-                                        JOIN stock_location AS sl
-                                            ON sl.id = sp.location_id
                                     WHERE sp.state = 'done'
                                           AND sp.location_id = %s
                                           AND sm.product_id = %s
-                                      %s"""
-                                 % (self.stock_warehouse.lot_stock_id.id, each_data['product_id'], where_date_sp))
+                                      %s %s """
+                                 % (self.stock_warehouse.lot_stock_id.id, each_data['product_id'], where_out, where_date_sp))
                 # AND sp.location_dest_id not in (SELECT id FROM stock_location WHERE usage = 'customer')
-
                 out_data = self._cr.dictfetchall()
 
                 # prepare data
