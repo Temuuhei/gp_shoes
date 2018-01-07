@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+        <record id="view_cash_product_sale_report_tree" model="ir.ui.view">
+            <field name="name">view.cash.product.sale.report.tree</field>
+            <field name="model">cash</field>
+            <field name="inherit_id" ref="gp_shoes_sale.view_cash_tree"/>
+            <field name="arch" type="xml">
+                <field name="type" position="after">
+                    <field name="warehouse"/>
+                </field>
+            </field>
+        </record>
+        <record id="view_cash_product_sale_report_form" model="ir.ui.view">
+            <field name="name">view.cash.product.sale.report.form</field>
+            <field name="model">cash</field>
+            <field name="inherit_id" ref="gp_shoes_sale.view_cash_form"/>
+            <field name="arch" type="xml">
+                <field name="type" position="after">
+                    <field name="warehouse"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>
