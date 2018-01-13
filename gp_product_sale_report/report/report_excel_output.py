@@ -6,7 +6,7 @@ from openerp import models, fields, api
 from openerp.tools.translate import _, translate
 
 class ReportExcelOutput(models.TransientModel):
-    _name = 'report.excel.output'
+    _name = 'report.excel.output.extend'
 
     filename = fields.Char('File name', readonly=True)
     filedata = fields.Binary('File data', readonly=True)
@@ -36,7 +36,7 @@ class ReportExcelOutput(models.TransientModel):
             'name': form_title,
             'view_type': 'form',
             'view_mode': 'form',
-            'res_model': 'report.excel.output',
+            'res_model': 'report.excel.output.extend',
             'res_id': self.id,
             'views': [(form_id, 'form')],
             'context': self.env.context,

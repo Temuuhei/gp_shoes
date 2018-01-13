@@ -278,7 +278,7 @@ class ProductSaleReport(models.TransientModel):
         sheet = book.add_sheet(report_name)
 
         # create report object
-        report_excel_output = self.env['report.excel.output'].with_context(filename_prefix='ProductSaleReport', form_title=report_name).create({})
+        report_excel_output = self.env['report.excel.output.extend'].with_context(filename_prefix='ProductSaleReport', form_title=report_name).create({})
 
         rowx = 0
         colx = 0
