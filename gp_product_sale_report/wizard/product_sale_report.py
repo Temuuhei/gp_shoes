@@ -140,6 +140,7 @@ class ProductSaleReport(models.TransientModel):
                                            sp.origin AS origin,
                                            so.procurement_group_id AS procurement_group_id,
                                            sp.min_date AS min_date,
+                                           so.confirmation_date AS confirmation_date,
                                            sol.qty_delivered AS qty_delivered,
                                            sol.cash_payment AS cash_payment,
                                            sol.card_payment AS card_payment,
@@ -251,7 +252,7 @@ class ProductSaleReport(models.TransientModel):
                                       'outInt': outInt}
                     if so_data:
                         for soLine in so_data:
-                            dt = datetime.strptime(soLine['min_date'], '%Y-%m-%d %H:%M:%S')
+                            dt = datetime.strptime(soLine['confirmation_date'], '%Y-%m-%d %H:%M:%S')
                             dt = dt.replace(hour=00, minute=00, second=00)
                             if soLine['order_name'] == soLine['origin'] and dt == dataDateTime and soLine['product_id'] == each_data['product_id']:
                                 data[dataDate]['qty_delivered'] += soLine['qty_delivered']
