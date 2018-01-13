@@ -51,7 +51,7 @@ class ProductSaleReport(models.TransientModel):
                                    pt.default_code_integer AS codeint,
                                    pt.name AS name,
                                    pt.id AS color,
-                                   pt.standard_price_report AS cost,
+                                   pt.standard_price AS cost,
                                    COALESCE(SUM(sq.qty), 0) AS quantity,
                                    pt.list_price AS price,
                                    pp.product_tmpl_id AS tmpl,
