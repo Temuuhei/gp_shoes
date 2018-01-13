@@ -3,7 +3,7 @@
     <data>
         <record id="report_excel_output_view_form" model="ir.ui.view">
             <field name="name">report.excel.output.form</field>
-            <field name="model">report.excel.output</field>
+            <field name="model">report.excel.output.extend</field>
             <field name="arch" type="xml">
 	            <form string="Report Output">
 	                <separator string="Processing done" colspan="2"/>

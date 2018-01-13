@@ -9,8 +9,7 @@ This module adds product sale report by warehouse.
 ===========================================================================
     """,
     'website': False,
-    'depends': ['report',
-                'gp_shoes_sale',
+    'depends': ['gp_shoes_sale',
                 'gp_shoes_warehouse'],
     'data': [
         'wizard/product_sale_report_view.xml',
