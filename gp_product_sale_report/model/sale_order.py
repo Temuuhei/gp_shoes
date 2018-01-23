@@ -14,6 +14,8 @@ class SaleOrder(models.Model):
     payment_term_id = fields.Many2one('account.payment.term', string='Payment Term', required=False,
                                       oldname='payment_term',
                                       default=_default_payment_term)
+    discount_manager = fields.Many2one('res.users', 'Discount manager',
+                                       domain=lambda self: [('groups_id', '=', self.env.ref('gp_product_sale_report.group_discount_manager').id)])
 
     @api.multi
     def custom_confirm(self):
