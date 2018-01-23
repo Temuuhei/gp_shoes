@@ -7,15 +7,31 @@ from odoo.exceptions import UserError
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    def _default_payment_term(self):
+        payment_term_id = self.env['account.payment.term'].search([('default','=',True)], limit=1)
+        return payment_term_id
+
+    payment_term_id = fields.Many2one('account.payment.term', string='Payment Term', required=False,
+                                      oldname='payment_term',
+                                      default=_default_payment_term)
+
     @api.multi
     def custom_confirm(self):
         for order in self:
             cash_amount = 0
             card_amount = 0
+            payment_type = 'mixed'
             cashes = self.env['cash'].search([('warehouse', '=', order.warehouse_id.id)])
             for order_line in order.order_line:
                 cash_amount += order_line.cash_payment
                 card_amount += order_line.card_payment
+
+            if cash_amount and not card_amount:
+                payment_type = 'cash'
+            elif card_amount and not cash_amount:
+                payment_type = 'card'
+            elif cash_amount and card_amount:
+                payment_type = 'mixed'
 
             if cashes:
                 for cash in cashes:
@@ -24,7 +40,7 @@ class SaleOrder(models.Model):
                             'parent_id': cash.id,
                             'amount': cash_amount,
                             'remaining_amount': cash.amount,
-                            'description': order.name + u' дугаартай борлуулалтаас [%s]' % order.id + u' [' + order.payment_term_id.type + u']',
+                            'description': order.name + u' дугаартай борлуулалтаас [%s]' % order.id + u' [' + payment_type + u']',
                             'date': datetime.today(),
                             'user': self.env.uid,
                             'action': 'in'
@@ -34,7 +50,7 @@ class SaleOrder(models.Model):
                             'parent_id': cash.id,
                             'amount': card_amount,
                             'remaining_amount': cash.amount,
-                            'description': order.name + u' дугаартай борлуулалтаас [%s]' % order.id + u' [' + order.payment_term_id.type + u']',
+                            'description': order.name + u' дугаартай борлуулалтаас [%s]' % order.id + u' [' + payment_type + u']',
                             'date': datetime.today(),
                             'user': self.env.uid,
                             'action': 'in'
