@@ -16,6 +16,7 @@ This module adds product sale report by warehouse.
         'report/report_excel_output_view.xml',
         'view/sale_order_line_view.xml',
         'view/cash.xml',
+        'security/group.xml',
     ],
     'auto_install': True,
 }
