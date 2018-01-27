@@ -216,6 +216,7 @@ class ProductSaleReport(models.TransientModel):
                 total_size = ''
                 total_in = 0
                 total_out = 0
+                total_benefit = 0
                 for eachDate in range(0, daily):
                     inInt = 0
                     outInt = 0
@@ -269,12 +270,14 @@ class ProductSaleReport(models.TransientModel):
                                 # total
                                 total_size = each_data['size']
                                 total_qty += soLine['qty_delivered']
+                                total_benefit += (soLine['cash_payment'] + soLine['card_payment']) - each_data_cost
+
                 data['sub_total']['total_in'] = total_in
                 data['sub_total']['total_out'] = total_out
                 data['sub_total']['total_qty'] = total_qty
                 data['sub_total']['total_size'] = total_size
+                data['sub_total']['total_benefit'] = total_benefit
                 dataLine.append(data)
-
         # create workbook
         book = xlwt.Workbook(encoding='utf8')
         # create sheet
@@ -311,6 +314,7 @@ class ProductSaleReport(models.TransientModel):
                             dataEachPrdDict[everyDl]['qty_delivered'] += d[everyDl]['qty_delivered']
                             dataEachPrdDict[everyDl]['cash_payment'] += d[everyDl]['cash_payment']
                             dataEachPrdDict[everyDl]['card_payment'] += d[everyDl]['card_payment']
+                            dataEachPrdDict[everyDl]['benefit'] += d[everyDl]['benefit']
                             dataEachPrdDict[everyDl]['out_data'] += ",\n"+d[everyDl]['out_data'] if dataEachPrdDict[everyDl]['out_data'] else d[everyDl]['out_data']
                             dataEachPrdDict[everyDl]['in_data'] += ",\n"+d[everyDl]['in_data'] if dataEachPrdDict[everyDl]['in_data'] else d[everyDl]['in_data']
                             dataEachPrdDict[everyDl]['inInt'] += d[everyDl]['inInt']
@@ -319,6 +323,7 @@ class ProductSaleReport(models.TransientModel):
                         dataEachPrdDict['sub_total']['total_in'] += d['sub_total']['total_in']
                         dataEachPrdDict['sub_total']['total_out'] += d['sub_total']['total_out']
                         dataEachPrdDict['sub_total']['total_size'] += ", "+d['sub_total']['total_size'] if dataEachPrdDict['sub_total']['total_size'] else d['sub_total']['total_size']
+                        dataEachPrdDict['sub_total']['total_benefit'] += d['sub_total']['total_benefit']
                     else:
                         dataEachPrdList.append(dataEachPrdDict)
                         dataEachPrdDict = d
@@ -329,7 +334,6 @@ class ProductSaleReport(models.TransientModel):
                 if lenb == lena:
                     dataEachPrdList.append(dataEachPrdDict)
             dataLine = sorted(dataEachPrdList, key=lambda k: k['codeInt'])
-
             # Daily total
             dailySubTotal = {'ttlQuant': 0,'ttlFirstQuant': 0}
             dailyTotal = {}
@@ -338,11 +342,13 @@ class ProductSaleReport(models.TransientModel):
                 dailySubTotal[d] = {'qty': 0,
                                     'cash': 0,
                                     'card': 0,
+                                    'benefit': 0,
                                     'in': 0,
                                     'out': 0}
             ttl_out = 0
             ttl_in = 0
             ttl_qty = 0
+            ttl_benefit = 0
             total = 0
             for l in dataLine:
                 outInt = 0
@@ -353,16 +359,19 @@ class ProductSaleReport(models.TransientModel):
                     dailySubTotal[d]['qty'] += l[d]['qty_delivered']
                     dailySubTotal[d]['cash'] += l[d]['cash_payment']
                     dailySubTotal[d]['card'] += l[d]['card_payment']
+                    dailySubTotal[d]['benefit'] += l[d]['benefit']
                     dailySubTotal[d]['in'] += l[d]['inInt']
                     dailySubTotal[d]['out'] += l[d]['outInt']
                     total += l[d]['cash_payment'] + l[d]['card_payment']
                 ttl_out += l['sub_total']['total_out']
                 ttl_in += l['sub_total']['total_in']
                 ttl_qty += l['sub_total']['total_qty']
+                ttl_benefit += l['sub_total']['total_benefit']
             dailySubTotal['total_out'] = ttl_out
             dailySubTotal['total_in'] = ttl_in
             dailySubTotal['total_qty'] = ttl_qty
             dailySubTotal['total'] = total
+            dailySubTotal['total_benefit'] = ttl_benefit
 
         # define title and header
         title_list = [('Шинэ код'), ('Бараа нэр'), ('Размерууд'), ('Үндсэн үнэ ₮'), ('Тоо, ш'), ('Зарах үнэ')]
@@ -396,7 +405,7 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'Буцсан, тэмдэглэл', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+5, coly+5, 'Агуулахаас, ш', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+6, coly+6, 'Агуулахаас, тэмдэглэл', style_title)
-                sheet.write_merge(rowx+1, rowx+1, coly+7, coly+7, 'one', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+7, coly+7, 'Ашиг', style_title)
                 cola += 1
                 coly = cola
             sheet.write_merge(rowx, rowx, coly, cola+5, 'Нийт', style_title)
@@ -406,6 +415,7 @@ class ProductSaleReport(models.TransientModel):
             sheet.write(rowx + 1, coly + 3, 'Тоо ш', style_title)
             sheet.write(rowx + 1, coly + 4, 'размерууд, ш', style_title)
             sheet.write(rowx + 1, coly + 5, 'Борлуулсан размерууд', style_title)
+            sheet.write(rowx + 1, coly + 6, 'Нийт ашиг', style_title)
         sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Үндсэн мэдээлэл', style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
@@ -443,6 +453,7 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc+3, line['quantity'])
                         sheet.write(rowx, colx + colc+5, line['sub_total']['total_size'])
                         sheet.write(rowx, colx + colc+4, line['total_size_qty_detail'])
+                        sheet.write(rowx, colx + colc+6, line['sub_total']['total_benefit'])
                 rowx += 1
 
             if dailySubTotal:
