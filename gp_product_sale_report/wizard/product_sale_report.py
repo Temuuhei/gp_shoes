@@ -23,7 +23,7 @@ class ProductSaleReport(models.TransientModel):
     stock_warehouse = fields.Many2one('stock.warehouse', 'Stock warehouse', required=True)
     date_from = fields.Date('Date from', required=True)
     date_until = fields.Date('Date until', required=True)
-    show_cost = fields.Boolean('Show cose')
+    show_cost = fields.Boolean('Show cost')
 
     @api.multi
     def export_report(self):
