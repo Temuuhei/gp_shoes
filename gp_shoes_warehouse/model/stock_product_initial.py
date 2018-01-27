@@ -146,7 +146,9 @@ class StockProductInitial(models.TransientModel):
                                 'active': True,
                                 'valuation': product_valuation,
                                 'default_code': code,
-                                'standart_price': row[5].value or 9999,
+                                'standard_price': row[5].value or 9999,
+                                'barcode': row[6].value or 999999,
+                                'new_standard_price': row[7].value or 9999,
                                 'attribute_value_ids': [(6, 0, att_ids)],
                             })
                         if row[3].value:
@@ -171,6 +173,7 @@ class StockProductInitial(models.TransientModel):
                             })
                             inventory.action_done()
                             print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
+
                     else:
                         print'Зүгээр БАРААНЫ ТОО ХЭМЖЭЭГ ӨӨРЧИЛЖ БАЙНА ------------------------------',row
                         att_ids = []
@@ -287,7 +290,7 @@ class StockProductInitial(models.TransientModel):
                                 'active': True,
                                 'valuation': product_valuation,
                                 'default_code': code,
-                                'standart_price': row[1].value or 9999,
+                                'standard_price': row[1].value or 9999,
                                 'attribute_value_ids': [(6, 0, new_att_ids)],
                             })
                             if row[3].value is not None:
@@ -397,7 +400,9 @@ class StockProductInitial(models.TransientModel):
                                 'active': True,
                                 'valuation': product_valuation,
                                 'default_code': code,
-                                'standart_price': row[5].value or 9999,
+                                'new_standard_price': row[5].value or 9999,
+                                'barcode': row[6].value or 9999,
+                                'old_code': row[7].value or 9999,
                                 'attribute_value_ids': [(6, 0, att_ids)],
                             })
                             print'new product: %s'%product_id
