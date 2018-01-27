@@ -33,6 +33,7 @@
                     <field name="product_id"/>
                     <field digits="(14, 0)" name="product_qty"/>
                     <field digits="(14, 0)" name="virtual_available"/>
+                    <field digits="(14, 0)" name="sent_product_qty"/>
                     <field name="name"/>
                     <field name="date"/>
                     <field name="state"/>

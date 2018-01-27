@@ -46,6 +46,7 @@ class DailyOrder(models.Model):
         states={'draft': [('readonly', False)]}, domain="[('usage', '=', 'internal')]")
     origin = fields.Char('Үүсэл')
     active = fields.Boolean('Archive')
+    sent_product_qty = fields.Float ('Өөр агуулах руу явуулсан тоо хэмжээ')
 
     def to_archive(self):
         self.update({'active': False})
@@ -159,7 +160,14 @@ class SaleOrder(models.Model):
             if self.order_line:
                 for line in self.order_line:
                     qty = 0
+                    already_sent_qty = 0
+                    sent_do = []
                     main_wh = self.env['stock.warehouse'].search([('main_warehouse','=',True)])[0]
+                    do_obj = self.env['daily.order'].search([('state','=','pending'),('product_id','=',line.product_id.id)])
+                    if do_obj:
+                        for d in do_obj:
+                            already_sent_qty += 1
+                            sent_do.append(d.name)
                     if main_wh:
                         qty_obj = self.env['stock.quant'].search([('product_id', '=', line.product_id.id),
                                                                   ('location_id','=', main_wh.lot_stock_id.id)])
@@ -172,6 +180,8 @@ class SaleOrder(models.Model):
                             'date': self.date_order,
                             'state': 'draft',
                             'product_qty': qty,
+                            'sent_product_qty': already_sent_qty,
+                            'sent_daily_order': sent_do,
                             'active': True,
                             'name':u'%s-ны %s Дугаартай Борлуулалтын захиалгаас шууд захиалга үүсэв'%(self.date_order, self.name)
 

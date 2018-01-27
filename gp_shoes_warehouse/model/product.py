@@ -215,6 +215,10 @@ class ProductTemplate(models.Model):
                     tmp.write({'default_code':pro.default_code})
                 else:
                     rm = product_obj.search ([('default_code','=','')])
+                if not pro.attribute_value_ids:
+                    print 'Идэвхигүй болгож буй бараа -----',pro.name
+                    pro.write({'active': False})
+
                     # if rm:
                     #      rm.unlink()
 
