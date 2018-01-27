@@ -51,7 +51,7 @@ class ProductSaleReport(models.TransientModel):
                                    pt.default_code_integer AS codeint,
                                    pt.name AS name,
                                    pt.id AS color,
-                                   pt.standard_price AS cost,
+                                   pp.new_standard_price AS cost,
                                    COALESCE(SUM(sq.qty), 0) AS quantity,
                                    pt.list_price AS price,
                                    pp.product_tmpl_id AS tmpl,
@@ -245,6 +245,7 @@ class ProductSaleReport(models.TransientModel):
                                       'picking_name': '',
                                       'cash_payment': 0,
                                       'card_payment': 0,
+                                      'benefit': 0,
                                       'product_uom_qty': 0,
                                       'out_data': outData,
                                       'in_data': inData,
@@ -255,10 +256,13 @@ class ProductSaleReport(models.TransientModel):
                             dt = datetime.strptime(soLine['confirmation_date'], '%Y-%m-%d %H:%M:%S')
                             dt = dt.replace(hour=00, minute=00, second=00)
                             if soLine['order_name'] == soLine['origin'] and dt == dataDateTime and soLine['product_id'] == each_data['product_id']:
+                                each_data_cost = each_data['cost'] if each_data['cost'] else 0
+                                each_data_cost = each_data_cost * soLine['qty_delivered']
                                 data[dataDate]['qty_delivered'] += soLine['qty_delivered']
                                 data[dataDate]['picking_name'] = soLine['picking_name']
                                 data[dataDate]['cash_payment'] += soLine['cash_payment']
                                 data[dataDate]['card_payment'] += soLine['card_payment']
+                                data[dataDate]['benefit'] += (soLine['cash_payment'] + soLine['card_payment']) - each_data_cost
                                 data[dataDate]['product_uom_qty'] += soLine['product_uom_qty']
                                 data[dataDate]['inInt'] = inInt
                                 data[dataDate]['outInt'] = outInt
@@ -383,7 +387,7 @@ class ProductSaleReport(models.TransientModel):
             coly = len(title_list)
             cola = len(title_list)
             for x in range(0, len(header_daily)):
-                cola += 6
+                cola += 7
                 sheet.write_merge(rowx, rowx, coly, cola, header_daily[x], style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly, coly, 'Зарсан ш', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+1, coly+1, 'Зарсан үнэ, бэлнээр ₮', style_title)
@@ -392,6 +396,7 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'Буцсан, тэмдэглэл', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+5, coly+5, 'Агуулахаас, ш', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+6, coly+6, 'Агуулахаас, тэмдэглэл', style_title)
+                sheet.write_merge(rowx+1, rowx+1, coly+7, coly+7, 'one', style_title)
                 cola += 1
                 coly = cola
             sheet.write_merge(rowx, rowx, coly, cola+5, 'Нийт', style_title)
@@ -420,7 +425,7 @@ class ProductSaleReport(models.TransientModel):
                     colc = len(title_list)
                     cold = len(title_list)
                     for hd in header_daily:
-                        cold += 6
+                        cold += 7
                         sheet.write(rowx, colx + colc, line[hd]['qty_delivered'])
                         sheet.write(rowx, colx + colc+1, line[hd]['cash_payment'])
                         sheet.write(rowx, colx + colc+2, line[hd]['card_payment'])
@@ -428,6 +433,7 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc+4, line[hd]['out_data'])
                         sheet.write(rowx, colx + colc+5, line[hd]['inInt'])
                         sheet.write(rowx, colx + colc+6, line[hd]['in_data'])
+                        sheet.write(rowx, colx + colc+7, line[hd]['benefit'])
                         cold += 1
                         colc = cold
                     if line['sub_total']:
