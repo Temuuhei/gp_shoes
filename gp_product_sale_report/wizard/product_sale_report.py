@@ -464,11 +464,12 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write(rowx+3, colx, _("Daily Sale Quantity: "), style_footer)
                 sheet.write(rowx+4, colx, _("Daily warehouse out: "), style_footer)
                 sheet.write(rowx+5, colx, _("Daily warehouse in: "), style_footer)
+                sheet.write(rowx+6, colx, _("Өдрийн ашиг: "), style_footer)
 
                 coli = len(title_list)
                 colj = len(title_list)
                 for hd in header_daily:
-                    colj += 6
+                    colj += 7
                     sheet.write(rowx+3, colx+coli, dailySubTotal[hd]['qty'], style_footer)
                     sheet.write(rowx+2, colx+coli+1, dailySubTotal[hd]['cash'], style_footer)
                     sheet.write(rowx+2, colx+coli+2, dailySubTotal[hd]['card'], style_footer)
@@ -476,6 +477,7 @@ class ProductSaleReport(models.TransientModel):
                     sheet.write(rowx+4, colx+coli+4, '', style_footer)
                     sheet.write(rowx+5, colx+coli+5, dailySubTotal[hd]['in'], style_footer)
                     sheet.write(rowx+5, colx+coli+6, '', style_footer)
+                    sheet.write(rowx+6, colx+coli+7, dailySubTotal[hd]['benefit'], style_footer)
                     colj += 1
                     coli = colj
                 sheet.write(rowx, colx+coli, dailySubTotal['total_qty'], style_footer)
@@ -484,6 +486,7 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write(rowx, colx+coli+3, dailySubTotal['ttlQuant'], style_footer)
                 sheet.write(rowx+2, colx+coli+1, _('Total: '), style_footer)
                 sheet.write(rowx+2, colx+coli+2, dailySubTotal['total'], style_footer)
+                sheet.write(rowx+6, colx+coli+6, dailySubTotal['total_benefit'], style_footer)
 
         # prepare file data
         io_buffer = StringIO()
