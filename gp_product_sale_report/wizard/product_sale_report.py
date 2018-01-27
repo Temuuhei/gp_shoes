@@ -23,6 +23,7 @@ class ProductSaleReport(models.TransientModel):
     stock_warehouse = fields.Many2one('stock.warehouse', 'Stock warehouse', required=True)
     date_from = fields.Date('Date from', required=True)
     date_until = fields.Date('Date until', required=True)
+    show_cost = fields.Boolean('Show cose')
 
     @api.multi
     def export_report(self):
@@ -56,7 +57,9 @@ class ProductSaleReport(models.TransientModel):
                                    pt.list_price AS price,
                                    pp.product_tmpl_id AS tmpl,
                                    pt.id AS template,
-                                   coalesce((SELECT name FROM product_attribute_value pav 
+                                   pp.barcode AS barcode,
+                                   pp.old_code AS main_price,
+                                   coalesce((SELECT name FROM product_attribute_value pav
                                         JOIN product_attribute_value_product_product_rel pavr 
                                             ON pavr.product_attribute_value_id = pav.id 
                                     WHERE pavr.product_product_id= pp.id
@@ -209,6 +212,8 @@ class ProductSaleReport(models.TransientModel):
                 data['dummyFirstQty'] = str(each_data['size'])+": "+str(int(each_data['firstqty']))
                 data['price'] = each_data['price']
                 data['size'] = each_data['size']
+                data['barcode'] = each_data['barcode']
+                data['main_price'] = each_data['main_price']
                 data['total_size_qty_detail'] = each_data['size'] +': '+ str(int(each_data['quantity']))
                 data['sub_total'] = {}
 
@@ -307,6 +312,8 @@ class ProductSaleReport(models.TransientModel):
                     if template == d['template']:
                         dataEachPrdDict['quantity'] += d['quantity']
                         dataEachPrdDict['firstQty'] += d['firstQty']
+                        dataEachPrdDict['barcode'] = d['barcode']
+                        dataEachPrdDict['main_price'] += d['main_price'] if d['main_price'] else 0
                         dataEachPrdDict['dummyFirstQty'] += ", "+d['dummyFirstQty'] if dataEachPrdDict['dummyFirstQty'] else d['dummyFirstQty']
                         dataEachPrdDict['total_size_qty_detail'] += ", "+d['total_size_qty_detail'] if dataEachPrdDict['total_size_qty_detail'] else d['total_size_qty_detail']
                         dataEachPrdDict['size'] += ", "+d['size'] if dataEachPrdDict['size'] else d['size']
@@ -335,7 +342,7 @@ class ProductSaleReport(models.TransientModel):
                     dataEachPrdList.append(dataEachPrdDict)
             dataLine = sorted(dataEachPrdList, key=lambda k: k['codeInt'])
             # Daily total
-            dailySubTotal = {'ttlQuant': 0,'ttlFirstQuant': 0}
+            dailySubTotal = {'ttlQuant': 0, 'ttlFirstQuant': 0, 'ttlMainPrice': 0}
             dailyTotal = {}
             for d in header_daily:
                 # total prepare empty
@@ -355,6 +362,7 @@ class ProductSaleReport(models.TransientModel):
                 inInt = 0
                 dailySubTotal['ttlQuant'] += l['quantity']
                 dailySubTotal['ttlFirstQuant'] += l['firstQty']
+                dailySubTotal['ttlMainPrice'] += l['main_price'] if l['main_price'] else 0
                 for d in header_daily:
                     dailySubTotal[d]['qty'] += l[d]['qty_delivered']
                     dailySubTotal[d]['cash'] += l[d]['cash_payment']
@@ -374,7 +382,10 @@ class ProductSaleReport(models.TransientModel):
             dailySubTotal['total_benefit'] = ttl_benefit
 
         # define title and header
-        title_list = [('Шинэ код'), ('Бараа нэр'), ('Размерууд'), ('Үндсэн үнэ ₮'), ('Тоо, ш'), ('Зарах үнэ')]
+        if self.show_cost:
+            title_list = [('Шинэ код'), ('Бараа нэр'), ('Баркод'), ('Үндсэн үнэ ₮'), ('Размерууд'), ('Өртөг үнэ ₮'), ('Тоо, ш'), ('Зарах үнэ')]
+        else:
+            title_list = [('Шинэ код'), ('Бараа нэр'), ('Размерууд'), ('Үндсэн үнэ ₮'), ('Тоо, ш'), ('Зарах үнэ')]
         colx_number = len(title_list) - 1
 
         # create header
@@ -396,7 +407,10 @@ class ProductSaleReport(models.TransientModel):
             coly = len(title_list)
             cola = len(title_list)
             for x in range(0, len(header_daily)):
-                cola += 7
+                if self.show_cost:
+                    cola += 7
+                else:
+                    cola += 6
                 sheet.write_merge(rowx, rowx, coly, cola, header_daily[x], style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly, coly, 'Зарсан ш', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+1, coly+1, 'Зарсан үнэ, бэлнээр ₮', style_title)
@@ -405,17 +419,22 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write_merge(rowx+1, rowx+1, coly+4, coly+4, 'Буцсан, тэмдэглэл', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+5, coly+5, 'Агуулахаас, ш', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+6, coly+6, 'Агуулахаас, тэмдэглэл', style_title)
-                sheet.write_merge(rowx+1, rowx+1, coly+7, coly+7, 'Ашиг', style_title)
+                if self.show_cost:
+                    sheet.write_merge(rowx+1, rowx+1, coly+7, coly+7, 'Ашиг', style_title)
                 cola += 1
                 coly = cola
-            sheet.write_merge(rowx, rowx, coly, cola+5, 'Нийт', style_title)
+            if self.show_cost:
+                sheet.write_merge(rowx, rowx, coly, cola+6, 'Нийт', style_title)
+            else:
+                sheet.write_merge(rowx, rowx, coly, cola+5, 'Нийт', style_title)
             sheet.write(rowx + 1, coly, 'Зарсан, ш', style_title)
             sheet.write(rowx + 1, coly + 1, 'Буцаалт, ш', style_title)
             sheet.write(rowx + 1, coly + 2, 'Агуулахаас , Ш', style_title)
             sheet.write(rowx + 1, coly + 3, 'Тоо ш', style_title)
             sheet.write(rowx + 1, coly + 4, 'размерууд, ш', style_title)
             sheet.write(rowx + 1, coly + 5, 'Борлуулсан размерууд', style_title)
-            sheet.write(rowx + 1, coly + 6, 'Нийт ашиг', style_title)
+            if self.show_cost:
+                sheet.write(rowx + 1, coly + 6, 'Нийт ашиг', style_title)
         sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Үндсэн мэдээлэл', style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
@@ -425,17 +444,30 @@ class ProductSaleReport(models.TransientModel):
         num = 0
         if dataLine:
             for line in dataLine:
-                sheet.write(rowx, colx, line['code'])
-                sheet.write(rowx, colx + 1, line['product'])
-                sheet.write(rowx, colx + 2, line['dummyFirstQty'])
-                sheet.write(rowx, colx + 3, line['cost'])
-                sheet.write(rowx, colx + 4, line['firstQty'])
-                sheet.write(rowx, colx + 5, line['price'])
+                if self.show_cost:
+                    sheet.write(rowx, colx, line['code'])
+                    sheet.write(rowx, colx + 1, line['product'])
+                    sheet.write(rowx, colx + 2, line['barcode'])
+                    sheet.write(rowx, colx + 3, line['main_price'])
+                    sheet.write(rowx, colx + 4, line['dummyFirstQty'])
+                    sheet.write(rowx, colx + 5, line['cost'])
+                    sheet.write(rowx, colx + 6, line['firstQty'])
+                    sheet.write(rowx, colx + 7, line['price'])
+                else:
+                    sheet.write(rowx, colx, line['code'])
+                    sheet.write(rowx, colx + 1, line['product'])
+                    sheet.write(rowx, colx + 2, line['dummyFirstQty'])
+                    sheet.write(rowx, colx + 3, line['main_price'])
+                    sheet.write(rowx, colx + 4, line['firstQty'])
+                    sheet.write(rowx, colx + 5, line['price'])
                 if header_daily:
                     colc = len(title_list)
                     cold = len(title_list)
                     for hd in header_daily:
-                        cold += 7
+                        if self.show_cost:
+                            cold += 7
+                        else:
+                            cold += 6
                         sheet.write(rowx, colx + colc, line[hd]['qty_delivered'])
                         sheet.write(rowx, colx + colc+1, line[hd]['cash_payment'])
                         sheet.write(rowx, colx + colc+2, line[hd]['card_payment'])
@@ -443,7 +475,8 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc+4, line[hd]['out_data'])
                         sheet.write(rowx, colx + colc+5, line[hd]['inInt'])
                         sheet.write(rowx, colx + colc+6, line[hd]['in_data'])
-                        sheet.write(rowx, colx + colc+7, line[hd]['benefit'])
+                        if self.show_cost:
+                            sheet.write(rowx, colx + colc+7, line[hd]['benefit'])
                         cold += 1
                         colc = cold
                     if line['sub_total']:
@@ -453,7 +486,8 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc+3, line['quantity'])
                         sheet.write(rowx, colx + colc+5, line['sub_total']['total_size'])
                         sheet.write(rowx, colx + colc+4, line['total_size_qty_detail'])
-                        sheet.write(rowx, colx + colc+6, line['sub_total']['total_benefit'])
+                        if self.show_cost:
+                            sheet.write(rowx, colx + colc+6, line['sub_total']['total_benefit'])
                 rowx += 1
 
             if dailySubTotal:
@@ -464,12 +498,16 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write(rowx+3, colx, _("Daily Sale Quantity: "), style_footer)
                 sheet.write(rowx+4, colx, _("Daily warehouse out: "), style_footer)
                 sheet.write(rowx+5, colx, _("Daily warehouse in: "), style_footer)
-                sheet.write(rowx+6, colx, _("Өдрийн ашиг: "), style_footer)
+                if self.show_cost:
+                    sheet.write(rowx+6, colx, _("Өдрийн ашиг: "), style_footer)
 
                 coli = len(title_list)
                 colj = len(title_list)
                 for hd in header_daily:
-                    colj += 7
+                    if self.show_cost:
+                        colj += 7
+                    else:
+                        colj += 6
                     sheet.write(rowx+3, colx+coli, dailySubTotal[hd]['qty'], style_footer)
                     sheet.write(rowx+2, colx+coli+1, dailySubTotal[hd]['cash'], style_footer)
                     sheet.write(rowx+2, colx+coli+2, dailySubTotal[hd]['card'], style_footer)
@@ -477,7 +515,8 @@ class ProductSaleReport(models.TransientModel):
                     sheet.write(rowx+4, colx+coli+4, '', style_footer)
                     sheet.write(rowx+5, colx+coli+5, dailySubTotal[hd]['in'], style_footer)
                     sheet.write(rowx+5, colx+coli+6, '', style_footer)
-                    sheet.write(rowx+6, colx+coli+7, dailySubTotal[hd]['benefit'], style_footer)
+                    if self.show_cost:
+                        sheet.write(rowx+6, colx+coli+7, dailySubTotal[hd]['benefit'], style_footer)
                     colj += 1
                     coli = colj
                 sheet.write(rowx, colx+coli, dailySubTotal['total_qty'], style_footer)
@@ -486,7 +525,8 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write(rowx, colx+coli+3, dailySubTotal['ttlQuant'], style_footer)
                 sheet.write(rowx+2, colx+coli+1, _('Total: '), style_footer)
                 sheet.write(rowx+2, colx+coli+2, dailySubTotal['total'], style_footer)
-                sheet.write(rowx+6, colx+coli+6, dailySubTotal['total_benefit'], style_footer)
+                if self.show_cost:
+                    sheet.write(rowx+6, colx+coli+6, dailySubTotal['total_benefit'], style_footer)
 
         # prepare file data
         io_buffer = StringIO()
