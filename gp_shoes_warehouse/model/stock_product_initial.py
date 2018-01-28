@@ -89,6 +89,7 @@ class StockProductInitial(models.TransientModel):
                             'categ_id': self.categ_id.id,
                             'standard_price':row[5].value or 9999,
                             'list_price':row[1].value or 9999,
+                            'barcode':row[6].value or 9999,
                             'uom_id': 1,
                             'type': product_type,
                             'purchase_line_warn': 'no-message',
@@ -147,7 +148,7 @@ class StockProductInitial(models.TransientModel):
                                 'valuation': product_valuation,
                                 'default_code': code,
                                 'standard_price': row[5].value or 9999,
-                                'barcode': row[6].value or 999999,
+                                'new_barcode': row[6].value or 999999,
                                 'new_standard_price': row[7].value or 9999,
                                 'attribute_value_ids': [(6, 0, att_ids)],
                             })
@@ -344,6 +345,7 @@ class StockProductInitial(models.TransientModel):
                             'categ_id': self.categ_id.id,
                             'standard_price':row[5].value or 9999,
                             'list_price':row[1].value or 9999,
+                            'barcode':row[6].value or 9999,
                             'uom_id': 1,
                             'type': product_type,
                             'purchase_line_warn': 'no-message',
@@ -401,7 +403,7 @@ class StockProductInitial(models.TransientModel):
                                 'valuation': product_valuation,
                                 'default_code': code,
                                 'new_standard_price': row[5].value or 9999,
-                                'barcode': row[6].value or 9999,
+                                'new_barcode': row[6].value or 9999,
                                 'old_code': row[7].value or 9999,
                                 'attribute_value_ids': [(6, 0, att_ids)],
                             })

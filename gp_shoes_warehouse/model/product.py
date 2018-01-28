@@ -23,6 +23,7 @@ class ProductProduct(models.Model):
 
     old_code = fields.Float('Old price')
     new_standard_price = fields.Float('Standard price')
+    new_barcode = fields.Char('Barcode')
     # _sql_constraints = [
     #     ('old_code', 'unique(old_code)', "Another product already exists with this old code number!"),
     # ]
