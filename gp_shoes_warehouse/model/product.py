@@ -21,7 +21,7 @@ class ProductProduct(models.Model):
 
 
 
-    old_code = fields.Float('Old price')
+    old_code = fields.Float('Old price', default=0)
     new_standard_price = fields.Float('Standard price')
     new_barcode = fields.Char('Barcode')
     # _sql_constraints = [
