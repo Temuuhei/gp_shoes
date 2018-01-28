@@ -154,7 +154,7 @@ class ProductTemplate(models.Model):
              'A service is a non-material product you provide.\n'
              'A digital content is a non-material product you sell online. The files attached to the products are the one that are sold on '
              'the e-commerce such as e-books, music, pictures,... The "Digital Product" module has to be installed.')
-    barcode = fields.Char('Barcode')
+    barcode = fields.Char('Barcode', store=True)
     @api.multi
     def create_variant_ids(self):
         Product = self.env["product.product"]

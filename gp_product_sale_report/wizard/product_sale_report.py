@@ -57,7 +57,7 @@ class ProductSaleReport(models.TransientModel):
                                    pt.list_price AS price,
                                    pp.product_tmpl_id AS tmpl,
                                    pt.id AS template,
-                                   pp.barcode AS barcode,
+                                   pt.barcode AS barcode,
                                    pp.old_code AS main_price,
                                    coalesce((SELECT name FROM product_attribute_value pav
                                         JOIN product_attribute_value_product_product_rel pavr 
