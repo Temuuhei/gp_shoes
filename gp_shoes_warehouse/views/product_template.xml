@@ -13,7 +13,7 @@
             </xpath>
             <field name="type" position="after">
                 <field name="default_code"/>
-                <field name="barcode" attrs="{'invisible': [('product_variant_count', '>', 1)]}"/>
+                <field name="barcode"/>
             </field>
 
             <div name="button_box" position="inside">
@@ -93,8 +93,11 @@
             <xpath expr='//field[@name="barcode"]' position="attributes">
             <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr='//field[@name="standard_price"]' position="replace">
+            <xpath expr='//field[@name="lst_price"]' position="after">
                 <field name="new_standard_price"/>
+            </xpath>
+            <xpath expr='//field[@name="standard_price"]' position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
         </field>
     </record>
