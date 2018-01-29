@@ -313,7 +313,7 @@ class ProductSaleReport(models.TransientModel):
                         dataEachPrdDict['quantity'] += d['quantity']
                         dataEachPrdDict['firstQty'] += d['firstQty']
                         dataEachPrdDict['barcode'] = d['barcode']
-                        dataEachPrdDict['main_price'] += d['main_price'] if d['main_price'] else 0
+                        dataEachPrdDict['main_price'] = d['main_price'] if d['main_price'] else 0
                         dataEachPrdDict['dummyFirstQty'] += ", "+d['dummyFirstQty'] if dataEachPrdDict['dummyFirstQty'] else d['dummyFirstQty']
                         dataEachPrdDict['total_size_qty_detail'] += ", "+d['total_size_qty_detail'] if dataEachPrdDict['total_size_qty_detail'] else d['total_size_qty_detail']
                         dataEachPrdDict['size'] += ", "+d['size'] if dataEachPrdDict['size'] else d['size']
