@@ -15,8 +15,8 @@
                 <field name="default_code"/>
                 <field name="barcode"/>
             </field>
-            <field name="lst_price" position="after">
-              <field name="old_code"/>
+            <field name="list_price" position="after">
+              <field name="main_price"/>
             </field>
 
             <div name="button_box" position="inside">

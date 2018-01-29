@@ -58,18 +58,18 @@ class ProductSaleReport(models.TransientModel):
                                    pp.product_tmpl_id AS tmpl,
                                    pt.id AS template,
                                    pt.barcode AS barcode,
-                                   pp.old_code AS main_price,
+                                   pt.main_price AS main_price,
                                    coalesce((SELECT name FROM product_attribute_value pav
-                                        JOIN product_attribute_value_product_product_rel pavr 
-                                            ON pavr.product_attribute_value_id = pav.id 
+                                        JOIN product_attribute_value_product_product_rel pavr
+                                            ON pavr.product_attribute_value_id = pav.id
                                     WHERE pavr.product_product_id= pp.id
                                         ORDER BY pav.id ASC LIMIT 1),'') as size,
                                    (SELECT coalesce(sum(query.qty),0) as qty
-                                    FROM ((SELECT coalesce(sum(sm.product_qty),0) AS qty 
-                                           FROM stock_move sm 
-                                                JOIN product_product ppp 
+                                    FROM ((SELECT coalesce(sum(sm.product_qty),0) AS qty
+                                           FROM stock_move sm
+                                                JOIN product_product ppp
                                                     ON (pp.id=sm.product_id)
-                                           WHERE sm.state='done' 
+                                           WHERE sm.state='done'
                                                  AND sm.location_id not in %s
                                                  AND sm.location_dest_id in %s
                                                  AND ppp.id = pp.id %s
@@ -78,7 +78,7 @@ class ProductSaleReport(models.TransientModel):
                                           (SELECT -coalesce(sum(sm.product_qty),0) AS qty
                                            FROM stock_move sm
                                                 JOIN product_product ppp ON (pp.id=sm.product_id)
-                                           WHERE sm.state='done' 
+                                           WHERE sm.state='done'
                                                  AND sm.location_id in %s
                                                  AND sm.location_dest_id not in %s
                                                  AND ppp.id = pp.id %s
@@ -90,11 +90,11 @@ class ProductSaleReport(models.TransientModel):
                                 JOIN product_template AS pt
                                    ON pt.id = pp.product_tmpl_id
                             WHERE sq.location_id = %s
-                                GROUP BY pp.id, 
+                                GROUP BY pp.id,
                                    pp.default_code,
                                    pt.name,
                                    pt.list_price,
-                                   pt.id 
+                                   pt.id
                                    ORDER BY pt.id,
                                     pt.default_code_integer"""
                          % (location,location,initial_date_where,
@@ -158,8 +158,8 @@ class ProductSaleReport(models.TransientModel):
                                            ON sm.picking_id = sp.id
                                     WHERE so.state = 'sale'
                                       AND sp.state = 'done'
-                                      AND sol.product_id = %s 
-                                      AND so.warehouse_id = %s 
+                                      AND sol.product_id = %s
+                                      AND so.warehouse_id = %s
                                       %s"""
                                  % (each_data['product_id'], self.stock_warehouse.id, where_date_so))
                 so_data = self._cr.dictfetchall()

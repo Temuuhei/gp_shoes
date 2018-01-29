@@ -12,11 +12,11 @@ This module adds product sale report by warehouse.
     'depends': ['gp_shoes_sale',
                 'gp_shoes_warehouse'],
     'data': [
+        'security/group.xml',
         'wizard/product_sale_report_view.xml',
         'report/report_excel_output_view.xml',
         'view/sale_order_line_view.xml',
         'view/cash.xml',
-        'security/group.xml',
         'view/stock_picking.xml',
     ],
     'auto_install': True,
