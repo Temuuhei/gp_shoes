@@ -155,6 +155,8 @@ class ProductTemplate(models.Model):
             if product_obj:
                 for p in product_obj:
                     old_code_middle += p.old_code
+                if old_code_middle:
+                    old_code_middle = old_code_middle / len(product_obj)
             return old_code_middle
 
     type = fields.Selection([
