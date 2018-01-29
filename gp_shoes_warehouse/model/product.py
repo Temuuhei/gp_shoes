@@ -146,6 +146,17 @@ class ProductProduct(models.Model):
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
+
+    def compute_old_code(self):
+        product_env = self.env['product.product']
+        for obj in self:
+            old_code_middle = 0
+            product_obj = product_env.search([('product_tmpl_id', '=', obj.id)])
+            if product_obj:
+                for p in product_obj:
+                    old_code_middle += p.old_code
+            return old_code_middle
+
     type = fields.Selection([
         ('consu', _('Consumable')),
         ('service', _('Service')),
@@ -156,6 +167,8 @@ class ProductTemplate(models.Model):
              'A digital content is a non-material product you sell online. The files attached to the products are the one that are sold on '
              'the e-commerce such as e-books, music, pictures,... The "Digital Product" module has to be installed.')
     barcode = fields.Char('Barcode', store=True)
+    main_price = fields.Float('Main price', default=0)
+    old_code = fields.Float(compute=compute_old_code, 'Main price')
 
     _sql_constraints = [
         ('barcode_uniq', 'unique(barcode)', 'Баркод код давтагдашгүй байх ёстой !'),
