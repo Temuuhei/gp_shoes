@@ -26,7 +26,7 @@ class ProductTemplate(models.Model):
     #         res = convert_float_to_string(fts)
     #     return res
 
-    standard_price = fields.Float('Cost', store=True)
+    standard_price = fields.Float('Standart price', related='product_variant_ids.new_standard_price', store=True)
     # standard_price_report = fields.Float('Cost', compute='_compute_standard_price',
     #     inverse='_set_standard_price', search='_search_standard_price',
     #     digits=dp.get_precision('Product Price'), groups="base.group_user",

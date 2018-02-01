@@ -18,6 +18,7 @@ This module adds product sale report by warehouse.
         'view/sale_order_line_view.xml',
         'view/cash.xml',
         'view/stock_picking.xml',
+        'view/product_template.xml',
     ],
     'auto_install': True,
 }
