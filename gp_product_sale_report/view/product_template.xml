@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="product_template_gsr_form_view" model="ir.ui.view">
-        <field name="name">product.template.product.form</field>
+    <record id="product_template_sa_gsr_form_view" model="ir.ui.view">
+        <field name="name">product.template.product.form.sa</field>
         <field name="model">product.template</field>
-        <field name="mode">primary</field>
-        <field name="priority" eval="8" />
-        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="inherit_id" ref="stock_account.view_template_property_form"/>
         <field name="arch" type="xml">
-            <xpath expr='//form/sheet/notebook/page/group/group/div/field[@name="standard_price"]' position="replace">
-                <field name="standard_price"/>
-            </xpath>
+            <field name="standard_price" position="replace">
+                <field name="standard_price" attrs="{'readonly': False}" class="oe_inline"/>
+            </field>
         </field>
     </record>
 </odoo>
