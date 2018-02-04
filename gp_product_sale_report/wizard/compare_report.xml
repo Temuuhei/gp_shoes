@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_compare_product_report" model="ir.ui.view">
+            <field name="name">view.compare.product.report</field>
+            <field name="model">compare.product</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Compare product">
+                    <group>
+                        <field name="stock_warehouse"/>
+                        <field name="stock_warehouse_compare"/>
+                    </group>
+                    <footer>
+                        <button class="oe_highlight" name="export_report" string="Export" type="object"/>
+                        or
+                        <button class="oe_link" special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_compare_product_report" model="ir.actions.act_window">
+            <field name="name">Compare product</field>
+            <field name="res_model">compare.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_compare_product_report"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_compare_product_report"
+                  action="action_compare_product_report"
+                  parent="gp_shoes_warehouse.menu_report"
+                  groups="stock.group_stock_manager"/>
+    </data>
+</odoo>
