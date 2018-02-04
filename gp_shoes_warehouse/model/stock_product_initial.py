@@ -304,8 +304,10 @@ class StockProductInitial(models.TransientModel):
                                     'active': True,
                                     'valuation': product_valuation,
                                     'default_code': code,
-                                    'standard_price': row[1].value or 9999,
-                                    'attribute_value_ids': [(6, 0, new_att_ids)],
+                                    'new_barcode': row[6].value or 999999,
+                                    'new_standard_price': row[5].value or 9999,
+                                    'old_code': row[7].value or 9999,
+                                    'attribute_value_ids': [(6, 0, att_ids)]
                                 })
                                 if row[3].value is not None:
                                     print'Агуулахын код'
@@ -542,8 +544,11 @@ class StockProductInitial(models.TransientModel):
                                         'product_tmpl_id': have[0].product_tmpl_id.id,
                                         'active': True,
                                         'valuation': product_valuation,
-                                        'attribute_value_ids': [(6, 0, att_id)],
-                                        'default_code': have.default_code
+                                        'default_code': have.default_code,
+                                        'new_standard_price': row[5].value or 9999,
+                                        'new_barcode': row[6].value or 999999,
+                                        'old_code': row[7].value or 9999,
+                                        'attribute_value_ids': [(6, 0, att_ids)]
                                     })
                                     # print'\n\n product_id: %s \n\n'%product_id
 
