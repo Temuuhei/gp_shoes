@@ -148,6 +148,7 @@ class StockProductInitial(models.TransientModel):
                                         print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
                                     product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
 
+                                self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
 
                                 product_id = product_obj.create({
                                     'product_tmpl_id': product_tmpl_id.id,
@@ -409,6 +410,7 @@ class StockProductInitial(models.TransientModel):
                                         print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
                                     product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
 
+                                self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
 
                                 product_id = product_obj.create({
                                     'product_tmpl_id': product_tmpl_id.id,
