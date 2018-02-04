@@ -227,6 +227,11 @@ class StockProductInitial(models.TransientModel):
                                             inventory.action_done()
                                             print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
                                             check = False
+
+                                            have.new_standard_price = row[5].value or 9999
+                                            have.old_code = row[7].value or 9999
+                                            have.lst_price = row[1].value
+
                                             break
                             for have in have_prod:
                                 if len(have.attribute_value_ids) == len(att_ids):
@@ -492,6 +497,11 @@ class StockProductInitial(models.TransientModel):
                                         #     if product_attribute_value_size in have.attribute_value_ids:
                                         print'-------------------РАЗМЕР-------------------------',product_attribute_value_size.name
                                         prod_id = have.id
+
+                                        have.new_standard_price = row[5].value or 9999
+                                        have.old_code = row[7].value or 9999
+                                        have.lst_price = row[1].value
+
                                         break
                                     else:
                                         print'================================DIFFERENCE TRUE'
