@@ -156,6 +156,7 @@ class ProductTemplate(models.Model):
              'A digital content is a non-material product you sell online. The files attached to the products are the one that are sold on '
              'the e-commerce such as e-books, music, pictures,... The "Digital Product" module has to be installed.')
     barcode = fields.Char('Barcode', store=True)
+    barcode = fields.Char('Barcode', related='product_variant_ids.new_barcode', store=True)
     main_price = fields.Float('Main price', default=0)
 
     _sql_constraints = [
