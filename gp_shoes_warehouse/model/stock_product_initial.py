@@ -29,7 +29,7 @@ class StockProductInitial(models.TransientModel):
     location_id = fields.Many2one('stock.location', 'Warehouse', required=True, domain = "[('usage', '=', 'internal')]")
     data = fields.Binary('Excel File', required=True)
     type = fields.Selection([('default_code','Default code'),('name','Name')], 'Import type', required=True, default = 'default_code')
-    categ_id = fields.Many2one('product.category', u'Барааны ангилал', required=True)
+    categ_id = fields.Many2one('product.category', u'Барааны ангилал')
     is_initial = fields.Boolean(u'Эхний үлдэгдэл эсэх',default = False)
     # _defaults = {
     #     'type':'default_code',
@@ -88,11 +88,15 @@ class StockProductInitial(models.TransientModel):
 
                         have_prod = product_obj.search([('default_code', '=', str(row[0].value))])
                         if not have_prod:
+                            auto_categ_id = product_category_obj.create({'name': sheet.name,
+                                                                         'parent_id': self.categ_id.id if self.categ_id else None,
+                                                                         'property_cost_id': 'real'})
+
                             print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
                             values_pro_tmp = {
                                 'name': sheet.name,
                                 'default_code': row[0].value,
-                                'categ_id': self.categ_id.id,
+                                'categ_id': auto_categ_id.id,
                                 'standard_price':row[5].value or 9999,
                                 'list_price':row[1].value or 9999,
                                 'barcode':row[6].value or 9999,
@@ -158,6 +162,7 @@ class StockProductInitial(models.TransientModel):
                                     'standard_price': row[5].value or 9999,
                                     'new_barcode': row[6].value or 999999,
                                     'new_standard_price': row[7].value or 9999,
+                                    'old_code': row[7].value or 9999,
                                     'attribute_value_ids': [(6, 0, att_ids)],
                                 })
                             if row[3].value:
@@ -276,7 +281,7 @@ class StockProductInitial(models.TransientModel):
                                          'attribute_id':
                                              product_attribute_value_size[0].attribute_id.id})
                                 new_att_ids.append(product_attribute_value_size[0].id)
-                                print'GOYYYYYYYYYYYYYYYYYYYYYYYYYYYy',product_att_line.value_ids
+                                print'GOYYYYYYYYYYYYYYYYYYYYYYYYYYYy',row[7].value
                                 if product_attribute_value_size not in product_att_line.value_ids:
                                     print'Нэмэгдсэн Product Attribute Line ------------------->', product_att_line
                                     print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
@@ -319,11 +324,12 @@ class StockProductInitial(models.TransientModel):
                                         'theoretical_qty': 0,
                                         'prod_lot_id': None,
                                     }
+
                                     # print'\n\n %s \n\n' % line_data
                                     inventory_filter = 'product'
+                                    product_id.cost_method = 'real'
                                     inventory = Inventory.create({
-                                        'name': _('INV-%s: %s - %s') % (
-                                            wiz.location_id, product_id.name, product_id.default_code),
+                                        'name': _('INV-%s: %s - %s') % (wiz.location_id, product_id.name, product_id.default_code),
                                         'filter': inventory_filter,
                                         'product_id': product_id.id,
                                         'location_id': wiz.location_id.id,
@@ -354,10 +360,13 @@ class StockProductInitial(models.TransientModel):
                         have_prod = product_obj.search([('default_code', '=', str(row[0].value))])
                         if not have_prod:
                             print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
+                            auto_categ_id = product_category_obj.create({'name': sheet.name,
+                                                                         'parent_id': self.categ_id.id if self.categ_id else None,
+                                                                         'property_cost_id': 'real'})
                             values_pro_tmp = {
                                 'name': sheet.name,
                                 'default_code': str(row[0].value),
-                                'categ_id': self.categ_id.id,
+                                'categ_id': auto_categ_id.id,
                                 'standard_price':row[5].value or 9999,
                                 'list_price':row[1].value or 9999,
                                 'barcode':row[6].value or 9999,
@@ -424,6 +433,7 @@ class StockProductInitial(models.TransientModel):
                                     'old_code': row[7].value or 9999,
                                     'attribute_value_ids': [(6, 0, att_ids)],
                                 })
+                                product_id.cost_method = 'real'
                                 print'new product: %s'%product_id
                             if row[3].value:
                                 wh = Warehouse.search([('lot_stock_id', '=', self.location_id.id)])[0]

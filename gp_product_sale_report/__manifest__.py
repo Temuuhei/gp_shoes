@@ -21,5 +21,9 @@ This module adds product sale report by warehouse.
         'view/product_template.xml',
         'wizard/compare_report.xml',
     ],
-    'auto_install': True,
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+    'qweb': [],
+    'author': 'Pudge',
 }
