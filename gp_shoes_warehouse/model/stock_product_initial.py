@@ -71,6 +71,8 @@ class StockProductInitial(models.TransientModel):
             print 'Page %d, SECOND: %s' % (sheet.nrows, sheet.name)
             nrows = sheet.nrows
 
+            auto_categ_id = product_category_obj.search([('name', '=', sheet.name)], limit=1)
+
             rowi = 1
             if self.is_initial is True:
                 while rowi < nrows:
@@ -88,7 +90,8 @@ class StockProductInitial(models.TransientModel):
 
                         have_prod = product_obj.search([('default_code', '=', str(row[0].value))])
                         if not have_prod:
-                            auto_categ_id = product_category_obj.create({'name': sheet.name,
+                            if not auto_categ_id:
+                                auto_categ_id = product_category_obj.create({'name': sheet.name,
                                                                          'parent_id': self.categ_id.id if self.categ_id else None,
                                                                          'property_cost_id': 'real'})
 
@@ -360,7 +363,8 @@ class StockProductInitial(models.TransientModel):
                         have_prod = product_obj.search([('default_code', '=', str(row[0].value))])
                         if not have_prod:
                             print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
-                            auto_categ_id = product_category_obj.create({'name': sheet.name,
+                            if not auto_categ_id:
+                                auto_categ_id = product_category_obj.create({'name': sheet.name,
                                                                          'parent_id': self.categ_id.id if self.categ_id else None,
                                                                          'property_cost_id': 'real'})
                             values_pro_tmp = {
