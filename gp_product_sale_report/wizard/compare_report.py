@@ -22,10 +22,77 @@ class CompareProduct(models.TransientModel):
 
     stock_warehouse = fields.Many2one('stock.warehouse', 'Warehouse', required=True)
     stock_warehouse_compare = fields.Many2one('stock.warehouse', 'Compare warehouse', required=True)
+    # product_template = fields.Many2one('product.template', 'Product')
+    product_template = fields.Many2many('product.template', 'pt_report_rel', 'pt_id', 'cp_id')
+    product_category = fields.Many2one('product.category', 'Category')
+
+    def prepare_data(self):
+
+        where_categ = ''
+        where_pt = ''
+        if self.product_template:
+            pt_ids = []
+            for i in self.product_template:
+                pt_ids.append(i.id)
+            where_pt = "AND pt.id in (%s)" % ', '.join(map(repr, tuple(pt_ids)))
+        if self.product_category:
+            where_categ = "AND pc.id = %s" % self.product_category.id
+        print '\n'
+        print where_pt
+        query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id,
+                           coalesce(sum(sq.qty),0) AS qty, pc.name AS category, pc.id AS categ_id,
+                           coalesce((SELECT name FROM product_attribute_value pav
+                                     JOIN product_attribute_value_product_product_rel pavr
+                                     ON pavr.product_attribute_value_id = pav.id
+                                     WHERE pavr.product_product_id= pp.id
+                                     ORDER BY pav.id ASC LIMIT 1),'') as size
+                    FROM stock_quant AS sq
+                        JOIN product_product AS pp
+                           ON pp.id = sq.product_id
+                        JOIN product_template AS pt
+                           ON pt.id = pp.product_tmpl_id
+                        JOIN product_category AS pc
+                           ON pc.id = pt.categ_id
+                    WHERE sq.qty > 0
+                    AND sq.location_id = %s %s %s
+                    GROUP BY pt.id, sq.qty, pp.id, pc.id """
+
+        self.env.cr.execute(query % (str(self.stock_warehouse.lot_stock_id.id), where_pt, where_categ))
+        warehouse_data = self.env.cr.dictfetchall()
+
+        product_ids = []
+        for wd in warehouse_data:
+            product_ids.append(wd['prod_id'])
+
+        where_prods = 'AND pp.id in (%s)' % ', '.join(map(repr, tuple(product_ids)))
+        print where_prods
+
+        compare_query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id,
+                                   coalesce(sum(sq.qty),0) AS qty, pc.name AS category, pc.id AS categ_id,
+                                   coalesce((SELECT name FROM product_attribute_value pav
+                                             JOIN product_attribute_value_product_product_rel pavr
+                                             ON pavr.product_attribute_value_id = pav.id
+                                             WHERE pavr.product_product_id= pp.id
+                                             ORDER BY pav.id ASC LIMIT 1),'') as size
+                            FROM stock_quant AS sq
+                                JOIN product_product AS pp
+                                   ON pp.id = sq.product_id
+                                JOIN product_template AS pt
+                                   ON pt.id = pp.product_tmpl_id
+                                JOIN product_category AS pc
+                                   ON pc.id = pt.categ_id
+                            WHERE sq.qty > 0
+                            AND sq.location_id = %s %s %s %s
+                            GROUP BY pt.id, sq.qty, pp.id, pc.id """
+
+        self.env.cr.execute(compare_query % (str(self.stock_warehouse_compare.lot_stock_id.id), where_pt, where_categ, where_prods))
+        compare_warehouse_data = self.env.cr.dictfetchall()
+        print '\nPPPPPPPPPpp'
+        print compare_warehouse_data
 
     @api.multi
     def export_report(self):
-
+        self.prepare_data()
         # create workbook
         book = xlwt.Workbook(encoding='utf8')
         # create sheet

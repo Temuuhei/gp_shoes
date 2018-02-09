@@ -10,6 +10,8 @@
                     <group>
                         <field name="stock_warehouse"/>
                         <field name="stock_warehouse_compare"/>
+                        <field name="product_category"/>
+                        <field name="product_template"/>
                     </group>
                     <footer>
                         <button class="oe_highlight" name="export_report" string="Export" type="object"/>
