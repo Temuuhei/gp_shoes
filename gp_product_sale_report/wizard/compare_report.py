@@ -61,10 +61,11 @@ class CompareProduct(models.TransientModel):
         warehouse_data = self.env.cr.dictfetchall()
 
         product_ids = []
+        where_prods = ''
         for wd in warehouse_data:
             product_ids.append(wd['prod_id'])
-
-        where_prods = 'AND pp.id in (%s)' % ', '.join(map(repr, tuple(product_ids)))
+        if product_ids:
+            where_prods = 'AND pp.id in (%s)' % ', '.join(map(repr, tuple(product_ids)))
         print where_prods
 
         compare_query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id,
@@ -87,8 +88,10 @@ class CompareProduct(models.TransientModel):
 
         self.env.cr.execute(compare_query % (str(self.stock_warehouse_compare.lot_stock_id.id), where_pt, where_categ, where_prods))
         compare_warehouse_data = self.env.cr.dictfetchall()
-        print '\nPPPPPPPPPpp'
+        print '\nPPPPPPPPPpp 111 '
         print compare_warehouse_data
+        print '\nPPPPPPPPPpp 222 '
+        print warehouse_data
 
     @api.multi
     def export_report(self):
