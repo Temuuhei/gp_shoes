@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __builtin__ import xrange
 
+import itertools
 from odoo import api, fields, models, _
 import xlwt
 from StringIO import StringIO
@@ -39,12 +40,13 @@ class CompareProduct(models.TransientModel):
             where_categ = "AND pc.id = %s" % self.product_category.id
         print '\n'
         print where_pt
-        query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id,
-                           coalesce(sum(sq.qty),0) AS qty, pc.name AS category, pc.id AS categ_id,
+        query = """ SELECT pt.default_code_integer AS dci, pt.name AS tprod,
+                           pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
+                           coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
                            coalesce((SELECT name FROM product_attribute_value pav
                                      JOIN product_attribute_value_product_product_rel pavr
                                      ON pavr.product_attribute_value_id = pav.id
-                                     WHERE pavr.product_product_id= pp.id
+                                     WHERE pavr.product_product_id = pp.id
                                      ORDER BY pav.id ASC LIMIT 1),'') as size
                     FROM stock_quant AS sq
                         JOIN product_product AS pp
@@ -55,7 +57,8 @@ class CompareProduct(models.TransientModel):
                            ON pc.id = pt.categ_id
                     WHERE sq.qty > 0
                     AND sq.location_id = %s %s %s
-                    GROUP BY pt.id, sq.qty, pp.id, pc.id """
+                    GROUP BY pt.id, sq.qty, pp.id, pc.id
+                    ORDER BY pt.id """
 
         self.env.cr.execute(query % (str(self.stock_warehouse.lot_stock_id.id), where_pt, where_categ))
         warehouse_data = self.env.cr.dictfetchall()
@@ -68,12 +71,13 @@ class CompareProduct(models.TransientModel):
             where_prods = 'AND pp.id in (%s)' % ', '.join(map(repr, tuple(product_ids)))
         print where_prods
 
-        compare_query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id,
-                                   coalesce(sum(sq.qty),0) AS qty, pc.name AS category, pc.id AS categ_id,
+        compare_query = """ SELECT pt.default_code_integer AS dci, pt.name AS tprod,
+                                   pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
+                                   coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
                                    coalesce((SELECT name FROM product_attribute_value pav
                                              JOIN product_attribute_value_product_product_rel pavr
                                              ON pavr.product_attribute_value_id = pav.id
-                                             WHERE pavr.product_product_id= pp.id
+                                             WHERE pavr.product_product_id = pp.id
                                              ORDER BY pav.id ASC LIMIT 1),'') as size
                             FROM stock_quant AS sq
                                 JOIN product_product AS pp
@@ -84,22 +88,50 @@ class CompareProduct(models.TransientModel):
                                    ON pc.id = pt.categ_id
                             WHERE sq.qty > 0
                             AND sq.location_id = %s %s %s %s
-                            GROUP BY pt.id, sq.qty, pp.id, pc.id """
+                            GROUP BY pt.id, sq.qty, pp.id, pc.id
+                            ORDER BY pt.id """
 
         self.env.cr.execute(compare_query % (str(self.stock_warehouse_compare.lot_stock_id.id), where_pt, where_categ, where_prods))
         compare_warehouse_data = self.env.cr.dictfetchall()
-        print '\nPPPPPPPPPpp 111 '
-        print compare_warehouse_data
-        print '\nPPPPPPPPPpp 222 '
-        print warehouse_data
+
+        data = []
+        if warehouse_data:
+            dict = {}
+            for i in warehouse_data:
+                exist = False
+                for j in compare_warehouse_data:
+                    if i['prod_id'] == j['prod_id']:
+                        exist = True
+                if 'tprod_id' not in dict:
+                    dict = i
+                    dict.update({"info": str(i['size']) +": "+ str(i['qty'])})
+                    if not exist:
+                        dict.update({"not_exist_prds": i['size']})
+                    data.append(i)
+                else:
+                    if i['tprod_id'] == dict['tprod_id']:
+                        dict['size'] += ", "+i['size'] if dict['size'] else i['size']
+                        dict['qty'] += i['qty']
+                        dict['info'] += ' '+str(i['size']) +": "+ str(i['qty'])
+                        if not exist:
+                            dict['not_exist_prds'] += ', '+str(i['size'])
+                    else:
+                        dict = i
+                        dict.update({"info": str(i['size']) +": "+ str(i['qty'])})
+                        if not exist:
+                            dict.update({"not_exist_prds": i['size']})
+                        data.append(i)
+
+        return data
+
 
     @api.multi
     def export_report(self):
-        self.prepare_data()
+        data = self.prepare_data()
         # create workbook
         book = xlwt.Workbook(encoding='utf8')
         # create sheet
-        report_name = _('Product sale report')
+        report_name = _('Product compare report')
         sheet = book.add_sheet(report_name)
 
         # create report object
@@ -109,7 +141,7 @@ class CompareProduct(models.TransientModel):
         colx = 0
 
         # define title and header
-        title_list = [('Baraa1'), ('Baraa2'), ('baihgui baraa')]
+        title_list = [('Product'), ('Sizes'), ('Quant'), ('Detail'), ('Non exist product')]
         colx_number = len(title_list) - 1
 
         # create header
@@ -123,18 +155,29 @@ class CompareProduct(models.TransientModel):
         rowx += 1
 
         # create filters
-        sheet.write_merge(rowx, rowx, 0, colx_number, "xoxo", style_filter)
+        if self.product_category:
+            sheet.write_merge(rowx, rowx, 0, colx_number, "Category: " + str(self.product_category.name), style_filter)
+        rowx += 1
+        if self.product_template:
+            sheet.write_merge(rowx, rowx, 0, colx_number, "Filtered by product ", style_filter)
         rowx += 1
 
         # create title
-        sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Үндсэн мэдээлэл', style_title)
+        sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 2, 'Warehouse', style_title)
+        sheet.write_merge(rowx, rowx, colx + len(title_list) - 1, colx + len(title_list) - 1, 'Warehouse compared', style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
             sheet.write_merge(rowx, rowx, i, i, title_list[i], style_title)
         rowx += 1
 
-        sheet.write(rowx+1, colx+1, "dflkjdfk", style_footer)
-
+        if data:
+            for d in data:
+                sheet.write(rowx, colx, d['tprod'], style_footer)
+                sheet.write(rowx, colx+1, d['size'], style_footer)
+                sheet.write(rowx, colx+2, d['qty'], style_footer)
+                sheet.write(rowx, colx+3, d['info'], style_footer)
+                sheet.write(rowx, colx+4, d['not_exist_prds'] if 'not_exist_prds' in d else '', style_footer)
+                rowx += 1
         # prepare file data
         io_buffer = StringIO()
         book.save(io_buffer)
