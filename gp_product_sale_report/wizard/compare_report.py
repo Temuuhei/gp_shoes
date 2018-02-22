@@ -38,8 +38,7 @@ class CompareProduct(models.TransientModel):
             where_pt = "AND pt.id in (%s)" % ', '.join(map(repr, tuple(pt_ids)))
         if self.product_category:
             where_categ = "AND pc.id = %s" % self.product_category.id
-        print '\n'
-        print where_pt
+
         query = """ SELECT pt.default_code_integer AS dci, pt.name AS tprod,
                            pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
                            coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
@@ -69,7 +68,6 @@ class CompareProduct(models.TransientModel):
             product_ids.append(wd['prod_id'])
         if product_ids:
             where_prods = 'AND pp.id in (%s)' % ', '.join(map(repr, tuple(product_ids)))
-        print where_prods
 
         compare_query = """ SELECT pt.default_code_integer AS dci, pt.name AS tprod,
                                    pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
