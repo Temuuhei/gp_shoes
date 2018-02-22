@@ -124,7 +124,7 @@ msgstr "Default code"
 #: code:addons/gp_product_sale_report/wizard/compare_report.py:144
 #, python-format
 msgid "Detail"
-msgstr "Detail"
+msgstr "Дэлгэрэнгүй"
 
 #. module: gp_product_sale_report
 #: model:res.groups,name:gp_product_sale_report.group_discount_manager
@@ -223,7 +223,7 @@ msgstr "Тайлан бэлдэх процесс дууссан"
 #: code:addons/gp_product_sale_report/wizard/compare_report.py:144
 #, python-format
 msgid "Product"
-msgstr "Product"
+msgstr "Бараа"
 
 #. module: gp_product_sale_report
 #: code:addons/gp_product_sale_report/wizard/product_sale_report.py:495
@@ -259,7 +259,7 @@ msgstr "Бараа"
 #: code:addons/gp_product_sale_report/wizard/compare_report.py:144
 #, python-format
 msgid "Quant"
-msgstr "Quant"
+msgstr "Тоо хэмжээ"
 
 #. module: gp_product_sale_report
 #: model:ir.model,name:gp_product_sale_report.model_stock_quant
@@ -301,7 +301,7 @@ msgstr "Show cost"
 #: code:addons/gp_product_sale_report/wizard/compare_report.py:144
 #, python-format
 msgid "Sizes"
-msgstr "Sizes"
+msgstr "Размер"
 
 #. module: gp_product_sale_report
 #: model:ir.model,name:gp_product_sale_report.model_stock_move
