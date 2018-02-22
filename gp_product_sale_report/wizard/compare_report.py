@@ -135,13 +135,13 @@ class CompareProduct(models.TransientModel):
         sheet = book.add_sheet(report_name)
 
         # create report object
-        report_excel_output = self.env['report.excel.output.extend'].with_context(filename_prefix='ProductSaleReport', form_title=report_name).create({})
+        report_excel_output = self.env['report.excel.output.extend'].with_context(filename_prefix='ProductCompareReport', form_title=report_name).create({})
 
         rowx = 0
         colx = 0
 
         # define title and header
-        title_list = [('Product'), ('Sizes'), ('Quant'), ('Detail'), ('Non exist product')]
+        title_list = [_('Product'), _('Sizes'), _('Quant'), _('Detail'), _('Non exist product')]
         colx_number = len(title_list) - 1
 
         # create header
@@ -156,15 +156,15 @@ class CompareProduct(models.TransientModel):
 
         # create filters
         if self.product_category:
-            sheet.write_merge(rowx, rowx, 0, colx_number, "Category: " + str(self.product_category.name), style_filter)
+            sheet.write_merge(rowx, rowx, 0, colx_number, _("Category: ") + str(self.product_category.name), style_filter)
         rowx += 1
         if self.product_template:
-            sheet.write_merge(rowx, rowx, 0, colx_number, "Filtered by product ", style_filter)
+            sheet.write_merge(rowx, rowx, 0, colx_number, _("Filtered by product "), style_filter)
         rowx += 1
 
         # create title
-        sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 2, 'Warehouse', style_title)
-        sheet.write_merge(rowx, rowx, colx + len(title_list) - 1, colx + len(title_list) - 1, 'Warehouse compared', style_title)
+        sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 2, _('Warehouse'), style_title)
+        sheet.write_merge(rowx, rowx, colx + len(title_list) - 1, colx + len(title_list) - 1, _('Warehouse compared'), style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
             sheet.write_merge(rowx, rowx, i, i, title_list[i], style_title)
