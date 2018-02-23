@@ -499,8 +499,8 @@ class StockProductInitial(models.TransientModel):
                                         att_ids.append(product_attribute_value_season.id)
                                 prod_id = 0
                                 for have in have_prod:
-                                    # print '\n\n for have in have_prod: %s \n\n'%have_prod
-                                    # print '\n\n have.attribute_value_ids: %s, att_ids: %s \n\n' % (len(have.attribute_value_ids),len(att_ids))
+                                    print ' for have in have_prod: %s ' % have_prod
+                                    print ' have.attribute_value_ids: %s, att_ids: %s ' % (len(have.attribute_value_ids),len(att_ids))
 
                 # len uur bval yaahuu-----------------------------------------------
                                     if len(have.attribute_value_ids) == len(att_ids):#lenuur bval yaahuu
@@ -519,6 +519,7 @@ class StockProductInitial(models.TransientModel):
                                             print'-------------------РАЗМЕР-------------------------',product_attribute_value_size.name
                                             prod_id = have.id
 
+                                            have.cost_method = 'real'
                                             have.new_standard_price = row[5].value or 9999
                                             have.old_code = row[7].value or 9999
                                             have.lst_price = row[1].value
