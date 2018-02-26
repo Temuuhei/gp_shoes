@@ -159,7 +159,7 @@ class StockProductInitial(models.TransientModel):
 
                                 self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
 
-                                if row[6].value:
+                                if row[6] and row[6].value != '':
                                     product_val = {'product_tmpl_id': product_tmpl_id.id,
                                                     'active': True,
                                                     'valuation': product_valuation,
@@ -321,7 +321,7 @@ class StockProductInitial(models.TransientModel):
                                         new_att_ids.append(product_attribute_value_season[0].attribute_id.id)
                                         product_att_line.value_ids = [(6, 0, product_attribute_value_season[0].ids)]
 
-                                    if row[6]:
+                                    if row[6] and row[6].value != '':
                                         prod_val = {'product_tmpl_id': have_prod[0].product_tmpl_id.id,
                                                     'active': True,
                                                     'valuation': product_valuation,
@@ -445,10 +445,8 @@ class StockProductInitial(models.TransientModel):
                                                  product_attribute_value_season.attribute_id.id})
                                         print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
                                     product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
-                                print'you veeeeeeeeeeeeeeeeeeee ??? --'
                                 self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
                                 if row[6] and row[6].value != '':
-                                    print'bgaaa veeeeeeeeeeeeeeeeeeee ??? --',row[6]
                                     prod_val = {'product_tmpl_id': product_tmpl_id.id,
                                                 'active': True,
                                                 'valuation': product_valuation,
@@ -458,7 +456,6 @@ class StockProductInitial(models.TransientModel):
                                                 'old_code': row[7].value or 9999,
                                                 'attribute_value_ids': [(6, 0, att_ids)],}
                                 else:
-                                    print'bhgui veeeeeeeeeeeeeeeeeeee ??? --'
                                     prod_val = {'product_tmpl_id': product_tmpl_id.id,
                                                 'active': True,
                                                 'valuation': product_valuation,
