@@ -445,9 +445,10 @@ class StockProductInitial(models.TransientModel):
                                                  product_attribute_value_season.attribute_id.id})
                                         print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
                                     product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
-
+                                print'you veeeeeeeeeeeeeeeeeeee ??? --'
                                 self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
                                 if row[6]:
+                                    print'bgaaa veeeeeeeeeeeeeeeeeeee ??? --',row[6]
                                     prod_val = {'product_tmpl_id': product_tmpl_id.id,
                                                 'active': True,
                                                 'valuation': product_valuation,
@@ -457,6 +458,7 @@ class StockProductInitial(models.TransientModel):
                                                 'old_code': row[7].value or 9999,
                                                 'attribute_value_ids': [(6, 0, att_ids)],}
                                 else:
+                                    print'bhgui veeeeeeeeeeeeeeeeeeee ??? --'
                                     prod_val = {'product_tmpl_id': product_tmpl_id.id,
                                                 'active': True,
                                                 'valuation': product_valuation,
@@ -465,9 +467,11 @@ class StockProductInitial(models.TransientModel):
                                                 'old_code': row[7].value or 9999,
                                                 'attribute_value_ids': [(6, 0, att_ids)], }
                                 product_id = product_obj.create(prod_val)
+                                print'created product eeeeeeeeeeee ??? --', row[6]
                                 product_id.cost_method = 'real'
                                 print'new product: %s'%product_id
                             if row[3].value:
+                                print'QTY veeeeeeeeeeeeeeeeeeee ??? --', row[3]
                                 wh = Warehouse.search([('lot_stock_id', '=', self.location_id.id)])[0]
                                 if wh:
                                     incoming_picking_type = self.env['stock.picking.type'].search(
