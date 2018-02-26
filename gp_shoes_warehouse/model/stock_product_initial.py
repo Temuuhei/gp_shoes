@@ -144,9 +144,11 @@ class StockProductInitial(models.TransientModel):
                                         [('name', '=', str(row[4].value))])
                                     if product_attribute_value_season:
                                         att_ids.append(product_attribute_value_season.id)
+                                    print '......................sss2...........', product_attribute_value_season
                                     product_att_line = self.env['product.attribute.line'].search(
                                         [('product_tmpl_id', '=', product_tmpl_id.id),
                                          ('attribute_id', '=', product_attribute_value_season.attribute_id.id)])
+                                    print '......................sss2...........', product_att_line
                                     if not product_att_line:
                                         product_att_line = self.env['product.attribute.line'].create(
                                             {'product_tmpl_id': product_tmpl_id.id,
