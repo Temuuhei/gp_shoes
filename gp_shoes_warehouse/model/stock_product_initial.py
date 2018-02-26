@@ -246,9 +246,13 @@ class StockProductInitial(models.TransientModel):
                                                 print'***** Амжилттай тооллого хийж барааны гарт байгаа хэмжээг нэмлээ Шинээр бараа үүсгэж тоолсон :)))*****'
                                                 check = False
 
-                                                have.new_standard_price = row[5].value or 9999
-                                                have.old_code = row[7].value or 9999
-                                                have.lst_price = row[1].value
+                                                have.cost_method = 'real'
+                                                if row[5]:
+                                                    have.new_standard_price = row[5].value
+                                                if row[7]:
+                                                    have.old_code = row[7].value
+                                                if row[1]:
+                                                    have.lst_price = row[1].value
 
                                                 break
                                 for have in have_prod:
@@ -537,13 +541,21 @@ class StockProductInitial(models.TransientModel):
                                             #     product_attribute_value_size = self.env['product.attribute.value'].search(
                                             #         [('name', '=', str(row[2].value)[:4])])
                                             #     if product_attribute_value_size in have.attribute_value_ids:
-                                            print'-------------------РАЗМЕР-------------------------',product_attribute_value_size.name
-                                            prod_id = have.id
+                                            if not product_attribute_value_size:
+                                                vals = {
+                                                    'name': str(int(row[2].value)),
+                                                    'attribute_id': 1
+                                                }
+                                                product_attribute_value_size = self.env['product.attribute.value'].create(vals)
 
+                                            prod_id = have.id
                                             have.cost_method = 'real'
-                                            have.new_standard_price = row[5].value or 9999
-                                            have.old_code = row[7].value or 9999
-                                            have.lst_price = row[1].value
+                                            if row[5]:
+                                                have.new_standard_price = row[5].value
+                                            if row[7]:
+                                                have.old_code = row[7].value
+                                            if row[1]:
+                                                have.lst_price = row[1].value
 
                                             break
                                         else:
@@ -553,21 +565,13 @@ class StockProductInitial(models.TransientModel):
                                 print'...................... if prod is 0 '
                                 att_id = []
                                 if row[2].value:
-                                    product_attribute_value_size = self.env['product.attribute.value'].search(
-                                        [('name', '=', str(int(row[2].value)))])
-                                    # print'\n\n size of this is: %s \n\n'%product_attribute_value_size
-
+                                    product_attribute_value_size = self.env['product.attribute.value'].search([('name', '=', str(int(row[2].value)))])
                                     if product_attribute_value_size:
                                         att_id.append(product_attribute_value_size.id)
                                         # print'\n\n att_id: %s \n\n' % att_id
                                     else:
-                                        vals ={
-                                            'name': str(int(row[2].value)),
-                                            'attribute_id': 1
-                                        }
-
+                                        vals ={'name': str(int(row[2].value)),'attribute_id': 1}
                                         new_att_value = self.env['product.attribute.value'].create(vals)
-                                        print'-------------------РАЗМЕР-------------------------', new_att_value.name
                                         att_id.append(new_att_value.id)
                                     if row[4].value:
                                         product_attribute_value_season = self.env['product.attribute.value'].search(
@@ -576,9 +580,7 @@ class StockProductInitial(models.TransientModel):
                                         if product_attribute_value_season:
                                             att_id.append(product_attribute_value_season.id)
                                         else:
-                                            raise UserError(
-                                                _(
-                                                    'Ийм нэртэй аттрибут системд бүртгэлгүй байна %s ' % row[4].value))
+                                            raise UserError(_('Ийм нэртэй аттрибут системд бүртгэлгүй байна %s ' % row[4].value))
                                     if row[6]:
                                         prod_val = {'product_tmpl_id': have[0].product_tmpl_id.id,
                                                     'active': True,
