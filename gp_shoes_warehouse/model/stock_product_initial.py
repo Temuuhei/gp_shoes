@@ -137,7 +137,7 @@ class StockProductInitial(models.TransientModel):
                                 product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
                                 #                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
 
-                                print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
+                                print'Улирлын утга байгаа эсэхийг шалгаж байна ------------z,----------'
                                 if row[4].value:
                                     print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
                                     product_attribute_value_season = self.env['product.attribute.value'].search(
@@ -305,7 +305,7 @@ class StockProductInitial(models.TransientModel):
                                         print'Барааны хувилбар баганад үүсгэж эхэлж байна ==========================='
                                         product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
                                     if row[4].value:
-                                        print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
+                                        print'Улирлын утга байгаа эсэхийг шалгаж байна ----dff------------------', str(row[4].value)
                                         product_attribute_value_season = self.env['product.attribute.value'].search(
                                             [('name', '=', str(row[4].value))])
                                         product_att_line = self.env['product.attribute.line'].search(
@@ -428,9 +428,9 @@ class StockProductInitial(models.TransientModel):
                                 product_att_line.value_ids = [(6, 0, product_attribute_value_size.ids)]
                                 #                        print'Үүссэн бичиглэлүүд Хувилбар баганад \n', product_att_line.value_ids
 
-                                print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------'
+                                print'Улирлын утга байгаа эсэхийг шалгаж байна --------------------11--'
                                 if row[4].value:
-                                    print'Улирлын утга байгаа эсэхийг шалгаж байна ----------------------', str(row[4].value)
+                                    print'Улирлын утга байгаа эсэхийг шалгаж байна ------------------22----', str(row[4].value)
                                     product_attribute_value_season = self.env['product.attribute.value'].search(
                                         [('name', '=', str(row[4].value))])
                                     if product_attribute_value_season:
@@ -642,7 +642,7 @@ class StockProductInitial(models.TransientModel):
                                             wiz_act = new_picking.do_new_transfer()
                                             wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
                                             wiz.process()
-                                    print'***** Харилцагчаас худалдан авалт хийж барааны гарт байгаа хэмжээг нэмлээ БАЙСАН БАРАА with Size'
+                                    print'***** Харилцагчаас худалдан авалт хийж барааны гарт байгаа хэмжээг нэмлээ БАЙСАН БАРАА with Size111'
 
                             else:
                                 att_ids = []
@@ -684,7 +684,7 @@ class StockProductInitial(models.TransientModel):
                                         wiz_act = new_picking.do_new_transfer()
                                         wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
                                         wiz.process()
-                                print'***** Харилцагчаас худалдан авалт хийж барааны гарт байгаа хэмжээг нэмлээ БАЙСАН БАРАА with Size'
+                                print'***** Харилцагчаас худалдан авалт хийж барааны гарт байгаа хэмжээг нэмлээ БАЙСАН БАРАА with Size222'
 
                         rowi += 1
                     except IndexError:
