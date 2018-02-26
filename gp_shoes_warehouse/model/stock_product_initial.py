@@ -447,7 +447,7 @@ class StockProductInitial(models.TransientModel):
                                     product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
                                 print'you veeeeeeeeeeeeeeeeeeee ??? --'
                                 self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
-                                if row[6]:
+                                if row[6] and row[6].value != '':
                                     print'bgaaa veeeeeeeeeeeeeeeeeeee ??? --',row[6]
                                     prod_val = {'product_tmpl_id': product_tmpl_id.id,
                                                 'active': True,
