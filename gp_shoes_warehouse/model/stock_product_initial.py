@@ -529,7 +529,7 @@ class StockProductInitial(models.TransientModel):
                                             print'================================DIFFERENCE TRUE'
                                             prod_id = 0
                             if prod_id == 0:
-                                # print'\n\n if prod is 0 \n\n'
+                                print'...................... if prod is 0 '
                                 att_id = []
                                 if row[2].value:
                                     product_attribute_value_size = self.env['product.attribute.value'].search(
@@ -561,6 +561,7 @@ class StockProductInitial(models.TransientModel):
                                     product_id = product_obj.create({
                                         'product_tmpl_id': have[0].product_tmpl_id.id,
                                         'active': True,
+                                        'cost_method': 'real',
                                         'valuation': product_valuation,
                                         'default_code': have.default_code,
                                         'new_standard_price': row[5].value or 9999,
