@@ -587,7 +587,7 @@ class StockProductInitial(models.TransientModel):
                                             att_id.append(product_attribute_value_season.id)
                                         else:
                                             raise UserError(_('Ийм нэртэй аттрибут системд бүртгэлгүй байна %s ' % row[4].value))
-                                    if row[6]:
+                                    if row[6] and row[6].value != '':
                                         prod_val = {'product_tmpl_id': have[0].product_tmpl_id.id,
                                                     'active': True,
                                                     'cost_method': 'real',
