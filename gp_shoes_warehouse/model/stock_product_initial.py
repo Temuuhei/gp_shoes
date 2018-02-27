@@ -159,26 +159,23 @@ class StockProductInitial(models.TransientModel):
 
                                 self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
 
+                                prod_val = {'product_tmpl_id': product_tmpl_id.id,
+                                            'active': True,
+                                            'cost_method': 'real',
+                                            'valuation': product_valuation,
+                                            'default_code': code,
+                                            'attribute_value_ids': [(6, 0, att_ids)], }
+
+                                if row[1] and row[1].value != '':
+                                    prod_val.update({'lst_price': row[1].value});
+                                if row[5] and row[5].value != '':
+                                    prod_val.update({'new_standard_price': row[5].value});
                                 if row[6] and row[6].value != '':
-                                    product_val = {'product_tmpl_id': product_tmpl_id.id,
-                                                    'active': True,
-                                                    'valuation': product_valuation,
-                                                    'default_code': code,
-                                                    'standard_price': row[5].value or 9999,
-                                                    'new_barcode': row[6].value,
-                                                    'new_standard_price': row[7].value or 9999,
-                                                    'old_code': row[7].value or 9999,
-                                                    'attribute_value_ids': [(6, 0, att_ids)],}
-                                else:
-                                    product_val = {'product_tmpl_id': product_tmpl_id.id,
-                                                    'active': True,
-                                                    'valuation': product_valuation,
-                                                    'default_code': code,
-                                                    'standard_price': row[5].value or 9999,
-                                                    'new_standard_price': row[7].value or 9999,
-                                                    'old_code': row[7].value or 9999,
-                                                    'attribute_value_ids': [(6, 0, att_ids)],}
-                                product_id = product_obj.create(product_val)
+                                    prod_val.update({'new_barcode': row[6].value});
+                                if row[7] and row[7].value != '':
+                                    prod_val.update({'old_code': row[7].value});
+                                product_id = product_obj.create(prod_val)
+
                             if row[3].value:
                                 print'Агуулахын код'
                                 line_data = {
@@ -249,14 +246,12 @@ class StockProductInitial(models.TransientModel):
                                                 check = False
 
                                                 have.cost_method = 'real'
+                                                if row[1]:
+                                                    have.lst_price = row[1].value
                                                 if row[5]:
                                                     have.new_standard_price = row[5].value
                                                 if row[7]:
                                                     have.old_code = row[7].value
-                                                if row[1]:
-                                                    have.lst_price = row[1].value
-
-                                                break
                                 for have in have_prod:
                                     if len(have.attribute_value_ids) == len(att_ids):
                                         for a in have.attribute_value_ids:
@@ -321,23 +316,22 @@ class StockProductInitial(models.TransientModel):
                                         new_att_ids.append(product_attribute_value_season[0].attribute_id.id)
                                         product_att_line.value_ids = [(6, 0, product_attribute_value_season[0].ids)]
 
+                                    prod_val = {'product_tmpl_id': have_prod[0].product_tmpl_id.id,
+                                                'active': True,
+                                                'cost_method': 'real',
+                                                'valuation': product_valuation,
+                                                'default_code': code,
+                                                'attribute_value_ids': [(6, 0, att_ids)], }
+
+                                    if row[1] and row[1].value != '':
+                                        prod_val.update({'lst_price': row[1].value});
+                                    if row[5] and row[5].value != '':
+                                        prod_val.update({'new_standard_price': row[5].value});
                                     if row[6] and row[6].value != '':
-                                        prod_val = {'product_tmpl_id': have_prod[0].product_tmpl_id.id,
-                                                    'active': True,
-                                                    'valuation': product_valuation,
-                                                    'default_code': code,
-                                                    'new_standard_price': row[5].value or 9999,
-                                                    'new_barcode': row[6].value,
-                                                    'old_code': row[7].value or 9999,
-                                                    'attribute_value_ids': [(6, 0, att_ids)]}
-                                    else:
-                                        prod_val = {'product_tmpl_id': have_prod[0].product_tmpl_id.id,
-                                                    'active': True,
-                                                    'valuation': product_valuation,
-                                                    'default_code': code,
-                                                    'new_standard_price': row[5].value or 9999,
-                                                    'old_code': row[7].value or 9999,
-                                                    'attribute_value_ids': [(6, 0, att_ids)]}
+                                        prod_val.update({'new_barcode': row[6].value});
+                                    if row[7] and row[7].value != '':
+                                        prod_val.update({'old_code': row[7].value});
+
                                     product_id = product_obj.create(prod_val)
                                     if row[3].value is not None:
                                         print'Агуулахын код'
@@ -446,29 +440,28 @@ class StockProductInitial(models.TransientModel):
                                         print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
                                     product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
                                 self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
+
+                                prod_val = {'product_tmpl_id': product_tmpl_id.id,
+                                            'active': True,
+                                            'valuation': product_valuation,
+                                            'default_code': code,
+                                            'attribute_value_ids': [(6, 0, att_ids)], }
+
+                                if row[1] and row[1].value != '':
+                                    prod_val.update({'lst_price': row[1].value});
+                                if row[5] and row[5].value != '':
+                                    prod_val.update({'new_standard_price': row[5].value});
                                 if row[6] and row[6].value != '':
-                                    prod_val = {'product_tmpl_id': product_tmpl_id.id,
-                                                'active': True,
-                                                'valuation': product_valuation,
-                                                'default_code': code,
-                                                'new_standard_price': row[5].value or 9999,
-                                                'new_barcode': row[6].value,
-                                                'old_code': row[7].value or 9999,
-                                                'attribute_value_ids': [(6, 0, att_ids)],}
-                                else:
-                                    prod_val = {'product_tmpl_id': product_tmpl_id.id,
-                                                'active': True,
-                                                'valuation': product_valuation,
-                                                'default_code': code,
-                                                'new_standard_price': row[5].value or 9999,
-                                                'old_code': row[7].value or 9999,
-                                                'attribute_value_ids': [(6, 0, att_ids)], }
+                                    prod_val.update({'new_barcode': row[6].value});
+                                if row[7] and row[7].value != '':
+                                    prod_val.update({'old_code': row[7].value});
+
                                 product_id = product_obj.create(prod_val)
-                                print'created product eeeeeeeeeeee ??? --', row[6]
+                                print'created product ++++++++++++++++++++++ ??? --', prod_val
                                 product_id.cost_method = 'real'
                                 print'new product: %s'%product_id
                             if row[3].value:
-                                print'QTY veeeeeeeeeeeeeeeeeeee ??? --', row[3]
+                                print'QTY ++++++++++++++++++++++ ??? --', row[3]
                                 wh = Warehouse.search([('lot_stock_id', '=', self.location_id.id)])[0]
                                 if wh:
                                     incoming_picking_type = self.env['stock.picking.type'].search(
@@ -553,14 +546,12 @@ class StockProductInitial(models.TransientModel):
 
                                             prod_id = have.id
                                             have.cost_method = 'real'
+                                            if row[1]:
+                                                have.lst_price = row[1].value
                                             if row[5]:
                                                 have.new_standard_price = row[5].value
                                             if row[7]:
                                                 have.old_code = row[7].value
-                                            if row[1]:
-                                                have.lst_price = row[1].value
-
-                                            break
                                         else:
                                             print'================================DIFFERENCE TRUE'
                                             prod_id = 0
@@ -584,25 +575,23 @@ class StockProductInitial(models.TransientModel):
                                             att_id.append(product_attribute_value_season.id)
                                         else:
                                             raise UserError(_('Ийм нэртэй аттрибут системд бүртгэлгүй байна %s ' % row[4].value))
+
+                                    prod_val = {'product_tmpl_id': have[0].product_tmpl_id.id,
+                                                'active': True,
+                                                'cost_method': 'real',
+                                                'valuation': product_valuation,
+                                                'default_code': have.default_code,
+                                                'attribute_value_ids': [(6, 0, att_ids)], }
+
+                                    if row[1] and row[1].value != '':
+                                        prod_val.update({'lst_price': row[1].value});
+                                    if row[5] and row[5].value != '':
+                                        prod_val.update({'new_standard_price': row[5].value});
                                     if row[6] and row[6].value != '':
-                                        prod_val = {'product_tmpl_id': have[0].product_tmpl_id.id,
-                                                    'active': True,
-                                                    'cost_method': 'real',
-                                                    'valuation': product_valuation,
-                                                    'default_code': have.default_code,
-                                                    'new_standard_price': row[5].value or 9999,
-                                                    'new_barcode': row[6].value,
-                                                    'old_code': row[7].value or 9999,
-                                                    'attribute_value_ids': [(6, 0, att_ids)]}
-                                    else:
-                                        prod_val = {'product_tmpl_id': have[0].product_tmpl_id.id,
-                                                    'active': True,
-                                                    'cost_method': 'real',
-                                                    'valuation': product_valuation,
-                                                    'default_code': have.default_code,
-                                                    'new_standard_price': row[5].value or 9999,
-                                                    'old_code': row[7].value or 9999,
-                                                    'attribute_value_ids': [(6, 0, att_ids)]}
+                                        prod_val.update({'new_barcode': row[6].value});
+                                    if row[7] and row[7].value != '':
+                                        prod_val.update({'old_code': row[7].value});
+
                                     product_id = product_obj.create(prod_val)
                                     # print'\n\n product_id: %s \n\n'%product_id
 
