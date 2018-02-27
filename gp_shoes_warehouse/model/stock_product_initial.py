@@ -88,14 +88,12 @@ class StockProductInitial(models.TransientModel):
                         product_cost_method = 'average'
                         product_valuation = 'real_time'
 
-                        have_prod = product_obj.search([('default_code', '=', str(row[0].value))])
-                        if not have_prod:
+                        exist_pt = product_tmpl_obj.search([('default_code', '=', str(row[0].value))])
+                        if not exist_pt:
                             if not auto_categ_id:
                                 auto_categ_id = product_category_obj.create({'name': sheet.name,
                                                                          'parent_id': self.categ_id.id if self.categ_id else None,
                                                                          'property_cost_id': 'real'})
-
-                            print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
                             values_pro_tmp = {
                                 'name': sheet.name,
                                 'default_code': row[0].value,
@@ -116,8 +114,13 @@ class StockProductInitial(models.TransientModel):
                             # print'\n\n\n\n Values',values_pro_tmp
                             product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
                             self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
+                            print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template 1 ------------------>',product_tmpl_id,str(row[0].value)
+                        else:
+                            product_tmpl_id = exist_pt
 
-                            print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,str(row[0].value)
+                        have_prod = product_obj.search([('default_code', '=', str(row[0].value))])
+                        if not have_prod:
+                            print 'Барааны код олдоогүй ба шууд үүсгэх 1 ------------------>', have_prod
                             att_ids = []
                             if row[2].value:
                                 product_attribute_value_size = self.env['product.attribute.value'].search(
@@ -383,9 +386,8 @@ class StockProductInitial(models.TransientModel):
                         product_cost_method = 'average'
                         product_valuation = 'real_time'
 
-                        have_prod = product_obj.search([('default_code', '=', str(row[0].value))])
-                        if not have_prod:
-                            print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
+                        exist_pt = product_tmpl_obj.search([('default_code', '=', str(row[0].value))])
+                        if not exist_pt:
                             if not auto_categ_id:
                                 auto_categ_id = product_category_obj.create({'name': sheet.name,
                                                                          'parent_id': self.categ_id.id if self.categ_id else None,
@@ -409,8 +411,13 @@ class StockProductInitial(models.TransientModel):
                             }
                             product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
                             self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
+                            print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template 2 ------------------>',product_tmpl_id, str(row[0].value)
+                        else:
+                            product_tmpl_id = exist_pt
 
-                            print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,str(row[0].value)
+                        have_prod = product_obj.search([('default_code', '=', str(row[0].value))])
+                        if not have_prod:
+                            print 'Барааны код олдоогүй ба шууд үүсгэх ------------------>', have_prod
                             att_ids = []
                             if row[2].value:
                                 product_attribute_value_size = self.env['product.attribute.value'].search(
