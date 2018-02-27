@@ -115,6 +115,8 @@ class StockProductInitial(models.TransientModel):
                             }
                             # print'\n\n\n\n Values',values_pro_tmp
                             product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
+                            self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
+
                             print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,str(row[0].value)
                             att_ids = []
                             if row[2].value:
@@ -157,13 +159,15 @@ class StockProductInitial(models.TransientModel):
                                         print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
                                     product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
 
-                                self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
-
                                 prod_val = {'product_tmpl_id': product_tmpl_id.id,
                                             'active': True,
                                             'cost_method': 'real',
                                             'valuation': product_valuation,
                                             'default_code': code,
+                                            'lst_price': product_tmpl_id.list_price,
+                                            'new_standard_price': product_tmpl_id.standard_price,
+                                            'new_barcode': product_tmpl_id.barcode,
+                                            'old_code': product_tmpl_id.main_price,
                                             'attribute_value_ids': [(6, 0, att_ids)], }
 
                                 if row[1] and row[1].value != '':
@@ -321,6 +325,10 @@ class StockProductInitial(models.TransientModel):
                                                 'cost_method': 'real',
                                                 'valuation': product_valuation,
                                                 'default_code': code,
+                                                'lst_price': have_prod[0].product_tmpl_id.list_price,
+                                                'new_standard_price': have_prod[0].product_tmpl_id.standard_price,
+                                                'new_barcode': have_prod[0].product_tmpl_id.barcode,
+                                                'old_code': have_prod[0].product_tmpl_id.main_price,
                                                 'attribute_value_ids': [(6, 0, att_ids)], }
 
                                     if row[1] and row[1].value != '':
@@ -400,6 +408,8 @@ class StockProductInitial(models.TransientModel):
                                 'company_id': 1,
                             }
                             product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
+                            self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
+
                             print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template ------------------>',product_tmpl_id,str(row[0].value)
                             att_ids = []
                             if row[2].value:
@@ -439,12 +449,15 @@ class StockProductInitial(models.TransientModel):
                                                  product_attribute_value_season.attribute_id.id})
                                         print'Нэмэгдсэн Product Attribute Line Улирал ------------------->', product_att_line
                                     product_att_line.value_ids = [(6, 0, product_attribute_value_season.ids)]
-                                self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
 
                                 prod_val = {'product_tmpl_id': product_tmpl_id.id,
                                             'active': True,
                                             'valuation': product_valuation,
                                             'default_code': code,
+                                            'lst_price': product_tmpl_id.list_price,
+                                            'new_standard_price': product_tmpl_id.standard_price,
+                                            'new_barcode': product_tmpl_id.barcode,
+                                            'old_code': product_tmpl_id.main_price,
                                             'attribute_value_ids': [(6, 0, att_ids)], }
 
                                 if row[1] and row[1].value != '':
@@ -581,6 +594,10 @@ class StockProductInitial(models.TransientModel):
                                                 'cost_method': 'real',
                                                 'valuation': product_valuation,
                                                 'default_code': have.default_code,
+                                                'lst_price': have_prod[0].product_tmpl_id.list_price,
+                                                'new_standard_price': have_prod[0].product_tmpl_id.standard_price,
+                                                'new_barcode': have_prod[0].product_tmpl_id.barcode,
+                                                'old_code': have_prod[0].product_tmpl_id.main_price,
                                                 'attribute_value_ids': [(6, 0, att_ids)], }
 
                                     if row[1] and row[1].value != '':
