@@ -46,8 +46,7 @@ class CompareProduct(models.TransientModel):
                 pc_names += str(x.name) if not pc_names else ', ' + str(x.name)
             where_categ = "AND pc.id in (%s)" % ', '.join(map(repr, tuple(pc_ids)))
 
-        query = """ SELECT pt.default_code_integer AS dci, pt.name AS tprod,
-                           pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
+        query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
                            coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
                            coalesce((SELECT name FROM product_attribute_value pav
                                      JOIN product_attribute_value_product_product_rel pavr
@@ -64,7 +63,7 @@ class CompareProduct(models.TransientModel):
                     WHERE sq.qty > 0
                     AND sq.location_id = %s %s %s
                     GROUP BY pt.id, sq.qty, pp.id, pc.id
-                    ORDER BY pt.id """
+                    ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
 
         self.env.cr.execute(query % (str(self.stock_warehouse.lot_stock_id.id), where_pt, where_categ))
         warehouse_data = self.env.cr.dictfetchall()
@@ -76,8 +75,7 @@ class CompareProduct(models.TransientModel):
         if product_ids:
             where_prods = 'AND pp.id in (%s)' % ', '.join(map(repr, tuple(product_ids)))
 
-        compare_query = """ SELECT pt.default_code_integer AS dci, pt.name AS tprod,
-                                   pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
+        compare_query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
                                    coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
                                    coalesce((SELECT name FROM product_attribute_value pav
                                              JOIN product_attribute_value_product_product_rel pavr
@@ -94,7 +92,7 @@ class CompareProduct(models.TransientModel):
                             WHERE sq.qty > 0
                             AND sq.location_id = %s %s %s %s
                             GROUP BY pt.id, sq.qty, pp.id, pc.id
-                            ORDER BY pt.id """
+                            ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
 
         self.env.cr.execute(compare_query % (str(self.stock_warehouse_compare.lot_stock_id.id), where_pt, where_categ, where_prods))
         compare_warehouse_data = self.env.cr.dictfetchall()
@@ -129,7 +127,6 @@ class CompareProduct(models.TransientModel):
                         if not exist:
                             dict.update({"not_exist_prds": i['size']})
                         data.append(i)
-        data = sorted(data, key=lambda k: k['dci'])
         return data, pt_names, pc_names
 
 

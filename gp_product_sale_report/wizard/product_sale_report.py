@@ -49,7 +49,6 @@ class ProductSaleReport(models.TransientModel):
 
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.default_code AS code,
-                                   pt.default_code_integer AS codeint,
                                    pt.name AS name,
                                    pt.id AS color,
                                    pt.standard_price AS cost,
@@ -95,10 +94,9 @@ class ProductSaleReport(models.TransientModel):
                                    pt.name,
                                    pt.list_price,
                                    pt.id
-                                   ORDER BY pt.id,
-                                    pt.default_code_integer"""
-                         % (location,location,initial_date_where,
-                            location,location,initial_date_where,
+                                   ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
+                         % (location, location, initial_date_where,
+                            location, location, initial_date_where,
                             self.stock_warehouse.lot_stock_id.id))
         data_quant = self._cr.dictfetchall()
 
@@ -202,7 +200,6 @@ class ProductSaleReport(models.TransientModel):
 
                 # prepare data
                 data['code'] = each_data['code']
-                data['codeInt'] = each_data['codeint']
                 data['product'] = each_data['name']
                 data['template'] = each_data['template']
                 data['color'] = each_data['color']
@@ -340,7 +337,7 @@ class ProductSaleReport(models.TransientModel):
                     template = d['template']
                 if lenb == lena:
                     dataEachPrdList.append(dataEachPrdDict)
-            dataLine = sorted(dataEachPrdList, key=lambda k: k['codeInt'])
+            dataLine = dataEachPrdList
             # Daily total
             dailySubTotal = {'ttlQuant': 0, 'ttlFirstQuant': 0, 'ttlMainPrice': 0}
             dailyTotal = {}
