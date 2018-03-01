@@ -33,7 +33,7 @@ class ProductTemplate(models.Model):
     #     help="Cost of the product, in the default unit of measure of the product.", store=True)
     default_code = fields.Char('default_code', related='product_variant_ids.default_code', store=True)
 
-    default_code_integer = fields.Float('Code', compute='_compute_code', store=True)
+    default_code_integer = fields.Integer('Code', compute='_compute_code', store=True)
     # _sql_constraints = [
     #     ('default_code_uniq', 'unique(default_code)', 'Дотоод код давтагдашгүй байх ёстой !'),
     # ]
@@ -56,11 +56,11 @@ class ProductTemplate(models.Model):
                 for char in obj.default_code:
                     if char in integers:
                         strings += char
-                    else:
-                        if char == '-' and '.' not in strings and strings:
-                            strings += '.'
+                    # else:
+                    #     if char == '-' and '.' not in strings and strings:
+                    #         strings += '.'
             if strings:
-                obj.default_code_integer = float(strings)
+                obj.default_code_integer = int(strings)
 
 # def convert_float_to_string(fts):
 #     integers = ['.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
