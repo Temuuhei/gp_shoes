@@ -259,6 +259,7 @@ class StockProductInitial(models.TransientModel):
                                                     have.new_standard_price = row[5].value
                                                 if row[7]:
                                                     have.old_code = row[7].value
+                                                break
                                 for have in have_prod:
                                     if len(have.attribute_value_ids) == len(att_ids):
                                         for a in have.attribute_value_ids:
@@ -572,6 +573,7 @@ class StockProductInitial(models.TransientModel):
                                                 have.new_standard_price = row[5].value
                                             if row[7]:
                                                 have.old_code = row[7].value
+                                            break
                                         else:
                                             print'================================DIFFERENCE TRUE'
                                             prod_id = 0
