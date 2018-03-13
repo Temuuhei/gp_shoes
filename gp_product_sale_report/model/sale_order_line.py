@@ -40,10 +40,11 @@ class SaleOrderLine(models.Model):
     @api.multi
     def write(self, values):
         write = super(SaleOrderLine, self).write(values)
-        quant = self.env['stock.quant'].search([('location_id', '=', self.order_id.warehouse_id.lot_stock_id.id),
-                                                ('product_id', '=', self.product_id.id)])
-        if not quant or quant.qty <= 0 or quant.qty < self.product_uom_qty:
-            raise ValidationError(_('There is no product in your stock or not enough!'))
+        if "product_uom_qty" in values or "product_id" in values:
+            quant = self.env['stock.quant'].search([('location_id', '=', self.order_id.warehouse_id.lot_stock_id.id),
+                                                    ('product_id', '=', self.product_id.id)])
+            if not quant or quant.qty <= 0 or quant.qty < self.product_uom_qty:
+                raise ValidationError(_('There is no product in your stock or not enough!'))
         if not self.cash_payment and not self.card_payment:
-            raise ValidationError(_('You cannot update card and cash payment with 0!'))
+            raise ValidationError(_('You cannot create card and cash payment with 0!'))
         return write
