@@ -127,6 +127,31 @@ class CompareProduct(models.TransientModel):
                         if not exist:
                             dict.update({"not_exist_prds": i['size']})
                         data.append(i)
+
+        data_com = []
+        if compare_warehouse_data:
+            dict_com = {}
+            for i in compare_warehouse_data:
+                if 'tprod_id' not in dict_com:
+                    dict_com = i
+                    dict_com.update({"info": str(i['size']) + ": " + str(i['qty'])})
+                    data_com.append(i)
+                else:
+                    if i['tprod_id'] == dict_com['tprod_id']:
+                        dict_com['size'] += ", " + i['size'] if dict_com['size'] else i['size']
+                        dict_com['qty'] += i['qty']
+                        dict_com['info'] += ' ' + str(i['size']) + ": " + str(i['qty'])
+                    else:
+                        dict_com = i
+                        dict_com.update({"info": str(i['size']) + ": " + str(i['qty'])})
+                        data_com.append(i)
+
+        if data and data_com:
+            for d in data:
+                for cd in data_com:
+                    if d['tprod_id'] == cd['tprod_id']:
+                        d.update({"compare": cd['info']})
+
         return data, pt_names, pc_names
 
 
@@ -146,7 +171,7 @@ class CompareProduct(models.TransientModel):
         colx = 0
 
         # define title and header
-        title_list = [_('Code'), _('Product'), _('Sizes'), _('Quant'), _('Detail'), _('Non exist product')]
+        title_list = [_('Code'), _('Product'), _('Sizes'), _('Quant'), _('Detail'), _('Non exist product'), _('Exist product')]
         colx_number = len(title_list) - 1
 
         # create header
@@ -168,10 +193,11 @@ class CompareProduct(models.TransientModel):
         rowx += 1
 
         # create title
-        sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 2, _('Warehouse: ')+str(self.stock_warehouse.name), style_title)
-        sheet.write_merge(rowx, rowx, colx + len(title_list) - 1, colx + len(title_list) - 1, _('Warehouse compared: ')+str(self.stock_warehouse_compare.name), style_title)
+        sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 3, _('Warehouse: ')+str(self.stock_warehouse.name), style_title)
+        sheet.write_merge(rowx, rowx, colx + len(title_list) - 2, colx + len(title_list) - 1, _('Warehouse compared: ')+str(self.stock_warehouse_compare.name), style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
+            print'\n',title_list[i], i
             sheet.write_merge(rowx, rowx, i, i, title_list[i], style_title)
         rowx += 1
 
@@ -183,6 +209,7 @@ class CompareProduct(models.TransientModel):
                 sheet.write(rowx, colx+3, d['qty'], style_footer)
                 sheet.write(rowx, colx+4, d['info'], style_footer)
                 sheet.write(rowx, colx+5, d['not_exist_prds'] if 'not_exist_prds' in d else '', style_footer)
+                sheet.write(rowx, colx+6, d['compare'] if 'compare' in d else '', style_footer)
                 rowx += 1
         # prepare file data
         io_buffer = StringIO()
