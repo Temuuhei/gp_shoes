@@ -197,7 +197,6 @@ class CompareProduct(models.TransientModel):
         sheet.write_merge(rowx, rowx, colx + len(title_list) - 2, colx + len(title_list) - 1, _('Warehouse compared: ')+str(self.stock_warehouse_compare.name), style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
-            print'\n',title_list[i], i
             sheet.write_merge(rowx, rowx, i, i, title_list[i], style_title)
         rowx += 1
 
