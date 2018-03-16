@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
@@ -25,3 +26,27 @@ class StockPicking(models.Model):
                                           'product_uom': p.product_tmpl_id.uom_id.id,
                                           'location_id': object.location_id.id,
                                           'location_dest_id': object.location_dest_id.id})
+
+
+class StockMove(models.Model):
+    _inherit = "stock.move"
+
+    @api.model
+    def create(self, values):
+        create = super(StockMove, self).create(values)
+        quant = self.env['stock.quant'].search([('location_id', '=', create.picking_id.location_id.id),
+                                                ('product_id', '=', create.product_id.id)])
+        if quant.qty < create.product_uom_qty:
+            raise ValidationError(_('There is no product in your stock or not enough!'))
+        return create
+
+    @api.multi
+    def write(self, values):
+        write = super(StockMove, self).write(values)
+        if "product_uom_qty" in values or "product_id" in values:
+            quant = self.env['stock.quant'].search(
+                [('location_id', '=', self.picking_id.location_id.id),
+                 ('product_id', '=', self.product_id.id)])
+            if quant.qty < self.product_uom_qty:
+                raise ValidationError(_('There is no product in your stock or not enough!'))
+        return write
