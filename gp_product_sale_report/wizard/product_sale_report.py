@@ -130,37 +130,74 @@ class ProductSaleReport(models.TransientModel):
         #                             location,location,de['product_id']))
         #         data_first_quant = self._cr.dictfetchall()
         #         de.update({'first_quant': data_first_quant[0]['qty']})
+
+        self._cr.execute("""SELECT so.id AS sale_order_id,
+                                   so.name AS order_name,
+                                   sp.id AS stock_picking_id,
+                                   sp.name AS picking_name,
+                                   sp.origin AS origin,
+                                   so.procurement_group_id AS procurement_group_id,
+                                   sp.min_date AS min_date,
+                                   so.confirmation_date AS confirmation_date,
+                                   sol.qty_delivered AS qty_delivered,
+                                   sol.cash_payment AS cash_payment,
+                                   sol.card_payment AS card_payment,
+                                   sm.product_uom_qty AS product_uom_qty,
+                                   sm.product_id AS product_id
+                            FROM sale_order AS so
+                                JOIN sale_order_line AS sol
+                                   ON sol.order_id = so.id
+                                JOIN stock_picking AS sp
+                                   ON sp.group_id = so.procurement_group_id
+                                JOIN stock_move AS sm
+                                   ON sm.picking_id = sp.id
+                            WHERE so.state = 'sale'
+                              AND sp.state = 'done'
+                              AND so.warehouse_id = %s
+                              %s"""
+                         % (self.stock_warehouse.id, where_date_so))
+        so_data = self._cr.dictfetchall()
+
+        dq_p_ids = []
+        if data_quant:
+            for dq in data_quant:
+                dq_p_ids.append(dq['product_id'])
+
+        if so_data:
+            for sd in so_data:
+                if not sd['product_id'] in dq_p_ids:
+                    self._cr.execute(""" SELECT pp.id AS pid, pt.id AS tid, pp.default_code,
+                                                pt.name, pt.standard_price,
+                                                pt.list_price, pt.id,
+                                                pt.barcode, pt.main_price,
+                                                coalesce((SELECT name FROM product_attribute_value pav
+                                                          JOIN product_attribute_value_product_product_rel pavr
+                                                          ON pavr.product_attribute_value_id = pav.id
+                                                          WHERE pavr.product_product_id= pp.id
+                                                          ORDER BY pav.id ASC LIMIT 1),'') as size
+                                         FROM product_product pp
+                                         JOIN product_template pt on pp.product_tmpl_id=pt.id
+                                         WHERE pp.id = %s """ % (int(sd['product_id'])))
+                    row = self._cr.dictfetchall()
+                    upd_dct = {}
+                    upd_dct['product_id'] = row[0]['pid']
+                    upd_dct['code'] = row[0]['default_code']
+                    upd_dct['name'] = row[0]['name']
+                    upd_dct['color'] = ''
+                    upd_dct['cost'] = row[0]['standard_price']
+                    upd_dct['quantity'] = 0
+                    upd_dct['price'] = row[0]['list_price']
+                    upd_dct['template'] = row[0]['tid']
+                    upd_dct['barcode'] = row[0]['barcode']
+                    upd_dct['main_price'] = row[0]['main_price']
+                    upd_dct['size'] = row[0]['size']
+                    upd_dct['firstqty'] = 0
+                    data_quant.append(upd_dct)
+
         if data_quant:
             for each_data in data_quant:
                 data = {}
                 data_total = {}
-                self._cr.execute("""SELECT so.id AS sale_order_id,
-                                           so.name AS order_name,
-                                           sp.id AS stock_picking_id,
-                                           sp.name AS picking_name,
-                                           sp.origin AS origin,
-                                           so.procurement_group_id AS procurement_group_id,
-                                           sp.min_date AS min_date,
-                                           so.confirmation_date AS confirmation_date,
-                                           sol.qty_delivered AS qty_delivered,
-                                           sol.cash_payment AS cash_payment,
-                                           sol.card_payment AS card_payment,
-                                           sm.product_uom_qty AS product_uom_qty,
-                                           sm.product_id AS product_id
-                                    FROM sale_order AS so
-                                        JOIN sale_order_line AS sol
-                                           ON sol.order_id = so.id
-                                        JOIN stock_picking AS sp
-                                           ON sp.group_id = so.procurement_group_id
-                                        JOIN stock_move AS sm
-                                           ON sm.picking_id = sp.id
-                                    WHERE so.state = 'sale'
-                                      AND sp.state = 'done'
-                                      AND sol.product_id = %s
-                                      AND so.warehouse_id = %s
-                                      %s"""
-                                 % (each_data['product_id'], self.stock_warehouse.id, where_date_so))
-                so_data = self._cr.dictfetchall()
 
                 where_out = ''
                 so_pickings = []
