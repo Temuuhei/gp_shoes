@@ -51,16 +51,17 @@ class StockPicking(models.Model):
     #             raise ValidationError(_('There is no product in your stock or not enough!'))
     #     return write
 
-class StockPicking(models.Model):
-    _inherit = 'stock.picking'
+class StockImmediateTransfer(models.TransientModel):
+    _inherit = 'stock.immediate.transfer'
 
     @api.multi
-    def do_new_transfer(self):
-        print '\n___ BTLs H__________'
-        transfer = super(StockPicking, self).do_new_transfer()
-        for ml in self.move_lines:
+    def process(self):
+        print '___ PROCESS ___'
+        prcs = super(StockImmediateTransfer, self).process()
+        sp = self.env['stock.picking'].browse(self.env.context.active_id.id)
+        for ml in sp.move_lines:
             quant = self.env['stock.quant'].search([('location_id', '=', self.location_id.id),
                                                 ('product_id', '=', ml.product_id.id)])
             if quant.qty < ml.product_uom_qty or not quant.qty:
                 raise ValidationError(_('There is no product in your stock or not enough!'), ml.product_id.product_tmpl_id.name)
-        return transfer
+        return prcs
