@@ -63,5 +63,5 @@ class StockImmediateTransfer(models.TransientModel):
             quant = self.env['stock.quant'].search([('location_id', '=', sp.location_id.id),
                                                     ('product_id', '=', ml.product_id.id)])
             if quant.qty < ml.product_uom_qty or not quant.qty:
-                raise ValidationError(_('There is no product in your stock or not enough!'), ml.product_id.product_tmpl_id.name)
+                raise ValidationError(_('There is no product in your stock or not enough! %s') % ml.product_id.product_tmpl_id.name)
         return prcs
