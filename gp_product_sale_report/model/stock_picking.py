@@ -28,25 +28,39 @@ class StockPicking(models.Model):
                                           'location_dest_id': object.location_dest_id.id})
 
 
-class StockMove(models.Model):
-    _inherit = "stock.move"
+# class StockMove(models.Model):
+#     _inherit = "stock.move"
 
-    @api.model
-    def create(self, values):
-        create = super(StockMove, self).create(values)
-        quant = self.env['stock.quant'].search([('location_id', '=', create.picking_id.location_id.id),
-                                                ('product_id', '=', create.product_id.id)])
-        if quant.qty < create.product_uom_qty:
-            raise ValidationError(_('There is no product in your stock or not enough!'))
-        return create
+    # @api.model
+    # def create(self, values):
+    #     create = super(StockMove, self).create(values)
+    #     quant = self.env['stock.quant'].search([('location_id', '=', create.picking_id.location_id.id),
+    #                                             ('product_id', '=', create.product_id.id)])
+    #     if quant.qty < create.product_uom_qty:
+    #         raise ValidationError(_('There is no product in your stock or not enough!'))
+    #     return create
+    #
+    # @api.multi
+    # def write(self, values):
+    #     write = super(StockMove, self).write(values)
+    #     if "product_uom_qty" in values or "product_id" in values:
+    #         quant = self.env['stock.quant'].search(
+    #             [('location_id', '=', self.picking_id.location_id.id),
+    #              ('product_id', '=', self.product_id.id)])
+    #         if quant.qty < self.product_uom_qty:
+    #             raise ValidationError(_('There is no product in your stock or not enough!'))
+    #     return write
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
 
     @api.multi
-    def write(self, values):
-        write = super(StockMove, self).write(values)
-        if "product_uom_qty" in values or "product_id" in values:
-            quant = self.env['stock.quant'].search(
-                [('location_id', '=', self.picking_id.location_id.id),
-                 ('product_id', '=', self.product_id.id)])
-            if quant.qty < self.product_uom_qty:
-                raise ValidationError(_('There is no product in your stock or not enough!'))
-        return write
+    def do_new_transfer(self):
+        print '\n___ BTLs H__________'
+        transfer = super(StockPicking, self).do_new_transfer()
+        for ml in self.move_lines:
+            quant = self.env['stock.quant'].search([('location_id', '=', self.location_id.id),
+                                                ('product_id', '=', ml.product_id.id)])
+            if quant.qty < ml.product_uom_qty or not quant.qty:
+                raise ValidationError(_('There is no product in your stock or not enough!'), ml.product_id.product_tmpl_id.name)
+        return transfer
