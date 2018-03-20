@@ -58,6 +58,7 @@ class StockImmediateTransfer(models.TransientModel):
     def process(self):
         prcs = super(StockImmediateTransfer, self).process()
         ctx = self.env.context.copy()
+        print '============================================================',ctx
         sp = self.env['stock.picking'].browse(ctx['active_id'])
         for ml in sp.move_lines:
             quant = self.env['stock.quant'].search([('location_id', '=', sp.location_id.id),
