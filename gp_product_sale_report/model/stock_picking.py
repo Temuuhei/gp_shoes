@@ -64,7 +64,7 @@ class StockImmediateTransfer(models.TransientModel):
             print '___ spick :', sp
             for ml in sp.move_lines:
                 print '___ infos :', sp.location_id.id, ' - ', ml.product_id.id
-                query = self._cr(""" select id from stock_quant where location_id = %s and product_id = %s""")
+                query = """ select id from stock_quant where location_id = %s and product_id = %s"""
                 self.env.cr.execute(query % (sp.location_id.id, ml.product_id.id))
                 sqdata = self.env.cr.fetchall()
                 print ' SQIDS___', sqdata
