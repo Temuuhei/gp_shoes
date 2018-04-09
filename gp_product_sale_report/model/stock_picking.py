@@ -68,7 +68,7 @@ class StockImmediateTransfer(models.TransientModel):
 
                 quant = quants_by_l.search([('product_id', '=', ml.product_id.id)])
                 print '___ infos.:', sp.location_id.id, ' - ', ml.product_id.id
-                print ' QUANT___', quant, ' : id : ', quant.id
+                print ' QUANT___', quant
                 qty = 0
                 for q in quant:
                     qty += q.qty
