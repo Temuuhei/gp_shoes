@@ -63,7 +63,8 @@ class StockImmediateTransfer(models.TransientModel):
             print '___ spick :', sp
             for ml in sp.move_lines:
                 print '___ infos :', sp.location_id.id, ' - ', ml.product_id.id
-                quant = self.env['stock.quant'].search([('location_id', '=', sp.location_id.id),
+
+                quant = prcs.env['stock.quant'].search([('location_id', '=', sp.location_id.id),
                                                         ('product_id', '=', ml.product_id.id)])
                 print ' QUANT___', quant
                 qty = 0
