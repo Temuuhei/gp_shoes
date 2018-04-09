@@ -61,6 +61,7 @@ class StockImmediateTransfer(models.TransientModel):
         if 'active_id' in ctx:
             sp = self.env['stock.picking'].browse(ctx['active_id'])
             for ml in sp.move_lines:
+                print '___ infos :', sp.location_id.id, ' - ', ml.product_id.id
                 quant = self.env['stock.quant'].search([('location_id', '=', sp.location_id.id),
                                                         ('product_id', '=', ml.product_id.id)])
                 print ' QUANT___', quant
