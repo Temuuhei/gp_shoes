@@ -31,7 +31,10 @@ class SaleOrderLine(models.Model):
         create = super(SaleOrderLine, self).create(values)
         quant = self.env['stock.quant'].search([('location_id', '=', create.order_id.warehouse_id.lot_stock_id.id),
                                                 ('product_id', '=', create.product_id.id)])
-        if not quant or quant.qty <= 0 or quant.qty < create.product_uom_qty:
+        qt = 0
+        for q in quant:
+            qt += q.qty
+        if not quant or qt <= 0 or qt < create.product_uom_qty:
             raise ValidationError(_('There is no product in your stock or not enough!'))
         if not create.cash_payment and not create.card_payment:
             raise ValidationError(_('You cannot create card and cash payment with 0!'))
