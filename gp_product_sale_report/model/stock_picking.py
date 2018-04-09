@@ -63,9 +63,12 @@ class StockImmediateTransfer(models.TransientModel):
             for ml in sp.move_lines:
                 quant = self.env['stock.quant'].search([('location_id', '=', sp.location_id.id),
                                                         ('product_id', '=', ml.product_id.id)])
+                print ' QUANT___', quant
                 qty = 0
                 for q in quant:
                     qty += q.qty
+                    print ' Q>QTY___', q.qty
+                print ' TQTY___', qty
                 if qty < ml.product_uom_qty:
                     raise ValidationError(_('There is no product in your stock or not enough! %s') % ml.product_id.product_tmpl_id.name)
         return prcs
