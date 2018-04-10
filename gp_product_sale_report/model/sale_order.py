@@ -68,3 +68,17 @@ class SaleOrder(models.Model):
                         wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
                         wiz.process()
                         print'Automat confirmed of Stock Picking'
+
+class Cash(models.Model):
+    _inherit = "cash"
+
+    amount = fields.Float('Amount', compute="_compute_total_amount", store=True)
+
+    @api.depends('amount')
+    def _compute_total_amount(self):
+        tamt = 0
+        for obj in self:
+            for oh in obj.history:
+                tamt += oh.amount
+        return tamt
+
