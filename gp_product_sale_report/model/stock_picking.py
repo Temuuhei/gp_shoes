@@ -56,7 +56,7 @@ class StockImmediateTransfer(models.TransientModel):
 
     @api.multi
     def process(self):
-        prcs = super(StockImmediateTransfer, self).process()
+
         ctx = self.env.context.copy()
 
         if 'active_id' in ctx:
@@ -73,4 +73,5 @@ class StockImmediateTransfer(models.TransientModel):
                 print ' TQTY___', qty
                 if qty < ml.product_uom_qty:
                     raise ValidationError(_('There is no product in your stock or not enough! %s') % ml.product_id.product_tmpl_id.name)
+        prcs = super(StockImmediateTransfer, self).process()
         return prcs
