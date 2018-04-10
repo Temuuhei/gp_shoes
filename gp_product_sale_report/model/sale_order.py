@@ -74,11 +74,11 @@ class Cash(models.Model):
 
     amount = fields.Float('Amount', compute="_compute_total_amount", store=True)
 
-    @api.depends('amount')
+    @api.depends('history.amount')
     def _compute_total_amount(self):
-        tamt = 0
         for obj in self:
+            tamt = 0
             for oh in obj.history:
                 tamt += oh.amount
-        return tamt
+            obj.amount = tamt
 
