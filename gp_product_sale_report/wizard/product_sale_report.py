@@ -94,7 +94,7 @@ class ProductSaleReport(models.TransientModel):
                                    pt.name,
                                    pt.list_price,
                                    pt.id
-                                   ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
+                                ORDER BY pt.id"""
                          % (location, location, initial_date_where,
                             location, location, initial_date_where,
                             self.stock_warehouse.lot_stock_id.id))
