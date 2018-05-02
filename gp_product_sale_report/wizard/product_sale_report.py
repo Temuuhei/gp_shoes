@@ -128,10 +128,33 @@ class ProductSaleReport(models.TransientModel):
         if data_quant and so_pid_tid:
             for spt in so_pid_tid:
                 if spt['product_id'] not in dq_pids:
+                    idx = 0
                     for dq in data_quant:
                         if spt['product_tmpl_id'] == dq['tmpl']:
-                            dq_index = data_quant.index[dq]
-                            data_quant.insert(dq_index, {'product_id': spt['product_id'], 'tmpl': spt['product_tmpl_id']})
+                            # dq_index = data_quant.index[dq]
+                            product_obj_xd = self.env['product.product'].browse(spt['product_id'])
+                            self._cr.execute("""SELECT name FROM product_attribute_value pav
+                                                                               JOIN product_attribute_value_product_product_rel pavr
+                                                                                   ON pavr.product_attribute_value_id = pav.id
+                                                                           WHERE pavr.product_product_id = %s
+                                                                               ORDER BY pav.id ASC LIMIT 1""" % str(product_obj_xd.id))
+                            product_atrr_xd = self._cr.dictfetchall()
+                            data_quant.insert(idx, {'product_id': product_obj_xd.id,
+                                                    'code': product_obj_xd.default_code,
+                                                    'name': product_obj_xd.product_tmpl_id.name,
+                                                    'color': product_obj_xd.product_tmpl_id.id,
+                                                    'cost': product_obj_xd.product_tmpl_id.standard_price,
+                                                    'quantity': 0,
+                                                    'price': product_obj_xd.product_tmpl_id.main_price,
+                                                    'tmpl': product_obj_xd.product_tmpl_id.id,
+                                                    'template': product_obj_xd.product_tmpl_id.id,
+                                                    'barcode': product_obj_xd.product_tmpl_id.barcode,
+                                                    'main_price': product_obj_xd.product_tmpl_id.main_price,
+                                                    'size': product_atrr_xd[0]['name'],
+                                                    'firstqty': 0
+                                                    })
+                            break
+                        idx += 1
 
         # if data_quant:
         #     for de in data_quant:
