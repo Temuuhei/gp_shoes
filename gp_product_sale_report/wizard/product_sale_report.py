@@ -100,6 +100,39 @@ class ProductSaleReport(models.TransientModel):
                             self.stock_warehouse.lot_stock_id.id))
         data_quant = self._cr.dictfetchall()
 
+        self._cr.execute("""SELECT pp.id AS product_id,
+                                   pt.id AS product_tmpl_id
+                                    FROM sale_order AS so
+                                        JOIN sale_order_line AS sol
+                                           ON sol.order_id = so.id
+                                        JOIN stock_picking AS sp
+                                           ON sp.group_id = so.procurement_group_id
+                                        JOIN stock_move AS sm
+                                           ON sm.picking_id = sp.id
+                                        JOIN product_product AS pp
+                                           ON pp.id = sm.product_id
+                                        JOIN product_template AS pt
+                                           ON pt.id = pp.product_tmpl_id
+                                    WHERE so.state = 'sale'
+                                      AND sp.state = 'done'
+                                      AND so.warehouse_id = %s %s
+                                    GROUP BY pp.id, pt.id"""
+                         % (self.stock_warehouse.id, where_date_so))
+        so_pid_tid = self._cr.dictfetchall()
+
+        dq_pids = []
+        if data_quant:
+            for dq1 in data_quant:
+                dq_pids.append(dq1['product_id'])
+
+        if data_quant and so_pid_tid:
+            for spt in so_pid_tid:
+                if spt['product_id'] not in dq_pids:
+                    for dq in data_quant:
+                        if spt['product_tmpl_id'] == dq['tmpl']:
+                            dq_index = data_quant.index[dq]
+                            data_quant.insert(dq_index, {'product_id': spt['product_id'], 'tmpl': spt['product_tmpl_id']})
+
         # if data_quant:
         #     for de in data_quant:
         #         self._cr.execute("""SELECT query.product_id as prod,
