@@ -113,7 +113,7 @@ class StockProductInitial(models.TransientModel):
                             }
                             # print'\n\n\n\n Values',values_pro_tmp
                             product_tmpl_id = product_tmpl_obj.create(values_pro_tmp)
-                            self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
+                            # self._cr.execute(""" delete from product_product where id = %s """ % product_obj.search([('product_tmpl_id', '=', product_tmpl_id.id)]).id)
                             print 'Барааны код олдоогүй ба шууд үүсгэсэн Produc Template 1 ------------------>',product_tmpl_id,str(row[0].value)
                         else:
                             product_tmpl_id = exist_pt
