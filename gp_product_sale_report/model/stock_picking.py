@@ -72,6 +72,6 @@ class StockImmediateTransfer(models.TransientModel):
                     print ' Q>QTY___', q.qty
                 print ' TQTY___', qty
                 if qty < ml.product_uom_qty:
-                    raise ValidationError(_('There is no product in your stock or not enough! %s') % ml.product_id.name_get())
+                    raise ValidationError(_(u'Танай агуулахад тухайн бараа байхгүй байна! : %s') % ml.product_id.name_get())
         prcs = super(StockImmediateTransfer, self).process()
         return prcs
