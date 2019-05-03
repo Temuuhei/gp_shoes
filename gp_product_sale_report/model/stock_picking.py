@@ -27,7 +27,26 @@ class StockPicking(models.Model):
                                           'location_id': object.location_id.id,
                                           'location_dest_id': object.location_dest_id.id})
 
+    @api.multi
+    def action_confirm(self):
 
+        self.filtered(lambda picking: not picking.move_lines).write({'launch_pack_operations': True})
+        # TDE CLEANME: use of launch pack operation, really useful ?
+        self.mapped('move_lines').filtered(lambda move: move.state == 'draft').action_confirm()
+        self.filtered(lambda picking: picking.location_id.usage in (
+        'supplier', 'inventory', 'production')).force_assign()
+        for ml in self.move_lines:
+            quant = self.env['stock.quant'].search([('location_id', '=', self.location_id.id),
+                                                    ('product_id', '=', ml.product_id.id)])
+            print ' QUANT___', quant
+            qty = 0
+            for q in quant:
+                qty += q.qty
+                print ' Q>QTY___', q.qty
+            print ' TQTY___', qty
+            if qty < ml.product_uom_qty:
+                raise ValidationError(_(u'Танай агуулахад тухайн бараа байхгүй байна! : %s') % ml.product_id.name_get())
+        return True
 # class StockMove(models.Model):
 #     _inherit = "stock.move"
 
