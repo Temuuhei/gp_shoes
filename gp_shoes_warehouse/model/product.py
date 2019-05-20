@@ -73,7 +73,7 @@ class ProductProduct(models.Model):
                 if not variant == "":
                     variant += ", "
                 variant= variant + i.name
-            name = "%s %s (%s)" % (product.name,product.default_code, variant) or product.name
+            name = "%s %s (%s) [%s]" % (product.name,product.default_code, variant, product.new_barcode) or product.name
             sellers = []
             if partner_ids:
                 sellers = [x for x in product.seller_ids if (x.name.id in partner_ids) and (x.product_id == product)]
@@ -82,7 +82,7 @@ class ProductProduct(models.Model):
             if sellers:
                 for s in sellers:
                     seller_variant = s.product_name and (
-                        variant and "%s %s (%s)" % (s.product_name,s.default_code, variant) or s.product_name
+                        variant and "%s %s (%s) [%s]" % (s.product_name,s.default_code, variant, s.new_barcode) or s.product_name
                         ) or False
                     mydict = {
                               'id': product.id,
