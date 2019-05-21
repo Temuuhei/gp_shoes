@@ -31,7 +31,7 @@ class ProductProduct(models.Model):
     def _compute_default_code_r(self):
         for order in self:
             order.default_code_r = order.default_code.split('-')[0]
-            print 'order.default_code_r',order.default_code_r
+            print 'order.default_code_r',order.default_code_r,order.default_code,order.id
     # _sql_constraints = [
     #     ('old_code', 'unique(old_code)', "Another product already exists with this old code number!"),
     # ]
