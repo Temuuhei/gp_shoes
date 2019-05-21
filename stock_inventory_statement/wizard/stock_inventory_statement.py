@@ -844,7 +844,7 @@ class stock_inventory_statement(models.Model):
                             for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                                 row = ['<str>%s.%s</str>' % (number, count)]
                                 if wiz['ean']:
-                                    row += [u'<str>%s</str>' % (prod['ean13'] or '')]
+                                    row += [u'<int>%s</int>' % (prod['ean13'] or '')]
                                 temka = []
                                 value = self.env['product.attribute.value'].browse(prod['attribute_value_ids'])
                                 if value:
@@ -1446,9 +1446,18 @@ class stock_inventory_statement(models.Model):
                     row = []
                     rrowx = 0
                     #I edited here =)
+                    old = '1-11'
+                    int_new = old.replace("-", "")
+                    print 'int_new',int_new
                     prodd = product_obj.browse(prod_ids)
-                    prods = dict([(x['id'], x) for x in prodd.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price','attribute_value_ids'])])
-                    for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
+                    prods = dict([(x['id'], x) for x in prodd.read(['default_code_r','ean13', 'name', 'default_code','uom_id', 'standard_price','attribute_value_ids'])])
+                    # print '2222222',prods.values()
+                    # one = sorted(prods.values(), key=itemgetter(wiz['sorting']))
+                    mylist = sorted(prods.values(), key=lambda v: (v['default_code_r'],int(v['default_code'].split("-")[1])))
+                    # print 'one',mylist
+                    # mylist = sorted(one, key=lambda k:  (k['default_code'], len(k['default_code'])))
+                    # print 'my_list',mylist
+                    for prod in mylist:
                         temka=[]
                         if prod['id'] == 1951:
                             aa = True
@@ -1463,7 +1472,7 @@ class stock_inventory_statement(models.Model):
                         #         Хэмжих нэгж хэрэггүй барааны шинж харна гэсэн болохоор доорх мөрийг коммент болгож өөрчлөлт хийв
                         # row[rrowx] += [u'<space/><space/>%s [%s] [%s]' % ( (prod['name'] or ''),(prod['default_code'] or ''),(str(temka).strip('[]'))),
                                 # u'<c>%s</c>' % (prod['uom_id'][1])]
-                        row[rrowx] += [u'<space/><space/>%s [%s]' % (
+                        row[rrowx] += [u'<space/><space/>%s (%s)' % (
                         (prod['name'] or ''), (prod['default_code'] or '')),
                                        u'<c>%s</c>' % (str(temka).strip('[]'))]
 
