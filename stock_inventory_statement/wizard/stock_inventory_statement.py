@@ -1446,9 +1446,6 @@ class stock_inventory_statement(models.Model):
                     row = []
                     rrowx = 0
                     #I edited here =)
-                    old = '1-11'
-                    int_new = old.replace("-", "")
-                    print 'int_new',int_new
                     prodd = product_obj.browse(prod_ids)
                     prods = dict([(x['id'], x) for x in prodd.read(['default_code_r','ean13', 'name', 'default_code','uom_id', 'standard_price','attribute_value_ids'])])
                     # print '2222222',prods.values()
