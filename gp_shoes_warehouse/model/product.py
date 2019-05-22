@@ -166,9 +166,9 @@ class ProductTemplate(models.Model):
     barcode = fields.Char('Barcode', related='product_variant_ids.new_barcode', store=True)
     main_price = fields.Float('Main price', default=0)
 
-    _sql_constraints = [
-        ('barcode_uniq', 'unique(barcode)', 'Баркод код давтагдашгүй байх ёстой !'),
-    ]
+    # _sql_constraints = [
+    #     ('barcode_uniq', 'unique(barcode)', 'Баркод код давтагдашгүй байх ёстой !'),
+    # ]
 
     @api.multi
     def create_variant_ids(self):
