@@ -28,7 +28,7 @@ class CashManagement(models.TransientModel):
             cash = self.env['cash'].browse(context.get('active_id'))
             for wizard in self:
                 cash.amount += wizard.amount
-                self.env['cash.history'].create({
+                created_in = self.env['cash.history'].create({
                     'parent_id':cash.id,
                     'amount':wizard.amount,
                     'remaining_amount': cash.amount,
@@ -38,15 +38,17 @@ class CashManagement(models.TransientModel):
                     'action':'in'
 
                 })
+            if created_in:
+                cash.amount = created_in.remaining_amount
 
-        elif self._context.get('take_out', False):
+        if self._context.get('take_out', False):
             cash = self.env['cash'].browse(context.get('active_id'))
             for wizard in self:
                 if cash.amount < wizard.amount:
                     raise UserError(
                         _('Not enough money in the cash register.'))
                 cash.amount -= wizard.amount
-                self.env['cash.history'].create({
+                created_out = self.env['cash.history'].create({
                     'parent_id': cash.id,
                     'amount': wizard.amount,
                     'remaining_amount': cash.amount,
@@ -56,5 +58,7 @@ class CashManagement(models.TransientModel):
                     'action': 'out'
 
                 })
+            if created_out:
+                cash.amount = created_out.remaining_amount
 
         return True
