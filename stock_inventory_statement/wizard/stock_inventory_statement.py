@@ -1450,7 +1450,7 @@ class stock_inventory_statement(models.Model):
                     prods = dict([(x['id'], x) for x in prodd.read(['default_code_r','ean13', 'name', 'default_code','uom_id', 'standard_price','attribute_value_ids'])])
                     # print '2222222',prods.values()
                     # one = sorted(prods.values(), key=itemgetter(wiz['sorting']))
-                    mylist = sorted(prods.values(), key=lambda v: (v['default_code_r'],int(v['default_code'].split("-")[1])))
+                    mylist = sorted(prods.values(), key=lambda v: (v['default_code_r'],int(v['default_code'].split("-")[1]),v['attribute_value_ids']))
                     # print 'one',mylist
                     # mylist = sorted(one, key=lambda k:  (k['default_code'], len(k['default_code'])))
                     # print 'my_list',mylist
