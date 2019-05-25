@@ -49,7 +49,7 @@ class stock_inventory_statement(models.Model):
     warehouse_ids = fields.Many2many('stock.warehouse', 'stock_inventory_statement_warehouse_rel', 'wizard_id', 'warehouse_id', 'Warehouse')
     prod_categ_ids = fields.Many2many('product.category', 'stock_inventory_statement_prod_categ_rel', 'wizard_id', 'prod_categ_id', 'Product Category')  # domain=['|',('parent_id','=',False),('parent_id.parent_id','=',False)]),
     product_ids = fields.Many2many('product.product', 'stock_inventory_statement_product_rel', 'wizard_id', 'product_id', 'Product')
-    income_expense = fields.Boolean('Show Income and Expenditure?')
+    income_expense = fields.Boolean(u'Орлого зарлага', default = True)
     partner_ids = fields.Many2many('res.partner', 'stock_inventory_statement_partner_rel', 'wizard_id', 'partner_id', 'Partner')
     grouping = fields.Selection(get_group_by, 'Grouping')
     sorting = fields.Selection([('default_code', 'Default Code'),
@@ -67,19 +67,7 @@ class stock_inventory_statement(models.Model):
     def _get_warehouse(self, cr, uid, context=None):
         user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
         return (user.allowed_warehouses and map(lambda x: x.id, user.allowed_warehouses)) or []
-    #
-    # _defaults = {
-    #     'company_id': lambda obj, cr, uid, c: obj.pool.get('res.company')._company_default_get(cr, uid, 'stock.inventory.report'),
-    #     'date_to': lambda *a: time.strftime('%Y-%m-%d'),
-    #     'date_from': lambda *a: time.strftime('%Y-%m-01'),
-    #     'income_expense': False,
-    #     'sorting': 'default_code',
-    #     'pos_install': _get_pos_install,
-    #     'cost': False,
-    #     'ean': True,
-    #     # 'warehouse_ids': _get_warehouse,
-    #     'type': 'detail'
-    # }
+
 
     def get_log_message(self, cr, uid, ids, context=None):
         form = self.browse(cr, uid, ids[0], context=context)
@@ -840,7 +828,6 @@ class stock_inventory_statement(models.Model):
                                 prods = product_obj.search([('id', 'in', prod_ids), ('pos_categ_id', '=', val['group_id'])])
                             pro = product_obj.browse(prod_ids)
                             prods = dict([(x['id'], x) for x in pro.read(['name', 'default_code', 'uom_id','attribute_value_ids'])])
-
                             for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                                 row = ['<str>%s.%s</str>' % (number, count)]
                                 if wiz['ean']:
@@ -923,9 +910,11 @@ class stock_inventory_statement(models.Model):
                                 count += 1
                         number += 1
                 else:
+                    print '22222222222222222222222222222'
                     pro = product_obj.browse(prod_ids)
-                    prods = dict([(x['id'], x) for x in pro.read(['name', 'default_code', 'uom_id','attribute_value_ids'])])
-                    for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
+                    prods = dict([(x['id'], x) for x in pro.read(['name', 'default_code','default_code_r', 'uom_id','attribute_value_ids'])])
+                    mylist = sorted(prods.values(), key=lambda v: (v['default_code_r'], int(v['default_code'].split("-")[1]), v['attribute_value_ids']))
+                    for prod in mylist:
                         row = ['<str>%s</str>' % (number)]
                         if wiz['ean']:
                             row += [u'<str>%s</str>' % (prod['ean13'] or '')]
