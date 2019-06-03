@@ -567,8 +567,9 @@ class StockProductInitial(models.TransientModel):
 
                                             prod_id = have.id
                                             have.cost_method = 'real'
-                                            if row[1]:
-                                                have.lst_price = row[1].value
+                                            # Барааны зарах үнийг 0 болгоод байсан учир заслаа 2019-06-03
+                                            # if row[1]:
+                                            #     have.lst_price = row[1].value
                                             if row[5]:
                                                 have.new_standard_price = row[5].value
                                             if row[7]:
