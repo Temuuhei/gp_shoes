@@ -88,6 +88,20 @@
             <field name="context">{}</field>
         </record>
 
+        <record id="view_sales_order_filter_on_grad" model="ir.ui.view">
+            <field name="name">sale.order.list.select</field>
+            <field name="model">sale.order</field>
+           <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']"  position="before">
+                    <field name="warehouse_id"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Агуулах" domain="[]" context="{'group_by':'warehouse_id'}"/>
+                    </group>
+            </xpath>
+            </field>
+        </record>
+
         <menuitem id="menu_main_so_line_gp" name= "Борлуулалтын захиалгын мөр"  sequence="3" parent = "gp_shoes_warehouse.menu_main_so_gp" action="action_sale_order_line"/>
 
 	</data>
