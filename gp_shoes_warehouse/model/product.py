@@ -249,6 +249,11 @@ class ProductTemplate(models.Model):
             if products:
                 for pro in products:
                     pro.write({'default_code': vals.get('default_code')})
+        if 'barcode' in vals:
+            products = self.env['product.product'].search([('active','=',True),('product_tmpl_id','=',self.id)])
+            if products:
+                for pro in products:
+                    pro.write({'new_barcode': vals.get('barcode')})
         res = super(ProductTemplate, self).write(vals)
         return res
 
