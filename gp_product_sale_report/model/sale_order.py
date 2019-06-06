@@ -61,12 +61,21 @@ class SaleOrder(models.Model):
                 order.write({'cash_pay': cash_amount, 'card_pay': card_amount})
                 order.action_confirm()
                 #     Борлуулалтаас үүссэн Барааны хөдөлгөөнийг шууд батлах
-                stock_picking = self.env['stock.picking'].search([('origin', '=', order.name)])
+                stock_picking = self.env['stock.picking'].search([('group_id', '=', order.procurement_group_id.id)])
                 if stock_picking:
                     for s in stock_picking:
+                        s.write({'min_date': order.date,
+                                 'date_done': order.date})
+                        stock_move = self.env['stock.move'].search(
+                            [('picking_id', '=', s.id)])
+
                         wiz_act = s.do_new_transfer()
                         wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
                         wiz.process()
+                        if stock_move:
+                            for sm in stock_move:
+                                sm.write({'date': order.date})
+                                print 'sm date',sm.date
                         print'Automat confirmed of Stock Picking'
 
 class Cash(models.Model):

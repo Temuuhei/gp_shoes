@@ -43,7 +43,7 @@ class ProductSaleReport(models.TransientModel):
             initial_date_where = " and sm.date < '%s' " % (self.date_from + ' 00:00:00')
             fm_dt = self.date_from + ' 00:00:00'
             un_dt = self.date_until + ' 23:59:59'
-            where_date_so = 'AND so.confirmation_date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
+            where_date_so = 'AND so.date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             where_date_sp = 'AND sp.min_date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             report_date += self.date_from + ' ~ ' + self.date_until
 
@@ -197,7 +197,7 @@ class ProductSaleReport(models.TransientModel):
                                            sp.origin AS origin,
                                            so.procurement_group_id AS procurement_group_id,
                                            sp.min_date AS min_date,
-                                           so.confirmation_date AS confirmation_date,
+                                           so.date AS confirmation_date,
                                            sol.qty_delivered AS qty_delivered,
                                            sol.cash_payment AS cash_payment,
                                            sol.card_payment AS card_payment,
@@ -255,6 +255,7 @@ class ProductSaleReport(models.TransientModel):
                 out_data = self._cr.dictfetchall()
 
                 # prepare data
+
                 data['code'] = each_data['code']
                 data['product'] = each_data['name']
                 data['template'] = each_data['template']
