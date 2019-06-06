@@ -205,8 +205,7 @@
                     <field name="product_uom_qty" sum="Total"/>
                     <field name="product_uom" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="product.group_uom"/>
                     <field name="location_id" invisible="1"/>
-                    <field name="create_date"/>
-                    <field name="date_expected"/>
+                    <field name="date"/>
                     <field name="picking_type_id" invisible="1"/>
                     <field name="scrapped" invisible="1"/>
                     <field name="availability" invisible="1"/>
