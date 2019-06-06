@@ -115,6 +115,11 @@ msgid "Discount Manager"
 msgstr "Хөнглөлтийн менежер"
 
 #. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_date
+msgid "Order Date"
+msgstr "Огноо"
+
+#. module: gp_shoes_sale
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_display_name
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_display_name
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_display_name

@@ -9,11 +9,21 @@
                 <xpath expr="//field[@name='payment_term_id']" position="replace">
                     <field name="payment_term_id"/>
                 </xpath>
+                 <xpath expr="//field[@name='date_order']" position="replace">
+                    <field name="date"/>
+                </xpath>
 
                 <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="date_order"/>
                     <field name="discount_manager"/>
                 </xpath>
                 <xpath expr="//field[@name='validity_date']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='confirmation_date']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_order']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//button[@name='action_confirm']" position="replace">
@@ -49,6 +59,9 @@
                 <xpath expr="//field[@name='invoice_status']" position="replace">
                     <field name="cash_pay"/>
                     <field name="card_pay"/>
+                </xpath>
+                <xpath expr="//field[@name='date_order']" position="replace">
+                    <field name="date"/>
                 </xpath>
 
                 <tree position="attributes">

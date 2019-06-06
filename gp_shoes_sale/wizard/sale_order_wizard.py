@@ -56,9 +56,11 @@ class SaleOrderCashRegister(models.TransientModel):
                       'card_pay': wizard.amount_card})
             so.action_confirm()
         #     Борлуулалтаас үүссэн Барааны хөдөлгөөнийг шууд батлах
-            stock_picking = self.env['stock.picking'].search([('origin','=', so.name)])
+            stock_picking = self.env['stock.picking'].search([('group_id','=', so.procurement_group_id)])
             if stock_picking:
-                for s in stock_picking:  
+                for s in stock_picking:
+                    s.write({'min_date':so.date,
+                             'date_done':so.date})
                     wiz_act = s.do_new_transfer()
                     wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
                     wiz.process()
