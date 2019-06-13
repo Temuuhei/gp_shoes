@@ -367,6 +367,7 @@ class ProductSaleReport(models.TransientModel):
                         dataEachPrdDict['quantity'] += d['quantity']
                         dataEachPrdDict['firstQty'] += d['firstQty']
                         dataEachPrdDict['barcode'] = d['barcode']
+                        dataEachPrdDict['price'] = d['price'] if d['price'] else 0
                         dataEachPrdDict['main_price'] = d['main_price'] if d['main_price'] else 0
                         dataEachPrdDict['dummyFirstQty'] += ", "+d['dummyFirstQty'] if dataEachPrdDict['dummyFirstQty'] else d['dummyFirstQty']
                         dataEachPrdDict['total_size_qty_detail'] += ", "+d['total_size_qty_detail'] if dataEachPrdDict['total_size_qty_detail'] else d['total_size_qty_detail']
@@ -494,7 +495,6 @@ class ProductSaleReport(models.TransientModel):
         for i in xrange(0, len(title_list)):
             sheet.write_merge(rowx, rowx, i, i, title_list[i], style_title)
         rowx += 1
-
         num = 0
         if dataLine:
             for line in dataLine:
