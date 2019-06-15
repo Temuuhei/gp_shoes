@@ -191,10 +191,12 @@ class ProductTemplate(models.Model):
             variants_to_activate = self.env['product.product']
             variants_to_unlink = self.env['product.product']
             for product_id in tmpl_id.product_variant_ids:
-                if not product_id.active and product_id.attribute_value_ids in variant_matrix:
-                    variants_to_activate |= product_id
-                elif product_id.attribute_value_ids not in variant_matrix:
+                # if not product_id.active and product_id.attribute_value_ids in variant_matrix:
+                #     variants_to_activate |= product_id
+                #elif product_id.attribute_value_ids not in variant_matrix: элийг авч өөрчлөв
+                if product_id.attribute_value_ids not in variant_matrix:
                     variants_to_unlink |= product_id
+                    variant_matrix.append(product_id.attribute_value_ids[0])
             if variants_to_activate:
                 variants_to_activate.write({'active': True})
             default_code = ''
@@ -210,32 +212,46 @@ class ProductTemplate(models.Model):
                     'attribute_value_ids': [(6, 0, variant_ids.ids)]
                 })
                 # unlink or inactive product
-                for variant in variants_to_unlink:
-                    try:
-                        with self._cr.savepoint(), tools.mute_logger('odoo.sql_db'):
-                            variant.unlink()
-                    # We catch all kind of exception to be sure that the operation doesn't fail.
-                    except (psycopg2.Error, except_orm):
-                        variant.write({'active': False})
-                        pass
+                # comment болгов эндээс доош
+                # for variant in variants_to_unlink:
+                #     try:
+                #         with self._cr.savepoint(), tools.mute_logger('odoo.sql_db'):
+                #             variant.unlink()
+                #     # We catch all kind of exception to be sure that the operation doesn't fail.
+                #     except (psycopg2.Error, except_orm):
+                #         variant.write({'active': False})
+                #         pass
             return True
 
     def action_reload_product_tmp(self):
+        print ' 123123123'
         product_obj = self.env['product.product'].search([('active','=',True)])
         product_tmp_obj = self.env['product.template']
-        for pro in product_obj:
-            if pro.default_code and pro.product_tmpl_id:
-                # float_code = int(pro.default_code)
-                print 'Default code',pro.default_code
-                # print 'Float Default code \n',float_code
-                tmp = product_tmp_obj.search([('id','=',pro.product_tmpl_id.id)])
-                if tmp and tmp.default_code == '':
-                    tmp.write({'default_code':pro.default_code})
-                else:
-                    rm = product_obj.search ([('default_code','=','')])
-                if not pro.attribute_value_ids:
-                    print 'Идэвхигүй болгож буй бараа -----',pro.name
-                    pro.write({'active': False})
+        att_obj = self.env['product.attribute']
+        att_line_oj = self.env['product.attribute.line']
+        # for pro in product_obj:
+        #     if pro.default_code and pro.product_tmpl_id:
+        #         # float_code = int(pro.default_code)
+        #         print 'Default code',pro.default_code
+        #         # print 'Float Default code \n',float_code
+        #         tmp = product_tmp_obj.search([('id','=',pro.product_tmpl_id.id)])
+        #         if tmp and tmp.default_code == '':
+        #             tmp.write({'default_code':pro.default_code})
+        #         else:
+        #             rm = product_obj.search ([('default_code','=','')])
+        #         if not pro.attribute_value_ids:
+        #             print 'Идэвхигүй болгож буй бараа -----',pro.name
+        #             pro.write({'active': False})
+        print 'product_tmp_obj',product_tmp_obj
+        for tmp in product_tmp_obj:
+            att_ids = []
+            rel_prod = product_obj.search([('product_tmpl_id', '=', tmp.id)])
+            if rel_prod:
+                print 'rel_prod',rel_prod
+                for rel in rel_prod:
+                    if rel.attribute_value_ids[0] not in att_ids:
+                        att_ids.append(rel.attribute_value_ids[0])
+                        print '\n\n',att_ids
 
                     # if rm:
                     #      rm.unlink()
