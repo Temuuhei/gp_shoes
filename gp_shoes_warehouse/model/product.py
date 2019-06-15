@@ -22,7 +22,7 @@ class ProductProduct(models.Model):
 
 
 
-    old_code = fields.Float('Old price', default=0)
+    old_code = fields.Float('Main price', default=0)
     new_standard_price = fields.Float('Standard price')
     new_barcode = fields.Char('Barcode')
     default_code_r = fields.Integer(compute='_compute_default_code_r', string='Taxes', digits=0)
@@ -34,7 +34,7 @@ class ProductProduct(models.Model):
             print 'order.default_code_r',order.default_code_r,order.default_code,order.id
     # _sql_constraints = [
     #     ('old_code', 'unique(old_code)', "Another product already exists with this old code number!"),
-    # ]
+    # ]z
 
     # @api.depends('default_code')
     # def _compute_code(self):
@@ -45,7 +45,6 @@ class ProductProduct(models.Model):
     #             for x in match:
     #                 record.old_code = x[0]
     #             print 'OLD CODE \n\n',record.old_code
-
 
 
     @api.multi
@@ -172,6 +171,7 @@ class ProductTemplate(models.Model):
 
     @api.multi
     def create_variant_ids(self):
+        print'Temkashdeeee \n\n\n'
         Product = self.env["product.product"]
         for tmpl_id in self.with_context(active_test=False):
             # adding an attribute with only one value should not recreate product
@@ -204,6 +204,9 @@ class ProductTemplate(models.Model):
                 new_variant = Product.create({
                     'product_tmpl_id': tmpl_id.id,
                     'default_code': default_code,
+                    'old_code': tmpl_id.main_price,
+                    'new_barcode': tmpl_id.barcode,
+                    'new_standard_price': tmpl_id.standard_price,
                     'attribute_value_ids': [(6, 0, variant_ids.ids)]
                 })
                 # unlink or inactive product

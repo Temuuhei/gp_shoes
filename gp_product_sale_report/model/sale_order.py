@@ -47,6 +47,7 @@ class SaleOrder(models.Model):
                             'user': self.env.uid,
                             'action': 'in'
                         })
+                        cash.amount += cash_amount
                     if cash.type == 'card' and card_amount:
                         cash.history.create({
                             'parent_id': cash.id,
@@ -57,6 +58,7 @@ class SaleOrder(models.Model):
                             'user': self.env.uid,
                             'action': 'in'
                         })
+                        cash.amount += card_amount
 
                 order.write({'cash_pay': cash_amount, 'card_pay': card_amount})
                 order.action_confirm()
@@ -81,13 +83,13 @@ class SaleOrder(models.Model):
 class Cash(models.Model):
     _inherit = "cash"
 
-    amount = fields.Float('Amount', compute="_compute_total_amount", store=True)
-
-    @api.depends('history.amount')
-    def _compute_total_amount(self):
-        for obj in self:
-            tamt = 0
-            for oh in obj.history:
-                tamt += oh.amount
-            obj.amount = tamt
+    # amount = fields.Float('Amount', compute="_compute_total_amount", store=True)
+    #
+    # @api.depends('history.amount')
+    # def _compute_total_amount(self):
+    #     for obj in self:
+    #         tamt = 0
+    #         for oh in obj.history:
+    #             tamt += oh.amount
+    #         obj.amount = tamt
 

@@ -21,6 +21,7 @@ import odoo.addons.decimal_precision as dp
 
 class cash_history(models.Model):
     _name = "cash.history"
+    _order = 'date desc'
     parent_id = fields.Many2one('cash',string = 'Parent')
     amount = fields.Float(string='Amount')
     description = fields.Char(string='Description')
