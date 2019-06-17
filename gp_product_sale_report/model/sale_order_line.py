@@ -2,28 +2,56 @@
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
+from datetime import datetime, timedelta
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
+    # Өдөрөөр салгах
+    @api.depends('order_id.date')
+    def _set_date(self):
+        res = {}
+        obj = self
+        date_object = datetime.strptime(obj.order_id.date, '%Y-%m-%d %H:%M:%S')
+        self.update({
+            'year': date_object.year,
+            'month': date_object.month,
+            'day': date_object.day
+        })
+
+    year = fields.Integer(compute=_set_date, string='Year', readonly=True, store=True)
+    month = fields.Integer(compute=_set_date, string='Month', readonly=True, store=True)
+    day = fields.Integer(compute=_set_date, string='Day', readonly=True, store=True)
     cash_payment = fields.Float('Cash payment', default=0)
     card_payment = fields.Float('Card payment', default=0)
 
     @api.onchange('cash_payment')
     def onChangeCash(self):
         for object in self:
-            limit = object.product_uom_qty * object.price_unit
-            if limit < object.cash_payment:
-                object.cash_payment = limit
-            object.card_payment = limit - object.cash_payment
+            if object.discount > 0:
+                limit = ((object.product_uom_qty * object.price_unit)*(100 - object.discount))/100
+                if limit < object.cash_payment:
+                    object.cash_payment = limit
+                object.card_payment = limit - object.cash_payment
+            else:
+                limit = object.product_uom_qty * object.price_unit
+                if limit < object.cash_payment:
+                    object.cash_payment = limit
+                object.card_payment = limit - object.cash_payment
 
     @api.onchange('card_payment')
     def onChangeCard(self):
         for object in self:
-            limit = object.product_uom_qty * object.price_unit
-            if limit < object.card_payment:
-                object.card_payment = limit
-            object.cash_payment = limit - object.card_payment
+            if object.discount > 0:
+                limit = ((object.product_uom_qty * object.price_unit)*(100 - object.discount))/100
+                if limit < object.card_payment:
+                    object.card_payment = limit
+                object.cash_payment = limit - object.card_payment
+            else:
+                limit = object.product_uom_qty * object.price_unit
+                if limit < object.card_payment:
+                    object.card_payment = limit
+                object.cash_payment = limit - object.card_payment
 
 
     @api.model

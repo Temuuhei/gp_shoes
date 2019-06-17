@@ -71,4 +71,56 @@
                 </field>
             </field>
     </record>
+
+    <record id="view_order_line_tree" model="ir.ui.view">
+            <field name="name">sale.order.line.tree</field>
+            <field name="model">sale.order.line</field>
+            <field name="arch" type="xml">
+                <tree string="Sales Order Lines" create="false">
+                    <field name="product_id" invisible="1"/>
+                    <field name="order_id"/>
+                    <field name="order_partner_id"/>
+                    <field name="name"/>
+                    <field name="salesman_id"/>
+                    <field name="cash_payment"/>
+                    <field name="card_payment"/>
+                    <field name="product_uom_qty" string="Qty"/>
+                    <field name="qty_delivered"/>
+                    <field name="qty_invoiced" invisible="1"/>
+                    <field name="qty_to_invoice" invisible="1"/>
+                    <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
+                    <field name="price_subtotal" sum="Total" widget="monetary"/>
+                </tree>
+            </field>
+        </record>
+
+         <record id="action_sale_order_line_gp" model="ir.actions.act_window">
+            <field name="name">Sale order line</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,from</field>
+              <field name="view_id" ref="view_order_line_tree"/>
+            <field name="context">{}</field>
+        </record>
+
+        <record id="view_sales_order_line_filter_gp" model="ir.ui.view">
+            <field name="name">sale.order.line.select.gp</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_sales_order_line_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="year"/>
+                    <field name="month"/>
+                    <field name="day"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Year" domain="[]" context="{'group_by':'year'}"/>
+                        <filter string="Month" domain="[]" context="{'group_by':'month'}"/>
+                        <filter string="Day" domain="[]" context="{'group_by':'day'}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    <menuitem id="menu_main_so_line_gp" name= "Борлуулалтын захиалгын мөр"  sequence="3" parent = "gp_shoes_warehouse.menu_main_so_gp" action="action_sale_order_line_gp"/>
 </odoo>
