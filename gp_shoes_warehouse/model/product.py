@@ -171,7 +171,6 @@ class ProductTemplate(models.Model):
 
     @api.multi
     def create_variant_ids(self):
-        print'Temkashdeeee \n\n\n'
         Product = self.env["product.product"]
         for tmpl_id in self.with_context(active_test=False):
             # adding an attribute with only one value should not recreate product
@@ -224,7 +223,6 @@ class ProductTemplate(models.Model):
             return True
 
     def action_reload_product_tmp(self):
-        print ' 123123123'
         product_obj = self.env['product.product'].search([('active','=',True)])
         product_tmp_obj = self.env['product.template']
         att_obj = self.env['product.attribute']
