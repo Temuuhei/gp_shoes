@@ -25,6 +25,7 @@ class ProductSaleReport(models.TransientModel):
     date_until = fields.Date('Date until', required=True)
     show_cost = fields.Boolean('Show cost')
 
+
     @api.multi
     def export_report(self):
         dataDict = {}
@@ -46,6 +47,26 @@ class ProductSaleReport(models.TransientModel):
             where_date_so = 'AND so.date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             where_date_sp = 'AND sp.min_date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             report_date += self.date_from + ' ~ ' + self.date_until
+        check_picking = []
+        self._cr.execute("""SELECT  sm.product_id AS product_id,
+                                    pt.id AS tmpl,
+                                    sm.product_uom_qty AS qty
+                                      FROM stock_picking AS sp
+                                      LEFT JOIN stock_move AS sm
+                                        ON sp.id = sm.picking_id
+                                      LEFT JOIN product_product AS pp
+                                        ON pp.id = sm.product_id
+                                      LEFT join product_template AS pt
+                                        ON pp.product_tmpl_id = pt.id
+                                      WHERE
+                                        sp.state = 'done'
+                                        AND sm.location_id = %s
+                                                                    %s"""
+                         % (self.stock_warehouse.lot_stock_id.id, where_date_sp))
+        check_picking_move = self._cr.dictfetchall()
+        if check_picking_move:
+            for s in check_picking_move:
+                check_picking.append(s['product_id'])
 
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.default_code AS code,
@@ -124,7 +145,6 @@ class ProductSaleReport(models.TransientModel):
         if data_quant:
             for dq1 in data_quant:
                 dq_pids.append(dq1['product_id'])
-
         if data_quant and so_pid_tid:
             for spt in so_pid_tid:
                 if spt['product_id'] not in dq_pids:
@@ -155,6 +175,73 @@ class ProductSaleReport(models.TransientModel):
                                                     })
                             break
                         idx += 1
+        diff = []
+        if check_picking_move and data_quant:
+            diff = (set(check_picking) - set(dq_pids))
+            #print 'DIFFERENCE', diff,len(diff)
+            if len(diff) > 0:
+                for cp in check_picking_move:
+                    if cp['product_id'] in diff:
+                        # if cp['tmpl'] == dq['tmpl']:
+                        #print 'Байхгүй барааг үүсгэж байна -----------------------------------------------------'
+                        product_obj_no = self.env['product.product'].browse(cp['product_id'])
+                        self._cr.execute("""SELECT name FROM product_attribute_value pav
+                                                                                           JOIN product_attribute_value_product_product_rel pavr
+                                                                                               ON pavr.product_attribute_value_id = pav.id
+                                                                                       WHERE pavr.product_product_id = %s
+                                                                                           ORDER BY pav.id ASC LIMIT 1""" % str(product_obj_no.id))
+                        product_atrr_xd = self._cr.dictfetchall()
+                        #print '----------------',product_atrr_xd
+                        idx = 0
+                        for dq in data_quant:
+                            if dq['tmpl'] == product_obj_no.product_tmpl_id.id and dq['product_id'] != product_obj_no.id:
+                                dq.update({'product_id': product_obj_no.id,
+                                                             'code': product_obj_no.default_code,
+                                                             'name': product_obj_no.product_tmpl_id.name,
+                                                             'color': product_obj_no.product_tmpl_id.id,
+                                                             'cost': product_obj_no.product_tmpl_id.standard_price,
+                                                             'quantity': cp['qty'],
+                                                             'price': product_obj_no.product_tmpl_id.main_price,
+                                                             'tmpl': product_obj_no.product_tmpl_id.id,
+                                                             'template': product_obj_no.product_tmpl_id.id,
+                                                             'barcode': product_obj_no.product_tmpl_id.barcode,
+                                                             'main_price': product_obj_no.product_tmpl_id.main_price,
+                                                             'size': product_atrr_xd[0]['name'],
+                                                             'firstqty': cp['qty']
+                                                             })
+
+                                break
+                    idx += 1
+                #print 'IDX \n\n\n',idx
+                    # for cp in check_picking_move:
+                    #     if cp['product_id'] not in dq_pids:
+                    #         idx = 0
+                    #         for dq in data_quant:
+                    #             if cp['tmpl'] == dq['tmpl']:
+                    #                 # dq_index = data_quant.index[dq]
+                    #                 product_obj_xd = self.env['product.product'].browse(spt['product_id'])
+                    #                 self._cr.execute("""SELECT name FROM product_attribute_value pav
+                    #                                                                    JOIN product_attribute_value_product_product_rel pavr
+                    #                                                                        ON pavr.product_attribute_value_id = pav.id
+                    #                                                                WHERE pavr.product_product_id = %s
+                    #                                                                    ORDER BY pav.id ASC LIMIT 1""" % str(product_obj_xd.id))
+                    #                 product_atrr_xd = self._cr.dictfetchall()
+                    #                 data_quant.insert(idx, {'product_id': product_obj_xd.id,
+                    #                                         'code': product_obj_xd.default_code,
+                    #                                         'name': product_obj_xd.product_tmpl_id.name,
+                    #                                         'color': product_obj_xd.product_tmpl_id.id,
+                    #                                         'cost': product_obj_xd.product_tmpl_id.standard_price,
+                    #                                         'quantity': cp['qty'],
+                    #                                         'price': product_obj_xd.product_tmpl_id.main_price,
+                    #                                         'tmpl': product_obj_xd.product_tmpl_id.id,
+                    #                                         'template': product_obj_xd.product_tmpl_id.id,
+                    #                                         'barcode': product_obj_xd.product_tmpl_id.barcode,
+                    #                                         'main_price': product_obj_xd.product_tmpl_id.main_price,
+                    #                                         'size': product_atrr_xd[0]['name'],
+                    #                                         'firstqty': cp['qty']
+                    #                                         })
+                    #                 break
+                    #             idx += 1
 
         # if data_quant:
         #     for de in data_quant:
@@ -225,6 +312,7 @@ class ProductSaleReport(models.TransientModel):
                 if so_pickings:
                     where_out = 'AND sp.id not in (%s)' % ', '.join(map(repr, tuple(so_pickings)))
 
+
                 self._cr.execute("""SELECT sp.name AS name,
                                            sp.min_date AS min_date,
                                            sm.product_uom_qty AS in_qty,
@@ -239,7 +327,8 @@ class ProductSaleReport(models.TransientModel):
                                  % (self.stock_warehouse.lot_stock_id.id, each_data['product_id'], where_date_sp))
                 in_data = self._cr.dictfetchall()
 
-                self._cr.execute("""SELECT sp.name AS name,
+                self._cr.execute("""SELECT sp.id AS spid,
+                                           sp.name AS name,
                                            sp.min_date AS min_date,
                                            sm.product_uom_qty AS out_qty,
                                            sm.product_id AS product_id

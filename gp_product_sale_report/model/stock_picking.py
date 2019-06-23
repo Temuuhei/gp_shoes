@@ -15,7 +15,9 @@ class StockPicking(models.Model):
         for object in self:
             products = product.search([('product_tmpl_id', '=', object.product_template.id)])
             move_products = []
-            if products:
+            if not object.mind_date:
+                raise ValidationError(_(u'Та товлогдсон огноо талбарыг сонгоно уу! '))
+            if products and object.min_date:
                 for m in object.move_lines:
                     move_products.append(m.product_id.id)
                 for p in products:
@@ -23,9 +25,12 @@ class StockPicking(models.Model):
                         object.move_lines.create({'picking_id': object.id,
                                           'name': p.product_tmpl_id.name,
                                           'product_id': p.id,
+                                          'date': object.min_date,
+                                          'create_date': object.min_date,
                                           'product_uom': p.product_tmpl_id.uom_id.id,
                                           'location_id': object.location_id.id,
                                           'location_dest_id': object.location_dest_id.id})
+
 
 
     @api.multi
