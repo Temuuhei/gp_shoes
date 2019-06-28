@@ -208,7 +208,7 @@ class ProductSaleReport(models.TransientModel):
                                                                  'color': product_obj_no.product_tmpl_id.id,
                                                                  'cost': product_obj_no.product_tmpl_id.standard_price,
                                                                  'quantity': cp['qty'],
-                                                                 'price': product_obj_no.product_tmpl_id.main_price,
+                                                                 'price': product_obj_no.product_tmpl_id.list_price,
                                                                  'tmpl': product_obj_no.product_tmpl_id.id,
                                                                  'template': product_obj_no.product_tmpl_id.id,
                                                                  'barcode': product_obj_no.product_tmpl_id.barcode,
@@ -337,6 +337,7 @@ class ProductSaleReport(models.TransientModel):
                     dataDate = datetime.strftime(dateFrom + timedelta(days=eachDate), '%Y-%m-%d')
                     dataDateTime = dateFrom + timedelta(days=eachDate)
                     inData = ''
+                    price = data['price']
                     if in_data:
                         for i in in_data:
                             in_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
@@ -346,9 +347,9 @@ class ProductSaleReport(models.TransientModel):
                                 inInt += i['in_qty']
                                 # total
                                 total_in += i['in_qty']
-                    data['total_size_qty_detail'] = each_data['size'] + ': ' + str(
-                        int(each_data['quantity'] + total_in))
-                    data['quantity'] = each_data['quantity'] + total_in
+                    # data['total_size_qty_detail'] = each_data['size'] + ': ' + str(
+                    #     int(each_data['quantity'] + total_in))
+                    # data['quantity'] = each_data['quantity'] + total_in
                     outData = ''
                     if out_data:
                         for i in out_data:
@@ -359,8 +360,8 @@ class ProductSaleReport(models.TransientModel):
                                 outInt += i['out_qty']
                                 # total
                                 total_out += i['out_qty']
-                    data['total_size_qty_detail'] = each_data['size'] + ': ' + str(int(each_data['quantity']-total_out))
-                    data['quantity'] = each_data['quantity'] - total_out
+                        # data['total_size_qty_detail'] = each_data['size'] + ': ' + str(int(each_data['quantity']-total_out))
+                        # data['quantity'] = each_data['quantity'] - total_out
                     data[dataDate] = {'qty_delivered': 0,
                                       'picking_name': '',
                                       'cash_payment': 0,
@@ -390,16 +391,17 @@ class ProductSaleReport(models.TransientModel):
                                 total_size = each_data['size']
                                 total_qty += soLine['qty_delivered']
                                 total_benefit += (soLine['cash_payment'] + soLine['card_payment']) - each_data_cost
-                                data['total_size_qty_detail'] = each_data['size'] + ': ' + str(
-                                    int(each_data['quantity'] - outInt))
-                                data['quantity'] = each_data['quantity'] - outInt
+
+                    data['total_size_qty_detail'] = each_data['size'] + ': ' + str(
+                        int(each_data['firstqty'] - total_qty + total_in - total_out))
+                    data['quantity'] = each_data['firstqty'] - total_qty + total_in - total_out
 
                 data['sub_total']['total_in'] = total_in
                 data['sub_total']['total_out'] = total_out
                 data['sub_total']['total_qty'] = total_qty
                 data['sub_total']['total_size'] = total_size
                 data['sub_total']['total_benefit'] = total_benefit
-                # print 'data \n',data
+                # print 'data \n З И Б',data,data['price'],data['main_price']
                 dataLine.append(data)
         # create workbook
         book = xlwt.Workbook(encoding='utf8')
