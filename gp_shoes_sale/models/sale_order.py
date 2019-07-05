@@ -53,7 +53,7 @@ class SaleOrder(models.Model):
         required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         default=_default_warehouse_id)
     date = fields.Datetime(string='Order Date', required=True, readonly=True, index=True,
-                                 states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False,default=fields.Datetime.now() + timedelta(hours=8))
+                                 states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False,default=fields.Datetime.now())
     discount_manager = fields.Many2one('res.users', string='Discount Manager')
     check_discount = fields.Boolean(compute=_check_discount, string='Check Discount')
     cash_pay = fields.Float(string='Бэлэн')
