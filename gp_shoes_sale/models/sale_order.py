@@ -13,6 +13,7 @@
 from itertools import groupby
 from datetime import datetime, timedelta
 
+import time
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
@@ -52,7 +53,7 @@ class SaleOrder(models.Model):
         required=True, readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
         default=_default_warehouse_id)
     date = fields.Datetime(string='Order Date', required=True, readonly=True, index=True,
-                                 states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False,default=fields.Datetime.now())
+                                 states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False,default=lambda *a: time.strftime(DEFAULT_SERVER_DATETIME_FORMAT) + timedelta(hours=8))
     discount_manager = fields.Many2one('res.users', string='Discount Manager')
     check_discount = fields.Boolean(compute=_check_discount, string='Check Discount')
     cash_pay = fields.Float(string='Бэлэн')
