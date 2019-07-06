@@ -13,15 +13,21 @@ class SaleOrderLine(models.Model):
         res = {}
         obj = self
         date_object = datetime.strptime(obj[0].order_id.date, '%Y-%m-%d %H:%M:%S')
+        print 'date_object',date_object,date_object.date()
         self.update({
             'year': date_object.year,
             'month': date_object.month,
-            'day': date_object.day
+            'day': date_object.day,
+            'order_date': date_object.date()
         })
 
+    warehouse_id = fields.Many2one('stock.warehouse', related='order_id.warehouse_id',
+                                    string='Warehouse', store=True, readonly=True)
+    order_date = fields.Date(compute=_set_date, string='Date', readonly=True, store=True)
     year = fields.Integer(compute=_set_date, string='Year', readonly=True, store=True)
     month = fields.Integer(compute=_set_date, string='Month', readonly=True, store=True)
     day = fields.Integer(compute=_set_date, string='Day', readonly=True, store=True)
+    date = fields.Integer(compute=_set_date, string='Day', readonly=True, store=True)
     cash_payment = fields.Float('Cash payment', default=0)
     card_payment = fields.Float('Card payment', default=0)
 

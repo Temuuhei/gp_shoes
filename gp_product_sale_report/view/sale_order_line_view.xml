@@ -109,6 +109,10 @@
             <field name="model">sale.order.line</field>
             <field name="inherit_id" ref="sale.view_sales_order_line_filter"/>
             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='order_id']" position="before">
+                 <field name="order_date"/>
+                <field name="warehouse_id"/>
+                 </xpath>
                 <xpath expr="//field[@name='product_id']" position="after">
                     <field name="year"/>
                     <field name="month"/>
@@ -117,10 +121,13 @@
                         <filter string="Year" domain="[]" context="{'group_by':'year'}"/>
                         <filter string="Month" domain="[]" context="{'group_by':'month'}"/>
                         <filter string="Day" domain="[]" context="{'group_by':'day'}"/>
+                        <filter string="Date" domain="[]" context="{'group_by':'order_date'}"/>
+                        <filter string="Warehouse" domain="[]" context="{'group_by':'warehouse_id'}"/>
                     </group>
                 </xpath>
             </field>
         </record>
+
 
     <menuitem id="menu_main_so_line_gp" name= "Борлуулалтын захиалгын мөр"  sequence="3" parent = "gp_shoes_warehouse.menu_main_so_gp" action="action_sale_order_line_gp"/>
 </odoo>
