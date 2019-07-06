@@ -13,7 +13,6 @@ class SaleOrderLine(models.Model):
         res = {}
         obj = self
         date_object = datetime.strptime(obj[0].order_id.date, '%Y-%m-%d %H:%M:%S')
-        print 'date_object',date_object,date_object.date()
         self.update({
             'year': date_object.year,
             'month': date_object.month,
