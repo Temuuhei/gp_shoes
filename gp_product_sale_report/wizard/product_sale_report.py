@@ -50,7 +50,7 @@ class ProductSaleReport(models.TransientModel):
         check_picking = []
         self._cr.execute("""SELECT  sm.product_id AS product_id,
                                     pt.id AS tmpl,
-                                    sm.product_uom_qty AS qty
+                                    sum(sm.product_uom_qty) AS qty
                                       FROM stock_picking AS sp
                                       LEFT JOIN stock_move AS sm
                                         ON sp.id = sm.picking_id
@@ -60,8 +60,9 @@ class ProductSaleReport(models.TransientModel):
                                         ON pp.product_tmpl_id = pt.id
                                       WHERE
                                         sp.state = 'done'
-                                        AND sm.location_id = %s
-                                                                    %s"""
+                                        AND sm.location_id = %s %s
+                                     GROUP BY sm.product_id,
+                                                pt.id"""
                          % (self.stock_warehouse.lot_stock_id.id, where_date_sp))
         check_picking_move = self._cr.dictfetchall()
         if check_picking_move:
@@ -120,7 +121,6 @@ class ProductSaleReport(models.TransientModel):
                             location,location,initial_date_where,
                             self.stock_warehouse.lot_stock_id.id))
         data_quant = self._cr.dictfetchall()
-        # print 'Temka \n\n\n',data_quant
 
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.id AS product_tmpl_id
@@ -179,7 +179,6 @@ class ProductSaleReport(models.TransientModel):
         diff = []
         if check_picking_move and data_quant:
             diff = (set(check_picking) - set(dq_pids))
-            # print 'DIFFERENCE', diff,len(diff)
             if len(diff) > 0:
                 for cp in check_picking_move:
                     if cp['product_id'] in diff:
@@ -196,12 +195,7 @@ class ProductSaleReport(models.TransientModel):
                         idx = 0
                         for dq in data_quant:
                             if dq['tmpl'] == product_obj_no.product_tmpl_id.id:
-                                for no in product_atrr_xd:
-                                    # if dq['size'] == no['name']:
-                                    #     dq.update({'quantity':cp['qty'],
-                                    #                'firstqty': cp['qty']})
-                                    #     break
-                                    # else:
+
                                     A = data_quant.append({'product_id': product_obj_no.id,
                                                                  'code': product_obj_no.default_code,
                                                                  'name': product_obj_no.product_tmpl_id.name,
@@ -217,28 +211,37 @@ class ProductSaleReport(models.TransientModel):
                                                                  'firstqty': cp['qty']
                                                                  })
                                     # print 'AAAAAAAAAAAAAAAAAAAAA',A
-                                break
-                                    # else:
-                                    #     B = data_quant.insert(idx,{'product_id': product_obj_no.id,
-                                    #                    'code': product_obj_no.default_code,
-                                    #                    'name': product_obj_no.product_tmpl_id.name,
-                                    #                    'color': product_obj_no.product_tmpl_id.id,
-                                    #                    'cost': product_obj_no.product_tmpl_id.standard_price,
-                                    #                    'quantity': cp['qty'],
-                                    #                    'price': product_obj_no.product_tmpl_id.main_price,
-                                    #                    'tmpl': product_obj_no.product_tmpl_id.id,
-                                    #                    'template': product_obj_no.product_tmpl_id.id,
-                                    #                    'barcode': product_obj_no.product_tmpl_id.barcode,
-                                    #                    'main_price': product_obj_no.product_tmpl_id.main_price,
-                                    #                    'size': product_atrr_xd[0]['name'],
-                                    #                    'firstqty': cp['qty']
-                                    #                    })
-                                    #     print 'BBBBBBBBBBBBBBBBBB', B
-                                    #     break
+                                    break
                         idx += 1
+
         data_quant = sorted(data_quant, key=lambda k: (int(k['code'].split("-")[0]), int(k['code'].split("-")[1])))
-
-
+        # result = {}
+        # sizes = []
+        # index = []
+        # products = []
+        # productstmps = []
+        # for i in range(len(data_quant)):
+        #     if data_quant[i]['product_id'] not in products:
+        #         sizes.append(data_quant[i]['size'])
+        #         products.append(data_quant[i]['product_id'])
+        #     else:
+        #         for dq in range(len(data_quant)):
+        #             if data_quant[dq]['product_id'] == data_quant[i]['product_id'] and dq != i:
+        #                 for da in data_quant:
+        #                     da[i].update({'quantity': dq['quantity'] + cp['qty'],
+        #                                     'firstqty': dq['firstqty'] + cp['qty']})
+        #                 del data_quant[dq]
+        #         break
+                # for data in data_quant:
+                #     print 'data \n\n 111',data
+                #     if data['size'] not in sizes:
+                #         sizes.append(data['size'])
+                #     else:
+                #         del data
+                #         break
+                # for key, value in data.items():
+                #     if value not in result.values():
+                #         result[key] = value
         if data_quant:
             for each_data in data_quant:
                 data = {}
@@ -274,8 +277,11 @@ class ProductSaleReport(models.TransientModel):
                 where_out = ''
                 so_pickings = []
                 for so in so_data:
-                    so_pickings.append(so['stock_picking_id'])
+                    if so['stock_picking_id'] not in so_pickings:
+                        so_pickings.append(so['stock_picking_id'])
+                    # print 'SO \n\n',so
                 if so_pickings:
+                    # print 'so_pickings',so_pickings
                     where_out = 'AND sp.id not in (%s)' % ', '.join(map(repr, tuple(so_pickings)))
 
 
@@ -325,7 +331,6 @@ class ProductSaleReport(models.TransientModel):
                 data['main_price'] = each_data['main_price']
                 data['total_size_qty_detail'] = each_data['size'] +': '+ str(int(each_data['quantity']))
                 data['sub_total'] = {}
-
                 total_qty = 0
                 total_size = ''
                 total_in = 0
@@ -337,7 +342,6 @@ class ProductSaleReport(models.TransientModel):
                     dataDate = datetime.strftime(dateFrom + timedelta(days=eachDate), '%Y-%m-%d')
                     dataDateTime = dateFrom + timedelta(days=eachDate)
                     inData = ''
-                    price = data['price']
                     if in_data:
                         for i in in_data:
                             in_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
@@ -360,8 +364,8 @@ class ProductSaleReport(models.TransientModel):
                                 outInt += i['out_qty']
                                 # total
                                 total_out += i['out_qty']
-                        # data['total_size_qty_detail'] = each_data['size'] + ': ' + str(int(each_data['quantity']-total_out))
-                        # data['quantity'] = each_data['quantity'] - total_out
+                                # data['total_size_qty_detail'] = each_data['size'] + ': ' + str(int(each_data['quantity']-total_out))
+                                # data['quantity'] = each_data['quantity'] - total_out
                     data[dataDate] = {'qty_delivered': 0,
                                       'picking_name': '',
                                       'cash_payment': 0,
@@ -392,6 +396,7 @@ class ProductSaleReport(models.TransientModel):
                                 total_qty += soLine['qty_delivered']
                                 total_benefit += (soLine['cash_payment'] + soLine['card_payment']) - each_data_cost
 
+                    # if data['total_size_qty_detail'] > 0 and data['quantity'] > 0:
                     data['total_size_qty_detail'] = each_data['size'] + ': ' + str(
                         int(each_data['firstqty'] - total_qty + total_in - total_out))
                     data['quantity'] = each_data['firstqty'] - total_qty + total_in - total_out
@@ -401,7 +406,7 @@ class ProductSaleReport(models.TransientModel):
                 data['sub_total']['total_qty'] = total_qty
                 data['sub_total']['total_size'] = total_size
                 data['sub_total']['total_benefit'] = total_benefit
-                # print 'data \n З И Б',data,data['price'],data['main_price']
+                # print 'data \n',data
                 dataLine.append(data)
         # create workbook
         book = xlwt.Workbook(encoding='utf8')
@@ -462,7 +467,7 @@ class ProductSaleReport(models.TransientModel):
                 if lenb == lena:
                     dataEachPrdList.append(dataEachPrdDict)
             dataLine = dataEachPrdList
-            # print 'dataLine',dataLine
+            # print 'qtyy\n',dataEachPrdDict[everyDl]['qty_delivered']
             # Daily total
             dailySubTotal = {'ttlQuant': 0, 'ttlFirstQuant': 0, 'ttlMainPrice': 0}
             dailyTotal = {}
