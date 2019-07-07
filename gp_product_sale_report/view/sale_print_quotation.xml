@@ -38,7 +38,7 @@
             height: 150px;
           }
     </style>
-    <t t-call="report.external_layout">
+    <t t-call="report.layout">
         <t t-set="doc" t-value="doc.with_context({'lang':doc.partner_id.lang})" />
         <div class="page">
             <div class="oe_structure"/>
