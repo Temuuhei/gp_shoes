@@ -20,6 +20,7 @@ This module adds product sale report by warehouse.
         'view/stock_picking.xml',
         'view/product_template.xml',
         'wizard/compare_report.xml',
+        'view/sale_print_quotation.xml',
     ],
     'installable': True,
     'application': True,
