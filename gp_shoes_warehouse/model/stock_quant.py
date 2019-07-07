@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from odoo import api, fields, models
 from odoo.tools.float_utils import float_compare, float_round
@@ -97,6 +97,14 @@ class Picking(models.Model):
         else:
             raise UserError(_('You must define a warehouse for the company: %s.') % (company_user.name,))
 
+    # @api.model
+    # def _default_date(self):
+    #     if self.location_dest_id:
+    #         min_date = datetime.now() +  timedelta(hours=(8))
+    #         print ' Temka \n\n\n\n',min_date
+    #         return min_date
+        #
+
     @api.model
     def _compute_your_picking(self):
         if self:
@@ -134,6 +142,21 @@ class Picking(models.Model):
         states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain = "[('code', '=', 'internal')]",
         default= _default_stock_picking)
     inv = fields.Boolean('Create user',compute='_compute_your_picking')
+
+
+    @api.multi
+    @api.onchange('location_dest_id','min_date')
+    def onchange_partner_id(self):
+        """
+        Update the following fields when the location_dest_id is changed:
+        - Min date
+        """
+        values = {}
+        if self.location_dest_id:
+            for a in self:
+                min_date = datetime.now()
+                values['min_date'] = min_date
+        self.update(values)
 
     @api.multi
     def do_transfer(self):
