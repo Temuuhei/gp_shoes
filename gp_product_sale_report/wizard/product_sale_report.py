@@ -41,9 +41,13 @@ class ProductSaleReport(models.TransientModel):
         where_date_so = ''
         where_date_sp = ''
         if self.date_from and self.date_until:
-            initial_date_where = " and sm.date < '%s' " % (self.date_from + ' 00:00:00')
             fm_dt = self.date_from + ' 00:00:00'
             un_dt = self.date_until + ' 23:59:59'
+            fm_dtdt = datetime.strptime(fm_dt, "%Y-%m-%d %H:%M:%S") - timedelta(hours = 8)
+            un_dtdt = datetime.strptime(un_dt, "%Y-%m-%d %H:%M:%S") - timedelta(hours = 8)
+            fm_dt = fm_dtdt.strftime("%Y-%m-%d, %H:%M:%S")
+            un_dt = un_dtdt.strftime("%Y-%m-%d, %H:%M:%S")
+            initial_date_where = " and sm.date < '%s' " % (fm_dt)
             where_date_so = 'AND so.date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             where_date_sp = 'AND sp.min_date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             report_date += self.date_from + ' ~ ' + self.date_until
