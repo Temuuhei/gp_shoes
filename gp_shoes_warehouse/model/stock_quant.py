@@ -156,7 +156,7 @@ class Picking(models.Model):
             for a in self:
                 min_date = datetime.now()
                 values['min_date'] = min_date
-        self.update(values)
+        return values
 
     @api.multi
     def do_transfer(self):
