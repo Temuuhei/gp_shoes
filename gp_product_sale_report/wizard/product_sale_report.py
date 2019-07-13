@@ -43,8 +43,8 @@ class ProductSaleReport(models.TransientModel):
         if self.date_from and self.date_until:
             fm_dt = self.date_from + ' 00:00:00'
             un_dt = self.date_until + ' 23:59:59'
-            fm_dtdt = datetime.strptime(fm_dt, "%Y-%m-%d %H:%M:%S") + timedelta(hours = 8)
-            un_dtdt = datetime.strptime(un_dt, "%Y-%m-%d %H:%M:%S") + timedelta(hours = 8)
+            fm_dtdt = datetime.strptime(fm_dt, "%Y-%m-%d %H:%M:%S") - timedelta(hours = 8)
+            un_dtdt = datetime.strptime(un_dt, "%Y-%m-%d %H:%M:%S") - timedelta(hours = 8)
             fm_dt = fm_dtdt.strftime("%Y-%m-%d, %H:%M:%S")
             un_dt = un_dtdt.strftime("%Y-%m-%d, %H:%M:%S")
             initial_date_where = " and sm.date < '%s' " % (fm_dt)
@@ -127,7 +127,8 @@ class ProductSaleReport(models.TransientModel):
         data_quant = self._cr.dictfetchall()
 
         self._cr.execute("""SELECT pp.id AS product_id,
-                                   pt.id AS product_tmpl_id
+                                   pt.id AS product_tmpl_id,
+                                   sol.qty_delivered AS qty
                                     FROM sale_order AS so
                                         JOIN sale_order_line AS sol
                                            ON sol.order_id = so.id
@@ -142,7 +143,7 @@ class ProductSaleReport(models.TransientModel):
                                     WHERE so.state = 'sale'
                                       AND sp.state = 'done'
                                       AND so.warehouse_id = %s %s
-                                    GROUP BY pp.id, pt.id"""
+                                    GROUP BY pp.id, pt.id,sol.qty_delivered"""
                          % (self.stock_warehouse.id, where_date_so))
         so_pid_tid = self._cr.dictfetchall()
 
@@ -218,34 +219,43 @@ class ProductSaleReport(models.TransientModel):
                                     break
                         idx += 1
 
+        dq_pids2 = []
+        if data_quant:
+            for dq1 in data_quant:
+                dq_pids2.append(dq1['product_id'])
+
+        if data_quant and so_pid_tid:
+            for spt in so_pid_tid:
+                if spt['product_id'] not in dq_pids2:
+                    idx = 0
+                    for dq in data_quant:
+                        if spt['product_tmpl_id'] != dq['tmpl']:
+                            # dq_index = data_quant.index[dq]
+                            product_obj_xd = self.env['product.product'].browse(spt['product_id'])
+                            self._cr.execute("""SELECT name FROM product_attribute_value pav
+                                                                               JOIN product_attribute_value_product_product_rel pavr
+                                                                                   ON pavr.product_attribute_value_id = pav.id
+                                                                           WHERE pavr.product_product_id = %s
+                                                                               ORDER BY pav.id ASC LIMIT 1""" % str(product_obj_xd.id))
+                            product_atrr_xd = self._cr.dictfetchall()
+                            data_quant.append(      {'product_id': product_obj_xd.id,
+                                                    'code': product_obj_xd.default_code,
+                                                    'name': product_obj_xd.product_tmpl_id.name,
+                                                    'color': product_obj_xd.product_tmpl_id.id,
+                                                    'cost': product_obj_xd.product_tmpl_id.standard_price,
+                                                    'quantity': spt['qty'],
+                                                    'price': product_obj_xd.product_tmpl_id.main_price,
+                                                    'tmpl': product_obj_xd.product_tmpl_id.id,
+                                                    'template': product_obj_xd.product_tmpl_id.id,
+                                                    'barcode': product_obj_xd.product_tmpl_id.barcode,
+                                                    'main_price': product_obj_xd.product_tmpl_id.main_price,
+                                                    'size': product_atrr_xd[0]['name'],
+                                                    'firstqty': spt['qty']
+                                                    })
+                            break
+                        idx += 1
         data_quant = sorted(data_quant, key=lambda k: (int(k['code'].split("-")[0]), int(k['code'].split("-")[1])))
-        # result = {}
-        # sizes = []
-        # index = []
-        # products = []
-        # productstmps = []
-        # for i in range(len(data_quant)):
-        #     if data_quant[i]['product_id'] not in products:
-        #         sizes.append(data_quant[i]['size'])
-        #         products.append(data_quant[i]['product_id'])
-        #     else:
-        #         for dq in range(len(data_quant)):
-        #             if data_quant[dq]['product_id'] == data_quant[i]['product_id'] and dq != i:
-        #                 for da in data_quant:
-        #                     da[i].update({'quantity': dq['quantity'] + cp['qty'],
-        #                                     'firstqty': dq['firstqty'] + cp['qty']})
-        #                 del data_quant[dq]
-        #         break
-                # for data in data_quant:
-                #     print 'data \n\n 111',data
-                #     if data['size'] not in sizes:
-                #         sizes.append(data['size'])
-                #     else:
-                #         del data
-                #         break
-                # for key, value in data.items():
-                #     if value not in result.values():
-                #         result[key] = value
+
         if data_quant:
             for each_data in data_quant:
                 data = {}
@@ -348,7 +358,7 @@ class ProductSaleReport(models.TransientModel):
                     inData = ''
                     if in_data:
                         for i in in_data:
-                            in_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
+                            in_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S') + timedelta(hours=8)
                             in_dt = in_dt.replace(hour=00, minute=00, second=00)
                             if in_dt == dataDateTime:
                                 inData += ',\n%s: %s' % (i['name'], i['in_qty']) if inData else '%s: %s' % (i['name'], i['in_qty'])
@@ -361,7 +371,7 @@ class ProductSaleReport(models.TransientModel):
                     outData = ''
                     if out_data:
                         for i in out_data:
-                            out_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
+                            out_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S') + timedelta(hours=8)
                             out_dt = out_dt.replace(hour=00, minute=00, second=00)
                             if out_dt == dataDateTime:
                                 outData += ',\n%s: %s' % (i['name'], i['out_qty']) if outData else '%s: %s' % (i['name'], i['out_qty'])
@@ -382,7 +392,7 @@ class ProductSaleReport(models.TransientModel):
                                       'outInt': outInt}
                     if so_data:
                         for soLine in so_data:
-                            dt = datetime.strptime(soLine['confirmation_date'], '%Y-%m-%d %H:%M:%S')
+                            dt = datetime.strptime(soLine['confirmation_date'], '%Y-%m-%d %H:%M:%S') + timedelta(hours=8)
                             dt = dt.replace(hour=00, minute=00, second=00)
                             if soLine['order_name'] == soLine['origin'] and dt == dataDateTime and soLine['product_id'] == each_data['product_id']:
                                 each_data_cost = each_data['cost'] if each_data['cost'] else 0
