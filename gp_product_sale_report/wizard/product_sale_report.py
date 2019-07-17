@@ -244,7 +244,7 @@ class ProductSaleReport(models.TransientModel):
                                                     'color': product_obj_xd.product_tmpl_id.id,
                                                     'cost': product_obj_xd.product_tmpl_id.standard_price,
                                                     'quantity': spt['qty'],
-                                                    'price': product_obj_xd.product_tmpl_id.main_price,
+                                                    'price': product_obj_xd.product_tmpl_id.list_price,
                                                     'tmpl': product_obj_xd.product_tmpl_id.id,
                                                     'template': product_obj_xd.product_tmpl_id.id,
                                                     'barcode': product_obj_xd.product_tmpl_id.barcode,
