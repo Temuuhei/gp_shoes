@@ -102,7 +102,7 @@ class SaleChangeDate(models.TransientModel):
         return len(self._context.get('active_ids', []))
 
 
-    date = fields.Datetime(string='New Datetime')
+    date = fields.Datetime(string='New Datetime',required = True)
     count = fields.Integer(default=_count, string='# of Orders')
 
     @api.multi
