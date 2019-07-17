@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, _
-from datetime import datetime
+from datetime import datetime, timedelta
 from odoo.exceptions import UserError
 
 class SaleOrder(models.Model):
@@ -92,4 +92,42 @@ class Cash(models.Model):
     #         for oh in obj.history:
     #             tamt += oh.amount
     #         obj.amount = tamt
+
+class SaleChangeDate(models.TransientModel):
+    _name = "sale.change.date"
+    _description = "Sales Change Date"
+
+    @api.model
+    def _count(self):
+        return len(self._context.get('active_ids', []))
+
+
+    date = fields.Datetime(string='New Datetime')
+    count = fields.Integer(default=_count, string='# of Orders')
+
+    @api.multi
+    def change_date(self):
+        pickings = self.env['stock.picking']
+        moves = self.env['stock.move']
+        date_object = datetime.strptime(self.date, '%Y-%m-%d %H:%M:%S') + timedelta(hours = 8)
+        sale_orders = self.env['sale.order'].browse(self._context.get('active_ids', []))
+        if sale_orders:
+            if self.date:
+                for s in sale_orders:
+                    s.update({'date': self.date})
+                    for l in s.order_line:
+                        l.update({'order_date': date_object.date()})
+                    pick = pickings.search([('group_id', '=', s.procurement_group_id.id)])
+                    if pick:
+                        for p in pick:
+                            p.update({'min_date':self.date,
+                                      'date_done': self.date})
+                            move_obj = moves.search([('picking_id', '=', p.id)])
+                            if move_obj:
+                                for m in move_obj:
+                                    m.update({'date':self.date})
+            else:
+                raise UserError(_(
+                    'Please you select change date'))
+        return {'type': 'ir.actions.act_window_close'}
 

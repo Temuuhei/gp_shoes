@@ -130,4 +130,46 @@
 
 
     <menuitem id="menu_main_so_line_gp" name= "Борлуулалтын захиалгын мөр"  sequence="3" parent = "gp_shoes_warehouse.menu_main_so_gp" action="action_sale_order_line_gp"/>
+<!--Борлуулалтын захиалгын огноог борлуулалтын ажилтангууд буруу бөглөж байгаа нь тайланд буруу харагдаж байгаа тул огноо засах түүл бичив-->
+
+    <record id="view_sale_change_date" model="ir.ui.view">
+            <field name="name">Change Date of Orders</field>
+            <field name="model">sale.change.date</field>
+            <field name="arch" type="xml">
+                <form string="Change Date of Orders">
+                    <p class="oe_grey">
+                        You can change date of orders that already approved and shipped
+                    </p>
+                    <group>
+                        <field name="date"/>
+                    </group>
+                    <footer>
+                        <button name="change_date" string="Change Date" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_sale_change_date" model="ir.actions.act_window">
+            <field name="name">Борлуулалтын захиалгын огноог өөрчлөх</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.change.date</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <!--<field name="groups_id" eval="[(4,ref('sales_team.group_sale_salesman'))]"/>-->
+        </record>
+
+        <!-- TODO: check if we need this -->
+        <record model="ir.values" id="sale_order_change_date">
+            <field name="model_id" ref="sale.model_sale_order_line" />
+            <field name="name">Борлуулалтын захиалгын огноог өөрчлөх</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_view_sale_change_date'))" />
+            <field name="key">action</field>
+            <field name="model">sale.order</field>
+        </record>
+
 </odoo>
