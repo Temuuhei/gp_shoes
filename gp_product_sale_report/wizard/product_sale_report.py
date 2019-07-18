@@ -45,11 +45,11 @@ class ProductSaleReport(models.TransientModel):
             un_dt = self.date_until + ' 23:59:59'
             fm_dtdt = datetime.strptime(fm_dt, "%Y-%m-%d %H:%M:%S") - timedelta(hours = 8)
             un_dtdt = datetime.strptime(un_dt, "%Y-%m-%d %H:%M:%S") - timedelta(hours = 8)
-            fm_dt = fm_dtdt.strftime("%Y-%m-%d, %H:%M:%S")
-            un_dt = un_dtdt.strftime("%Y-%m-%d, %H:%M:%S")
+            fm_dt = fm_dtdt.strftime("%Y-%m-%d %H:%M:%S")
+            un_dt = un_dtdt.strftime("%Y-%m-%d %H:%M:%S")
             initial_date_where = " and sm.date < '%s' " % (fm_dt)
             where_date_so = 'AND so.date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
-            where_date_sp = 'AND sp.min_date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
+            where_date_sp = 'AND sp.min_date >= %s AND sp.min_date <= %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             report_date += self.date_from + ' ~ ' + self.date_until
         check_picking = []
         self._cr.execute("""SELECT  sm.product_id AS product_id,
@@ -72,6 +72,57 @@ class ProductSaleReport(models.TransientModel):
         if check_picking_move:
             for s in check_picking_move:
                 check_picking.append(s['product_id'])
+
+        # 0 үлдэгдэлтэй буюу ямарч хөдөлгөөн ороогүй бараа байсан эсэхийг шалгах
+        check_not_picking = []
+        self._cr.execute("""SELECT  sm.product_id AS product_id,
+                                            pt.id AS tmpl,
+                                            sum(sm.product_uom_qty) AS qty
+                                              FROM stock_picking AS sp
+                                              LEFT JOIN stock_move AS sm
+                                                ON sp.id = sm.picking_id
+                                              LEFT JOIN product_product AS pp
+                                                ON pp.id = sm.product_id
+                                              LEFT join product_template AS pt
+                                                ON pp.product_tmpl_id = pt.id
+                                              WHERE
+                                                sp.state = 'done'
+                                                AND sp.group_id is NULL
+                                                AND sm.location_id = %s %s
+                                             GROUP BY sm.product_id,
+                                                        pt.id"""
+                         % (self.stock_warehouse.lot_stock_id.id, initial_date_where))
+        check_not_picking_move = self._cr.dictfetchall()
+        if check_not_picking_move:
+            for s in check_not_picking_move:
+                check_not_picking.append(s['product_id'])
+
+        exist = []
+        self._cr.execute("""SELECT sm.product_id as smpid, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
+                                           FROM stock_move sm
+                                                JOIN product_product ppp
+                                                    ON ppp.id=sm.product_id
+                                           WHERE sm.state='done'
+                                                 AND sm.location_id not in %s
+                                                 AND sm.location_dest_id in %s
+                                                 %s
+                                           GROUP BY sm.product_id,sm.product_id,ppp.default_code
+                                          union
+                                          SELECT sm.product_id as smpid, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                           FROM stock_move sm
+                                                JOIN product_product ppp ON (ppp.id=sm.product_id)
+                                           WHERE sm.state='done'
+                                                 AND sm.location_id in %s
+                                                 AND sm.location_dest_id not in %s
+                                                 %s
+                                           GROUP BY sm.product_id,
+							sm.product_id,ppp.default_code"""
+                         % (location,location, initial_date_where,
+                            location,location, initial_date_where))
+        exist_obj = self._cr.dictfetchall()
+        if exist_obj:
+            for e in exist_obj:
+                exist.append(e['smpid'])
 
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.default_code AS code,
@@ -125,6 +176,7 @@ class ProductSaleReport(models.TransientModel):
                             location,location,initial_date_where,
                             self.stock_warehouse.lot_stock_id.id))
         data_quant = self._cr.dictfetchall()
+        # print 'data_quant',data_quant
 
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.id AS product_tmpl_id,
@@ -146,11 +198,16 @@ class ProductSaleReport(models.TransientModel):
                                     GROUP BY pp.id, pt.id,sol.qty_delivered"""
                          % (self.stock_warehouse.id, where_date_so))
         so_pid_tid = self._cr.dictfetchall()
-
+        sos = []
+        if so_pid_tid:
+            for so1 in so_pid_tid:
+                sos.append(so1['product_id'])
         dq_pids = []
         if data_quant:
             for dq1 in data_quant:
                 dq_pids.append(dq1['product_id'])
+                # if dq1['template'] == 23342:
+                #     print 'dq \n', dq1
         # if data_quant and so_pid_tid:
         #     for spt in so_pid_tid:
         #         if spt['product_id'] not in dq_pids:
@@ -200,7 +257,7 @@ class ProductSaleReport(models.TransientModel):
                         idx = 0
                         for dq in data_quant:
                             if dq['tmpl'] == product_obj_no.product_tmpl_id.id:
-
+                                if dq['product_id'] in check_not_picking and  dq['product_id'] in exist:
                                     A = data_quant.append({'product_id': product_obj_no.id,
                                                                  'code': product_obj_no.default_code,
                                                                  'name': product_obj_no.product_tmpl_id.name,
@@ -217,6 +274,24 @@ class ProductSaleReport(models.TransientModel):
                                                                  })
                                     # print 'AAAAAAAAAAAAAAAAAAAAA',A
                                     break
+                                if dq['product_id'] not in check_not_picking and dq['product_id'] not in exist:
+                                    A = data_quant.append({'product_id': product_obj_no.id,
+                                                           'code': product_obj_no.default_code,
+                                                           'name': product_obj_no.product_tmpl_id.name,
+                                                           'color': product_obj_no.product_tmpl_id.id,
+                                                           'cost': product_obj_no.product_tmpl_id.standard_price,
+                                                           'quantity': 0,
+                                                           'price': product_obj_no.product_tmpl_id.list_price,
+                                                           'tmpl': product_obj_no.product_tmpl_id.id,
+                                                           'template': product_obj_no.product_tmpl_id.id,
+                                                           'barcode': product_obj_no.product_tmpl_id.barcode,
+                                                           'main_price': product_obj_no.product_tmpl_id.main_price,
+                                                           'size': product_atrr_xd[0]['name'],
+                                                           'firstqty': 0
+                                                           })
+                                    break
+                                    # print 'AAAAAAAAAAAAAAAAAAAAA',A
+
                         idx += 1
 
         dq_pids2 = []
@@ -446,6 +521,8 @@ class ProductSaleReport(models.TransientModel):
             lena = 0
             lenb = len(dataLine)
             for d in dataLine:
+                # if d['template'] == 23342:
+                #     print 'd \n', d
                 lena += 1
                 if template:
                     if template == d['template']:
@@ -481,7 +558,7 @@ class ProductSaleReport(models.TransientModel):
                 if lenb == lena:
                     dataEachPrdList.append(dataEachPrdDict)
             dataLine = dataEachPrdList
-            # print 'qtyy\n',dataEachPrdDict[everyDl]['qty_delivered']
+            # print 'dataLine\n',dataLine
             # Daily total
             dailySubTotal = {'ttlQuant': 0, 'ttlFirstQuant': 0, 'ttlMainPrice': 0}
             dailyTotal = {}
