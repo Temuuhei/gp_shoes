@@ -198,10 +198,6 @@ class ProductSaleReport(models.TransientModel):
                                     GROUP BY pp.id, pt.id,sol.qty_delivered"""
                          % (self.stock_warehouse.id, where_date_so))
         so_pid_tid = self._cr.dictfetchall()
-        sos = []
-        if so_pid_tid:
-            for so1 in so_pid_tid:
-                sos.append(so1['product_id'])
         dq_pids = []
         if data_quant:
             for dq1 in data_quant:
