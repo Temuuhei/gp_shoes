@@ -202,7 +202,7 @@ class ProductSaleReport(models.TransientModel):
         if data_quant:
             for dq1 in data_quant:
                 dq_pids.append(dq1['product_id'])
-                # if dq1['template'] == 23342:
+                # if dq1['template'] == 24785:
                 #     print 'dq \n', dq1
         # if data_quant and so_pid_tid:
         #     for spt in so_pid_tid:
@@ -309,21 +309,38 @@ class ProductSaleReport(models.TransientModel):
                                                                            WHERE pavr.product_product_id = %s
                                                                                ORDER BY pav.id ASC LIMIT 1""" % str(product_obj_xd.id))
                             product_atrr_xd = self._cr.dictfetchall()
-                            data_quant.append(      {'product_id': product_obj_xd.id,
-                                                    'code': product_obj_xd.default_code,
-                                                    'name': product_obj_xd.product_tmpl_id.name,
-                                                    'color': product_obj_xd.product_tmpl_id.id,
-                                                    'cost': product_obj_xd.product_tmpl_id.standard_price,
-                                                    'quantity': spt['qty'],
-                                                    'price': product_obj_xd.product_tmpl_id.list_price,
-                                                    'tmpl': product_obj_xd.product_tmpl_id.id,
-                                                    'template': product_obj_xd.product_tmpl_id.id,
-                                                    'barcode': product_obj_xd.product_tmpl_id.barcode,
-                                                    'main_price': product_obj_xd.product_tmpl_id.main_price,
-                                                    'size': product_atrr_xd[0]['name'],
-                                                    'firstqty': spt['qty']
-                                                    })
-                            break
+                            if spt['product_id'] in exist:
+                                data_quant.append(      {'product_id': product_obj_xd.id,
+                                                        'code': product_obj_xd.default_code,
+                                                        'name': product_obj_xd.product_tmpl_id.name,
+                                                        'color': product_obj_xd.product_tmpl_id.id,
+                                                        'cost': product_obj_xd.product_tmpl_id.standard_price,
+                                                        'quantity': spt['qty'],
+                                                        'price': product_obj_xd.product_tmpl_id.list_price,
+                                                        'tmpl': product_obj_xd.product_tmpl_id.id,
+                                                        'template': product_obj_xd.product_tmpl_id.id,
+                                                        'barcode': product_obj_xd.product_tmpl_id.barcode,
+                                                        'main_price': product_obj_xd.product_tmpl_id.main_price,
+                                                        'size': product_atrr_xd[0]['name'],
+                                                        'firstqty': spt['qty']
+                                                        })
+                                break
+                            else:
+                                data_quant.append({'product_id': product_obj_xd.id,
+                                                   'code': product_obj_xd.default_code,
+                                                   'name': product_obj_xd.product_tmpl_id.name,
+                                                   'color': product_obj_xd.product_tmpl_id.id,
+                                                   'cost': product_obj_xd.product_tmpl_id.standard_price,
+                                                   'quantity': spt['qty'],
+                                                   'price': product_obj_xd.product_tmpl_id.list_price,
+                                                   'tmpl': product_obj_xd.product_tmpl_id.id,
+                                                   'template': product_obj_xd.product_tmpl_id.id,
+                                                   'barcode': product_obj_xd.product_tmpl_id.barcode,
+                                                   'main_price': product_obj_xd.product_tmpl_id.main_price,
+                                                   'size': product_atrr_xd[0]['name'],
+                                                   'firstqty': 0
+                                                   })
+                                break
                         idx += 1
         data_quant = sorted(data_quant, key=lambda k: (int(k['code'].split("-")[0]), int(k['code'].split("-")[1])))
 
@@ -517,7 +534,7 @@ class ProductSaleReport(models.TransientModel):
             lena = 0
             lenb = len(dataLine)
             for d in dataLine:
-                # if d['template'] == 23342:
+                # if d['template'] == 24785:
                 #     print 'd \n', d
                 lena += 1
                 if template:
