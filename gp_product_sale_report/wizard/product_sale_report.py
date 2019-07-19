@@ -98,7 +98,7 @@ class ProductSaleReport(models.TransientModel):
                 check_not_picking.append(s['product_id'])
 
         exist = []
-        self._cr.execute("""SELECT sm.product_id as smpid, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
+        self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
                                            FROM stock_move sm
                                                 JOIN product_product ppp
                                                     ON ppp.id=sm.product_id
@@ -108,21 +108,22 @@ class ProductSaleReport(models.TransientModel):
                                                  %s
                                            GROUP BY sm.product_id,sm.product_id,ppp.default_code
                                           union
-                                          SELECT sm.product_id as smpid, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                          SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
                                            FROM stock_move sm
                                                 JOIN product_product ppp ON (ppp.id=sm.product_id)
                                            WHERE sm.state='done'
                                                  AND sm.location_id in %s
                                                  AND sm.location_dest_id not in %s
                                                  %s
-                                           GROUP BY sm.product_id,
-							sm.product_id,ppp.default_code"""
+                                           GROUP BY sm.product_id,sm.product_id,ppp.default_code"""
                          % (location,location, initial_date_where,
                             location,location, initial_date_where))
         exist_obj = self._cr.dictfetchall()
         if exist_obj:
             for e in exist_obj:
-                exist.append(e['smpid'])
+                # if e['product_id'] == 72788:
+                #     print 'e \n',e
+                exist.append(e['product_id'])
 
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.default_code AS code,
@@ -202,7 +203,7 @@ class ProductSaleReport(models.TransientModel):
         if data_quant:
             for dq1 in data_quant:
                 dq_pids.append(dq1['product_id'])
-                # if dq1['template'] == 24785:
+                # if dq1['template'] == 25477:
                 #     print 'dq \n', dq1
         # if data_quant and so_pid_tid:
         #     for spt in so_pid_tid:
@@ -251,9 +252,41 @@ class ProductSaleReport(models.TransientModel):
                         product_atrr_xd = self._cr.dictfetchall()
                         # print '----------------',product_atrr_xd
                         idx = 0
+
+                        self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
+                                                                                                               FROM stock_move sm
+                                                                                                                    JOIN product_product ppp
+                                                                                                                        ON ppp.id=sm.product_id
+                                                                                                               WHERE sm.state='done'
+                                                                                                                     AND sm.location_id not in %s
+                                                                                                                     AND sm.location_dest_id in %s
+                                                                                                                     AND sm.product_id = %s
+                                                                                                                     %s
+                                                                                                               GROUP BY sm.product_id,sm.product_id,ppp.default_code
+                                                                                                              union
+                                                                                                              SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                                                                                               FROM stock_move sm
+                                                                                                                    JOIN product_product ppp ON (ppp.id=sm.product_id)
+                                                                                                               WHERE sm.state='done'
+                                                                                                                     AND sm.location_id in %s
+                                                                                                                     AND sm.location_dest_id not in %s
+                                                                                                                     AND sm.product_id = %s
+                                                                                                                     %s
+                                                                                                               GROUP BY sm.product_id,sm.product_id,ppp.default_code"""
+                                         % (location, location, product_obj_no.id, initial_date_where,
+                                            location, location, product_obj_no.id, initial_date_where))
+                        exist_obj2 = self._cr.dictfetchall()
+
+
                         for dq in data_quant:
                             if dq['tmpl'] == product_obj_no.product_tmpl_id.id:
                                 if dq['product_id'] in check_not_picking and  dq['product_id'] in exist:
+                                    if exist_obj2:
+                                        first_qty = 0.0
+                                        for e in exist_obj2:
+                                            first_qty += e['qty']
+                                        # if e['product_id'] == 72788:
+                                        #     print 'first_qty\n', first_qty
                                     A = data_quant.append({'product_id': product_obj_no.id,
                                                                  'code': product_obj_no.default_code,
                                                                  'name': product_obj_no.product_tmpl_id.name,
@@ -266,7 +299,7 @@ class ProductSaleReport(models.TransientModel):
                                                                  'barcode': product_obj_no.product_tmpl_id.barcode,
                                                                  'main_price': product_obj_no.product_tmpl_id.main_price,
                                                                  'size': product_atrr_xd[0]['name'],
-                                                                 'firstqty': cp['qty']
+                                                                 'firstqty': first_qty
                                                                  })
                                     # print 'AAAAAAAAAAAAAAAAAAAAA',A
                                     break
@@ -298,6 +331,30 @@ class ProductSaleReport(models.TransientModel):
         if data_quant and so_pid_tid:
             for spt in so_pid_tid:
                 if spt['product_id'] not in dq_pids2:
+
+                    self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
+                                                                                       FROM stock_move sm
+                                                                                            JOIN product_product ppp
+                                                                                                ON ppp.id=sm.product_id
+                                                                                       WHERE sm.state='done'
+                                                                                             AND sm.location_id not in %s
+                                                                                             AND sm.location_dest_id in %s
+                                                                                             AND sm.product_id = %s
+                                                                                             %s
+                                                                                       GROUP BY sm.product_id,sm.product_id,ppp.default_code
+                                                                                      union
+                                                                                      SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                                                                       FROM stock_move sm
+                                                                                            JOIN product_product ppp ON (ppp.id=sm.product_id)
+                                                                                       WHERE sm.state='done'
+                                                                                             AND sm.location_id in %s
+                                                                                             AND sm.location_dest_id not in %s
+                                                                                             AND sm.product_id = %s
+                                                                                             %s
+                                                                                       GROUP BY sm.product_id,sm.product_id,ppp.default_code"""
+                                     % (location, location, spt['product_id'], initial_date_where,
+                                        location, location, spt['product_id'], initial_date_where))
+                    exist_obj2 = self._cr.dictfetchall()
                     idx = 0
                     for dq in data_quant:
                         if spt['product_tmpl_id'] != dq['tmpl']:
@@ -310,6 +367,12 @@ class ProductSaleReport(models.TransientModel):
                                                                                ORDER BY pav.id ASC LIMIT 1""" % str(product_obj_xd.id))
                             product_atrr_xd = self._cr.dictfetchall()
                             if spt['product_id'] in exist:
+                                first_qty = 0.0
+                                if exist_obj2:
+                                    for e in exist_obj2:
+                                        first_qty += e['qty']
+                                    # if e['product_id'] == 81194:
+                                    #     print 'first_qty\n',first_qty
                                 data_quant.append(      {'product_id': product_obj_xd.id,
                                                         'code': product_obj_xd.default_code,
                                                         'name': product_obj_xd.product_tmpl_id.name,
@@ -322,7 +385,7 @@ class ProductSaleReport(models.TransientModel):
                                                         'barcode': product_obj_xd.product_tmpl_id.barcode,
                                                         'main_price': product_obj_xd.product_tmpl_id.main_price,
                                                         'size': product_atrr_xd[0]['name'],
-                                                        'firstqty': spt['qty']
+                                                        'firstqty': first_qty
                                                         })
                                 break
                             else:
@@ -534,7 +597,7 @@ class ProductSaleReport(models.TransientModel):
             lena = 0
             lenb = len(dataLine)
             for d in dataLine:
-                # if d['template'] == 24785:
+                # if d['template'] == 25477:
                 #     print 'd \n', d
                 lena += 1
                 if template:
