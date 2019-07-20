@@ -172,19 +172,23 @@
 
                                 </tr>
                                 <tr class="border-black">
-                                    <td><strong>Хямдрал: </strong></td>
-                                    <td class = "text-left">
-                                        <t t-set="sale" t-value="(l.price_original - l.price_subtotal)"/>
+                                    <td class = "text-left"><strong>Хөнгөлөлт: </strong></td>
+                                    <td  class="text-right">
+                                        <strong>            </strong>
+                                        <t t-set="sale" t-value="-(l.product_id.product_tmpl_id.main_price - l.price_original)"/>
                                         <span t-esc="sale" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
                                     </td>
-<!--                            <td><strong>Хямдрал</strong></td>-->
-<!--                                    -->
-<!--                            <td class="text-left">-->
-<!--                                    <span t-set="sale" t-value="l.price_original - l.price_subtotal" t-esc="sale"-->
-<!--                                    t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>-->
-<!--                            </td>-->
+                                </tr>
+                                 <tr>
+                                    <span>
+                                        <td t-if="l.price_unit != l.price_original" class="text-center" groups="sale.group_discount_per_so_line"><strong>Нэмэлт хөнгөлөлт:</strong></td>
+                                            <td  t-if="l.price_unit != l.price_original" class="text-right">
+                                                <t t-set="sale" t-if="l.price_unit != l.price_original" t-value="-(l.price_original - l.price_subtotal)"/>
+                                                <span t-esc="sale" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                                            </td>
+                                    </span>
+                                </tr>
 
-                        </tr>
                             </t>
 
                             <t t-if="(layout_category_size > 1 or page_size > 1) and layout_category['subtotal']" groups="sale.group_sale_layout">
@@ -252,7 +256,7 @@
             </div>
 
              <tr>
-                          <td><center>Манайхаар үйлчлүүлсэн танд баярлалаа :)</center></td>
+                          <td><center>Манайхаар үйлчлүүлсэн таньд баярлалаа :)</center></td>
             </tr>
 
             <!--<p t-field="doc.note" />-->
