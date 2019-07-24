@@ -216,6 +216,11 @@ msgid "Inventory Line"
 msgstr "Тооллогын мөр"
 
 #. module: gp_product_sale_report
+#: model:ir.model.fields,field_description:gp_product_sale_report.field_compare_product_is_second_war
+msgid "Is Second Warehouse"
+msgstr "Харьцуулах агуулахыг голчлох"
+
+#. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_compare_product___last_update
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_product_sale_report___last_update
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_report_excel_output_extend___last_update
