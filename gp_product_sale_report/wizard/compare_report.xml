@@ -12,6 +12,7 @@
                         <field name="stock_warehouse_compare"/>
                         <field name="product_category"/>
                         <field name="product_template"/>
+                        <field name="is_second_war"/>
                     </group>
                     <footer>
                         <button class="oe_highlight" name="export_report" string="Export" type="object"/>

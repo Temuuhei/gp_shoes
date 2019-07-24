@@ -26,6 +26,7 @@ class CompareProduct(models.TransientModel):
     # product_template = fields.Many2one('product.template', 'Product')
     product_template = fields.Many2many('product.template', 'pt_report_rel', 'pt_id', 'cp_id')
     product_category = fields.Many2many('product.category', 'pc_report_rel', 'pc_id', 'cp_id')
+    is_second_war = fields.Boolean('Is Second Warehouse')
 
     def prepare_data(self):
 
@@ -45,57 +46,109 @@ class CompareProduct(models.TransientModel):
                 pc_ids.append(x.id)
                 pc_names += str(x.name) if not pc_names else ', ' + str(x.name)
             where_categ = "AND pc.id in (%s)" % ', '.join(map(repr, tuple(pc_ids)))
+        if  not self.is_second_war:
+            query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
+                               coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
+                               coalesce((SELECT name FROM product_attribute_value pav
+                                         JOIN product_attribute_value_product_product_rel pavr
+                                         ON pavr.product_attribute_value_id = pav.id
+                                         WHERE pavr.product_product_id = pp.id
+                                         ORDER BY pav.id ASC LIMIT 1),'') as size
+                        FROM stock_quant AS sq
+                            JOIN product_product AS pp
+                               ON pp.id = sq.product_id
+                            JOIN product_template AS pt
+                               ON pt.id = pp.product_tmpl_id
+                            JOIN product_category AS pc
+                               ON pc.id = pt.categ_id
+                        WHERE sq.qty > 0
+                        AND sq.location_id = %s %s %s
+                        GROUP BY pt.id, sq.qty, pp.id, pc.id
+                        ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
 
-        query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
-                           coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
-                           coalesce((SELECT name FROM product_attribute_value pav
-                                     JOIN product_attribute_value_product_product_rel pavr
-                                     ON pavr.product_attribute_value_id = pav.id
-                                     WHERE pavr.product_product_id = pp.id
-                                     ORDER BY pav.id ASC LIMIT 1),'') as size
-                    FROM stock_quant AS sq
-                        JOIN product_product AS pp
-                           ON pp.id = sq.product_id
-                        JOIN product_template AS pt
-                           ON pt.id = pp.product_tmpl_id
-                        JOIN product_category AS pc
-                           ON pc.id = pt.categ_id
-                    WHERE sq.qty > 0
-                    AND sq.location_id = %s %s %s
-                    GROUP BY pt.id, sq.qty, pp.id, pc.id
-                    ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
+            self.env.cr.execute(query % (str(self.stock_warehouse.lot_stock_id.id), where_pt, where_categ))
+            warehouse_data = self.env.cr.dictfetchall()
 
-        self.env.cr.execute(query % (str(self.stock_warehouse.lot_stock_id.id), where_pt, where_categ))
-        warehouse_data = self.env.cr.dictfetchall()
+            product_ids = []
+            where_prods = ''
+            for wd in warehouse_data:
+                product_ids.append(wd['tprod_id'])
+            if product_ids:
+                where_prods = 'AND pt.id in (%s)' % ', '.join(map(repr, tuple(product_ids)))
 
-        product_ids = []
-        where_prods = ''
-        for wd in warehouse_data:
-            product_ids.append(wd['prod_id'])
-        if product_ids:
-            where_prods = 'AND pp.id in (%s)' % ', '.join(map(repr, tuple(product_ids)))
+            compare_query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
+                                       coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
+                                       coalesce((SELECT name FROM product_attribute_value pav
+                                                 JOIN product_attribute_value_product_product_rel pavr
+                                                 ON pavr.product_attribute_value_id = pav.id
+                                                 WHERE pavr.product_product_id = pp.id
+                                                 ORDER BY pav.id ASC LIMIT 1),'') as size
+                                FROM stock_quant AS sq
+                                    JOIN product_product AS pp
+                                       ON pp.id = sq.product_id
+                                    JOIN product_template AS pt
+                                       ON pt.id = pp.product_tmpl_id
+                                    JOIN product_category AS pc
+                                       ON pc.id = pt.categ_id
+                                WHERE sq.qty > 0
+                                AND sq.location_id = %s %s %s %s
+                                GROUP BY pt.id, sq.qty, pp.id, pc.id
+                                ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
 
-        compare_query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
-                                   coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
-                                   coalesce((SELECT name FROM product_attribute_value pav
-                                             JOIN product_attribute_value_product_product_rel pavr
-                                             ON pavr.product_attribute_value_id = pav.id
-                                             WHERE pavr.product_product_id = pp.id
-                                             ORDER BY pav.id ASC LIMIT 1),'') as size
-                            FROM stock_quant AS sq
-                                JOIN product_product AS pp
-                                   ON pp.id = sq.product_id
-                                JOIN product_template AS pt
-                                   ON pt.id = pp.product_tmpl_id
-                                JOIN product_category AS pc
-                                   ON pc.id = pt.categ_id
-                            WHERE sq.qty > 0
-                            AND sq.location_id = %s %s %s %s
-                            GROUP BY pt.id, sq.qty, pp.id, pc.id
-                            ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
+            self.env.cr.execute(compare_query % (str(self.stock_warehouse_compare.lot_stock_id.id), where_pt, where_categ, where_prods))
+            compare_warehouse_data = self.env.cr.dictfetchall()
+        else:
+            query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
+                               coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
+                               coalesce((SELECT name FROM product_attribute_value pav
+                                         JOIN product_attribute_value_product_product_rel pavr
+                                         ON pavr.product_attribute_value_id = pav.id
+                                         WHERE pavr.product_product_id = pp.id
+                                         ORDER BY pav.id ASC LIMIT 1),'') as size
+                        FROM stock_quant AS sq
+                            JOIN product_product AS pp
+                               ON pp.id = sq.product_id
+                            JOIN product_template AS pt
+                               ON pt.id = pp.product_tmpl_id
+                            JOIN product_category AS pc
+                               ON pc.id = pt.categ_id
+                        WHERE sq.qty > 0
+                        AND sq.location_id = %s %s %s
+                        GROUP BY pt.id, sq.qty, pp.id, pc.id
+                        ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
 
-        self.env.cr.execute(compare_query % (str(self.stock_warehouse_compare.lot_stock_id.id), where_pt, where_categ, where_prods))
-        compare_warehouse_data = self.env.cr.dictfetchall()
+            self.env.cr.execute(query % (str(self.stock_warehouse_compare.lot_stock_id.id), where_pt, where_categ))
+            compare_warehouse_data = self.env.cr.dictfetchall()
+
+            product_ids = []
+            where_prods = ''
+            for wd in compare_warehouse_data:
+                product_ids.append(wd['tprod_id'])
+            if product_ids:
+                where_prods = 'AND pt.id in (%s)' % ', '.join(map(repr, tuple(product_ids)))
+
+            compare_query = """ SELECT pt.name AS tprod, pt.id AS tprod_id, pp.id AS prod_id, pt.default_code AS dc,
+                                       coalesce(sum(sq.qty),0) AS qty, pc.name AS ctg, pc.id AS categ_id,
+                                       coalesce((SELECT name FROM product_attribute_value pav
+                                                 JOIN product_attribute_value_product_product_rel pavr
+                                                 ON pavr.product_attribute_value_id = pav.id
+                                                 WHERE pavr.product_product_id = pp.id
+                                                 ORDER BY pav.id ASC LIMIT 1),'') as size
+                                FROM stock_quant AS sq
+                                    JOIN product_product AS pp
+                                       ON pp.id = sq.product_id
+                                    JOIN product_template AS pt
+                                       ON pt.id = pp.product_tmpl_id
+                                    JOIN product_category AS pc
+                                       ON pc.id = pt.categ_id
+                                WHERE sq.qty > 0
+                                AND sq.location_id = %s %s %s %s
+                                GROUP BY pt.id, sq.qty, pp.id, pc.id
+                                ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
+
+            self.env.cr.execute(compare_query % (str(self.stock_warehouse.lot_stock_id.id), where_pt, where_categ, where_prods))
+            warehouse_data = self.env.cr.dictfetchall()
+
 
         data = []
         if warehouse_data:
@@ -105,6 +158,7 @@ class CompareProduct(models.TransientModel):
                 for j in compare_warehouse_data:
                     if i['prod_id'] == j['prod_id']:
                         exist = True
+                        dict.update({"info2": str(j['size']) + ": " + str(j['qty'])})
                 if 'tprod_id' not in dict:
                     dict = i
                     dict.update({"info": str(i['size']) +": "+ str(i['qty'])})
@@ -130,6 +184,8 @@ class CompareProduct(models.TransientModel):
 
         data_com = []
         if compare_warehouse_data:
+            # print 'compare_warehouse_data\n',compare_warehouse_data
+            # print 'warehouse_data\n',warehouse_data
             dict_com = {}
             for i in compare_warehouse_data:
                 if 'tprod_id' not in dict_com:
@@ -146,12 +202,13 @@ class CompareProduct(models.TransientModel):
                         dict_com.update({"info": str(i['size']) + ": " + str(i['qty'])})
                         data_com.append(i)
 
+        # print 'data,data_com\n',data,data_com
         if data and data_com:
             for d in data:
                 for cd in data_com:
                     if d['tprod_id'] == cd['tprod_id']:
                         d.update({"compare": cd['info']})
-
+        # print 'data, pt_name, pc_names \n',data, pt_names, pc_names
         return data, pt_names, pc_names
 
 
@@ -193,8 +250,14 @@ class CompareProduct(models.TransientModel):
         rowx += 1
 
         # create title
-        sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 3, _('Warehouse: ')+str(self.stock_warehouse.name), style_title)
-        sheet.write_merge(rowx, rowx, colx + len(title_list) - 2, colx + len(title_list) - 1, _('Warehouse compared: ')+str(self.stock_warehouse_compare.name), style_title)
+        if self.is_second_war:
+            sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 3,
+                              _('Warehouse: ') + str(self.stock_warehouse_compare.name), style_title)
+            sheet.write_merge(rowx, rowx, colx + len(title_list) - 2, colx + len(title_list) - 1,
+                              _('Warehouse compared: ') + str(self.stock_warehouse.name), style_title)
+        else:
+            sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 3, _('Warehouse: ')+str(self.stock_warehouse.name), style_title)
+            sheet.write_merge(rowx, rowx, colx + len(title_list) - 2, colx + len(title_list) - 1, _('Warehouse compared: ')+str(self.stock_warehouse_compare.name), style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
             sheet.write_merge(rowx, rowx, i, i, title_list[i], style_title)
