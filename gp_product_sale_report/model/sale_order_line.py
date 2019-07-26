@@ -12,7 +12,7 @@ class SaleOrderLine(models.Model):
     def _set_date(self):
         res = {}
         obj = self
-        date_object = datetime.strptime(obj[0].order_id.date, '%Y-%m-%d %H:%M:%S') + timedelta(hours = 8)
+        date_object = datetime.strptime(obj[0].order_id.date, '%Y-%m-%d %H:%M:%S')
         self.update({
             'year': date_object.year,
             'month': date_object.month,
