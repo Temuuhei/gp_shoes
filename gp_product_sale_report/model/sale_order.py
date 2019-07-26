@@ -109,7 +109,7 @@ class SaleChangeDate(models.TransientModel):
     def change_date(self):
         pickings = self.env['stock.picking']
         moves = self.env['stock.move']
-        date_object = datetime.strptime(self.date, '%Y-%m-%d %H:%M:%S') + timedelta(hours = 8)
+        date_object = datetime.strptime(self.date, '%Y-%m-%d %H:%M:%S')
         sale_orders = self.env['sale.order'].browse(self._context.get('active_ids', []))
         if sale_orders:
             if self.date:
