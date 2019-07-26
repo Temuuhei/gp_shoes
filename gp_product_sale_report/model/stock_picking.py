@@ -41,8 +41,15 @@ class StockPicking(models.Model):
         self.mapped('move_lines').filtered(lambda move: move.state == 'draft').action_confirm()
         self.filtered(lambda picking: picking.location_id.usage in (
         'supplier', 'inventory', 'production')).force_assign()
+        products = []
         for ml in self.move_lines:
             if self.location_id.id != 8:
+                if ml.product_id not in products:
+                    products.append(ml.product_id)
+                else:
+                    raise ValidationError(
+                        _(u'Та энэ барааг 1 ээс дээш эхний шаардлага табанд бүртгэсэн байна! : %s') % ml.product_id.name_get())
+
                 quant = self.env['stock.quant'].search([('location_id', '=', self.location_id.id),
                                                         ('product_id', '=', ml.product_id.id)])
                 print ' QUANT___', quant
