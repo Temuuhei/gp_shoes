@@ -18,6 +18,14 @@ class SaleOrder(models.Model):
                                        domain=lambda self: [('groups_id', '=', self.env.ref('gp_product_sale_report.group_discount_manager').id)])
 
     @api.multi
+    def write(self, values):
+        if 'order_line' in values:
+            if self.state in ('sale','done'):
+                raise UserError(
+                        _(u'Та батлагдсан борлуулалтын захиалгын мөрийг засаж болохгүй'))
+
+
+    @api.multi
     def custom_confirm(self):
         for order in self:
             cash_amount = 0
@@ -109,7 +117,7 @@ class SaleChangeDate(models.TransientModel):
     def change_date(self):
         pickings = self.env['stock.picking']
         moves = self.env['stock.move']
-        date_object = datetime.strptime(self.date, '%Y-%m-%d %H:%M:%S')
+        date_object = datetime.strptime(self.date, '%Y-%m-%d %H:%M:%S') + timedelta(hours = 8)
         sale_orders = self.env['sale.order'].browse(self._context.get('active_ids', []))
         if sale_orders:
             if self.date:
