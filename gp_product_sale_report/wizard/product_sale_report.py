@@ -509,7 +509,8 @@ class ProductSaleReport(models.TransientModel):
                     inData = ''
                     if in_data:
                         for i in in_data:
-                            in_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S') + timedelta(hours=8)
+                            # in_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S') + timedelta(hours=8)
+                            in_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
                             in_dt = in_dt.replace(hour=00, minute=00, second=00)
                             if in_dt == dataDateTime:
                                 inData += ',\n%s: %s' % (i['name'], i['in_qty']) if inData else '%s: %s' % (i['name'], i['in_qty'])
@@ -522,7 +523,8 @@ class ProductSaleReport(models.TransientModel):
                     outData = ''
                     if out_data:
                         for i in out_data:
-                            out_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S') + timedelta(hours=8)
+                            # out_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S') + timedelta(hours=8)
+                            out_dt = datetime.strptime(i['min_date'], '%Y-%m-%d %H:%M:%S')
                             out_dt = out_dt.replace(hour=00, minute=00, second=00)
                             if out_dt == dataDateTime:
                                 outData += ',\n%s: %s' % (i['name'], i['out_qty']) if outData else '%s: %s' % (i['name'], i['out_qty'])
@@ -543,7 +545,8 @@ class ProductSaleReport(models.TransientModel):
                                       'outInt': outInt}
                     if so_data:
                         for soLine in so_data:
-                            dt = datetime.strptime(soLine['confirmation_date'], '%Y-%m-%d %H:%M:%S') + timedelta(hours=8)
+                            # dt = datetime.strptime(soLine['confirmation_date'], '%Y-%m-%d %H:%M:%S') + timedelta(hours=8)
+                            dt = datetime.strptime(soLine['confirmation_date'], '%Y-%m-%d %H:%M:%S')
                             dt = dt.replace(hour=00, minute=00, second=00)
                             if soLine['order_name'] == soLine['origin'] and dt == dataDateTime and soLine['product_id'] == each_data['product_id']:
                                 each_data_cost = each_data['cost'] if each_data['cost'] else 0
