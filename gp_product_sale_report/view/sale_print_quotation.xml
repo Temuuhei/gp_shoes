@@ -188,6 +188,15 @@
                                             </td>
                                     </span>
                                 </tr>
+                                <tr>
+                                    <span>
+                                        <td t-if="l.discount" class="text-center" groups="sale.group_discount_per_so_line"><strong>Нэмэлт хөнгөлөлт:</strong></td>
+                                            <td  t-if="l.discount" class="text-right">
+                                                <t t-set="sale" t-if="l.discount" t-value="-(l.price_original - l.price_subtotal)"/>
+                                                <span t-esc="sale" t-options="{'widget': 'monetary', 'display_currency': doc.pricelist_id.currency_id}"/>
+                                            </td>
+                                    </span>
+                                </tr>
 
                             </t>
 
