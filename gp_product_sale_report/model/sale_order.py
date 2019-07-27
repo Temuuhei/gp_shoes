@@ -18,11 +18,10 @@ class SaleOrder(models.Model):
                                        domain=lambda self: [('groups_id', '=', self.env.ref('gp_product_sale_report.group_discount_manager').id)])
 
     @api.multi
-    def write(self, values):
-        if 'order_line' in values:
-            if self.state in ('sale','done'):
+    def unlink(self):
+        if self.state in ('done','sale'):
                 raise UserError(
-                        _(u'Та батлагдсан борлуулалтын захиалгын мөрийг засаж болохгүй'))
+                        _(u'Та батлагдсан борлуулалтын захиалгын мөрийг устгаж болохгүй'))
 
 
     @api.multi
@@ -87,6 +86,7 @@ class SaleOrder(models.Model):
                                 sm.write({'date': order.date})
                                 print 'sm date',sm.date
                         print'Automat confirmed of Stock Picking'
+                order.write({'state':'done'})
 
 class Cash(models.Model):
     _inherit = "cash"
