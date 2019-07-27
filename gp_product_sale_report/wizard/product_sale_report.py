@@ -193,7 +193,7 @@ class ProductSaleReport(models.TransientModel):
                                            ON pp.id = sm.product_id
                                         JOIN product_template AS pt
                                            ON pt.id = pp.product_tmpl_id
-                                    WHERE so.state = 'sale'
+                                    WHERE so.state = 'done'
                                       AND sp.state = 'done'
                                       AND so.warehouse_id = %s %s
                                     GROUP BY pp.id, pt.id,sol.qty_delivered"""
@@ -431,7 +431,7 @@ class ProductSaleReport(models.TransientModel):
                                            ON sp.group_id = so.procurement_group_id
                                         JOIN stock_move AS sm
                                            ON sm.picking_id = sp.id
-                                    WHERE so.state = 'sale'
+                                    WHERE so.state = 'done'
                                       AND sp.state = 'done'
                                       AND sol.product_id = %s
                                       AND so.warehouse_id = %s
