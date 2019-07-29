@@ -640,6 +640,7 @@ class StockProductInitial(models.TransientModel):
                                                                       'company_id': 1,
                                                                       'date_expected': self.date,
                                                                       'date': self.date,
+                                                                      'create_date': self.date,
                                                                       'name': have.product_tmpl_id.name,
                                                                       'scrapped': False,
                                                                       }))
@@ -681,6 +682,7 @@ class StockProductInitial(models.TransientModel):
                                                                   'location_dest_id': self.location_id.id,
                                                                   'company_id': 1,
                                                                   'date_expected': self.date,
+                                                                  'create_date': self.date,
                                                                   'date': self.date,
                                                                   'name': have.product_tmpl_id.name,
                                                                   'scrapped': False,
