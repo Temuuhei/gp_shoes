@@ -35,6 +35,9 @@
                 <xpath expr="//field[@name='partner_id']" position="after">
                     <field name="check_discount"/>
                 </xpath>
+                <xpath expr="//button[@name='print_quotation']" position="replace">
+                    <button name="print_quotation" string="Хэвлэх" type="object" states="draft,done,sale" class="btn-primary"/>
+                </xpath>
                 <xpath expr="//field[@name='price_unit']" position="after">
                     <field name="price_original" readonly = "1"/>
                 </xpath>
