@@ -5,7 +5,7 @@
             <field name="default" eval="True"/>
             <field name="format">custom</field>
             <field name="page_height">200</field>
-            <field name="page_width">80</field>
+            <field name="page_width">55</field>
             <field name="orientation">Portrait</field>
             <field name="margin_top">10</field>
             <field name="margin_bottom">10</field>
@@ -127,10 +127,10 @@
                             <th>Бараа</th>
                             <th class="text-right">Шир</th>
                             <!--<th class="text-right">Нэгж Үнэ</th>-->
-                            <th t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">Хөн.(%)</th>
+                            <!--<th t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">Хөн.(%)</th>-->
                             <!--<th class="text-right">Татвар</th>-->
                             <th class="text-right" groups="sale.group_show_price_subtotal">Yнд/Үнэ</th>
-                            <th class="text-right price_tax_included" groups="sale.group_show_price_total">Хямд/Үнэ</th>
+                            <!--<th class="text-right price_tax_included" groups="sale.group_show_price_total">Хямд/Үнэ</th>-->
                         </tr>
                    </thead>
                    <tbody class="sale_tbody">
@@ -155,9 +155,9 @@
                                     <!--<td class="text-right">-->
                                         <!--<span t-field="l.price_unit"/>-->
                                     <!--</td>-->
-                                    <td t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">
-                                        <span t-field="l.discount"/>
-                                    </td>
+                                    <!--<td t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">-->
+                                        <!--<span t-field="l.discount"/>-->
+                                    <!--</td>-->
                                     <!--<td class="text-right">-->
                                         <!--<span t-esc="', '.join(map(lambda x: (x.description or x.name), l.tax_id))"/>-->
                                     <!--</td>-->
@@ -165,10 +165,11 @@
                                         <span t-field="l.product_id.product_tmpl_id.main_price"
                                             t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
                                     </td>
-                                    <td class="text-right" groups="sale.group_show_price_total">
-                                        <span t-field="l.price_original"
-                                            t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>
-                                    </td>
+                                    <!--Агийгийн хүсэлтээр comment болов-->
+                                    <!--<td class="text-right" groups="sale.group_show_price_total">-->
+                                        <!--<span t-field="l.price_original"-->
+                                            <!--t-options='{"widget": "monetary", "display_currency": doc.pricelist_id.currency_id}'/>-->
+                                    <!--</td>-->
 
                                 </tr>
                                 <tr class="border-black">
