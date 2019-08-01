@@ -25,7 +25,7 @@ class StockProductInitial(models.TransientModel):
     _name = 'stock.product.initial'
     _description = 'Stock Product Initial'
     
-    date =  fields.Datetime('Date Of Inventory', required=True, default = date.today().strftime('%Y-%m-%d'))
+    date =  fields.Datetime('Date Of Inventory', required=True)
     location_id = fields.Many2one('stock.location', 'Warehouse', required=True, domain = "[('usage', '=', 'internal')]")
     data = fields.Binary('Excel File', required=True)
     type = fields.Selection([('default_code','Default code'),('name','Name')], 'Import type', required=True, default = 'default_code')
