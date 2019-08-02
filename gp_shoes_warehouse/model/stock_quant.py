@@ -217,6 +217,10 @@ class Picking(models.Model):
                 picking = picking.with_context(split=todo_moves.ids)
 
             picking._create_backorder()
+        if self.move_lines:
+            for s in self.move_lines:
+                s.update({'date':self.min_date,
+                         'date_expected':self.min_date})
         return True
 
 
@@ -277,3 +281,26 @@ class Inventory(models.Model):
         readonly=True, required=True,
         states={'draft': [('readonly', False)]}, domain = "[('code', '=', 'internal')]",
         default=_default_location_id)
+
+# class StockMove(models.Model):
+#     _inherit = "stock.move"
+#     _description = "Stock Move"
+#
+#     @api.model
+#     def create(self, vals):
+#         # TDE CLEANME: why doing this tracking on picking here ? seems weird
+#         print 'vals\n\n',vals
+#         perform_tracking = not self.env.context.get('mail_notrack') and vals.get('picking_id')
+#         print 'perform_tracking\n\n',perform_tracking
+#         if perform_tracking:
+#             picking = self.env['stock.picking'].browse(vals['picking_id'])
+#             initial_values = {picking.id: {'state': picking.state}}
+#         vals['ordered_qty'] = vals.get('product_uom_qty')
+#         # if picking:
+#         #     vals.update({'date': picking.min_date})
+#         res = super(StockMove, self).create(vals)
+#         print 'last vals \n\n',vals
+#         if perform_tracking:
+#             picking.message_track(picking.fields_get(['state']), initial_values)
+#         return res
+
