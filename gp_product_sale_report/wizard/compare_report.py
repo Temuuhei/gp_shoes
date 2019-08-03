@@ -252,9 +252,9 @@ class CompareProduct(models.TransientModel):
         # create title
         if self.is_second_war:
             sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 3,
-                              _('Warehouse: ') + str(self.stock_warehouse_compare.name), style_title)
+                              _('Warehouse: ') + str(self.stock_warehouse.name), style_title)
             sheet.write_merge(rowx, rowx, colx + len(title_list) - 2, colx + len(title_list) - 1,
-                              _('Warehouse compared: ') + str(self.stock_warehouse.name), style_title)
+                              _('Warehouse compared: ') + str(self.stock_warehouse_compare.name), style_title)
         else:
             sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 3, _('Warehouse: ')+str(self.stock_warehouse.name), style_title)
             sheet.write_merge(rowx, rowx, colx + len(title_list) - 2, colx + len(title_list) - 1, _('Warehouse compared: ')+str(self.stock_warehouse_compare.name), style_title)
