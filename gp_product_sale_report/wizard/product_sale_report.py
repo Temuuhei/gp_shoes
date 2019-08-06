@@ -287,22 +287,22 @@ class ProductSaleReport(models.TransientModel):
                                             first_qty += e['qty']
                                         # if e['product_id'] == 72788:
                                         #     print 'first_qty\n', first_qty
-                                    A = data_quant.append({'product_id': product_obj_no.id,
-                                                                 'code': product_obj_no.default_code,
-                                                                 'name': product_obj_no.product_tmpl_id.name,
-                                                                 'color': product_obj_no.product_tmpl_id.id,
-                                                                 'cost': product_obj_no.product_tmpl_id.standard_price,
-                                                                 'quantity': cp['qty'],
-                                                                 'price': product_obj_no.product_tmpl_id.list_price,
-                                                                 'tmpl': product_obj_no.product_tmpl_id.id,
-                                                                 'template': product_obj_no.product_tmpl_id.id,
-                                                                 'barcode': product_obj_no.product_tmpl_id.barcode,
-                                                                 'main_price': product_obj_no.product_tmpl_id.main_price,
-                                                                 'size': product_atrr_xd[0]['name'],
-                                                                 'firstqty': first_qty
-                                                                 })
-                                    # print 'AAAAAAAAAAAAAAAAAAAAA',A
-                                    break
+                                        A = data_quant.append({'product_id': product_obj_no.id,
+                                                                     'code': product_obj_no.default_code,
+                                                                     'name': product_obj_no.product_tmpl_id.name,
+                                                                     'color': product_obj_no.product_tmpl_id.id,
+                                                                     'cost': product_obj_no.product_tmpl_id.standard_price,
+                                                                     'quantity': cp['qty'],
+                                                                     'price': product_obj_no.product_tmpl_id.list_price,
+                                                                     'tmpl': product_obj_no.product_tmpl_id.id,
+                                                                     'template': product_obj_no.product_tmpl_id.id,
+                                                                     'barcode': product_obj_no.product_tmpl_id.barcode,
+                                                                     'main_price': product_obj_no.product_tmpl_id.main_price,
+                                                                     'size': product_atrr_xd[0]['name'],
+                                                                     'firstqty': first_qty
+                                                                     })
+                                        # print 'AAAAAAAAAAAAAAAAAAAAA',A
+                                        break
                                 if dq['product_id'] not in check_not_picking and dq['product_id'] not in exist:
                                     A = data_quant.append({'product_id': product_obj_no.id,
                                                            'code': product_obj_no.default_code,
