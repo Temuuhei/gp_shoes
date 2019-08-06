@@ -86,13 +86,14 @@ class ProductSaleReport(models.TransientModel):
                                               LEFT join product_template AS pt
                                                 ON pp.product_tmpl_id = pt.id
                                               WHERE
-                                                sp.state = 'done'
+                                                sm.state = 'done'
                                                 AND sp.group_id is NULL
                                                 AND sm.location_id = %s %s
                                              GROUP BY sm.product_id,
                                                         pt.id"""
                          % (self.stock_warehouse.lot_stock_id.id, initial_date_where))
         check_not_picking_move = self._cr.dictfetchall()
+        # print 'check_not_picking_move\n',check_not_picking_move
         if check_not_picking_move:
             for s in check_not_picking_move:
                 check_not_picking.append(s['product_id'])
@@ -121,7 +122,7 @@ class ProductSaleReport(models.TransientModel):
         exist_obj = self._cr.dictfetchall()
         if exist_obj:
             for e in exist_obj:
-                # if e['product_id'] == 72788:
+                # if e['product_id'] == 74289:
                 #     print 'e \n',e
                 exist.append(e['product_id'])
 
@@ -285,6 +286,7 @@ class ProductSaleReport(models.TransientModel):
                                         first_qty = 0.0
                                         for e in exist_obj2:
                                             first_qty += e['qty']
+
                                         # if e['product_id'] == 72788:
                                         #     print 'first_qty\n', first_qty
                                         A = data_quant.append({'product_id': product_obj_no.id,
@@ -304,6 +306,8 @@ class ProductSaleReport(models.TransientModel):
                                         # print 'AAAAAAAAAAAAAAAAAAAAA',A
                                         break
                                 if dq['product_id'] not in check_not_picking and dq['product_id'] not in exist:
+                                    # if dq['product_id'] == 74289:
+                                    #     print 'dqqqqq\n\n', dq
                                     A = data_quant.append({'product_id': product_obj_no.id,
                                                            'code': product_obj_no.default_code,
                                                            'name': product_obj_no.product_tmpl_id.name,
@@ -318,8 +322,9 @@ class ProductSaleReport(models.TransientModel):
                                                            'size': product_atrr_xd[0]['name'],
                                                            'firstqty': 0
                                                            })
-                                    break
+
                                     # print 'AAAAAAAAAAAAAAAAAAAAA',A
+                                    break
 
                         idx += 1
 
@@ -371,25 +376,25 @@ class ProductSaleReport(models.TransientModel):
                                 if exist_obj2:
                                     for e in exist_obj2:
                                         first_qty += e['qty']
-                                    # if e['product_id'] == 81194:
+                                    # if e['product_id'] == 74289:
                                     #     print 'first_qty\n',first_qty
-                                data_quant.append(      {'product_id': product_obj_xd.id,
-                                                        'code': product_obj_xd.default_code,
-                                                        'name': product_obj_xd.product_tmpl_id.name,
-                                                        'color': product_obj_xd.product_tmpl_id.id,
-                                                        'cost': product_obj_xd.product_tmpl_id.standard_price,
-                                                        'quantity': spt['qty'],
-                                                        'price': product_obj_xd.product_tmpl_id.list_price,
-                                                        'tmpl': product_obj_xd.product_tmpl_id.id,
-                                                        'template': product_obj_xd.product_tmpl_id.id,
-                                                        'barcode': product_obj_xd.product_tmpl_id.barcode,
-                                                        'main_price': product_obj_xd.product_tmpl_id.main_price,
-                                                        'size': product_atrr_xd[0]['name'],
-                                                        'firstqty': first_qty
-                                                        })
-                                break
+                                    data_quant.append(      {'product_id': product_obj_xd.id,
+                                                            'code': product_obj_xd.default_code,
+                                                            'name': product_obj_xd.product_tmpl_id.name,
+                                                            'color': product_obj_xd.product_tmpl_id.id,
+                                                            'cost': product_obj_xd.product_tmpl_id.standard_price,
+                                                            'quantity': spt['qty'],
+                                                            'price': product_obj_xd.product_tmpl_id.list_price,
+                                                            'tmpl': product_obj_xd.product_tmpl_id.id,
+                                                            'template': product_obj_xd.product_tmpl_id.id,
+                                                            'barcode': product_obj_xd.product_tmpl_id.barcode,
+                                                            'main_price': product_obj_xd.product_tmpl_id.main_price,
+                                                            'size': product_atrr_xd[0]['name'],
+                                                            'firstqty': first_qty
+                                                            })
+                                    break
                             else:
-                                data_quant.append({'product_id': product_obj_xd.id,
+                                A = data_quant.append({'product_id': product_obj_xd.id,
                                                    'code': product_obj_xd.default_code,
                                                    'name': product_obj_xd.product_tmpl_id.name,
                                                    'color': product_obj_xd.product_tmpl_id.id,
@@ -405,8 +410,12 @@ class ProductSaleReport(models.TransientModel):
                                                    })
                                 break
                         idx += 1
+        for ld in data_quant:
+            for le in exist_obj:
+                if ld['product_id'] == le['product_id'] and ld['product_id']:
+                    if ld['firstqty'] == 0.0 and ld['firstqty'] <> le['qty']:
+                        ld.update({'firstqty' : le['qty']})
         data_quant = sorted(data_quant, key=lambda k: (int(k['code'].split("-")[0]), int(k['code'].split("-")[1])))
-
         if data_quant:
             for each_data in data_quant:
                 data = {}
