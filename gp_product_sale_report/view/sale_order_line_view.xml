@@ -100,6 +100,7 @@
             <field name="res_model">sale.order.line</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,from</field>
+             <field name="domain">[('state','in',['done'])]</field>
               <field name="view_id" ref="view_order_line_tree"/>
             <field name="context">{}</field>
         </record>
