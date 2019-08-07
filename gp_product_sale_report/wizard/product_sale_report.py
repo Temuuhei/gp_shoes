@@ -286,9 +286,6 @@ class ProductSaleReport(models.TransientModel):
                                         first_qty = 0.0
                                         for e in exist_obj2:
                                             first_qty += e['qty']
-
-                                        # if e['product_id'] == 72788:
-                                        #     print 'first_qty\n', first_qty
                                         A = data_quant.append({'product_id': product_obj_no.id,
                                                                      'code': product_obj_no.default_code,
                                                                      'name': product_obj_no.product_tmpl_id.name,
@@ -306,25 +303,45 @@ class ProductSaleReport(models.TransientModel):
                                         # print 'AAAAAAAAAAAAAAAAAAAAA',A
                                         break
                                 if dq['product_id'] not in check_not_picking and dq['product_id'] not in exist:
-                                    # if dq['product_id'] == 74289:
-                                    #     print 'dqqqqq\n\n', dq
-                                    A = data_quant.append({'product_id': product_obj_no.id,
-                                                           'code': product_obj_no.default_code,
-                                                           'name': product_obj_no.product_tmpl_id.name,
-                                                           'color': product_obj_no.product_tmpl_id.id,
-                                                           'cost': product_obj_no.product_tmpl_id.standard_price,
-                                                           'quantity': 0,
-                                                           'price': product_obj_no.product_tmpl_id.list_price,
-                                                           'tmpl': product_obj_no.product_tmpl_id.id,
-                                                           'template': product_obj_no.product_tmpl_id.id,
-                                                           'barcode': product_obj_no.product_tmpl_id.barcode,
-                                                           'main_price': product_obj_no.product_tmpl_id.main_price,
-                                                           'size': product_atrr_xd[0]['name'],
-                                                           'firstqty': 0
-                                                           })
+                                    # if product_obj_no.id == 74289:
+                                    #     print 'dqqqqq\n\n', product_obj_no
+                                     if product_obj_no.id not in exist:
+                                        A = data_quant.append({'product_id': product_obj_no.id,
+                                                               'code': product_obj_no.default_code,
+                                                               'name': product_obj_no.product_tmpl_id.name,
+                                                               'color': product_obj_no.product_tmpl_id.id,
+                                                               'cost': product_obj_no.product_tmpl_id.standard_price,
+                                                               'quantity': 0,
+                                                               'price': product_obj_no.product_tmpl_id.list_price,
+                                                               'tmpl': product_obj_no.product_tmpl_id.id,
+                                                               'template': product_obj_no.product_tmpl_id.id,
+                                                               'barcode': product_obj_no.product_tmpl_id.barcode,
+                                                               'main_price': product_obj_no.product_tmpl_id.main_price,
+                                                               'size': product_atrr_xd[0]['name'],
+                                                               'firstqty': 0
+                                                               })
 
-                                    # print 'AAAAAAAAAAAAAAAAAAAAA',A
-                                    break
+                                        break
+                                     else:
+                                         for e in exist_obj:
+                                             if e['product_id'] == product_obj_no.id:
+                                                 A = data_quant.append({'product_id': product_obj_no.id,
+                                                                        'code': product_obj_no.default_code,
+                                                                        'name': product_obj_no.product_tmpl_id.name,
+                                                                        'color': product_obj_no.product_tmpl_id.id,
+                                                                        'cost': product_obj_no.product_tmpl_id.standard_price,
+                                                                        'quantity': e['qty'],
+                                                                        'price': product_obj_no.product_tmpl_id.list_price,
+                                                                        'tmpl': product_obj_no.product_tmpl_id.id,
+                                                                        'template': product_obj_no.product_tmpl_id.id,
+                                                                        'barcode': product_obj_no.product_tmpl_id.barcode,
+                                                                        'main_price': product_obj_no.product_tmpl_id.main_price,
+                                                                        'size': product_atrr_xd[0]['name'],
+                                                                        'firstqty': e['qty']
+                                                                        })
+
+                                                 break
+
 
                         idx += 1
 
@@ -410,17 +427,15 @@ class ProductSaleReport(models.TransientModel):
                                                    })
                                 break
                         idx += 1
-        for ld in data_quant:
-            for le in exist_obj:
-                if ld['product_id'] == le['product_id'] and ld['product_id']:
-                    if ld['firstqty'] == 0.0 and ld['firstqty'] <> le['qty']:
-                        ld.update({'firstqty' : le['qty']})
         data_quant = sorted(data_quant, key=lambda k: (int(k['code'].split("-")[0]), int(k['code'].split("-")[1])))
         if data_quant:
             for each_data in data_quant:
+                # if each_data['product_id'] == 79802:
+                #     print 'each_data',each_data
                 data = {}
                 data_total = {}
                 self._cr.execute("""SELECT so.id AS sale_order_id,
+                                            sol.id AS sol_id,
                                            so.name AS order_name,
                                            sp.id AS stock_picking_id,
                                            sp.name AS picking_name,
@@ -444,13 +459,16 @@ class ProductSaleReport(models.TransientModel):
                                       AND sp.state = 'done'
                                       AND sol.product_id = %s
                                       AND so.warehouse_id = %s
-                                      %s"""
+                                      %s
+                                      GROUP BY so.id,sol.id,sp.id,sm.product_uom_qty,sm.product_id"""
                                  % (each_data['product_id'], self.stock_warehouse.id, where_date_so))
                 so_data = self._cr.dictfetchall()
 
                 where_out = ''
                 so_pickings = []
                 for so in so_data:
+                    # if so['product_id'] == 79802:
+                    #     print 'SoLine \n', so
                     if so['stock_picking_id'] not in so_pickings:
                         so_pickings.append(so['stock_picking_id'])
                     # print 'SO \n\n',so
@@ -554,6 +572,8 @@ class ProductSaleReport(models.TransientModel):
                                       'outInt': outInt}
                     if so_data:
                         for soLine in so_data:
+                            # if soLine['product_id'] == 79802:
+                            #     print 'SoLine \n',soLine
                             # dt = datetime.strptime(soLine['confirmation_date'], '%Y-%m-%d %H:%M:%S') + timedelta(hours=8)
                             dt = datetime.strptime(soLine['confirmation_date'], '%Y-%m-%d %H:%M:%S')
                             dt = dt.replace(hour=00, minute=00, second=00)
