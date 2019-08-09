@@ -48,84 +48,34 @@ class ProductSaleReport(models.TransientModel):
             fm_dt = fm_dtdt.strftime("%Y-%m-%d %H:%M:%S")
             un_dt = un_dtdt.strftime("%Y-%m-%d %H:%M:%S")
             initial_date_where = " and sm.date < '%s' " % (fm_dt)
+            last_date_where = " and sm.date < '%s' " % (un_dt)
             where_date_so = 'AND so.date BETWEEN %s AND %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             where_date_sp = 'AND sp.min_date >= %s AND sp.min_date <= %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
+            where_date_sm = 'AND sm.date >= %s AND sm.date <= %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             report_date += self.date_from + ' ~ ' + self.date_until
-        check_picking = []
-        self._cr.execute("""SELECT  sm.product_id AS product_id,
-                                    pt.id AS tmpl,
-                                    sum(sm.product_uom_qty) AS qty
-                                      FROM stock_picking AS sp
-                                      LEFT JOIN stock_move AS sm
-                                        ON sp.id = sm.picking_id
-                                      LEFT JOIN product_product AS pp
-                                        ON pp.id = sm.product_id
-                                      LEFT join product_template AS pt
-                                        ON pp.product_tmpl_id = pt.id
-                                      WHERE
-                                        sp.state = 'done'
-                                        AND sm.location_id = %s %s
-                                     GROUP BY sm.product_id,
-                                                pt.id"""
-                         % (self.stock_warehouse.lot_stock_id.id, where_date_sp))
-        check_picking_move = self._cr.dictfetchall()
-        if check_picking_move:
-            for s in check_picking_move:
-                check_picking.append(s['product_id'])
+        # check_picking = []
+        # self._cr.execute("""SELECT  sm.product_id AS product_id,
+        #                             pt.id AS tmpl,
+        #                             sum(sm.product_uom_qty) AS qty
+        #                               FROM stock_picking AS sp
+        #                               LEFT JOIN stock_move AS sm
+        #                                 ON sp.id = sm.picking_id
+        #                               LEFT JOIN product_product AS pp
+        #                                 ON pp.id = sm.product_id
+        #                               LEFT join product_template AS pt
+        #                                 ON pp.product_tmpl_id = pt.id
+        #                               WHERE
+        #                                 sp.state = 'done'
+        #                                 AND sm.location_id = %s %s
+        #                              GROUP BY sm.product_id,
+        #                                         pt.id"""
+        #                  % (self.stock_warehouse.lot_stock_id.id, where_date_sp))
+        # check_picking_move = self._cr.dictfetchall()
+        # if check_picking_move:
+        #     for s in check_picking_move:
+        #         check_picking.append(s['product_id'])
 
-        # 0 үлдэгдэлтэй буюу ямарч хөдөлгөөн ороогүй бараа байсан эсэхийг шалгах
-        check_not_picking = []
-        self._cr.execute("""SELECT  sm.product_id AS product_id,
-                                            pt.id AS tmpl,
-                                            sum(sm.product_uom_qty) AS qty
-                                              FROM stock_picking AS sp
-                                              LEFT JOIN stock_move AS sm
-                                                ON sp.id = sm.picking_id
-                                              LEFT JOIN product_product AS pp
-                                                ON pp.id = sm.product_id
-                                              LEFT join product_template AS pt
-                                                ON pp.product_tmpl_id = pt.id
-                                              WHERE
-                                                sm.state = 'done'
-                                                AND sp.group_id is NULL
-                                                AND sm.location_id = %s %s
-                                             GROUP BY sm.product_id,
-                                                        pt.id"""
-                         % (self.stock_warehouse.lot_stock_id.id, initial_date_where))
-        check_not_picking_move = self._cr.dictfetchall()
-        # print 'check_not_picking_move\n',check_not_picking_move
-        if check_not_picking_move:
-            for s in check_not_picking_move:
-                check_not_picking.append(s['product_id'])
-
-        exist = []
-        self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
-                                           FROM stock_move sm
-                                                JOIN product_product ppp
-                                                    ON ppp.id=sm.product_id
-                                           WHERE sm.state='done'
-                                                 AND sm.location_id not in %s
-                                                 AND sm.location_dest_id in %s
-                                                 %s
-                                           GROUP BY sm.product_id,sm.product_id,ppp.default_code
-                                          union
-                                          SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
-                                           FROM stock_move sm
-                                                JOIN product_product ppp ON (ppp.id=sm.product_id)
-                                           WHERE sm.state='done'
-                                                 AND sm.location_id in %s
-                                                 AND sm.location_dest_id not in %s
-                                                 %s
-                                           GROUP BY sm.product_id,sm.product_id,ppp.default_code"""
-                         % (location,location, initial_date_where,
-                            location,location, initial_date_where))
-        exist_obj = self._cr.dictfetchall()
-        if exist_obj:
-            for e in exist_obj:
-                # if e['product_id'] == 74289:
-                #     print 'e \n',e
-                exist.append(e['product_id'])
-
+        # Одоо байгаа барааны мэдээлэл
         self._cr.execute("""SELECT pp.id AS product_id,
                                    pt.default_code AS code,
                                    pt.name AS name,
@@ -161,7 +111,30 @@ class ProductSaleReport(models.TransientModel):
                                                  AND sm.location_dest_id not in %s
                                                  AND ppp.id = pp.id %s
                                            GROUP BY sm.product_id)
-                                         ) AS query ) as firstqty
+                                         ) AS query ) as firstqty,
+
+                                      (SELECT coalesce(sum(last_query.qty),0) as qty
+                                    FROM ((SELECT coalesce(sum(sm.product_qty),0) AS qty
+                                           FROM stock_move sm
+                                                JOIN product_product ppp
+                                                    ON (pp.id=sm.product_id)
+                                           WHERE sm.state='done'
+                                                 AND sm.location_id not in %s
+                                                 AND sm.location_dest_id in %s
+                                                 AND ppp.id = pp.id %s
+                                           GROUP BY sm.product_id)
+                                          union
+                                          (SELECT -coalesce(sum(sm.product_qty),0) AS qty
+                                           FROM stock_move sm
+                                                JOIN product_product ppp ON (pp.id=sm.product_id)
+                                           WHERE sm.state='done'
+                                                 AND sm.location_id in %s
+                                                 AND sm.location_dest_id not in %s
+                                                 AND ppp.id = pp.id %s
+                                           GROUP BY sm.product_id)
+                                         ) AS last_query ) as last_qty
+
+
                             FROM stock_quant AS sq
                                 JOIN product_product AS pp
                                    ON pp.id = sq.product_id
@@ -173,265 +146,295 @@ class ProductSaleReport(models.TransientModel):
                                    pt.name,
                                    pt.list_price,
                                    pt.id
-                                ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id"""
+                                ORDER BY string_to_array(pt.default_code, '-')::int[], pt.id,coalesce((SELECT name FROM product_attribute_value pav
+                                        JOIN product_attribute_value_product_product_rel pavr
+                                            ON pavr.product_attribute_value_id = pav.id
+                                    WHERE pavr.product_product_id= pp.id
+                                        ORDER BY pav.id ASC LIMIT 1),'') ASC"""
                          % (location,location,initial_date_where,
                             location,location,initial_date_where,
+                            location, location, last_date_where,
+                            location, location, last_date_where,
                             self.stock_warehouse.lot_stock_id.id))
+
         data_quant = self._cr.dictfetchall()
-        # print 'data_quant',data_quant
 
-        self._cr.execute("""SELECT pp.id AS product_id,
-                                   pt.id AS product_tmpl_id,
-                                   sol.qty_delivered AS qty
-                                    FROM sale_order AS so
-                                        JOIN sale_order_line AS sol
-                                           ON sol.order_id = so.id
-                                        JOIN stock_picking AS sp
-                                           ON sp.group_id = so.procurement_group_id
-                                        JOIN stock_move AS sm
-                                           ON sm.picking_id = sp.id
-                                        JOIN product_product AS pp
-                                           ON pp.id = sm.product_id
-                                        JOIN product_template AS pt
-                                           ON pt.id = pp.product_tmpl_id
-                                    WHERE so.state = 'done'
-                                      AND sp.state = 'done'
-                                      AND so.warehouse_id = %s %s
-                                    GROUP BY pp.id, pt.id,sol.qty_delivered"""
-                         % (self.stock_warehouse.id, where_date_so))
-        so_pid_tid = self._cr.dictfetchall()
-        dq_pids = []
+
+        # тухайн бараа нь тайлант хугацааны эхний үлдэгдлээр байхгүй байгаад тухайн хугацааны хооронд байсан ба одоогийн байдлаар зарагдсан(хасагдсан) барааг харуулах
+        # Тухайн агуулахаас гарсан хөдөлгөөн дээр тулгуурлаж
+        check_dur_move = []
+        self._cr.execute("""SELECT  sm.product_id AS product_id,
+                                                           pt.id AS tmpl,
+                                                           sum(sm.product_uom_qty) AS qty
+                                                             FROM stock_move AS sm
+                                                             LEFT JOIN product_product AS pp
+                                                               ON pp.id = sm.product_id
+                                                             LEFT join product_template AS pt
+                                                               ON pp.product_tmpl_id = pt.id
+                                                             WHERE
+                                                               sm.state = 'done'
+                                                               AND sm.location_id = %s
+                                                                %s
+                                                            GROUP BY sm.product_id,
+                                                                       pt.id"""
+                         % (self.stock_warehouse.lot_stock_id.id, where_date_sm))
+        check_dur_move_list = self._cr.dictfetchall()
+        if check_dur_move_list and data_quant:
+            for cdm in check_dur_move_list:
+                check_dur_move.append(cdm['product_id'])
+
+
+
+
+
+        #Тухайн тайлант хугацаанд ямар ч гүйлгээ хийгдээгүй мөртлөө нөөц нь байсан ба яг одоогийн байдлаар байхгүй байгаа бараа тайланд харагдахгүй байсан учир тухайн барааг олох query г бичиж өгөв
+        self._cr.execute("""SELECT ppp.id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
+                                   FROM stock_move sm
+                                        JOIN product_product ppp
+                                            ON ppp.id=sm.product_id
+                                   WHERE sm.state='done'
+                                         AND sm.location_id not in %s
+                                         AND sm.location_dest_id in %s
+                                         %s
+                                   GROUP BY ppp.id,ppp.default_code
+                                  union
+                                  SELECT ppp.id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                   FROM stock_move sm
+                                        JOIN product_product ppp ON (ppp.id=sm.product_id)
+                                   WHERE sm.state='done'
+                                         AND sm.location_id in %s
+                                         AND sm.location_dest_id not in %s
+                                         %s
+
+                                   GROUP BY ppp.id,ppp.default_code
+                                   ORDER BY code
+                                            """
+                         % (location,location,initial_date_where,
+                            location, location, initial_date_where))
+        check_was_but_not_now = self._cr.dictfetchall()
+        dq_last = []
+        dq_last2 = []
+        was_but_not_now = []
         if data_quant:
-            for dq1 in data_quant:
-                dq_pids.append(dq1['product_id'])
-                # if dq1['template'] == 25477:
-                #     print 'dq \n', dq1
-        # if data_quant and so_pid_tid:
-        #     for spt in so_pid_tid:
-        #         if spt['product_id'] not in dq_pids:
-        #             idx = 0
-        #             for dq in data_quant:
-        #                 if spt['product_tmpl_id'] == dq['tmpl']:
-        #                     # dq_index = data_quant.index[dq]
-        #                     product_obj_xd = self.env['product.product'].browse(spt['product_id'])
-        #                     self._cr.execute("""SELECT name FROM product_attribute_value pav
-        #                                                                        JOIN product_attribute_value_product_product_rel pavr
-        #                                                                            ON pavr.product_attribute_value_id = pav.id
-        #                                                                    WHERE pavr.product_product_id = %s
-        #                                                                        ORDER BY pav.id ASC LIMIT 1""" % str(product_obj_xd.id))
-        #                     product_atrr_xd = self._cr.dictfetchall()
-        #                     data_quant.insert(idx, {'product_id': product_obj_xd.id,
-        #                                             'code': product_obj_xd.default_code,
-        #                                             'name': product_obj_xd.product_tmpl_id.name,
-        #                                             'color': product_obj_xd.product_tmpl_id.id,
-        #                                             'cost': product_obj_xd.product_tmpl_id.standard_price,
-        #                                             'quantity': 0,
-        #                                             'price': product_obj_xd.product_tmpl_id.main_price,
-        #                                             'tmpl': product_obj_xd.product_tmpl_id.id,
-        #                                             'template': product_obj_xd.product_tmpl_id.id,
-        #                                             'barcode': product_obj_xd.product_tmpl_id.barcode,
-        #                                             'main_price': product_obj_xd.product_tmpl_id.main_price,
-        #                                             'size': product_atrr_xd[0]['name'],
-        #                                             'firstqty': 0
-        #                                             })
-        #                     break
-        #                 idx += 1
-        diff = []
-        if check_picking_move and data_quant:
-            diff = (set(check_picking) - set(dq_pids))
-            if len(diff) > 0:
-                for cp in check_picking_move:
-                    if cp['product_id'] in diff:
-                        # if cp['tmpl'] == dq['tmpl']:
-                        #print 'Байхгүй барааг үүсгэж байна -----------------------------------------------------'
-                        product_obj_no = self.env['product.product'].browse(cp['product_id'])
-                        self._cr.execute("""SELECT name FROM product_attribute_value pav
-                                                                                           JOIN product_attribute_value_product_product_rel pavr
-                                                                                               ON pavr.product_attribute_value_id = pav.id
-                                                                                       WHERE pavr.product_product_id = %s
-                                                                                           ORDER BY pav.id ASC LIMIT 1""" % str(product_obj_no.id))
-                        product_atrr_xd = self._cr.dictfetchall()
-                        # print '----------------',product_atrr_xd
-                        idx = 0
+            for dql in data_quant:
+                dq_last.append(dql['product_id'])
 
-                        self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
-                                                                                                               FROM stock_move sm
-                                                                                                                    JOIN product_product ppp
-                                                                                                                        ON ppp.id=sm.product_id
-                                                                                                               WHERE sm.state='done'
-                                                                                                                     AND sm.location_id not in %s
-                                                                                                                     AND sm.location_dest_id in %s
-                                                                                                                     AND sm.product_id = %s
-                                                                                                                     %s
-                                                                                                               GROUP BY sm.product_id,sm.product_id,ppp.default_code
-                                                                                                              union
-                                                                                                              SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
-                                                                                                               FROM stock_move sm
-                                                                                                                    JOIN product_product ppp ON (ppp.id=sm.product_id)
-                                                                                                               WHERE sm.state='done'
-                                                                                                                     AND sm.location_id in %s
-                                                                                                                     AND sm.location_dest_id not in %s
-                                                                                                                     AND sm.product_id = %s
-                                                                                                                     %s
-                                                                                                               GROUP BY sm.product_id,sm.product_id,ppp.default_code"""
-                                         % (location, location, product_obj_no.id, initial_date_where,
-                                            location, location, product_obj_no.id, initial_date_where))
-                        exist_obj2 = self._cr.dictfetchall()
-
-
-                        for dq in data_quant:
-                            if dq['tmpl'] == product_obj_no.product_tmpl_id.id:
-                                if dq['product_id'] in check_not_picking and  dq['product_id'] in exist:
-                                    if exist_obj2:
-                                        first_qty = 0.0
-                                        for e in exist_obj2:
-                                            first_qty += e['qty']
-                                        A = data_quant.append({'product_id': product_obj_no.id,
-                                                                     'code': product_obj_no.default_code,
-                                                                     'name': product_obj_no.product_tmpl_id.name,
-                                                                     'color': product_obj_no.product_tmpl_id.id,
-                                                                     'cost': product_obj_no.product_tmpl_id.standard_price,
-                                                                     'quantity': cp['qty'],
-                                                                     'price': product_obj_no.product_tmpl_id.list_price,
-                                                                     'tmpl': product_obj_no.product_tmpl_id.id,
-                                                                     'template': product_obj_no.product_tmpl_id.id,
-                                                                     'barcode': product_obj_no.product_tmpl_id.barcode,
-                                                                     'main_price': product_obj_no.product_tmpl_id.main_price,
-                                                                     'size': product_atrr_xd[0]['name'],
-                                                                     'firstqty': first_qty
-                                                                     })
-                                        # print 'AAAAAAAAAAAAAAAAAAAAA',A
-                                        break
-                                if dq['product_id'] not in check_not_picking and dq['product_id'] not in exist:
-                                    # if product_obj_no.id == 74289:
-                                    #     print 'dqqqqq\n\n', product_obj_no
-                                     if product_obj_no.id not in exist:
-                                        A = data_quant.append({'product_id': product_obj_no.id,
-                                                               'code': product_obj_no.default_code,
-                                                               'name': product_obj_no.product_tmpl_id.name,
-                                                               'color': product_obj_no.product_tmpl_id.id,
-                                                               'cost': product_obj_no.product_tmpl_id.standard_price,
-                                                               'quantity': 0,
-                                                               'price': product_obj_no.product_tmpl_id.list_price,
-                                                               'tmpl': product_obj_no.product_tmpl_id.id,
-                                                               'template': product_obj_no.product_tmpl_id.id,
-                                                               'barcode': product_obj_no.product_tmpl_id.barcode,
-                                                               'main_price': product_obj_no.product_tmpl_id.main_price,
-                                                               'size': product_atrr_xd[0]['name'],
-                                                               'firstqty': 0
-                                                               })
-
-                                        break
-                                     else:
-                                         for e in exist_obj:
-                                             if e['product_id'] == product_obj_no.id:
-                                                 A = data_quant.append({'product_id': product_obj_no.id,
-                                                                        'code': product_obj_no.default_code,
-                                                                        'name': product_obj_no.product_tmpl_id.name,
-                                                                        'color': product_obj_no.product_tmpl_id.id,
-                                                                        'cost': product_obj_no.product_tmpl_id.standard_price,
-                                                                        'quantity': e['qty'],
-                                                                        'price': product_obj_no.product_tmpl_id.list_price,
-                                                                        'tmpl': product_obj_no.product_tmpl_id.id,
-                                                                        'template': product_obj_no.product_tmpl_id.id,
-                                                                        'barcode': product_obj_no.product_tmpl_id.barcode,
-                                                                        'main_price': product_obj_no.product_tmpl_id.main_price,
-                                                                        'size': product_atrr_xd[0]['name'],
-                                                                        'firstqty': e['qty']
-                                                                        })
-
-                                                 break
-
-
-                        idx += 1
-
-        dq_pids2 = []
-        if data_quant:
-            for dq1 in data_quant:
-                dq_pids2.append(dq1['product_id'])
-
-        if data_quant and so_pid_tid:
-            for spt in so_pid_tid:
-                if spt['product_id'] not in dq_pids2:
-
+        # Эхний үлдэгдэл болон эцсийн үлдэгдэл байхгүй барааг тайлант хугацаанд хөдөлгөөн орсон бол энд нэмэв by out
+        if check_dur_move_list:
+            for cd in check_dur_move_list:
+                # for d in data_quant:
+                if cd['product_id'] not in dq_last:
                     self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
-                                                                                       FROM stock_move sm
-                                                                                            JOIN product_product ppp
-                                                                                                ON ppp.id=sm.product_id
-                                                                                       WHERE sm.state='done'
-                                                                                             AND sm.location_id not in %s
-                                                                                             AND sm.location_dest_id in %s
-                                                                                             AND sm.product_id = %s
-                                                                                             %s
-                                                                                       GROUP BY sm.product_id,sm.product_id,ppp.default_code
-                                                                                      union
-                                                                                      SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
-                                                                                       FROM stock_move sm
-                                                                                            JOIN product_product ppp ON (ppp.id=sm.product_id)
-                                                                                       WHERE sm.state='done'
-                                                                                             AND sm.location_id in %s
-                                                                                             AND sm.location_dest_id not in %s
-                                                                                             AND sm.product_id = %s
-                                                                                             %s
-                                                                                       GROUP BY sm.product_id,sm.product_id,ppp.default_code"""
-                                     % (location, location, spt['product_id'], initial_date_where,
-                                        location, location, spt['product_id'], initial_date_where))
-                    exist_obj2 = self._cr.dictfetchall()
-                    idx = 0
-                    for dq in data_quant:
-                        if spt['product_tmpl_id'] != dq['tmpl']:
-                            # dq_index = data_quant.index[dq]
-                            product_obj_xd = self.env['product.product'].browse(spt['product_id'])
-                            self._cr.execute("""SELECT name FROM product_attribute_value pav
-                                                                               JOIN product_attribute_value_product_product_rel pavr
-                                                                                   ON pavr.product_attribute_value_id = pav.id
-                                                                           WHERE pavr.product_product_id = %s
-                                                                               ORDER BY pav.id ASC LIMIT 1""" % str(product_obj_xd.id))
-                            product_atrr_xd = self._cr.dictfetchall()
-                            if spt['product_id'] in exist:
-                                first_qty = 0.0
-                                if exist_obj2:
-                                    for e in exist_obj2:
-                                        first_qty += e['qty']
-                                    # if e['product_id'] == 74289:
-                                    #     print 'first_qty\n',first_qty
-                                    data_quant.append(      {'product_id': product_obj_xd.id,
-                                                            'code': product_obj_xd.default_code,
-                                                            'name': product_obj_xd.product_tmpl_id.name,
-                                                            'color': product_obj_xd.product_tmpl_id.id,
-                                                            'cost': product_obj_xd.product_tmpl_id.standard_price,
-                                                            'quantity': spt['qty'],
-                                                            'price': product_obj_xd.product_tmpl_id.list_price,
-                                                            'tmpl': product_obj_xd.product_tmpl_id.id,
-                                                            'template': product_obj_xd.product_tmpl_id.id,
-                                                            'barcode': product_obj_xd.product_tmpl_id.barcode,
-                                                            'main_price': product_obj_xd.product_tmpl_id.main_price,
-                                                            'size': product_atrr_xd[0]['name'],
-                                                            'firstqty': first_qty
-                                                            })
-                                    break
-                            else:
-                                A = data_quant.append({'product_id': product_obj_xd.id,
-                                                   'code': product_obj_xd.default_code,
-                                                   'name': product_obj_xd.product_tmpl_id.name,
-                                                   'color': product_obj_xd.product_tmpl_id.id,
-                                                   'cost': product_obj_xd.product_tmpl_id.standard_price,
-                                                   'quantity': spt['qty'],
-                                                   'price': product_obj_xd.product_tmpl_id.list_price,
-                                                   'tmpl': product_obj_xd.product_tmpl_id.id,
-                                                   'template': product_obj_xd.product_tmpl_id.id,
-                                                   'barcode': product_obj_xd.product_tmpl_id.barcode,
-                                                   'main_price': product_obj_xd.product_tmpl_id.main_price,
-                                                   'size': product_atrr_xd[0]['name'],
-                                                   'firstqty': 0
-                                                   })
-                                break
-                        idx += 1
-        data_quant = sorted(data_quant, key=lambda k: (int(k['code'].split("-")[0]), int(k['code'].split("-")[1])))
+                                                                        FROM stock_move sm
+                                                                            JOIN product_product ppp
+                                                                            ON ppp.id=sm.product_id
+                                                                        WHERE sm.state='done'
+                                                                             AND sm.location_id not in %s
+                                                                             AND sm.location_dest_id in %s
+                                                                             AND sm.product_id = %s
+                                                                             %s
+                                                            GROUP BY sm.product_id,ppp.default_code
+                                                            union
+                                                            SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                                                        FROM stock_move sm
+                                                                            JOIN product_product ppp ON (ppp.id=sm.product_id)
+                                                                        WHERE sm.state='done'
+                                                                             AND sm.location_id in %s
+                                                                             AND sm.location_dest_id not in %s
+                                                                             AND sm.product_id = %s
+                                                                             %s
+                                                            GROUP BY sm.product_id,ppp.default_code"""
+                                     % (location, location, cd['product_id'], last_date_where,
+                                        location, location, cd['product_id'], last_date_where))
+                    check_last_qty = self._cr.dictfetchall()
+                    last_qty = 0.0
+                    if check_last_qty:
+                        for i in check_last_qty:
+                            last_qty += i['qty']
+                    product_was_obj = self.env['product.product'].browse(cd['product_id'])
+                    self._cr.execute("""SELECT name FROM product_attribute_value pav
+                                                                                                               JOIN product_attribute_value_product_product_rel pavr
+                                                                                                                   ON pavr.product_attribute_value_id = pav.id
+                                                                                                           WHERE pavr.product_product_id = %s
+                                                                                                               ORDER BY pav.id ASC LIMIT 1""" % str(
+                        product_was_obj.id))
+                    product_were_list = self._cr.dictfetchall()
+
+                    data_quant.append({'product_id': product_was_obj.id,
+                                  'code': product_was_obj.default_code,
+                                  'name': product_was_obj.product_tmpl_id.name,
+                                  'color': product_was_obj.product_tmpl_id.id,
+                                  'cost': product_was_obj.product_tmpl_id.standard_price,
+                                  'quantity': 0,
+                                  'last_qty': last_qty,
+                                  'price': product_was_obj.product_tmpl_id.list_price,
+                                  'tmpl': product_was_obj.product_tmpl_id.id,
+                                  'template': product_was_obj.product_tmpl_id.id,
+                                  'barcode': product_was_obj.product_tmpl_id.barcode,
+                                  'main_price': product_was_obj.product_tmpl_id.main_price,
+                                  'size': product_were_list[0]['name'],
+                                  'firstqty': cd['qty']
+                                  })
+                    break
+
+        for dql_last in data_quant:
+            dq_last2.append(dql_last['product_id'])
+        checklist = []
+        if check_was_but_not_now:
+            for cwb in check_was_but_not_now:
+                was_but_not_now.append(cwb['product_id'])
+                if cwb ['product_id'] not in dq_last2:
+                    if cwb ['product_id'] not in checklist:
+                        checklist.append(cwb ['product_id'])
+            for c in checklist:
+                qty = 0.0
+                for wbn in check_was_but_not_now:
+                    if c == wbn['product_id']:
+                        qty += wbn['qty']
+                if qty > 0:
+                    self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
+                                                    FROM stock_move sm
+                                                        JOIN product_product ppp
+                                                        ON ppp.id=sm.product_id
+                                                    WHERE sm.state='done'
+                                                         AND sm.location_id not in %s
+                                                         AND sm.location_dest_id in %s
+                                                         AND sm.product_id = %s
+                                                         %s
+                                        GROUP BY sm.product_id,ppp.default_code
+                                        union
+                                        SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                                    FROM stock_move sm
+                                                        JOIN product_product ppp ON (ppp.id=sm.product_id)
+                                                    WHERE sm.state='done'
+                                                         AND sm.location_id in %s
+                                                         AND sm.location_dest_id not in %s
+                                                         AND sm.product_id = %s
+                                                         %s
+                                        GROUP BY sm.product_id,ppp.default_code"""
+                                     % (location,location, c, last_date_where,
+                                        location, location, c, last_date_where))
+                    check_last_qty = self._cr.dictfetchall()
+                    last_qty = 0.0
+                    if check_last_qty:
+                        for i in check_last_qty:
+                            last_qty += i['qty']
+                    product_was_bn_obj = self.env['product.product'].browse(c)
+                    if product_was_bn_obj:
+                        self._cr.execute("""SELECT name FROM product_attribute_value pav
+                                       JOIN product_attribute_value_product_product_rel pavr
+                                           ON pavr.product_attribute_value_id = pav.id
+                                   WHERE pavr.product_product_id = %s
+                                       ORDER BY pav.id ASC LIMIT 1""" % str(
+                            product_was_bn_obj.id))
+                        product_was_bn_list = self._cr.dictfetchall()
+
+                        data_quant.append({'product_id': product_was_bn_obj.id,
+                                           'code': product_was_bn_obj.default_code,
+                                           'name': product_was_bn_obj.product_tmpl_id.name,
+                                           'color': product_was_bn_obj.product_tmpl_id.id,
+                                           'cost': product_was_bn_obj.product_tmpl_id.standard_price,
+                                           'quantity': 0,
+                                           'last_qty': last_qty,
+                                           'price': product_was_bn_obj.product_tmpl_id.list_price,
+                                           'tmpl': product_was_bn_obj.product_tmpl_id.id,
+                                           'template': product_was_bn_obj.product_tmpl_id.id,
+                                           'barcode': product_was_bn_obj.product_tmpl_id.barcode,
+                                           'main_price': product_was_bn_obj.product_tmpl_id.main_price,
+                                           'size': product_was_bn_list[0]['name'],
+                                           'firstqty': qty
+                                           })
+        # if qty > 0.0:
+        #     print 'Temka \n\n',cwb,qty
+
+        # тухайн бараа нь тайлант хугацааны эхний үлдэгдлээр байхгүй байгаад тухайн хугацааны хооронд байсан ба одоогийн байдлаар зарагдсан(хасагдсан) барааг харуулах
+        # Тухайн агуулахад орсон хөдөлгөөн дээр тулгуурлаж
+
+        check_dur_move_by_in = []
+        self._cr.execute("""SELECT  sm.product_id AS product_id,
+                                                                   pt.id AS tmpl,
+                                                                   sum(sm.product_uom_qty) AS qty
+                                                                     FROM stock_move AS sm
+                                                                     LEFT JOIN product_product AS pp
+                                                                       ON pp.id = sm.product_id
+                                                                     LEFT join product_template AS pt
+                                                                       ON pp.product_tmpl_id = pt.id
+                                                                     WHERE
+                                                                       sm.state = 'done'
+                                                                       AND sm.location_dest_id = %s
+                                                                        %s
+                                                                    GROUP BY sm.product_id,
+                                                                               pt.id"""
+                         % (self.stock_warehouse.lot_stock_id.id, where_date_sm))
+        check_dur_move_list_by_in = self._cr.dictfetchall()
+        dq_last3 = []
+        if check_dur_move_list_by_in and data_quant:
+            for dql_last3 in data_quant:
+                dq_last3.append(dql_last3['product_id'])
+        # Эхний үлдэгдэл болон эцсийн үлдэгдэл байхгүй барааг тайлант хугацаанд хөдөлгөөн орсон бол энд нэмэв by in
+        # Тухайн хугацаанд орж ирчээд гарсан гэсэн үг
+        if check_dur_move_list_by_in:
+            for cdbyin in check_dur_move_list_by_in:
+                # for d in data_quant:
+                if cdbyin['product_id'] not in dq_last3:
+                    self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
+                                                                            FROM stock_move sm
+                                                                                JOIN product_product ppp
+                                                                                ON ppp.id=sm.product_id
+                                                                            WHERE sm.state='done'
+                                                                                 AND sm.location_id not in %s
+                                                                                 AND sm.location_dest_id in %s
+                                                                                 AND sm.product_id = %s
+                                                                                 %s
+                                                                GROUP BY sm.product_id,ppp.default_code
+                                                                union
+                                                                SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                                                            FROM stock_move sm
+                                                                                JOIN product_product ppp ON (ppp.id=sm.product_id)
+                                                                            WHERE sm.state='done'
+                                                                                 AND sm.location_id in %s
+                                                                                 AND sm.location_dest_id not in %s
+                                                                                 AND sm.product_id = %s
+                                                                                 %s
+                                                                GROUP BY sm.product_id,ppp.default_code"""
+                                     % (location, location, cdbyin['product_id'], last_date_where,
+                                        location, location, cdbyin['product_id'], last_date_where))
+                    check_last_qty_by_in = self._cr.dictfetchall()
+                    last_qty = 0.0
+                    if check_last_qty_by_in:
+                        for i in check_last_qty_by_in:
+                            last_qty += i['qty']
+                    product_was_obj_by_in = self.env['product.product'].browse(cdbyin['product_id'])
+                    self._cr.execute("""SELECT name FROM product_attribute_value pav
+                                                                                                                   JOIN product_attribute_value_product_product_rel pavr
+                                                                                                                       ON pavr.product_attribute_value_id = pav.id
+                                                                                                               WHERE pavr.product_product_id = %s
+                                                                                                                   ORDER BY pav.id ASC LIMIT 1""" % str(
+                        product_was_obj_by_in.id))
+                    product_were_list_by_in = self._cr.dictfetchall()
+
+                    data_quant.append({'product_id': product_was_obj_by_in.id,
+                                       'code': product_was_obj_by_in.default_code,
+                                       'name': product_was_obj_by_in.product_tmpl_id.name,
+                                       'color': product_was_obj_by_in.product_tmpl_id.id,
+                                       'cost': product_was_obj_by_in.product_tmpl_id.standard_price,
+                                       'quantity': 0,
+                                       'last_qty': 0,
+                                       'price': product_was_obj_by_in.product_tmpl_id.list_price,
+                                       'tmpl': product_was_obj_by_in.product_tmpl_id.id,
+                                       'template': product_was_obj_by_in.product_tmpl_id.id,
+                                       'barcode': product_was_obj_by_in.product_tmpl_id.barcode,
+                                       'main_price': product_was_obj_by_in.product_tmpl_id.main_price,
+                                       'size': product_were_list_by_in[0]['name'],
+                                       'firstqty': 0
+                                       })
+
+        data_quant = sorted(data_quant, key=lambda k: (int(k['code'].split("-")[0]), int(k['code'].split("-")[1]),int(k['size'])))
         if data_quant:
             for each_data in data_quant:
-                # if each_data['product_id'] == 79802:
+                # if each_data['product_id'] == 78891:
                 #     print 'each_data',each_data
+            for each_data in data_quant:
                 data = {}
                 data_total = {}
                 self._cr.execute("""SELECT so.id AS sale_order_id,
@@ -471,7 +474,7 @@ class ProductSaleReport(models.TransientModel):
                     #     print 'SoLine \n', so
                     if so['stock_picking_id'] not in so_pickings:
                         so_pickings.append(so['stock_picking_id'])
-                    # print 'SO \n\n',so
+                        # print 'SO \n\n',so
                 if so_pickings:
                     # print 'so_pickings',so_pickings
                     where_out = 'AND sp.id not in (%s)' % ', '.join(map(repr, tuple(so_pickings)))
@@ -516,12 +519,15 @@ class ProductSaleReport(models.TransientModel):
                 data['cost'] = each_data['cost']
                 data['quantity'] = each_data['quantity']
                 data['firstQty'] = each_data['firstqty']
+                data['last_qty'] = each_data['last_qty']
+                data['dummyLastQty'] = str(each_data['size'])+": "+str(int(each_data['last_qty']))
                 data['dummyFirstQty'] = str(each_data['size'])+": "+str(int(each_data['firstqty']))
+                    # if data['dummyFirstQty'].split(":")[0] != str(each_data['size']) else ''
                 data['price'] = each_data['price']
                 data['size'] = each_data['size']
                 data['barcode'] = each_data['barcode']
                 data['main_price'] = each_data['main_price']
-                data['total_size_qty_detail'] = each_data['size'] +': '+ str(int(each_data['quantity']))
+                data['total_size_qty_detail'] = each_data['size'] +': '+ str(int(each_data['last_qty']))
                 data['sub_total'] = {}
                 total_qty = 0
                 total_size = ''
@@ -595,8 +601,10 @@ class ProductSaleReport(models.TransientModel):
 
                     # if data['total_size_qty_detail'] > 0 and data['quantity'] > 0:
                     data['total_size_qty_detail'] = each_data['size'] + ': ' + str(
-                        int(each_data['firstqty'] - total_qty + total_in - total_out))
-                    data['quantity'] = each_data['firstqty'] - total_qty + total_in - total_out
+                        int(each_data['firstqty']))
+                    data['total_size_last_qty'] = each_data['size'] + ': ' + str(
+                        int(each_data['last_qty']))
+                    data['quantity'] = each_data['quantity']
 
                 data['sub_total']['total_in'] = total_in
                 data['sub_total']['total_out'] = total_out
@@ -629,18 +637,19 @@ class ProductSaleReport(models.TransientModel):
             lena = 0
             lenb = len(dataLine)
             for d in dataLine:
-                # if d['template'] == 25477:
-                #     print 'd \n', d
                 lena += 1
                 if template:
                     if template == d['template']:
                         dataEachPrdDict['quantity'] += d['quantity']
                         dataEachPrdDict['firstQty'] += d['firstQty']
+                        dataEachPrdDict['last_qty'] += d['last_qty']
                         dataEachPrdDict['barcode'] = d['barcode']
                         dataEachPrdDict['price'] = d['price'] if d['price'] else 0
                         dataEachPrdDict['main_price'] = d['main_price'] if d['main_price'] else 0
                         dataEachPrdDict['dummyFirstQty'] += ", "+d['dummyFirstQty'] if dataEachPrdDict['dummyFirstQty'] else d['dummyFirstQty']
+                        dataEachPrdDict['dummyLastQty'] += ", "+d['dummyLastQty'] if dataEachPrdDict['dummyLastQty'] else d['dummyLastQty']
                         dataEachPrdDict['total_size_qty_detail'] += ", "+d['total_size_qty_detail'] if dataEachPrdDict['total_size_qty_detail'] else d['total_size_qty_detail']
+                        dataEachPrdDict['total_size_last_qty'] += ", "+d['total_size_last_qty'] if dataEachPrdDict['total_size_last_qty'] else d['total_size_last_qty']
                         dataEachPrdDict['size'] += ", "+d['size'] if dataEachPrdDict['size'] else d['size']
                         for everyDl in header_daily:
                             dataEachPrdDict[everyDl]['qty_delivered'] += d[everyDl]['qty_delivered']
@@ -654,7 +663,7 @@ class ProductSaleReport(models.TransientModel):
                         dataEachPrdDict['sub_total']['total_qty'] += d['sub_total']['total_qty']
                         dataEachPrdDict['sub_total']['total_in'] += d['sub_total']['total_in']
                         dataEachPrdDict['sub_total']['total_out'] += d['sub_total']['total_out']
-                        dataEachPrdDict['sub_total']['total_size'] += ", "+d['sub_total']['total_size'] if dataEachPrdDict['sub_total']['total_size'] else d['sub_total']['total_size']
+                        dataEachPrdDict['sub_total']['total_size'] += "- " + d['sub_total']['total_size'] if dataEachPrdDict['sub_total']['total_size'] else d['sub_total']['total_size']
                         dataEachPrdDict['sub_total']['total_benefit'] += d['sub_total']['total_benefit']
                     else:
                         dataEachPrdList.append(dataEachPrdDict)
@@ -668,7 +677,7 @@ class ProductSaleReport(models.TransientModel):
             dataLine = dataEachPrdList
             # print 'dataLine\n',dataLine
             # Daily total
-            dailySubTotal = {'ttlQuant': 0, 'ttlFirstQuant': 0, 'ttlMainPrice': 0}
+            dailySubTotal = {'ttlQuant': 0, 'ttlFirstQuant': 0, 'ttlMainPrice': 0, 'ttlLastQuant':0}
             dailyTotal = {}
             for d in header_daily:
                 # total prepare empty
@@ -688,6 +697,7 @@ class ProductSaleReport(models.TransientModel):
                 inInt = 0
                 dailySubTotal['ttlQuant'] += l['quantity']
                 dailySubTotal['ttlFirstQuant'] += l['firstQty']
+                dailySubTotal['ttlLastQuant'] += l['last_qty']
                 dailySubTotal['ttlMainPrice'] += l['main_price'] if l['main_price'] else 0
                 for d in header_daily:
                     dailySubTotal[d]['qty'] += l[d]['qty_delivered']
@@ -750,17 +760,18 @@ class ProductSaleReport(models.TransientModel):
                 cola += 1
                 coly = cola
             if self.show_cost:
-                sheet.write_merge(rowx, rowx, coly, cola+6, 'Нийт', style_title)
+                sheet.write_merge(rowx, rowx, coly, cola+7, 'Нийт', style_title)
             else:
-                sheet.write_merge(rowx, rowx, coly, cola+5, 'Нийт', style_title)
+                sheet.write_merge(rowx, rowx, coly, cola+6, 'Нийт', style_title)
             sheet.write(rowx + 1, coly, 'Зарсан, ш', style_title)
             sheet.write(rowx + 1, coly + 1, 'Буцаалт, ш', style_title)
             sheet.write(rowx + 1, coly + 2, 'Агуулахаас , Ш', style_title)
-            sheet.write(rowx + 1, coly + 3, 'Тоо ш', style_title)
+            sheet.write(rowx + 1, coly + 3, 'ТАйлан хугацааны үлдэгдэл ш', style_title)
             sheet.write(rowx + 1, coly + 4, 'размерууд, ш', style_title)
             sheet.write(rowx + 1, coly + 5, 'Борлуулсан размерууд', style_title)
+            sheet.write(rowx + 1, coly + 6, 'Бодит үлдэгдэл размерууд', style_title)
             if self.show_cost:
-                sheet.write(rowx + 1, coly + 6, 'Нийт ашиг', style_title)
+                sheet.write(rowx + 1, coly + 7, 'Нийт ашиг', style_title)
         sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Үндсэн мэдээлэл', style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
@@ -808,11 +819,12 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc, line['sub_total']['total_qty'])
                         sheet.write(rowx, colx + colc+1, line['sub_total']['total_out'])
                         sheet.write(rowx, colx + colc+2, line['sub_total']['total_in'])
-                        sheet.write(rowx, colx + colc+3, line['quantity'])
+                        sheet.write(rowx, colx + colc+3, line['last_qty'])
+                        sheet.write(rowx, colx + colc+4, line['dummyLastQty'])
                         sheet.write(rowx, colx + colc+5, line['sub_total']['total_size'])
-                        sheet.write(rowx, colx + colc+4, line['total_size_qty_detail'])
+                        sheet.write(rowx, colx + colc+6, line['quantity'])
                         if self.show_cost:
-                            sheet.write(rowx, colx + colc+6, line['sub_total']['total_benefit'])
+                            sheet.write(rowx, colx + colc+7, line['sub_total']['total_benefit'])
                 rowx += 1
 
             if dailySubTotal:
@@ -847,11 +859,12 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write(rowx, colx+coli, dailySubTotal['total_qty'], style_footer)
                 sheet.write(rowx, colx+coli+1, dailySubTotal['total_out'], style_footer)
                 sheet.write(rowx, colx+coli+2, dailySubTotal['total_in'], style_footer)
-                sheet.write(rowx, colx+coli+3, dailySubTotal['ttlQuant'], style_footer)
+                sheet.write(rowx, colx+coli+3, dailySubTotal['ttlLastQuant'], style_footer)
+                sheet.write(rowx, colx+coli+6, dailySubTotal['ttlQuant'], style_footer)
                 sheet.write(rowx+2, colx+coli+1, _('Total: '), style_footer)
                 sheet.write(rowx+2, colx+coli+2, dailySubTotal['total'], style_footer)
                 if self.show_cost:
-                    sheet.write(rowx+6, colx+coli+6, dailySubTotal['total_benefit'], style_footer)
+                    sheet.write(rowx+6, colx+coli+7, dailySubTotal['total_benefit'], style_footer)
 
         # prepare file data
         io_buffer = StringIO()
