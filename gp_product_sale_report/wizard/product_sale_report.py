@@ -431,7 +431,7 @@ class ProductSaleReport(models.TransientModel):
 
         data_quant = sorted(data_quant, key=lambda k: (int(k['code'].split("-")[0]), int(k['code'].split("-")[1]),int(k['size'])))
         if data_quant:
-            for each_data in data_quant:
+            # for each_data in data_quant:
                 # if each_data['product_id'] == 78891:
                 #     print 'each_data',each_data
             for each_data in data_quant:
