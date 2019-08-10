@@ -377,6 +377,8 @@ class ProductSaleReport(models.TransientModel):
             for cdbyin in check_dur_move_list_by_in:
                 # for d in data_quant:
                 if cdbyin['product_id'] not in dq_last3:
+                    # if cdbyin['product_id'] in (85145,85152):
+                    #     print 'cdbyin\n',cdbyin
                     self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
                                                                             FROM stock_move sm
                                                                                 JOIN product_product ppp
@@ -402,32 +404,121 @@ class ProductSaleReport(models.TransientModel):
                     check_last_qty_by_in = self._cr.dictfetchall()
                     last_qty = 0.0
                     if check_last_qty_by_in:
+                        # if cdbyin['product_id'] in (85145, 85152):
+                        #     print 'check_last_qty_by_in ____',check_last_qty_by_in
                         for i in check_last_qty_by_in:
                             last_qty += i['qty']
-                    product_was_obj_by_in = self.env['product.product'].browse(cdbyin['product_id'])
-                    self._cr.execute("""SELECT name FROM product_attribute_value pav
-                                                                                                                   JOIN product_attribute_value_product_product_rel pavr
-                                                                                                                       ON pavr.product_attribute_value_id = pav.id
-                                                                                                               WHERE pavr.product_product_id = %s
-                                                                                                                   ORDER BY pav.id ASC LIMIT 1""" % str(
-                        product_was_obj_by_in.id))
-                    product_were_list_by_in = self._cr.dictfetchall()
 
-                    data_quant.append({'product_id': product_was_obj_by_in.id,
-                                       'code': product_was_obj_by_in.default_code,
-                                       'name': product_was_obj_by_in.product_tmpl_id.name,
-                                       'color': product_was_obj_by_in.product_tmpl_id.id,
-                                       'cost': product_was_obj_by_in.product_tmpl_id.standard_price,
-                                       'quantity': 0,
-                                       'last_qty': 0,
-                                       'price': product_was_obj_by_in.product_tmpl_id.list_price,
-                                       'tmpl': product_was_obj_by_in.product_tmpl_id.id,
-                                       'template': product_was_obj_by_in.product_tmpl_id.id,
-                                       'barcode': product_was_obj_by_in.product_tmpl_id.barcode,
-                                       'main_price': product_was_obj_by_in.product_tmpl_id.main_price,
-                                       'size': product_were_list_by_in[0]['name'],
-                                       'firstqty': 0
-                                       })
+                        self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
+                                                                                                    FROM stock_move sm
+                                                                                                        JOIN product_product ppp
+                                                                                                        ON ppp.id=sm.product_id
+                                                                                                    WHERE sm.state='done'
+                                                                                                         AND sm.location_id not in %s
+                                                                                                         AND sm.location_dest_id in %s
+                                                                                                         AND sm.product_id = %s
+                                                                                                         %s
+                                                                                        GROUP BY sm.product_id,ppp.default_code
+                                                                                        union
+                                                                                        SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                                                                                    FROM stock_move sm
+                                                                                                        JOIN product_product ppp ON (ppp.id=sm.product_id)
+                                                                                                    WHERE sm.state='done'
+                                                                                                         AND sm.location_id in %s
+                                                                                                         AND sm.location_dest_id not in %s
+                                                                                                         AND sm.product_id = %s
+                                                                                                         %s
+                                                                                        GROUP BY sm.product_id,ppp.default_code"""
+                                         % (location, location, cdbyin['product_id'], initial_date_where,
+                                            location, location, cdbyin['product_id'], initial_date_where))
+                        check_first_qty_by_in = self._cr.dictfetchall()
+                    first_qty = 0.0
+                    if check_first_qty_by_in:
+                        # if cdbyin['product_id'] in (85145, 85152):
+                        #     print 'check_first_qty_by_in ____',check_first_qty_by_in
+                        for i in check_first_qty_by_in:
+                            first_qty += i['qty']
+                        product_was_obj_by_in_first = self.env['product.product'].browse(cdbyin['product_id'])
+                        self._cr.execute("""SELECT name FROM product_attribute_value pav
+                                                                                                                       JOIN product_attribute_value_product_product_rel pavr
+                                                                                                                           ON pavr.product_attribute_value_id = pav.id
+                                                                                                                   WHERE pavr.product_product_id = %s
+                                                                                                                       ORDER BY pav.id ASC LIMIT 1""" % str(
+                            product_was_obj_by_in_first.id))
+                        product_were_list_by_in_first = self._cr.dictfetchall()
+
+                        data_quant.append({'product_id': product_was_obj_by_in_first.id,
+                                           'code': product_was_obj_by_in_first.default_code,
+                                           'name': product_was_obj_by_in_first.product_tmpl_id.name,
+                                           'color': product_was_obj_by_in_first.product_tmpl_id.id,
+                                           'cost': product_was_obj_by_in_first.product_tmpl_id.standard_price,
+                                           'quantity': 0,
+                                           'last_qty': last_qty,
+                                           'price': product_was_obj_by_in_first.product_tmpl_id.list_price,
+                                           'tmpl': product_was_obj_by_in_first.product_tmpl_id.id,
+                                           'template': product_was_obj_by_in_first.product_tmpl_id.id,
+                                           'barcode': product_was_obj_by_in_first.product_tmpl_id.barcode,
+                                           'main_price': product_was_obj_by_in_first.product_tmpl_id.main_price,
+                                           'size': product_were_list_by_in_first[0]['name'],
+                                           'firstqty': first_qty
+                                           })
+                    # Тайлант хугацааны өмнө тухайн бараа байхгүй байсан ба тайлант хугацаанд орж ирээд яг одоогийн байдлаар байхгүй байсан бараа харагдахгүй байсан тул дараах
+                    #нөхцөлөөр нэмж өгөв листэнд
+                    if not check_first_qty_by_in and check_last_qty_by_in:
+                        self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
+                                                                                                    FROM stock_move sm
+                                                                                                        JOIN product_product ppp
+                                                                                                        ON ppp.id=sm.product_id
+                                                                                                    WHERE sm.state='done'
+                                                                                                         AND sm.location_id not in %s
+                                                                                                         AND sm.location_dest_id in %s
+                                                                                                         AND sm.product_id = %s
+                                                                                                         %s
+                                                                                        GROUP BY sm.product_id,ppp.default_code
+                                                                                        union
+                                                                                        SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                                                                                    FROM stock_move sm
+                                                                                                        JOIN product_product ppp ON (ppp.id=sm.product_id)
+                                                                                                    WHERE sm.state='done'
+                                                                                                         AND sm.location_id in %s
+                                                                                                         AND sm.location_dest_id not in %s
+                                                                                                         AND sm.product_id = %s
+                                                                                                         %s
+                                                                                        GROUP BY sm.product_id,ppp.default_code"""
+                                         % (location, location, cdbyin['product_id'], where_date_sm,
+                                            location, location, cdbyin['product_id'], where_date_sm))
+                        check_was_in_duration_but_nt_now= self._cr.dictfetchall()
+                        last_qty_was_but = 0.0
+                        if check_was_in_duration_but_nt_now:
+                            for w in  check_was_in_duration_but_nt_now:
+                                last_qty_was_but += w['qty']
+                            product_was_obj_in_dur_but_nn= self.env['product.product'].browse(cdbyin['product_id'])
+                            self._cr.execute("""SELECT name FROM product_attribute_value pav
+                                                                                                                                                   JOIN product_attribute_value_product_product_rel pavr
+                                                                                                                                                       ON pavr.product_attribute_value_id = pav.id
+                                                                                                                                               WHERE pavr.product_product_id = %s
+                                                                                                                                                   ORDER BY pav.id ASC LIMIT 1""" % str(
+                                product_was_obj_in_dur_but_nn.id))
+                            product_was_dur_but_nn = self._cr.dictfetchall()
+
+                            data_quant.append({'product_id': product_was_obj_in_dur_but_nn.id,
+                                               'code': product_was_obj_in_dur_but_nn.default_code,
+                                               'name': product_was_obj_in_dur_but_nn.product_tmpl_id.name,
+                                               'color': product_was_obj_in_dur_but_nn.product_tmpl_id.id,
+                                               'cost': product_was_obj_in_dur_but_nn.product_tmpl_id.standard_price,
+                                               'quantity': 0,
+                                               'last_qty': last_qty_was_but,
+                                               'price': product_was_obj_in_dur_but_nn.product_tmpl_id.list_price,
+                                               'tmpl': product_was_obj_in_dur_but_nn.product_tmpl_id.id,
+                                               'template': product_was_obj_in_dur_but_nn.product_tmpl_id.id,
+                                               'barcode': product_was_obj_in_dur_but_nn.product_tmpl_id.barcode,
+                                               'main_price': product_was_obj_in_dur_but_nn.product_tmpl_id.main_price,
+                                               'size': product_was_dur_but_nn[0]['name'],
+                                               'firstqty': 0
+                                               })
+
+
+
 
         data_quant = sorted(data_quant, key=lambda k: (int(k['code'].split("-")[0]), int(k['code'].split("-")[1]),int(k['size'])))
         if data_quant:
@@ -519,8 +610,7 @@ class ProductSaleReport(models.TransientModel):
                 data['cost'] = each_data['cost']
                 data['quantity'] = each_data['quantity']
                 data['firstQty'] = each_data['firstqty']
-                data['last_qty'] = each_data['last_qty']
-                data['dummyLastQty'] = str(each_data['size'])+": "+str(int(each_data['last_qty']))
+
                 data['dummyFirstQty'] = str(each_data['size'])+": "+str(int(each_data['firstqty']))
                     # if data['dummyFirstQty'].split(":")[0] != str(each_data['size']) else ''
                 data['price'] = each_data['price']
@@ -603,9 +693,10 @@ class ProductSaleReport(models.TransientModel):
                     data['total_size_qty_detail'] = each_data['size'] + ': ' + str(
                         int(each_data['firstqty']))
                     data['total_size_last_qty'] = each_data['size'] + ': ' + str(
-                        int(each_data['last_qty']))
+                        int(each_data['firstqty'] + total_in - total_out - total_qty))
                     data['quantity'] = each_data['quantity']
-
+                data['last_qty'] = each_data['firstqty'] + total_in - total_out - total_qty
+                data['dummyLastQty'] = str(each_data['size']) + ": " + str(int(each_data['firstqty'] + total_in - total_out - total_qty))
                 data['sub_total']['total_in'] = total_in
                 data['sub_total']['total_out'] = total_out
                 data['sub_total']['total_qty'] = total_qty
