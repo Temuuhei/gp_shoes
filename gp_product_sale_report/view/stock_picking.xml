@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet/group/group/field[@name='location_dest_id']" position="after">
                 <field name="product_template"/>
+                <field name="is_existed_products"/>
                 <button name="insert_products" string="Insert products" type="object"/>
             </xpath>
         </field>

@@ -7,29 +7,53 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     product_template = fields.Many2one('product.template', 'Main product')
+    is_existed_products = fields.Boolean('Байгаа бараануудыг харуулах', default = False)
 
     @api.multi
     def insert_products(self):
         product = self.env['product.product']
-        print self
+        quant = self.env['stock.quant']
         for object in self:
             products = product.search([('product_tmpl_id', '=', object.product_template.id)])
             move_products = []
             if not object.min_date:
                 raise ValidationError(_(u'Та товлогдсон огноо талбарыг сонгоно уу! '))
-            if products and object.min_date:
-                for m in object.move_lines:
-                    move_products.append(m.product_id.id)
-                for p in products:
-                    if p.id not in move_products:
-                        object.move_lines.create({'picking_id': object.id,
-                                          'name': p.product_tmpl_id.name,
-                                          'product_id': p.id,
-                                          'date': object.min_date,
-                                          'create_date': object.min_date,
-                                          'product_uom': p.product_tmpl_id.uom_id.id,
-                                          'location_id': object.location_id.id,
-                                          'location_dest_id': object.location_dest_id.id})
+
+            if not object.is_existed_products:
+                if products and object.min_date:
+                    for m in object.move_lines:
+                        move_products.append(m.product_id.id)
+                    for p in products:
+                        if p.id not in move_products:
+                            object.move_lines.create({'picking_id': object.id,
+                                              'name': p.product_tmpl_id.name,
+                                              'product_id': p.id,
+                                              'date': object.min_date,
+                                              'create_date': object.min_date,
+                                              'product_uom': p.product_tmpl_id.uom_id.id,
+                                              'location_id': object.location_id.id,
+                                              'location_dest_id': object.location_dest_id.id})
+            else:
+                if products and object.min_date:
+                    for m in object.move_lines:
+                        move_products.append(m.product_id.id)
+                    for p in products:
+                        if p.id not in move_products:
+                            quants = quant.search([('product_id', '=', p.id),('location_id','=',object.location_id.id)])
+                            if quants:
+                                qty = 0.0
+                                for q in quants:
+                                    qty += q.qty
+                                object.move_lines.create({'picking_id': object.id,
+                                              'name': p.product_tmpl_id.name,
+                                              'product_id': p.id,
+                                              'date': object.min_date,
+                                              'product_uom_qty': qty,
+                                              'create_date': object.min_date,
+                                              'product_uom': p.product_tmpl_id.uom_id.id,
+                                              'location_id': object.location_id.id,
+                                              'location_dest_id': object.location_dest_id.id})
+
 
 
 
@@ -54,12 +78,16 @@ class StockPicking(models.Model):
                                                         ('product_id', '=', ml.product_id.id)])
                 print ' QUANT___', quant
                 qty = 0
-                for q in quant:
-                    qty += q.qty
-                    print ' Q>QTY___', q.qty
-                print ' TQTY___', qty
-                if qty < ml.product_uom_qty:
-                    raise ValidationError(_(u'Танай агуулахад тухайн бараа байхгүй байна! : %s') % ml.product_id.name_get())
+                if quant:
+                    for q in quant:
+                        qty += q.qty
+                        print ' Q>QTY___', q.qty
+                    print ' TQTY___', qty
+                    if qty < ml.product_uom_qty:
+                        raise ValidationError(_(u'Танай агуулахад тухайн бараа байхгүй байна! : %s') % ml.product_id.name_get())
+                else:
+                    raise ValidationError(
+                        _(u'Танай агуулахад тухайн бараа байхгүй байна! : %s') % ml.product_id.name_get())
         return True
 # class StockMove(models.Model):
 #     _inherit = "stock.move"

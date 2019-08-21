@@ -4,6 +4,13 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
 
+class SaleOrderDiscount(models.Model):
+    _inherit = ['mail.thread', 'ir.needaction_mixin']
+    _name = 'sale.order.discount'
+
+    discount = fields.Float('All Discount', default=0, track_visibility='always')
+    active = fields.Boolean('Active', default=True,track_visibility='always')
+
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
@@ -29,6 +36,18 @@ class SaleOrderLine(models.Model):
     date = fields.Integer(compute=_set_date, string='Day', readonly=True, store=True)
     cash_payment = fields.Float('Cash payment', default=0)
     card_payment = fields.Float('Card payment', default=0)
+    is_return = fields.Boolean('Is Return',default=False)
+    is_discount = fields.Boolean('Is Discount',default=False)
+    is_boss = fields.Boolean('Is Boss',default=False)
+
+
+    @api.multi
+    def to_archive(self):
+        self.update({'is_return': True})
+
+    @api.multi
+    def to_unarchive(self):
+        self.update({'is_return': False})
 
     @api.onchange('cash_payment')
     def onChangeCash(self):
@@ -43,6 +62,22 @@ class SaleOrderLine(models.Model):
                 if limit < object.cash_payment:
                     object.cash_payment = limit
                 object.card_payment = limit - object.cash_payment
+
+    @api.onchange('is_discount')
+    def onChangeIsDiscount(self):
+        discount = self.env['sale.order.discount']
+        active_dis = discount.search([('active','=',True)])[0]
+        for object in self:
+            if object.is_discount:
+                if active_dis:
+                    for d in active_dis:
+                        object.discount = d.discount
+                        object.cash_payment = ((object.product_uom_qty * object.price_unit)*(100 - object.discount))/100
+            else:
+                object.discount = 0
+                object.cash_payment = 0
+
+
 
     @api.onchange('card_payment')
     def onChangeCard(self):
@@ -62,6 +97,8 @@ class SaleOrderLine(models.Model):
     @api.model
     def create(self, values):
         create = super(SaleOrderLine, self).create(values)
+        discount = self.env['sale.order.discount']
+        active_dis = discount.search([('active', '=', True)])[0]
         quant = self.env['stock.quant'].search([('location_id', '=', create.order_id.warehouse_id.lot_stock_id.id),
                                                 ('product_id', '=', create.product_id.id)])
         qt = 0
@@ -71,11 +108,26 @@ class SaleOrderLine(models.Model):
             raise ValidationError(_(u'Танай агуулахад тухайн бараа байхгүй байна! : %s') % create.name, )
         if not create.cash_payment and not create.card_payment:
             raise ValidationError(_('You cannot create card and cash payment with 0!'))
+        if not create.is_boss:
+            if create.price_unit != create.price_original:
+                raise ValidationError(
+                    _(u'Нэгж үнийг шууд өөрчлөх боломжгүй ба та системээс санал болгосон нэгж ашиглах мөн Хөнгөлөлттэй борлуулалт бол бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !'))
+            if not create.is_discount and create.price_unit != create.price_original:
+                raise ValidationError(_(u'Хөнгөлөлттэй борлуулалт бол бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !') )
+        if active_dis and self.discount > 0:
+            for a in active_dis:
+                if create.discount != a.discount:
+                    raise ValidationError(_(u'Борлуулалтын хөнгөлөлтийг тохируулсан дүнгээс зөрүүтэй байна. Хөнгөлөлттэй эсэх гэсэн талбарыг чеклэж бүртгэнэ үү .Та дараах хөнгөлөлтийг хийж өгнө! : %s') % a.discount, )
+        if create:
+            if create.price_subtotal != create.cash_payment + create.card_payment:
+                raise ValidationError(_(u'Касс картын нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s') % (create.price_subtotal,create.cash_payment,create.card_payment))
         return create
 
     @api.multi
     def write(self, values):
         write = super(SaleOrderLine, self).write(values)
+        discount = self.env['sale.order.discount']
+        active_dis = discount.search([('active', '=', True)])[0]
         if "product_uom_qty" in values or "product_id" in values:
             quant = self.env['stock.quant'].search([('location_id', '=', self.order_id.warehouse_id.lot_stock_id.id),
                                                     ('product_id', '=', self.product_id.id)])
@@ -83,4 +135,19 @@ class SaleOrderLine(models.Model):
                 raise ValidationError(_(u'Танай агуулахад тухайн бараа байхгүй байна! : %s')% write.name)
         if not self.cash_payment and not self.card_payment:
             raise ValidationError(_('You cannot create card and cash payment with 0!'))
+        if not self.is_discount and self.price_unit != self.price_original:
+            raise ValidationError(
+                _(u'Хөнгөлөлттэй борлуулалт бол бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !'))
+        if not self.is_boss:
+            if self.price_unit != self.price_original:
+                raise ValidationError(
+                    _(
+                        u'Нэгж үнийг шууд өөрчлөх боломжгүй ба та системээс санал болгосон нэгж ашиглах мөн Хөнгөлөлттэй борлуулалт бол бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !'))
+            if active_dis and self.discount > 0:
+                for a in active_dis:
+                    if self.discount != a.discount:
+                        raise ValidationError(_(u'Борлуулалтын хөнгөлөлт нь тохируулсан дүнгээс зөрүүтэй байна. Хөнгөлөлттэй эсэх гэсэн талбарыг чеклэж бүртгэнэ үү .Та дараах хөнгөлөлтийг хийж өгнө! : %s') % a.discount, )
+        if self:
+            if self.price_subtotal != self.cash_payment + self.card_payment:
+                raise ValidationError(_(u'Касс картын нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s') % (self.price_subtotal,self.cash_payment,self.card_payment))
         return write
