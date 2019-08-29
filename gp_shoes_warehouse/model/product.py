@@ -195,7 +195,7 @@ class ProductTemplate(models.Model):
                 #elif product_id.attribute_value_ids not in variant_matrix: элийг авч өөрчлөв
                 if product_id.attribute_value_ids not in variant_matrix:
                     variants_to_unlink |= product_id
-                    variant_matrix.append(product_id.attribute_value_ids[0])
+                    variant_matrix.append(product_id.attribute_value_ids)
             if variants_to_activate:
                 variants_to_activate.write({'active': True})
             default_code = ''
