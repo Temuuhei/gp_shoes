@@ -76,7 +76,7 @@ class ProductSaleReport(models.TransientModel):
         #         check_picking.append(s['product_id'])
 
         # Одоо байгаа барааны мэдээлэл
-        self._cr.execute("""SELECT pp.id AS product_id,
+        self._cr.execute("""SELECT pp.id     AS product_id,
                                    pt.default_code AS code,
                                    pt.name AS name,
                                    pt.id AS color,
@@ -810,9 +810,9 @@ class ProductSaleReport(models.TransientModel):
 
         # define title and header
         if self.show_cost:
-            title_list = [('Шинэ код'), ('Бараа нэр'), ('Баркод'), ('Үндсэн үнэ ₮'), ('Размерууд'), ('Өртөг үнэ ₮'), ('Тоо, ш'), ('Зарах үнэ')]
+            title_list = [('Шинэ код'), ('Бараа нэр'), ('Баркод'), ('Размерууд'),('Үндсэн үнэ ₮'), ('Зарах үнэ'),('Өртөг үнэ ₮'), ('Тоо, ш')]
         else:
-            title_list = [('Шинэ код'), ('Бараа нэр'), ('Размерууд'), ('Үндсэн үнэ ₮'), ('Тоо, ш'), ('Зарах үнэ')]
+            title_list = [('Шинэ код'), ('Бараа нэр'),('Баркод'), ('Размерууд'), ('Үндсэн үнэ ₮'),  ('Зарах үнэ'),('Тоо, ш')]
         colx_number = len(title_list) - 1
 
         # create header
@@ -875,18 +875,19 @@ class ProductSaleReport(models.TransientModel):
                     sheet.write(rowx, colx, line['code'])
                     sheet.write(rowx, colx + 1, line['product'])
                     sheet.write(rowx, colx + 2, line['barcode'])
-                    sheet.write(rowx, colx + 3, line['main_price'])
-                    sheet.write(rowx, colx + 4, line['dummyFirstQty'])
-                    sheet.write(rowx, colx + 5, line['cost'])
-                    sheet.write(rowx, colx + 6, line['firstQty'])
-                    sheet.write(rowx, colx + 7, line['price'])
+                    sheet.write(rowx, colx + 3, line['dummyFirstQty'])
+                    sheet.write(rowx, colx + 4, line['main_price'])
+                    sheet.write(rowx, colx + 5, line['price'])
+                    sheet.write(rowx, colx + 6, line['cost'])
+                    sheet.write(rowx, colx + 7, line['firstQty'])
                 else:
                     sheet.write(rowx, colx, line['code'])
                     sheet.write(rowx, colx + 1, line['product'])
-                    sheet.write(rowx, colx + 2, line['dummyFirstQty'])
-                    sheet.write(rowx, colx + 3, line['main_price'])
-                    sheet.write(rowx, colx + 4, line['firstQty'])
+                    sheet.write(rowx, colx + 2, line['barcode'])
+                    sheet.write(rowx, colx + 3, line['dummyFirstQty'])
+                    sheet.write(rowx, colx + 4, line['main_price'])
                     sheet.write(rowx, colx + 5, line['price'])
+                    sheet.write(rowx, colx + 6, line['firstQty'])
                 if header_daily:
                     colc = len(title_list)
                     cold = len(title_list)
@@ -920,12 +921,12 @@ class ProductSaleReport(models.TransientModel):
 
             if dailySubTotal:
                 rowx += 1
-                sheet.write(rowx, colx, _("Product Quintity: "), style_footer)
+                sheet.write(rowx, colx, _("Нийт: "), style_footer)
                 sheet.write(rowx, colx + 4, dailySubTotal['ttlFirstQuant'], style_footer)
-                sheet.write(rowx+2, colx, _("Daily Sale: "), style_footer)
-                sheet.write(rowx+3, colx, _("Daily Sale Quantity: "), style_footer)
-                sheet.write(rowx+4, colx, _("Daily warehouse out: "), style_footer)
-                sheet.write(rowx+5, colx, _("Daily warehouse in: "), style_footer)
+                # sheet.write(rowx+2, colx, _("Daily Sale: "), style_footer)
+                # sheet.write(rowx+3, colx, _("Daily Sale Quantity: "), style_footer)
+                # sheet.write(rowx+4, colx, _("Daily warehouse out: "), style_footer)
+                # sheet.write(rowx+5, colx, _("Daily warehouse in: "), style_footer)
                 if self.show_cost:
                     sheet.write(rowx+6, colx, _("Өдрийн ашиг: "), style_footer)
 
@@ -936,15 +937,15 @@ class ProductSaleReport(models.TransientModel):
                         colj += 7
                     else:
                         colj += 6
-                    sheet.write(rowx+3, colx+coli, dailySubTotal[hd]['qty'], style_footer)
-                    sheet.write(rowx+2, colx+coli+1, dailySubTotal[hd]['cash'], style_footer)
-                    sheet.write(rowx+2, colx+coli+2, dailySubTotal[hd]['card'], style_footer)
-                    sheet.write(rowx+4, colx+coli+3, dailySubTotal[hd]['out'], style_footer)
-                    sheet.write(rowx+4, colx+coli+4, '', style_footer)
-                    sheet.write(rowx+5, colx+coli+5, dailySubTotal[hd]['in'], style_footer)
-                    sheet.write(rowx+5, colx+coli+6, '', style_footer)
+                    sheet.write(rowx, colx+coli, dailySubTotal[hd]['qty'], style_footer)
+                    sheet.write(rowx, colx+coli+1, dailySubTotal[hd]['cash'], style_footer)
+                    sheet.write(rowx, colx+coli+2, dailySubTotal[hd]['card'], style_footer)
+                    sheet.write(rowx, colx+coli+3, dailySubTotal[hd]['out'], style_footer)
+                    sheet.write(rowx, colx+coli+4, '', style_footer)
+                    sheet.write(rowx, colx+coli+5, dailySubTotal[hd]['in'], style_footer)
+                    sheet.write(rowx, colx+coli+6, '', style_footer)
                     if self.show_cost:
-                        sheet.write(rowx+6, colx+coli+7, dailySubTotal[hd]['benefit'], style_footer)
+                        sheet.write(rowx, colx+coli+7, dailySubTotal[hd]['benefit'], style_footer)
                     colj += 1
                     coli = colj
                 sheet.write(rowx, colx+coli, dailySubTotal['total_qty'], style_footer)
@@ -952,10 +953,10 @@ class ProductSaleReport(models.TransientModel):
                 sheet.write(rowx, colx+coli+2, dailySubTotal['total_in'], style_footer)
                 sheet.write(rowx, colx+coli+3, dailySubTotal['ttlLastQuant'], style_footer)
                 sheet.write(rowx, colx+coli+6, dailySubTotal['ttlQuant'], style_footer)
-                sheet.write(rowx+2, colx+coli+1, _('Total: '), style_footer)
-                sheet.write(rowx+2, colx+coli+2, dailySubTotal['total'], style_footer)
+                sheet.write(rowx+1, colx+coli+1, _('Total: '), style_footer)
+                sheet.write(rowx+1, colx+coli+2, dailySubTotal['total'], style_footer)
                 if self.show_cost:
-                    sheet.write(rowx+6, colx+coli+7, dailySubTotal['total_benefit'], style_footer)
+                    sheet.write(rowx, colx+coli+7, dailySubTotal['total_benefit'], style_footer)
 
         # prepare file data
         io_buffer = StringIO()
