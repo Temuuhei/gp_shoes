@@ -857,7 +857,7 @@ class ProductSaleReport(models.TransientModel):
             sheet.write(rowx + 1, coly, 'Зарсан, ш', style_title)
             sheet.write(rowx + 1, coly + 1, 'Буцаалт, ш', style_title)
             sheet.write(rowx + 1, coly + 2, 'Агуулахаас , Ш', style_title)
-            sheet.write(rowx + 1, coly + 3, 'ТАйлан хугацааны үлдэгдэл ш', style_title)
+            sheet.write(rowx + 1, coly + 3, 'Тайлант хугацааны үлдэгдэл ш', style_title)
             sheet.write(rowx + 1, coly + 4, 'размерууд, ш', style_title)
             sheet.write(rowx + 1, coly + 5, 'Борлуулсан размерууд', style_title)
             sheet.write(rowx + 1, coly + 6, 'Бодит үлдэгдэл размерууд', style_title)
@@ -944,6 +944,7 @@ class ProductSaleReport(models.TransientModel):
                     sheet.write(rowx, colx+coli+4, '', style_footer)
                     sheet.write(rowx, colx+coli+5, dailySubTotal[hd]['in'], style_footer)
                     sheet.write(rowx, colx+coli+6, '', style_footer)
+                    sheet.write_merge(rowx+1,rowx + 1, colx+coli+1,colx+coli+2, dailySubTotal[hd]['cash'] + dailySubTotal[hd]['card'], style_footer)
                     if self.show_cost:
                         sheet.write(rowx, colx+coli+7, dailySubTotal[hd]['benefit'], style_footer)
                     colj += 1
