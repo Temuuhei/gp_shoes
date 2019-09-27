@@ -8,12 +8,14 @@
             <xpath expr="//sheet/notebook/page/field/tree/field[@name='tax_id']" position="after">
                 <field name="cash_payment"/>
                 <field name="card_payment"/>
+                <field name="mobile_payment"/>
                 <field name="is_discount"/>
                 <field name="is_boss" groups="stock.group_stock_manager"/>
             </xpath>
             <xpath expr="//sheet/notebook/page/field/form/group/group/field[@name='tax_id']" position="after">
                 <field name="cash_payment"/>
                 <field name="card_payment"/>
+                <field name="mobile_payment"/>
                 <field name="is_discount"/>
                 <field name="is_boss" groups="stock.group_stock_manager"/>
             </xpath>
@@ -87,10 +89,11 @@
                     <field name="order_partner_id"/>
                     <field name="name"/>
                     <field name="salesman_id"/>
-                    <field name="cash_payment"/>
-                    <field name="card_payment"/>
+                    <field name="cash_payment" sum="Total" widget="monetary"/>
+                    <field name="card_payment" sum="Total" widget="monetary"/>
+                    <field name="mobile_payment" sum="Total" widget="monetary"/>
                     <field name="product_uom_qty" string="Qty"/>
-                    <field name="qty_delivered"/>
+                    <field name="qty_delivered" sum="Total" widget="monetary"/>
                     <field name="qty_invoiced" invisible="1"/>
                     <field name="qty_to_invoice" invisible="1"/>
                     <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>

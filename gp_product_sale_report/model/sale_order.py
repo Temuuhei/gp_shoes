@@ -29,17 +29,21 @@ class SaleOrder(models.Model):
         for order in self:
             cash_amount = 0
             card_amount = 0
+            mobile_amount = 0
             payment_type = 'mixed'
             cashes = self.env['cash'].search([('warehouse', '=', order.warehouse_id.id)])
             for order_line in order.order_line:
                 cash_amount += order_line.cash_payment
                 card_amount += order_line.card_payment
+                mobile_amount += order_line.mobile_payment
 
-            if cash_amount and not card_amount:
+            if cash_amount and not card_amount and not mobile_amount:
                 payment_type = 'cash'
-            elif card_amount and not cash_amount:
+            elif card_amount and not cash_amount and not mobile_amount:
                 payment_type = 'card'
-            elif cash_amount and card_amount:
+            elif not cash_amount and not card_amount or mobile_amount:
+                payment_type = 'mobile'
+            elif cash_amount and card_amount or mobile_amount:
                 payment_type = 'mixed'
 
             if cashes:
@@ -67,7 +71,19 @@ class SaleOrder(models.Model):
                         })
                         cash.amount += card_amount
 
-                order.write({'cash_pay': cash_amount, 'card_pay': card_amount})
+                    if cash.type == 'mobile' and mobile_amount:
+                        cash.history.create({
+                            'parent_id': cash.id,
+                            'amount': card_amount,
+                            'remaining_amount': cash.amount,
+                            'description': order.name + u' дугаартай борлуулалтаас [%s]' % order.id + u' [' + payment_type + u']',
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'in'
+                        })
+                        cash.amount += mobile_amount
+
+                order.write({'cash_pay': cash_amount, 'card_pay': card_amount,'mobile_pay': mobile_amount})
                 order.action_confirm()
                 #     Борлуулалтаас үүссэн Барааны хөдөлгөөнийг шууд батлах
                 stock_picking = self.env['stock.picking'].search([('group_id', '=', order.procurement_group_id.id)])

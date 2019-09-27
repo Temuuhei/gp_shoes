@@ -2,6 +2,7 @@
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
+from datetime import datetime
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
@@ -115,6 +116,21 @@ class StockPicking(models.Model):
 class StockImmediateTransfer(models.TransientModel):
     _inherit = 'stock.immediate.transfer'
 
+    def _default_return_amount(self):
+        ctx = self.env.context.copy()
+        if 'active_id' in ctx:
+            sp = self.env['stock.picking'].browse(ctx['active_id'])
+            return_sm  = self.env ['stock.move'].browse(sp.id)
+            print 'sp \n\n',sp,return_sm
+            if return_sm.origin_returned_move_id:
+                print 'Буцаалт ееееееееееееееееее'
+
+        payment_term_id = 0.0
+        return payment_term_id
+
+    cash = fields.Many2one('cash','Cash')
+    amount = fields.Float('Amount', default = 0.0)
+
     @api.multi
     def process(self):
 
@@ -122,6 +138,26 @@ class StockImmediateTransfer(models.TransientModel):
 
         if 'active_id' in ctx:
             sp = self.env['stock.picking'].browse(ctx['active_id'])
+            for wizard in self:
+                if self.cash.amount < wizard.amount:
+                    raise ValidationError(
+                        _('Not enough money in the cash register.'))
+                self.cash.amount -= self.amount
+                print 'self \n\n',self.cash.amount
+                created_out = self.env['cash.history'].create({
+                    'parent_id': self.cash.id,
+                    'amount': self.amount,
+                    'remaining_amount': self.cash.amount,
+                    'description': u' дугаартай буцаалт [%s]' %sp.name ,
+                    'date': datetime.today(),
+                    'user': self.env.uid,
+                    'action': 'out'
+
+                })
+                print '11 \n\n',created_out
+            if created_out:
+                self.cash.amount = created_out.remaining_amount
+
 
             for ml in sp.move_lines:
                 quant = self.env['stock.quant'].search([('location_id', '=', sp.location_id.id),

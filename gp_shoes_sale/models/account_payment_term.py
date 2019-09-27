@@ -24,6 +24,7 @@ class account_payment_term(models.Model):
     type = fields.Selection([
         ('cash', 'Cash'),
         ('card', 'Card'),
+        ('mobile', 'Mobile'),
         ('mixed', 'Mixed'),
         ], string='Payment Type')
 

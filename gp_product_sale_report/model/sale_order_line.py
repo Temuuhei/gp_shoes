@@ -36,6 +36,7 @@ class SaleOrderLine(models.Model):
     date = fields.Integer(compute=_set_date, string='Day', readonly=True, store=True)
     cash_payment = fields.Float('Cash payment', default=0)
     card_payment = fields.Float('Card payment', default=0)
+    mobile_payment = fields.Float('Mobile payment', default=0)
     is_return = fields.Boolean('Is Return',default=False)
     is_discount = fields.Boolean('Is Discount',default=False)
     is_boss = fields.Boolean('Is Boss',default=False)
@@ -49,19 +50,19 @@ class SaleOrderLine(models.Model):
     def to_unarchive(self):
         self.update({'is_return': False})
 
-    @api.onchange('cash_payment')
-    def onChangeCash(self):
-        for object in self:
-            if object.discount > 0:
-                limit = ((object.product_uom_qty * object.price_unit)*(100 - object.discount))/100
-                if limit < object.cash_payment:
-                    object.cash_payment = limit
-                object.card_payment = limit - object.cash_payment
-            else:
-                limit = object.product_uom_qty * object.price_unit
-                if limit < object.cash_payment:
-                    object.cash_payment = limit
-                object.card_payment = limit - object.cash_payment
+    # @api.onchange('cash_payment')
+    # def onChangeCash(self):
+    #     for object in self:
+    #         if object.discount > 0:
+    #             limit = ((object.product_uom_qty * object.price_unit)*(100 - object.discount))/100
+    #             if limit < object.cash_payment:
+    #                 object.cash_payment = limit
+    #             object.card_payment = limit - object.cash_payment
+    #         else:
+    #             limit = object.product_uom_qty * object.price_unit
+    #             if limit < object.cash_payment:
+    #                 object.cash_payment = limit
+    #             object.card_payment = limit - object.cash_payment
 
     @api.onchange('is_discount')
     def onChangeIsDiscount(self):
@@ -79,19 +80,19 @@ class SaleOrderLine(models.Model):
 
 
 
-    @api.onchange('card_payment')
-    def onChangeCard(self):
-        for object in self:
-            if object.discount > 0:
-                limit = ((object.product_uom_qty * object.price_unit)*(100 - object.discount))/100
-                if limit < object.card_payment:
-                    object.card_payment = limit
-                object.cash_payment = limit - object.card_payment
-            else:
-                limit = object.product_uom_qty * object.price_unit
-                if limit < object.card_payment:
-                    object.card_payment = limit
-                object.cash_payment = limit - object.card_payment
+    # @api.onchange('card_payment')
+    # def onChangeCard(self):
+    #     for object in self:
+    #         if object.discount > 0:
+    #             limit = ((object.product_uom_qty * object.price_unit)*(100 - object.discount))/100
+    #             if limit < object.card_payment:
+    #                 object.card_payment = limit
+    #             object.cash_payment = limit - object.card_payment
+    #         else:
+    #             limit = object.product_uom_qty * object.price_unit
+    #             if limit < object.card_payment:
+    #                 object.card_payment = limit
+    #             object.cash_payment = limit - object.card_payment
 
 
     @api.model
@@ -106,12 +107,12 @@ class SaleOrderLine(models.Model):
             qt += q.qty
         if not quant or qt <= 0 or qt < create.product_uom_qty:
             raise ValidationError(_(u'Танай агуулахад тухайн бараа байхгүй байна! : %s') % create.name, )
-        if not create.cash_payment and not create.card_payment:
+        if not create.cash_payment and not create.card_payment and not create.mobile_payment:
             raise ValidationError(_('You cannot create card and cash payment with 0!'))
         if not create.is_boss:
             if create.price_unit != create.price_original:
                 raise ValidationError(
-                    _(u'Нэгж үнийг шууд өөрчлөх боломжгүй ба та системээс санал болгосон нэгж ашиглах мөн Хөнгөлөлттэй борлуулалт бол бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !'))
+                    _(u'Нэгж үнийг шууд өөрчлөх боломжгүй ба та системээс санал болгосон нэгж ашиглах мөн Хөнгөлөлттэй борлуулалт бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !'))
             if not create.is_discount and create.price_unit != create.price_original:
                 raise ValidationError(_(u'Хөнгөлөлттэй борлуулалт бол бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !') )
         if active_dis and self.discount > 0:
@@ -119,8 +120,8 @@ class SaleOrderLine(models.Model):
                 if create.discount != a.discount:
                     raise ValidationError(_(u'Борлуулалтын хөнгөлөлтийг тохируулсан дүнгээс зөрүүтэй байна. Хөнгөлөлттэй эсэх гэсэн талбарыг чеклэж бүртгэнэ үү .Та дараах хөнгөлөлтийг хийж өгнө! : %s') % a.discount, )
         if create:
-            if create.price_subtotal != create.cash_payment + create.card_payment:
-                raise ValidationError(_(u'Касс картын нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s') % (create.price_subtotal,create.cash_payment,create.card_payment))
+            if create.price_subtotal != create.cash_payment + create.card_payment + create.mobile_payment:
+                raise ValidationError(_(u'Касс картын нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s + %s') % (create.price_subtotal,create.cash_payment,create.card_payment,self.mobile_payment))
         return create
 
     @api.multi
@@ -133,7 +134,7 @@ class SaleOrderLine(models.Model):
                                                     ('product_id', '=', self.product_id.id)])
             if not quant or quant.qty <= 0 or quant.qty < self.product_uom_qty:
                 raise ValidationError(_(u'Танай агуулахад тухайн бараа байхгүй байна! : %s')% write.name)
-        if not self.cash_payment and not self.card_payment:
+        if not self.cash_payment and not self.card_payment and  not self.mobile_payment:
             raise ValidationError(_('You cannot create card and cash payment with 0!'))
         if not self.is_discount and self.price_unit != self.price_original:
             raise ValidationError(
@@ -142,12 +143,12 @@ class SaleOrderLine(models.Model):
             if self.price_unit != self.price_original:
                 raise ValidationError(
                     _(
-                        u'Нэгж үнийг шууд өөрчлөх боломжгүй ба та системээс санал болгосон нэгж ашиглах мөн Хөнгөлөлттэй борлуулалт бол бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !'))
+                        u'Нэгж үнийг шууд өөрчлөх боломжгүй ба та системээс санал болгосон нэгж ашиглах мөн Хөнгөлөлттэй борлуулалт бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !'))
             if active_dis and self.discount > 0:
                 for a in active_dis:
                     if self.discount != a.discount:
                         raise ValidationError(_(u'Борлуулалтын хөнгөлөлт нь тохируулсан дүнгээс зөрүүтэй байна. Хөнгөлөлттэй эсэх гэсэн талбарыг чеклэж бүртгэнэ үү .Та дараах хөнгөлөлтийг хийж өгнө! : %s') % a.discount, )
         if self:
-            if self.price_subtotal != self.cash_payment + self.card_payment:
-                raise ValidationError(_(u'Касс картын нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s') % (self.price_subtotal,self.cash_payment,self.card_payment))
+            if self.price_subtotal != self.cash_payment + self.card_payment + self.mobile_payment:
+                raise ValidationError(_(u'Касс,Карт, Мобайлаар төлбөр төлсөн нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s + %s') % (self.price_subtotal,self.cash_payment,self.card_payment,self.mobile_payment))
         return write

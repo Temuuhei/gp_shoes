@@ -58,6 +58,7 @@ class SaleOrder(models.Model):
     check_discount = fields.Boolean(compute=_check_discount, string='Check Discount')
     cash_pay = fields.Float(string='Бэлэн')
     card_pay = fields.Float(string='Карт')
+    mobile_pay = fields.Float(string='Мобайл')
     payment_term_id = fields.Many2one('account.payment.term', string='Payment Term',required = True, oldname='payment_term',
                                       default =_default_payment_term)
     partner_id = fields.Many2one('res.partner', string='Customer', readonly=True,
@@ -147,6 +148,7 @@ class SaleOrder(models.Model):
                 order.action_confirm()
             # elif not order.payment_term_id:
             #     # order.card_pay = order.amount_total
+            print 'Temka \n'
             order.action_confirm()
 
 

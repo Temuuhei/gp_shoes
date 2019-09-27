@@ -62,6 +62,7 @@
                 <xpath expr="//field[@name='invoice_status']" position="replace">
                     <field name="cash_pay"/>
                     <field name="card_pay"/>
+                    <field name="mobile_pay"/>
                 </xpath>
                 <xpath expr="//field[@name='date_order']" position="replace">
                     <field name="date"/>
