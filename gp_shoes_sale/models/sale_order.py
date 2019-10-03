@@ -133,6 +133,18 @@ class SaleOrder(models.Model):
                      'target': 'new',
                      'res_id': False,
                      }
+            elif order.payment_term_id and order.payment_term_id.type == 'mobile':
+                view = self.env['ir.model.data'].get_object_reference('gp_shoes_sale', 'view_sale_order_cash_register_card')[1]
+                return {'name': _('Sales cash Wizard'),
+                     'type': 'ir.actions.act_window',
+                     'view_type': 'form',
+                     'view_mode': 'form',
+                     'res_model': 'sale.order.cash.register',
+                     'views': [(view, 'form')],
+                     'view_id': view,
+                     'target': 'new',
+                     'res_id': False,
+                     }
             elif order.payment_term_id and order.payment_term_id.type == 'mixed':
                 view = self.env['ir.model.data'].get_object_reference('gp_shoes_sale', 'view_sale_order_cash_register_mixed')[1]
                 return {'name': _('Sales cash Wizard'),
