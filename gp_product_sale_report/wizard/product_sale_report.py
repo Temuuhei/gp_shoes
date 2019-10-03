@@ -53,27 +53,6 @@ class ProductSaleReport(models.TransientModel):
             where_date_sp = 'AND sp.min_date >= %s AND sp.min_date <= %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             where_date_sm = 'AND sm.date >= %s AND sm.date <= %s' % ("'" + fm_dt + "'", "'" + un_dt + "'")
             report_date += self.date_from + ' ~ ' + self.date_until
-        # check_picking = []
-        # self._cr.execute("""SELECT  sm.product_id AS product_id,
-        #                             pt.id AS tmpl,
-        #                             sum(sm.product_uom_qty) AS qty
-        #                               FROM stock_picking AS sp
-        #                               LEFT JOIN stock_move AS sm
-        #                                 ON sp.id = sm.picking_id
-        #                               LEFT JOIN product_product AS pp
-        #                                 ON pp.id = sm.product_id
-        #                               LEFT join product_template AS pt
-        #                                 ON pp.product_tmpl_id = pt.id
-        #                               WHERE
-        #                                 sp.state = 'done'
-        #                                 AND sm.location_id = %s %s
-        #                              GROUP BY sm.product_id,
-        #                                         pt.id"""
-        #                  % (self.stock_warehouse.lot_stock_id.id, where_date_sp))
-        # check_picking_move = self._cr.dictfetchall()
-        # if check_picking_move:
-        #     for s in check_picking_move:
-        #         check_picking.append(s['product_id'])
 
         # Одоо байгаа барааны мэдээлэл
         self._cr.execute("""SELECT pp.id     AS product_id,
@@ -187,7 +166,8 @@ class ProductSaleReport(models.TransientModel):
 
 
 
-        #Тухайн тайлант хугацаанд ямар ч гүйлгээ хийгдээгүй мөртлөө нөөц нь байсан ба яг одоогийн байдлаар байхгүй байгаа бараа тайланд харагдахгүй байсан учир тухайн барааг олох query г бичиж өгөв
+        #Тухайн тайлант хугацаанд ямар ч гүйлгээ хийгдээгүй мөртлөө нөөц нь байсан ба яг одоогийн байдлаар байхгүй байгаа бараа тайланд
+        # харагдахгүй байсан учир тухайн барааг олох query г бичиж өгөв
         self._cr.execute("""SELECT ppp.id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
                                    FROM stock_move sm
                                         JOIN product_product ppp
@@ -224,6 +204,8 @@ class ProductSaleReport(models.TransientModel):
             for cd in check_dur_move_list:
                 # for d in data_quant:
                 if cd['product_id'] not in dq_last:
+                    # if cd['product_id'] == 86582:
+                    #     print '1111111111111111111 ____', cd
                     self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
                                                                         FROM stock_move sm
                                                                             JOIN product_product ppp
@@ -251,6 +233,35 @@ class ProductSaleReport(models.TransientModel):
                     if check_last_qty:
                         for i in check_last_qty:
                             last_qty += i['qty']
+                    # Энэ query г тайлант хугацааны эхэнд байхгүй төгсгөлд байхгүй барааны эхний үлдэгдэл буруу авч байсан болохоор нэмж өгөв
+                    self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
+                                                                                            FROM stock_move sm
+                                                                                                JOIN product_product ppp
+                                                                                                ON ppp.id=sm.product_id
+                                                                                            WHERE sm.state='done'
+                                                                                                 AND sm.location_id not in %s
+                                                                                                 AND sm.location_dest_id in %s
+                                                                                                 AND sm.product_id = %s
+                                                                                                 %s
+                                                                                GROUP BY sm.product_id,ppp.default_code
+                                                                                union
+                                                                                SELECT sm.product_id as product_id, ppp.default_code as code, -coalesce(sum(sm.product_qty),0) AS qty
+                                                                                            FROM stock_move sm
+                                                                                                JOIN product_product ppp ON (ppp.id=sm.product_id)
+                                                                                            WHERE sm.state='done'
+                                                                                                 AND sm.location_id in %s
+                                                                                                 AND sm.location_dest_id not in %s
+                                                                                                 AND sm.product_id = %s
+                                                                                                 %s
+                                                                                GROUP BY sm.product_id,ppp.default_code"""
+                                     % (location, location, cd['product_id'], initial_date_where,
+                                        location, location, cd['product_id'], initial_date_where))
+                    check_first_qty = self._cr.dictfetchall()
+                    first_qty = 0.0
+                    if check_first_qty:
+                        for j in check_first_qty:
+                            first_qty += j['qty']
+
                     product_was_obj = self.env['product.product'].browse(cd['product_id'])
                     self._cr.execute("""SELECT name FROM product_attribute_value pav
                                                                                                                JOIN product_attribute_value_product_product_rel pavr
@@ -273,7 +284,7 @@ class ProductSaleReport(models.TransientModel):
                                   'barcode': product_was_obj.product_tmpl_id.barcode,
                                   'main_price': product_was_obj.product_tmpl_id.main_price,
                                   'size': product_were_list[0]['name'],
-                                  'firstqty': cd['qty']
+                                  'firstqty': first_qty
                                   })
                     break
 
@@ -291,6 +302,8 @@ class ProductSaleReport(models.TransientModel):
                 for wbn in check_was_but_not_now:
                     if c == wbn['product_id']:
                         qty += wbn['qty']
+                        # if wbn['product_id'] == 86582:
+                        #     print '22222222222222222222 ____', wbn
                 if qty > 0:
                     self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
                                                     FROM stock_move sm
@@ -377,8 +390,8 @@ class ProductSaleReport(models.TransientModel):
             for cdbyin in check_dur_move_list_by_in:
                 # for d in data_quant:
                 if cdbyin['product_id'] not in dq_last3:
-                    # if cdbyin['product_id'] in (85145,85152):
-                    #     print 'cdbyin\n',cdbyin
+                    # if cdbyin['product_id'] == 86582:
+                    #     print '3333333333333333 ____', cdbyin
                     self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
                                                                             FROM stock_move sm
                                                                                 JOIN product_product ppp
@@ -404,8 +417,8 @@ class ProductSaleReport(models.TransientModel):
                     check_last_qty_by_in = self._cr.dictfetchall()
                     last_qty = 0.0
                     if check_last_qty_by_in:
-                        # if cdbyin['product_id'] in (85145, 85152):
-                        #     print 'check_last_qty_by_in ____',check_last_qty_by_in
+                        # if cdbyin['product_id'] == 86582:
+                        #     print 'check_first_qty_by_in ____', cdbyin
                         for i in check_last_qty_by_in:
                             last_qty += i['qty']
 
@@ -434,8 +447,8 @@ class ProductSaleReport(models.TransientModel):
                         check_first_qty_by_in = self._cr.dictfetchall()
                     first_qty = 0.0
                     if check_first_qty_by_in:
-                        # if cdbyin['product_id'] in (85145, 85152):
-                        #     print 'check_first_qty_by_in ____',check_first_qty_by_in
+                        # if cdbyin['product_id'] == 86582:
+                        #     print '444444444444444444444444 ____',cdbyin
                         for i in check_first_qty_by_in:
                             first_qty += i['qty']
                         product_was_obj_by_in_first = self.env['product.product'].browse(cdbyin['product_id'])
@@ -465,6 +478,8 @@ class ProductSaleReport(models.TransientModel):
                     # Тайлант хугацааны өмнө тухайн бараа байхгүй байсан ба тайлант хугацаанд орж ирээд яг одоогийн байдлаар байхгүй байсан бараа харагдахгүй байсан тул дараах
                     #нөхцөлөөр нэмж өгөв листэнд
                     if not check_first_qty_by_in and check_last_qty_by_in:
+                        # if cdbyin['product_id'] == 86582:
+                        #     print '555555555555555555 ____',cdbyin
                         self._cr.execute("""SELECT sm.product_id as product_id, ppp.default_code as code, coalesce(sum(sm.product_qty),0) AS qty
                                                                                                     FROM stock_move sm
                                                                                                         JOIN product_product ppp
@@ -523,8 +538,8 @@ class ProductSaleReport(models.TransientModel):
         data_quant = sorted(data_quant, key=lambda k: (int(k['code'].split("-")[0]), int(k['code'].split("-")[1]),int(k['size'])))
         if data_quant:
             # for each_data in data_quant:
-                # if each_data['product_id'] == 78891:
-                #     print 'each_data',each_data
+                # if each_data['product_id'] == 86582:
+                #     print 'each_data \n',each_data
             for each_data in data_quant:
                 data = {}
                 data_total = {}
