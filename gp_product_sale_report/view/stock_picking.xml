@@ -25,7 +25,7 @@
                 <group colspan = "2">
                     <field name="cash" attrs="{'invisible': [('is_return', '=', True)]}"/>
                     <field name="amount" attrs="{'invisible': [('is_return', '=', True)]}"/>
-                    <!--<field name="is_return"/>-->
+                    <field name="is_return" invisible = "True"/>
                 </group>
             </xpath>
         </field>
