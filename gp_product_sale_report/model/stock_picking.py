@@ -15,7 +15,6 @@ class StockPicking(models.Model):
                 for s in return_sm:
                     if s.origin_returned_move_id:
                         self.write({'is_return':True})
-                        print 'Return \n\n',sm.is_return
                         return True
                     else:
                         return False
@@ -140,6 +139,8 @@ class StockImmediateTransfer(models.TransientModel):
             for sm in return_sm:
                 if sm.origin_returned_move_id:
                     return True
+                else:
+                    return False
 
     cash = fields.Many2one('cash','Cash')
     amount = fields.Float('Amount', default = 0.0)
