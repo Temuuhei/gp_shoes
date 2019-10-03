@@ -138,9 +138,11 @@ class StockImmediateTransfer(models.TransientModel):
             # print 'sp \n\n',sp,return_sm
             for sm in return_sm:
                 if sm.origin_returned_move_id:
-                    return True
+                    self.is_return = False
                 else:
-                    return False
+                    self.is_return = True
+            # print 'self.is_return \n\n',self.is_return
+        return True
 
     cash = fields.Many2one('cash','Cash')
     amount = fields.Float('Amount', default = 0.0)
