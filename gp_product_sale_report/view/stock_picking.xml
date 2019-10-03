@@ -19,9 +19,9 @@
         <field name="arch" type="xml">
             <xpath expr="//form/group" position="inside">
                 <group colspan = "2">
-                    <field name="cash" attrs="{'invisible': [('is_return', '=', False)]}"/>
-                    <field name="amount" attrs="{'invisible': [('is_return', '=', False)]}"/>
-                    <field name="is_return" invisible = "True"/>
+                    <field name="cash" attrs="{'required': [('is_return', '=', True)],'invisible': [('is_return', '=', False)]}"/>
+                    <field name="amount" attrs="{'required': [('is_return', '=', True)],'invisible': [('is_return', '=', False)]}"/>
+                    <field name="is_return"/>
                 </group>
             </xpath>
         </field>

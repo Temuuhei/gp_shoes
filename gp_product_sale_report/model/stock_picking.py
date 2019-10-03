@@ -130,23 +130,26 @@ class StockPicking(models.Model):
 class StockImmediateTransfer(models.TransientModel):
     _inherit = 'stock.immediate.transfer'
 
-    def _check_return(self):
-        ctx = self.env.context.copy()
-        if 'active_id' in ctx:
-            sp = self.env['stock.picking'].browse(ctx['active_id'])
-            return_sm  = self.env ['stock.move'].browse(sp.id)
-            # print 'sp \n\n',sp,return_sm
-            for sm in return_sm:
-                if sm.origin_returned_move_id:
-                    self.is_return = True
-                else:
-                    self.is_return = False
-            # print 'self.is_return \n\n',self.is_return
-        return True
+
+    # @api.one
+    # def _check_return(self):
+    #     ctx = self.env.context.copy()
+    #     if 'active_id' in ctx:
+    #         print 'INNNNNN \n\n',ctx,self
+    #         sp = self.env['stock.picking'].browse(ctx['active_id'])
+    #         return_sm  = self.env ['stock.move'].browse(sp.id)
+    #         print 'sp \n\n',sp,return_sm
+    #         for sm in return_sm:
+    #             if sm.origin_returned_move_id:
+    #                 print 'self.is_return111111111 \n\n',self.is_return
+    #                 self.is_return = True
+    #             else:
+    #                 print 'self.is_return22222222222 \n\n\n', self.is_return
+    #                 self.is_return = False
 
     cash = fields.Many2one('cash','Cash')
     amount = fields.Float('Amount', default = 0.0)
-    is_return = fields.Boolean('Is return', default = _check_return, invisible = False)
+    is_return = fields.Boolean(string = 'Is return', invisible = False, default = False)
 
     @api.one
     def process(self):
@@ -154,26 +157,26 @@ class StockImmediateTransfer(models.TransientModel):
         if 'active_id' in ctx:
             sp = self.env['stock.picking'].browse(ctx['active_id'])
             cash_history = self.env['cash.history']
-        for wizard in self:
-            if wizard.is_return:
-                if wizard.cash.amount < wizard.amount:
-                    raise ValidationError(
-                        _('Not enough money in the cash register.'))
-                sp.write({'return_cash': sp.return_cash - wizard.amount})
-                # print 'sp.return_cash',sp.return_cash
-                wizard.cash.amount -= wizard.amount
-                created_out = cash_history.create({
-                    'parent_id': wizard.cash.id,
-                    'amount': wizard.amount,
-                    'remaining_amount': wizard.cash.amount,
-                    'description': u' дугаартай буцаалт [%s]' %sp.name ,
-                    'date': datetime.today(),
-                    'user': self.env.uid,
-                    'action': 'out'
+            if self.is_return == True:
+                for wizard in self:
+                    if wizard.cash.amount < wizard.amount:
+                        raise ValidationError(
+                            _('Not enough money in the cash register.'))
+                    sp.write({'return_cash': sp.return_cash - wizard.amount})
+                    # print 'sp.return_cash',sp.return_cash
+                    wizard.cash.amount -= wizard.amount
+                    created_out = cash_history.create({
+                        'parent_id': wizard.cash.id,
+                        'amount': wizard.amount,
+                        'remaining_amount': wizard.cash.amount,
+                        'description': u' дугаартай буцаалт [%s]' %sp.name ,
+                        'date': datetime.today(),
+                        'user': self.env.uid,
+                        'action': 'out'
 
-                })
-            if created_out:
-                wizard.cash.amount = created_out.remaining_amount
+                        })
+                    if created_out:
+                        wizard.cash.amount = created_out.remaining_amount
             for ml in sp.move_lines:
                 quant = self.env['stock.quant'].search([('location_id', '=', sp.location_id.id),
                                                         ('product_id', '=', ml.product_id.id)])
