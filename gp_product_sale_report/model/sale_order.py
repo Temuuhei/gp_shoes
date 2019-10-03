@@ -41,7 +41,7 @@ class SaleOrder(models.Model):
                 payment_type = 'cash'
             elif card_amount and not cash_amount and not mobile_amount:
                 payment_type = 'card'
-            elif not cash_amount and not card_amount or mobile_amount:
+            elif not card_amount and not cash_amount or mobile_amount:
                 payment_type = 'mobile'
             elif cash_amount and card_amount or mobile_amount:
                 payment_type = 'mixed'
@@ -59,7 +59,7 @@ class SaleOrder(models.Model):
                             'action': 'in'
                         })
                         cash.amount += cash_amount
-                    if cash.type == 'card' and card_amount:
+                    elif cash.type == 'card' and card_amount:
                         cash.history.create({
                             'parent_id': cash.id,
                             'amount': card_amount,
@@ -71,7 +71,7 @@ class SaleOrder(models.Model):
                         })
                         cash.amount += card_amount
 
-                    if cash.type == 'mobile' and mobile_amount:
+                    elif cash.type == 'mobile' and mobile_amount:
                         cash.history.create({
                             'parent_id': cash.id,
                             'amount': card_amount,
