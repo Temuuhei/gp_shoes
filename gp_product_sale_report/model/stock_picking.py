@@ -138,9 +138,9 @@ class StockImmediateTransfer(models.TransientModel):
             # print 'sp \n\n',sp,return_sm
             for sm in return_sm:
                 if sm.origin_returned_move_id:
-                    self.is_return = False
-                else:
                     self.is_return = True
+                else:
+                    self.is_return = False
             # print 'self.is_return \n\n',self.is_return
         return True
 

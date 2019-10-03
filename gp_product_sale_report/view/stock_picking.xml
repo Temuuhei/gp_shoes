@@ -8,10 +8,6 @@
             <xpath expr="//sheet/group/group/field[@name='location_dest_id']" position="after">
                 <field name="product_template"/>
                 <field name="is_existed_products"/>
-                <!--<field name="is_return"/>-->
-                <!--<field name="cash" attrs="{'invisible': [('is_return', '=', True)]}"/>-->
-                <!--<field name="amount" attrs="{'invisible': [('is_return', '=', True)]}"/>-->
-                <!--<field name="return_cash" attrs="{'invisible': [('is_return', '=', False)]}"/>-->
                 <button name="insert_products" string="Insert products" type="object"/>
             </xpath>
         </field>
@@ -23,8 +19,8 @@
         <field name="arch" type="xml">
             <xpath expr="//form/group" position="inside">
                 <group colspan = "2">
-                    <field name="cash" attrs="{'invisible': [('is_return', '=', True)]}"/>
-                    <field name="amount" attrs="{'invisible': [('is_return', '=', True)]}"/>
+                    <field name="cash" attrs="{'invisible': [('is_return', '=', False)]}"/>
+                    <field name="amount" attrs="{'invisible': [('is_return', '=', False)]}"/>
                     <field name="is_return" invisible = "True"/>
                 </group>
             </xpath>
