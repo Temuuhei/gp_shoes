@@ -8,7 +8,7 @@
             <xpath expr="//sheet/group/group/field[@name='location_dest_id']" position="after">
                 <field name="product_template"/>
                 <field name="is_existed_products"/>
-                <field name="is_return"/>
+                <!--<field name="is_return"/>-->
                 <!--<field name="cash" attrs="{'invisible': [('is_return', '=', True)]}"/>-->
                 <!--<field name="amount" attrs="{'invisible': [('is_return', '=', True)]}"/>-->
                 <!--<field name="return_cash" attrs="{'invisible': [('is_return', '=', False)]}"/>-->

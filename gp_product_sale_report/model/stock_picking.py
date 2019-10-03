@@ -6,22 +6,22 @@ from datetime import datetime
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    @api.one
-    def _check_return(self):
-        print ' Check'
-        for sm in self:
-            return_sm = self.env['stock.move'].browse(sm.id)
-            if return_sm:
-                for s in return_sm:
-                    if s.origin_returned_move_id:
-                        self.write({'is_return':True})
-                        return True
-                    else:
-                        return False
+    # @api.one
+    # def _check_return(self):
+    #     # print ' Check'
+    #     for sm in self:
+    #         return_sm = self.env['stock.move'].browse(sm.id)
+    #         if return_sm:
+    #             for s in return_sm:
+    #                 if s.origin_returned_move_id:
+    #                     self.write({'is_return':True})
+    #                     return True
+    #                 else:
+    #                     return False
 
     product_template = fields.Many2one('product.template', 'Main product')
     is_existed_products = fields.Boolean('Байгаа бараануудыг харуулах', default = False)
-    is_return = fields.Boolean(compute = '_check_return',string='Is return', type="boolean", store = True)
+    # is_return = fields.Boolean(compute = '_check_return',string='Is return', type="boolean", store = True)
     return_cash = fields.Float('Return cash', default = 0.0)
 
     @api.multi
