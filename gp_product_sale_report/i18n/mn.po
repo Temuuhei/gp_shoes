@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-21 21:00+0000\n"
-"PO-Revision-Date: 2019-08-21 21:00+0000\n"
+"POT-Creation-Date: 2019-10-05 13:03+0000\n"
+"PO-Revision-Date: 2019-10-05 13:03+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,6 +21,11 @@ msgid "# of Orders"
 msgstr "Захиалгын тоо"
 
 #. module: gp_product_sale_report
+#: model:ir.ui.view,arch_db:gp_product_sale_report.report_saleorderline_document
+msgid "&amp;bull;"
+msgstr "&amp;bull;"
+
+#. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_sale_order_discount_active
 msgid "Active"
 msgstr "Идэвхитэй"
@@ -31,6 +36,11 @@ msgid "All Discount"
 msgstr "Бүх салбарын хөнгөлөлт"
 
 #. module: gp_product_sale_report
+#: model:ir.model.fields,field_description:gp_product_sale_report.field_stock_immediate_transfer_amount
+msgid "Amount"
+msgstr "Дүн"
+
+#. module: gp_product_sale_report
 #: model:ir.ui.view,arch_db:gp_product_sale_report.view_compare_product_report
 #: model:ir.ui.view,arch_db:gp_product_sale_report.view_product_sale_report
 #: model:ir.ui.view,arch_db:gp_product_sale_report.view_sale_change_date
@@ -39,13 +49,18 @@ msgstr "Цуцлах"
 
 #. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_sale_order_line_card_payment
-msgid "Card payment"
-msgstr "Карт ₮"
+msgid "Card payment1"
+msgstr "Карт"
+
+#. module: gp_product_sale_report
+#: model:ir.model.fields,field_description:gp_product_sale_report.field_stock_immediate_transfer_cash
+msgid "Cash"
+msgstr "Касс"
 
 #. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_sale_order_line_cash_payment
-msgid "Cash payment"
-msgstr "Бэлэн ₮"
+msgid "Cash payment1"
+msgstr "Бэлэн"
 
 #. module: gp_product_sale_report
 #: code:addons/gp_product_sale_report/wizard/compare_report.py:246
@@ -105,30 +120,6 @@ msgid "Created on"
 msgstr "Үүсгэсэн"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:926
-#, python-format
-msgid "Daily Sale Quantity: "
-msgstr "Тухайн өдөр зарсан бараа - :"
-
-#. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:925
-#, python-format
-msgid "Daily Sale: "
-msgstr "Тухайн өдрийн орлого, ₮: "
-
-#. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:928
-#, python-format
-msgid "Daily warehouse in: "
-msgstr "Тухайн өдөр агуулахаас + :"
-
-#. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:927
-#, python-format
-msgid "Daily warehouse out: "
-msgstr "Тухайн өдрийн буцаалт - :"
-
-#. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_sale_order_line_order_date
 #: model:ir.ui.view,arch_db:gp_product_sale_report.view_sales_order_line_filter_gp
 msgid "Date"
@@ -160,7 +151,7 @@ msgstr "Дэлгэрэнгүй"
 #. module: gp_product_sale_report
 #: model:res.groups,name:gp_product_sale_report.group_discount_manager
 msgid "Discount manager"
-msgstr "Хөнгөлөлтийн менежер"
+msgstr "Discount manager"
 
 #. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_compare_product_display_name
@@ -229,6 +220,11 @@ msgid "Inventory Line"
 msgstr "Тооллогын мөр"
 
 #. module: gp_product_sale_report
+#: model:ir.model.fields,field_description:gp_product_sale_report.field_sale_order_line_is_boss
+msgid "Is Boss"
+msgstr "Босс?"
+
+#. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_sale_order_line_is_discount
 msgid "Is Discount"
 msgstr "Хөнгөлөлттэй эсэх"
@@ -242,6 +238,11 @@ msgstr "Буцаалт эсэх"
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_compare_product_is_second_war
 msgid "Is Second Warehouse"
 msgstr "Харьцуулах агуулахыг голчлох"
+
+#. module: gp_product_sale_report
+#: model:ir.model.fields,field_description:gp_product_sale_report.field_stock_immediate_transfer_is_return
+msgid "Is return"
+msgstr "Борлуулалтын буцааалт эсэх?"
 
 #. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_compare_product___last_update
@@ -276,6 +277,11 @@ msgid "Main product"
 msgstr "Main product"
 
 #. module: gp_product_sale_report
+#: model:ir.model.fields,field_description:gp_product_sale_report.field_sale_order_line_mobile_payment
+msgid "Mobile payment"
+msgstr "Мобайл"
+
+#. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_sale_order_line_month
 #: model:ir.ui.view,arch_db:gp_product_sale_report.view_sales_order_line_filter_gp
 msgid "Month"
@@ -293,10 +299,21 @@ msgid "Non exist product"
 msgstr "Байхгүй бараа"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/model/sale_order.py:138
+#: code:addons/gp_product_sale_report/model/stock_picking.py:161
+#, python-format
+msgid "Not enough money in the cash register."
+msgstr "Not enough money in the cash register."
+
+#. module: gp_product_sale_report
+#: code:addons/gp_product_sale_report/model/sale_order.py:154
 #, python-format
 msgid "Please you select change date"
 msgstr "Та өөрчлөх огноог сонгоно уу!!"
+
+#. module: gp_product_sale_report
+#: model:ir.actions.report.xml,name:gp_product_sale_report.report_sale_order_line
+msgid "Print SOL"
+msgstr "Print SOL"
 
 #. module: gp_product_sale_report
 #: model:ir.ui.view,arch_db:gp_product_sale_report.report_excel_output_view_form
@@ -308,12 +325,6 @@ msgstr "Тайлан бэлдэх процесс дууссан"
 #, python-format
 msgid "Product"
 msgstr "Бараа"
-
-#. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:923
-#, python-format
-msgid "Product Quintity: "
-msgstr "Барааны тоо хэмжээ "
 
 #. module: gp_product_sale_report
 #: model:ir.model,name:gp_product_sale_report.model_product_template
@@ -332,7 +343,7 @@ msgid "Product compare report"
 msgstr "Product compare report"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:710
+#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:725
 #: model:ir.actions.act_window,name:gp_product_sale_report.action_product_sale_report
 #: model:ir.ui.menu,name:gp_product_sale_report.menu_product_sale_report
 #, python-format
@@ -380,6 +391,11 @@ msgstr "Тайлангийн үр дүн"
 #: model:ir.ui.view,arch_db:gp_product_sale_report.view_product_sale_report
 msgid "Report product sale"
 msgstr "Борлуулалтын дэлгэрэнгүй тайлан"
+
+#. module: gp_product_sale_report
+#: model:ir.model.fields,field_description:gp_product_sale_report.field_stock_picking_return_cash
+msgid "Return cash"
+msgstr "Буцаалтын дүн"
 
 #. module: gp_product_sale_report
 #: model:ir.actions.act_window,name:gp_product_sale_report.action_sale_order_discount
@@ -450,7 +466,7 @@ msgid "Total"
 msgstr "Дүн"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:955
+#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:972
 #, python-format
 msgid "Total: "
 msgstr "Нийт: "
@@ -499,8 +515,8 @@ msgid "You can change date of orders that already approved and shipped"
 msgstr "Энэ цонхоор та аль хэдийн батлагдсан борлуулалтын захиалгын огноо болон гарч байгаа барааны огноог өөрчлөх тул анхааралтай хийнэ үү!"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/model/sale_order_line.py:108
-#: code:addons/gp_product_sale_report/model/sale_order_line.py:131
+#: code:addons/gp_product_sale_report/model/sale_order_line.py:111
+#: code:addons/gp_product_sale_report/model/sale_order_line.py:138
 #, python-format
 msgid "You cannot create card and cash payment with 0!"
 msgstr "You cannot create card and cash payment with 0!"
@@ -542,14 +558,19 @@ msgid "sale.order.discount"
 msgstr "sale.order.discount"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/model/sale_order_line.py:117
-#: code:addons/gp_product_sale_report/model/sale_order_line.py:141
+#: code:addons/gp_product_sale_report/model/sale_order_line.py:124
 #, python-format
-msgid "Касс картын нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s"
-msgstr "Касс картын нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s"
+msgid "Касс картын нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s + %s"
+msgstr "Касс картын нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s + %s"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/model/stock_picking.py:76
+#: code:addons/gp_product_sale_report/model/sale_order_line.py:153
+#, python-format
+msgid "Касс,Карт, Мобайлаар төлбөр төлсөн нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s + %s"
+msgstr "Касс,Карт, Мобайлаар төлбөр төлсөн нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s + %s"
+
+#. module: gp_product_sale_report
+#: code:addons/gp_product_sale_report/model/stock_picking.py:90
 #, python-format
 msgid "Та энэ барааг 1 ээс дээш эхний шаардлага табанд бүртгэсэн байна! : %s"
 msgstr "Та энэ барааг 1 ээс дээш эхний шаардлага табанд бүртгэсэн байна! : %s"

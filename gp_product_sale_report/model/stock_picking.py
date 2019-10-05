@@ -137,15 +137,12 @@ class StockImmediateTransfer(models.TransientModel):
     #     if 'active_id' in ctx:
     #         print 'INNNNNN \n\n',ctx,self
     #         sp = self.env['stock.picking'].browse(ctx['active_id'])
-    #         return_sm  = self.env ['stock.move'].browse(sp.id)
-    #         print 'sp \n\n',sp,return_sm
-    #         for sm in return_sm:
-    #             if sm.origin_returned_move_id:
-    #                 print 'self.is_return111111111 \n\n',self.is_return
-    #                 self.is_return = True
-    #             else:
-    #                 print 'self.is_return22222222222 \n\n\n', self.is_return
-    #                 self.is_return = False
+            # return_sm  = self.env ['stock.move'].browse(sp.id)
+            # print 'sp \n\n',sp,return_sm
+            # for sm in return_sm:
+            #     if sm.origin_returned_move_id:
+            #         print 'self.is_return111111111 \n\n',self.is_return
+            #         self.is_return = True
 
     cash = fields.Many2one('cash','Cash')
     amount = fields.Float('Amount', default = 0.0)
@@ -177,6 +174,15 @@ class StockImmediateTransfer(models.TransientModel):
                         })
                     if created_out:
                         wizard.cash.amount = created_out.remaining_amount
+                stock_move = self.env['stock.move'].search([('picking_id', '=', sp.id)])
+                if stock_move.origin_returned_move_id:
+                    return_stock_move = self.env['stock.move'].search([('id', '=', stock_move.origin_returned_move_id.id)])
+                    if return_stock_move:
+                        sale_line = self.env['sale.order.line'].search([('id', '=',return_stock_move.procurement_id.sale_line_id.id)])
+                        if sale_line:
+                            sale_line.update({'is_return': True})
+
+
             for ml in sp.move_lines:
                 quant = self.env['stock.quant'].search([('location_id', '=', sp.location_id.id),
                                                         ('product_id', '=', ml.product_id.id)])

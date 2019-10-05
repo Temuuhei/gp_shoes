@@ -21,7 +21,7 @@
                 <group colspan = "2">
                     <field name="cash" attrs="{'required': [('is_return', '=', True)],'invisible': [('is_return', '=', False)]}"/>
                     <field name="amount" attrs="{'required': [('is_return', '=', True)],'invisible': [('is_return', '=', False)]}"/>
-                    <field name="is_return"/>
+                    <field name="is_return" groups="stock.group_stock_manager"/>
                 </group>
             </xpath>
         </field>
