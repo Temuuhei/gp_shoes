@@ -659,6 +659,7 @@ class ProductSaleReport(models.TransientModel):
                                 inInt += i['in_qty']
                                 RCash += i['return_cash']
                                 # total
+                                total_Rcash += i['return_cash']
                                 total_in += i['in_qty']
                     # data['total_size_qty_detail'] = each_data['size'] + ': ' + str(
                     #     int(each_data['quantity'] + total_in))
@@ -680,6 +681,7 @@ class ProductSaleReport(models.TransientModel):
                                       'picking_name': '',
                                       'cash_payment': 0,
                                       'card_payment': 0,
+                                      'return_cash': 0,
                                       'mobile_payment': 0,
                                       'benefit': 0,
                                       'product_uom_qty': 0,
@@ -706,13 +708,13 @@ class ProductSaleReport(models.TransientModel):
                                 data[dataDate]['benefit'] += (soLine['cash_payment'] + soLine['card_payment'] + soLine['mobile_payment']) - each_data_cost
                                 data[dataDate]['product_uom_qty'] += soLine['product_uom_qty']
                                 data[dataDate]['inInt'] = inInt
-                                data[dataDate]['RCash'] = RCash
+                                data[dataDate]['return_cash'] = RCash
                                 data[dataDate]['outInt'] = outInt
                                 # total
                                 total_size = each_data['size']
                                 total_qty += soLine['qty_delivered']
                                 total_benefit += (soLine['cash_payment'] + soLine['card_payment'] + soLine['mobile_payment']) - each_data_cost
-                                total_Rcash += RCash
+                                total_Rcash = RCash
 
                     # if data['total_size_qty_detail'] > 0 and data['quantity'] > 0:
                     data['total_size_qty_detail'] = each_data['size'] + ': ' + str(
@@ -777,7 +779,7 @@ class ProductSaleReport(models.TransientModel):
                             dataEachPrdDict[everyDl]['out_data'] += ",\n"+d[everyDl]['out_data'] if dataEachPrdDict[everyDl]['out_data'] else d[everyDl]['out_data']
                             dataEachPrdDict[everyDl]['in_data'] += ",\n"+d[everyDl]['in_data'] if dataEachPrdDict[everyDl]['in_data'] else d[everyDl]['in_data']
                             dataEachPrdDict[everyDl]['inInt'] += d[everyDl]['inInt']
-                            # dataEachPrdDict[everyDl]['total_Rcash'] += d[everyDl]['Rcash']
+                            dataEachPrdDict[everyDl]['return_cash'] += d[everyDl]['return_cash']
                             dataEachPrdDict[everyDl]['outInt'] += d[everyDl]['outInt']
                         dataEachPrdDict['sub_total']['total_qty'] += d['sub_total']['total_qty']
                         dataEachPrdDict['sub_total']['total_in'] += d['sub_total']['total_in']
@@ -806,6 +808,7 @@ class ProductSaleReport(models.TransientModel):
                                     'card': 0,
                                     'mobile': 0,
                                     'benefit': 0,
+                                    'return_cash': 0,
                                     'in': 0,
                                     'Rcash': 0,
                                     'out': 0}
@@ -829,7 +832,7 @@ class ProductSaleReport(models.TransientModel):
                     dailySubTotal[d]['mobile'] += l[d]['mobile_payment']
                     dailySubTotal[d]['benefit'] += l[d]['benefit']
                     dailySubTotal[d]['in'] += l[d]['inInt']
-                    # dailySubTotal[d]['Rcash'] += l[d]['Rcash']
+                    dailySubTotal[d]['return_cash'] += l[d]['return_cash']
                     dailySubTotal[d]['out'] += l[d]['outInt']
                     total += l[d]['cash_payment'] + l[d]['card_payment'] + l[d]['mobile_payment']
                 ttl_out += l['sub_total']['total_out']
@@ -842,7 +845,7 @@ class ProductSaleReport(models.TransientModel):
             dailySubTotal['total_qty'] = ttl_qty
             dailySubTotal['total'] = total
             dailySubTotal['total_benefit'] = ttl_benefit
-            dailySubTotal['total_Rcash'] = ttl_Rcash
+            dailySubTotal['ttl_Rcash'] = ttl_Rcash
 
         # define title and header
         if self.show_cost:
@@ -871,9 +874,9 @@ class ProductSaleReport(models.TransientModel):
             cola = len(title_list)
             for x in range(0, len(header_daily)):
                 if self.show_cost:
-                    cola += 7
+                    cola += 8
                 else:
-                    cola += 6
+                    cola += 7
                 sheet.write_merge(rowx, rowx, coly, cola, header_daily[x], style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly, coly, 'Зарсан ш', style_title)
                 sheet.write_merge(rowx+1, rowx+1, coly+1, coly+1, 'Бэлэн ₮', style_title)
@@ -888,18 +891,18 @@ class ProductSaleReport(models.TransientModel):
                 cola += 1
                 coly = cola
             if self.show_cost:
-                sheet.write_merge(rowx, rowx, coly, cola+8, 'Нийт', style_title)
-            else:
                 sheet.write_merge(rowx, rowx, coly, cola+7, 'Нийт', style_title)
-            sheet.write(rowx + 1, coly +1, 'Зарсан, ш', style_title)
-            sheet.write(rowx + 1, coly + 2, 'Буцаалт, ш', style_title)
-            sheet.write(rowx + 1, coly + 3, 'Агуулахаас , Ш', style_title)
-            sheet.write(rowx + 1, coly + 4, 'Тайлант хугацааны үлдэгдэл ш', style_title)
-            sheet.write(rowx + 1, coly +5, 'размерууд, ш', style_title)
-            sheet.write(rowx + 1, coly + 6, 'Борлуулсан размерууд', style_title)
-            sheet.write(rowx + 1, coly + 7, 'Бодит үлдэгдэл размерууд', style_title)
+            else:
+                sheet.write_merge(rowx, rowx, coly, cola+6, 'Нийт', style_title)
+            sheet.write(rowx + 1, coly , 'Зарсан, ш', style_title)
+            sheet.write(rowx + 1, coly + 1, 'Буцаалт, ш', style_title)
+            sheet.write(rowx + 1, coly + 2, 'Агуулахаас , Ш', style_title)
+            sheet.write(rowx + 1, coly + 3, 'Тайлант хугацааны үлдэгдэл ш', style_title)
+            sheet.write(rowx + 1, coly +4, 'размерууд, ш', style_title)
+            sheet.write(rowx + 1, coly + 5, 'Борлуулсан размерууд', style_title)
+            sheet.write(rowx + 1, coly + 6, 'Бодит үлдэгдэл размерууд', style_title)
             if self.show_cost:
-                sheet.write(rowx + 1, coly + 9, 'Нийт ашиг', style_title)
+                sheet.write(rowx + 1, coly + 7, 'Нийт ашиг', style_title)
         sheet.write_merge(rowx, rowx, colx, colx + len(title_list) - 1, 'Үндсэн мэдээлэл', style_title)
         rowx += 1
         for i in xrange(0, len(title_list)):
@@ -930,9 +933,9 @@ class ProductSaleReport(models.TransientModel):
                     cold = len(title_list)
                     for hd in header_daily:
                         if self.show_cost:
-                            cold += 7
+                            cold += 8
                         else:
-                            cold += 6
+                            cold += 7
                         sheet.write(rowx, colx + colc, line[hd]['qty_delivered'])
                         sheet.write(rowx, colx + colc+1, line[hd]['cash_payment'])
                         sheet.write(rowx, colx + colc+2, line[hd]['card_payment'])
@@ -943,7 +946,7 @@ class ProductSaleReport(models.TransientModel):
                         sheet.write(rowx, colx + colc+7, line[hd]['in_data'])
                         if self.show_cost:
                             sheet.write(rowx, colx + colc+8, line[hd]['benefit'])
-                        cold += 2
+                        cold += 1
                         colc = cold
                     if line['sub_total']:
                         sheet.write(rowx, colx + colc, line['sub_total']['total_qty'])
@@ -980,25 +983,27 @@ class ProductSaleReport(models.TransientModel):
                     sheet.write(rowx, colx+coli+1, dailySubTotal[hd]['cash'], style_footer)
                     sheet.write(rowx, colx+coli+2, dailySubTotal[hd]['card'], style_footer)
                     sheet.write(rowx, colx+coli+3, dailySubTotal[hd]['mobile'], style_footer)
-                    sheet.write(rowx, colx+coli+5, dailySubTotal[hd]['out'], style_footer)
-                    sheet.write(rowx, colx+coli+6, '', style_footer)
-                    sheet.write(rowx, colx+coli+7, dailySubTotal[hd]['in'], style_footer)
-                    sheet.write(rowx, colx+coli+8, '', style_footer)
+                    sheet.write(rowx, colx+coli+4, dailySubTotal[hd]['out'], style_footer)
+                    sheet.write(rowx, colx+coli+5, '', style_footer)
+                    sheet.write(rowx, colx+coli+6, dailySubTotal[hd]['in'], style_footer)
+                    sheet.write(rowx, colx+coli+7, '', style_footer)
                     sheet.write_merge(rowx+1,rowx + 1, colx+coli+1,colx+coli+3, dailySubTotal[hd]['cash'] + dailySubTotal[hd]['card'] + dailySubTotal[hd]['mobile'], style_footer)
-                    sheet.write_merge(rowx+2,rowx + 2, colx+coli+1,colx+coli+3, dailySubTotal['total_Rcash'], style_footer)
+                    sheet.write_merge(rowx+2,rowx + 2, colx+coli+1,colx+coli+3, dailySubTotal[hd]['return_cash'], style_footer)
                     if self.show_cost:
-                        sheet.write(rowx, colx+coli+9, dailySubTotal[hd]['benefit'], style_footer)
+                        sheet.write(rowx, colx+coli+8, dailySubTotal[hd]['benefit'], style_footer)
                     colj += 1
                     coli = colj
-                sheet.write(rowx, colx+coli+1, dailySubTotal['total_qty'], style_footer)
-                sheet.write(rowx, colx+coli+2, dailySubTotal['total_out'], style_footer)
-                sheet.write(rowx, colx+coli+3, dailySubTotal['total_in'], style_footer)
-                sheet.write(rowx, colx+coli+4, dailySubTotal['ttlLastQuant'], style_footer)
-                sheet.write(rowx, colx+coli+7, dailySubTotal['ttlQuant'], style_footer)
+                sheet.write(rowx, colx+coli, dailySubTotal['total_qty'], style_footer)
+                sheet.write(rowx, colx+coli+1, dailySubTotal['total_out'], style_footer)
+                sheet.write(rowx, colx+coli+2, dailySubTotal['total_in'], style_footer)
+                sheet.write(rowx, colx+coli+3, dailySubTotal['ttlLastQuant'], style_footer)
+                sheet.write(rowx, colx+coli+6, dailySubTotal['ttlQuant'], style_footer)
                 sheet.write(rowx+1, colx+coli+2, _('Total: '), style_footer)
+                sheet.write(rowx+2, colx+coli+2, _('Нийт Буцаалт: '), style_footer)
                 sheet.write(rowx+1, colx+coli+3, dailySubTotal['total'], style_footer)
+                sheet.write(rowx+2, colx+coli+3, dailySubTotal['ttl_Rcash'], style_footer)
                 if self.show_cost:
-                    sheet.write(rowx, colx+coli+8, dailySubTotal['total_benefit'], style_footer)
+                    sheet.write(rowx, colx+coli+7, dailySubTotal['total_benefit'], style_footer)
 
         # prepare file data
         io_buffer = StringIO()
