@@ -119,7 +119,7 @@ class SaleOrderLine(models.Model):
             for a in active_dis:
                 if create.discount != a.discount:
                     raise ValidationError(_(u'Борлуулалтын хөнгөлөлтийг тохируулсан дүнгээс зөрүүтэй байна. Хөнгөлөлттэй эсэх гэсэн талбарыг чеклэж бүртгэнэ үү .Та дараах хөнгөлөлтийг хийж өгнө! : %s') % a.discount, )
-        if create:
+        if create and not create.is_boss:
             if create.price_subtotal != create.cash_payment + create.card_payment + create.mobile_payment:
                 raise ValidationError(_(u'Касс картын нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s + %s') % (create.price_subtotal,create.cash_payment,create.card_payment,self.mobile_payment))
         return create
@@ -148,7 +148,7 @@ class SaleOrderLine(models.Model):
                 for a in active_dis:
                     if self.discount != a.discount:
                         raise ValidationError(_(u'Борлуулалтын хөнгөлөлт нь тохируулсан дүнгээс зөрүүтэй байна. Хөнгөлөлттэй эсэх гэсэн талбарыг чеклэж бүртгэнэ үү .Та дараах хөнгөлөлтийг хийж өгнө! : %s') % a.discount, )
-        if self:
+        if self and not self.is_boss:
             if self.price_subtotal != self.cash_payment + self.card_payment + self.mobile_payment:
                 raise ValidationError(_(u'Касс,Карт, Мобайлаар төлбөр төлсөн нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s + %s') % (self.price_subtotal,self.cash_payment,self.card_payment,self.mobile_payment))
         return write

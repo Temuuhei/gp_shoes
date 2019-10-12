@@ -12,8 +12,7 @@
 
 from itertools import groupby
 from datetime import datetime, timedelta
-
-
+from odoo.exceptions import ValidationError
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from odoo.tools import float_is_zero, float_compare, DEFAULT_SERVER_DATETIME_FORMAT
@@ -54,6 +53,7 @@ class SaleOrder(models.Model):
         default=_default_warehouse_id)
     date = fields.Datetime(string='Order Date', required=True, readonly=True, index=True,track_visibility='always',
                                  states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, copy=False,default=lambda self: fields.datetime.now())
+    is_date_write = fields.Boolean(string='Date write',default = False)
     discount_manager = fields.Many2one('res.users', string='Discount Manager')
     check_discount = fields.Boolean(compute=_check_discount, string='Check Discount')
     cash_pay = fields.Float(string='Бэлэн')
@@ -64,6 +64,32 @@ class SaleOrder(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer', readonly=True,
                                  states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, required=True,
                                  change_default=True, index=True, track_visibility='always')
+
+    @api.model
+    def create(self, values):
+        create = super(SaleOrder, self).create(values)
+        datetimeFormat = '%Y-%m-%d %H:%M:%S'
+        check_date = datetime.now()
+        diff = check_date - datetime.strptime(create.date,datetimeFormat)
+        if diff.days > 1:
+            raise ValidationError(
+                _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
+                )
+        return create
+
+    @api.multi
+    def write(self, values):
+        write = super(SaleOrder, self).write(values)
+        discount = self.env['sale.order.discount']
+        active_dis = discount.search([('active', '=', True)])[0]
+        datetimeFormat = '%Y-%m-%d %H:%M:%S'
+        check_date = datetime.now()
+        diff = check_date - datetime.strptime(self.date, datetimeFormat)
+        if diff.days > 1:
+            raise ValidationError(
+                _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
+            )
+        return write
 
     @api.multi
     @api.onchange('partner_id','warehouse_id')

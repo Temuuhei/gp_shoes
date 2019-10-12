@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-14 17:39+0000\n"
-"PO-Revision-Date: 2017-06-14 17:39+0000\n"
+"POT-Creation-Date: 2019-10-12 18:53+0000\n"
+"PO-Revision-Date: 2019-10-12 18:53+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -35,11 +35,12 @@ msgstr "Хэрэглэгч"
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_amount
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_amount
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_amount
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_amount_card
 msgid "Amount"
 msgstr "Дүн"
 
 #. module: gp_shoes_sale
-#: code:addons/gp_shoes_sale/wizard/sale_order_wizard.py:26
+#: code:addons/gp_shoes_sale/wizard/sale_order_wizard.py:29
 #, python-format
 msgid "Amount can not be less than zero."
 msgstr "Хасах тоо байж болохгүй."
@@ -47,18 +48,21 @@ msgstr "Хасах тоо байж болохгүй."
 #. module: gp_shoes_sale
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_management_form
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register_card
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register_mixed
 msgid "Cancel"
 msgstr "Цуцлах"
 
 #. module: gp_shoes_sale
 #: selection:account.payment.term,type:0
+#: selection:cash,type:0
 msgid "Card"
 msgstr "Карт"
 
 #. module: gp_shoes_sale
 #: selection:account.payment.term,type:0
+#: selection:cash,type:0
 #: model:ir.actions.act_window,name:gp_shoes_sale.action_cash
-#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_cash
 #: model:ir.ui.menu,name:gp_shoes_sale.menu_cash
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_form
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_tree
@@ -79,6 +83,8 @@ msgstr "Хөнглөлт шалгах"
 
 #. module: gp_shoes_sale
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register_card
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register_mixed
 msgid "Confirm"
 msgstr "Батлах"
 
@@ -88,7 +94,7 @@ msgstr "Батлах"
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_create_uid
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_create_uid
 msgid "Created by"
-msgstr "Үүсгэгч"
+msgstr "Created by"
 
 #. module: gp_shoes_sale
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_create_date
@@ -96,7 +102,7 @@ msgstr "Үүсгэгч"
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_create_date
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_create_date
 msgid "Created on"
-msgstr "Үүсгэгдсэн"
+msgstr "Created on"
 
 #. module: gp_shoes_sale
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_order_form_inherited_gp_shoes
@@ -104,20 +110,25 @@ msgid "Custom Confirm"
 msgstr "Батлах"
 
 #. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_is_date_write
+msgid "Date write"
+msgstr "Огноо засах?"
+
+#. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_account_payment_term_default
+msgid "Default"
+msgstr "Үндсэн"
+
+#. module: gp_shoes_sale
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_description
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management_description
 msgid "Description"
-msgstr "Тайлбар"
+msgstr "Тодорхойлолт"
 
 #. module: gp_shoes_sale
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_discount_manager
-msgid "Discount Manager"
-msgstr "Хөнглөлтийн менежер"
-
-#. module: gp_shoes_sale
-#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_date
-msgid "Order Date"
-msgstr "Огноо"
+msgid "Discount manager"
+msgstr "Discount manager"
 
 #. module: gp_shoes_sale
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_display_name
@@ -132,6 +143,11 @@ msgstr "Дэлгэцийн Нэр"
 #, python-format
 msgid "Extra line with %s "
 msgstr "Extra line with %s "
+
+#. module: gp_shoes_sale
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_sales_order_filter_on_grad
+msgid "Group By"
+msgstr "Бүлэглэх"
 
 #. module: gp_shoes_sale
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_form
@@ -149,10 +165,12 @@ msgstr "ID"
 #. module: gp_shoes_sale
 #: selection:cash.history,action:0
 msgid "In"
-msgstr "Хийсэн"
+msgstr "Орлого"
 
 #. module: gp_shoes_sale
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register_card
+#: model:ir.ui.view,arch_db:gp_shoes_sale.view_sale_order_cash_register_mixed
 msgid "Invoice Sales Order"
 msgstr "Борлуулалтын захиалгыг нэхэмжлэх"
 
@@ -162,7 +180,7 @@ msgstr "Борлуулалтын захиалгыг нэхэмжлэх"
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_management___last_update
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register___last_update
 msgid "Last Modified on"
-msgstr "Сүүлд Өөрчлөгдсөн"
+msgstr "Сүүлийн засвар хийсэн огноо"
 
 #. module: gp_shoes_sale
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_write_uid
@@ -170,7 +188,7 @@ msgstr "Сүүлд Өөрчлөгдсөн"
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_write_uid
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_write_uid
 msgid "Last Updated by"
-msgstr "Сүүлд Шинэчлэгч"
+msgstr "Last Updated by"
 
 #. module: gp_shoes_sale
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_write_date
@@ -178,7 +196,7 @@ msgstr "Сүүлд Шинэчлэгч"
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_write_date
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_cash_register_write_date
 msgid "Last Updated on"
-msgstr "Сүүлд Шинэчлэгдсэн"
+msgstr "Сүүлийн засвар хийсэн огноо"
 
 #. module: gp_shoes_sale
 #: selection:account.payment.term,type:0
@@ -186,12 +204,18 @@ msgid "Mixed"
 msgstr "Холимог"
 
 #. module: gp_shoes_sale
+#: selection:account.payment.term,type:0
+#: selection:cash,type:0
+msgid "Mobile"
+msgstr "Mobile"
+
+#. module: gp_shoes_sale
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_name
 msgid "Name"
 msgstr "Нэр"
 
 #. module: gp_shoes_sale
-#: code:addons/gp_shoes_sale/wizard/cash_wizard.py:50
+#: code:addons/gp_shoes_sale/wizard/cash_wizard.py:49
 #, python-format
 msgid "Not enough money in the cash register."
 msgstr "Кассны мөнгө хүрэлцэхгүй байна."
@@ -203,9 +227,14 @@ msgid "Note"
 msgstr "Тэмдэглэл"
 
 #. module: gp_shoes_sale
+#: model:ir.model.fields,field_description:gp_shoes_sale.field_sale_order_date
+msgid "Order Date"
+msgstr "Захиалгын Огноо"
+
+#. module: gp_shoes_sale
 #: selection:cash.history,action:0
 msgid "Out"
-msgstr "Авсан"
+msgstr "Зарлага"
 
 #. module: gp_shoes_sale
 #: model:ir.model.fields,field_description:gp_shoes_sale.field_cash_history_parent_id
@@ -230,7 +259,7 @@ msgstr "Эхний үнэ"
 #. module: gp_shoes_sale
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_management_form
 msgid "Put Money In"
-msgstr "Мөнгө хийх"
+msgstr "Мөнгө дотогш хийх"
 
 #. module: gp_shoes_sale
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_form
@@ -244,6 +273,8 @@ msgstr "Үлдэгдэл"
 
 #. module: gp_shoes_sale
 #: model:ir.actions.act_window,name:gp_shoes_sale.action_view_sale_order_cash_register
+#: model:ir.actions.act_window,name:gp_shoes_sale.action_view_sale_order_cash_register_card
+#: model:ir.actions.act_window,name:gp_shoes_sale.action_view_sale_order_cash_register_mixed
 msgid "Sale Order Cash Register"
 msgstr "Борлуулатаас Касс руу"
 
@@ -263,7 +294,10 @@ msgid "Sales Order Line"
 msgstr "Борлуулалтын Захиалгын Мөр"
 
 #. module: gp_shoes_sale
-#: code:addons/gp_shoes_sale/models/sale_order.py:42
+#: code:addons/gp_shoes_sale/models/sale_order.py:140
+#: code:addons/gp_shoes_sale/models/sale_order.py:152
+#: code:addons/gp_shoes_sale/models/sale_order.py:164
+#: code:addons/gp_shoes_sale/models/sale_order.py:176
 #, python-format
 msgid "Sales cash Wizard"
 msgstr "Борлуулалтын бэлэн мөнгө"
@@ -271,7 +305,7 @@ msgstr "Борлуулалтын бэлэн мөнгө"
 #. module: gp_shoes_sale
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_management_form
 msgid "Take Money Out"
-msgstr "Мөнгийг авах"
+msgstr "Мөнгийг гадагш авах"
 
 #. module: gp_shoes_sale
 #: model:ir.ui.view,arch_db:gp_shoes_sale.view_cash_form
@@ -280,6 +314,7 @@ msgstr "Мөнгө авах"
 
 #. module: gp_shoes_sale
 #: model:ir.model.fields,help:gp_shoes_sale.field_sale_order_cash_register_amount
+#: model:ir.model.fields,help:gp_shoes_sale.field_sale_order_cash_register_amount_card
 msgid "The amount paid in cash."
 msgstr "Бэлнээр төлсөн дүн."
 
@@ -292,4 +327,3 @@ msgstr "Касс"
 #: model:ir.model,name:gp_shoes_sale.model_cash_history
 msgid "cash.history"
 msgstr "Түүх"
-
