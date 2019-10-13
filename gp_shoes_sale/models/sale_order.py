@@ -70,25 +70,25 @@ class SaleOrder(models.Model):
         create = super(SaleOrder, self).create(values)
         datetimeFormat = '%Y-%m-%d %H:%M:%S'
         check_date = datetime.now()
-        diff = check_date - datetime.strptime(create.date,datetimeFormat)
-        if diff.days > 1:
-            raise ValidationError(
-                _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
-                )
+        for c in self:
+            diff = check_date - datetime.strptime(c.date,datetimeFormat)
+            if diff.days > 1 or diff.days < -1:
+                raise ValidationError(
+                    _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
+                    )
         return create
 
     @api.multi
     def write(self, values):
-        write = super(SaleOrder, self).write(values)
-        discount = self.env['sale.order.discount']
-        active_dis = discount.search([('active', '=', True)])[0]
         datetimeFormat = '%Y-%m-%d %H:%M:%S'
+        write = super(SaleOrder, self).write(values)
         check_date = datetime.now()
-        diff = check_date - datetime.strptime(self.date, datetimeFormat)
-        if diff.days > 1:
-            raise ValidationError(
-                _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
-            )
+        for s in self:
+            diff = check_date - datetime.strptime(s.date, datetimeFormat)
+            if diff.days > 1 or diff.days < -1:
+                raise ValidationError(
+                    _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
+                )
         return write
 
     @api.multi
