@@ -77,19 +77,19 @@ class SaleOrder(models.Model):
                     _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
                     )
         return create
-
-    @api.multi
-    def write(self, values):
-        datetimeFormat = '%Y-%m-%d %H:%M:%S'
-        write = super(SaleOrder, self).write(values)
-        check_date = datetime.now()
-        for s in self:
-            diff = check_date - datetime.strptime(s.date, datetimeFormat)
-            if diff.days > 1 or diff.days < -1:
-                raise ValidationError(
-                    _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
-                )
-        return write
+    # 2019 10 14 ны Одкогийн саналаар буцаав
+    # @api.multi
+    # def write(self, values):
+    #     datetimeFormat = '%Y-%m-%d %H:%M:%S'
+    #     write = super(SaleOrder, self).write(values)
+    #     check_date = datetime.now()
+    #     for s in self:
+    #         diff = check_date - datetime.strptime(s.date, datetimeFormat)
+    #         if diff.days > 1 or diff.days < -1:
+    #             raise ValidationError(
+    #                 _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
+    #             )
+    #     return write
 
     @api.multi
     @api.onchange('partner_id','warehouse_id')
