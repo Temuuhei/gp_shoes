@@ -65,18 +65,18 @@ class SaleOrder(models.Model):
                                  states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, required=True,
                                  change_default=True, index=True, track_visibility='always')
 
-    @api.model
-    def create(self, values):
-        create = super(SaleOrder, self).create(values)
-        datetimeFormat = '%Y-%m-%d %H:%M:%S'
-        check_date = datetime.now()
-        for c in self:
-            diff = check_date - datetime.strptime(c.date,datetimeFormat)
-            if diff.days > 1 or diff.days < -1:
-                raise ValidationError(
-                    _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
-                    )
-        return create
+    # @api.model
+    # def create(self, values):
+    #     create = super(SaleOrder, self).create(values)
+    #     datetimeFormat = '%Y-%m-%d %H:%M:%S'
+    #     check_date = datetime.now()
+    #     for c in self:
+    #         diff = check_date - datetime.strptime(c.date,datetimeFormat)
+    #         if diff.days > 1 or diff.days < -1:
+    #             raise ValidationError(
+    #                 _(u'Та өнгөрсөн хугацаанд борлуулалт хийж болохгүй (1 хоногийн өмнө хийх боломжтой)')
+    #                 )
+    #     return create
     # 2019 10 14 ны Одкогийн саналаар буцаав
     # @api.multi
     # def write(self, values):
