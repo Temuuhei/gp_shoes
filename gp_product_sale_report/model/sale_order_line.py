@@ -136,9 +136,10 @@ class SaleOrderLine(models.Model):
                 raise ValidationError(_(u'Танай агуулахад тухайн бараа байхгүй байна! : %s')% write.name)
         if not self.cash_payment and not self.card_payment and  not self.mobile_payment:
             raise ValidationError(_('You cannot create card and cash payment with 0!'))
-        if not self.is_discount and self.price_unit != self.price_original:
-            raise ValidationError(
-                _(u'Хөнгөлөлттэй борлуулалт бол бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !'))
+        if not self.is_boss:
+            if not self.is_discount and self.price_unit != self.price_original:
+                raise ValidationError(
+                    _(u'Хөнгөлөлттэй борлуулалт бол бол "Хөнгөлөлттэй эсэх" гэсэн талбарыг чеклэж бүртгэнэ үү !'))
         if not self.is_boss:
             if self.price_unit != self.price_original:
                 raise ValidationError(
