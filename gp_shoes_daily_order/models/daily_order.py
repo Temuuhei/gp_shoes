@@ -44,9 +44,15 @@ class DailyOrder(models.Model):
         'stock.location', "Захиалсан салбар",
         readonly=True, required=True,
         states={'draft': [('readonly', False)]}, domain="[('usage', '=', 'internal')]")
+    warehouse_id = fields.Many2one(
+        'stock.warehouse', "Захиалсан салбар",
+        readonly=True, required=True,
+        states={'draft': [('readonly', False)]}, domain="[('usage', '=', 'internal')]")
     origin = fields.Char('Үүсэл')
     active = fields.Boolean('Archive')
     sent_product_qty = fields.Float ('Өөр агуулах руу явуулсан тоо хэмжээ')
+
+
 
     def to_archive(self):
         self.update({'active': False})
@@ -143,6 +149,52 @@ class DailyOrder(models.Model):
                 self.update({'state':'done',
                              'product_qty':qty,
                              'origin':new_picking.name})
+#
+
+class RecordDailyOrderView111(models.AbstractModel):
+    _name = 'report.gp_shoes_daily_order.record_daily_order_view111'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        print 'qqqqqqqqqqq \n\n\n',docids
+        return docids
+
+
+
+    @api.model
+    def render_html(self, docids, data=None):
+        print 'hahahahahahah \n\n',docids
+        report_obj = self.env['ir.actions.report']
+        report = report_obj._get_report_from_name('gp_shoes_daily_order.record_daily_order_view111')
+
+        docargs = {
+            'doc_ids': docids,
+            'doc_model': report.template_report_daily_order,
+            'docs': self,
+        }
+        print 'docargs \n\n\n',docargs
+        return docargs
+
+# class ReportDailyOrder1111(models.AbstractModel):
+#     _name = 'report.gp_shoes_daily_order.record_daily_order_view111'
+#
+#     @api.modelл
+#     def render_html(self, docids, data=None):
+#         print 'docsss 111',docids
+#         report_obj = self.env['report']
+#         detailed_info = data['form']['detailed_info']
+#         other_info = data['form']['other_info']
+#         self.model = self.env.context.get('active_model')
+#         docs = self.env[self.model].browse(self.env.context.get('active_id'))
+#         report = report_obj._get_report_from_name('gp_shoes_daily_order.template_report_daily_order')
+#         print '1111111111111111\n\n',docs,report
+#         docargs = {
+#             'doc_ids': docids,
+#             'doc_model': data['model'],
+#             'docs': docs,
+#         }
+#         print 'docargs  \n\n',docargs
+#         return self.env['report'].render('gp_shoes_daily_order.template_report_daily_order', docargs)
 
 class StockWarehouse(models.Model):
     _inherit = "stock.warehouse"
@@ -177,6 +229,7 @@ class SaleOrder(models.Model):
                         vals = {
                             'product_id': line.product_id.id,
                             'location_id': self.warehouse_id.lot_stock_id.id,
+                            'warehouse_id': self.warehouse_id.id,
                             'date': self.date_order,
                             'state': 'draft',
                             'product_qty': qty,

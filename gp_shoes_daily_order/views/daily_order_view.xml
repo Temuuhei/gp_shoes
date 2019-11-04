@@ -13,7 +13,8 @@
                 <field name="state"/>
                 <group expand='0' string='Group by...'>
                     <filter string='Location' name="locationgroup" domain="[]" context="{'group_by': 'location_id'}"/>
-                    <filter string='Product' name="productgroup" context="{'group_by': 'product_id'}"/>
+                    <filter string='Warehouse' name="warehousegroup" domain="[]" context="{'group_by': 'warehouse_id'}"/>
+                    <filter string='Product'    name="productgroup" context="{'group_by': 'product_id'}"/>
                     <filter string='Product Qty' name="productqtygroup" context="{'group_by': 'product_qty'}"/>
                     <!--<filter string='Product Forecast Qty' name="forecastproductqtygroup" context="{'group_by': 'virtual_available'}"/>-->
                     <filter string='State' name="stategroup" context="{'group_by': 'state'}"/>
@@ -29,7 +30,8 @@
             <field name="priority">4</field>
             <field name="arch" type="xml">
                 <tree string="Daily Order" create="0" delete="0" color ="blue:date &lt; current_date;">
-                    <field name="location_id"/>
+                    <!--<field name="location_id"/>-->
+                    <field name="warehouse_id"/>
                     <field name="product_id"/>
                     <field digits="(14, 0)" name="product_qty"/>
                     <field digits="(14, 0)" name="virtual_available"/>
@@ -80,7 +82,7 @@
             <field name="res_model">daily.order</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_locationgroup': 1,'search_default_locationgroup': 1}</field>
+            <field name="context">{'search_default_warehousegroup': 1}</field>
             <field name="domain">[]</field>
         </record>
 
@@ -98,5 +100,92 @@
                 </xpath>
             </field>
         </record>
+
+    <record id="custom_sg_paperformat_daily_order" model="report.paperformat">
+            <field name="name">Print Daily Order</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">297</field>
+            <field name="page_width">210</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">40</field>
+            <field name="margin_bottom">23</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+    </record>
+
+    <report
+            id="record_daily_order_view111"
+            string="Print"
+            model="daily.order"
+            report_type="qweb-pdf"
+            file="gp_shoes_daily_order.template_report_daily_order"
+            name="gp_shoes_daily_order.template_report_daily_order"
+            paperformat = "custom_sg_paperformat_daily_order"
+        />
+
+
+
+    <template id="template_report_daily_order">
+            <t t-call="report.layout">
+                <div class="page">
+                    <div class="header">
+                        <h3 class="text-center">Өдөр бүрийн захиалга</h3>
+                    </div>
+                    <table width="100%">
+                        <tr>
+                       <td></td>
+                       <td></td>
+                       <td width="100%" class="text-center">
+                           <span><strong style="text-align: center;font-family:arial,sans-serif;font-size:22px;" t-esc="docs[0].warehouse_id.name"/></span>
+                       </td>
+                       <td width="50%">
+                          <br/><span style="text-align: center;font-family:arial,sans-serif;font-size:12px;"><strong></strong></span>
+                      </td>
+                   </tr>
+		            </table>
+                    <t>
+                        <h3>Products</h3>
+                        <table class="table table-condensed" width="100%">
+                            <thead>
+                                <tr style="text-align: center;font-family:arial,sans-serif; font-size:11px">
+                                    <th class="text-center"><strong>Product</strong></th>
+                                    <th class="text-center"><strong>Code</strong></th>
+                                    <th class="text-center"><strong>Barcode</strong></th>
+                                    <th class="text_center"><strong>Quantity</strong></th>
+                                    <th class="text-center"><strong>Order Date</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="docs" t-as="o" style="text-align: center;font-family:arial,sans-serif; font-size:11px">
+                                    <td>
+                                        <span t-esc="o.product_id.name"/>
+                                    </td>
+
+                                    <td class="text-center  ">
+                                        <span t-esc="o.product_id.default_code"/>
+                                    </td><t>
+                                    <td class="text-center">
+                                            <span t-esc="o.product_id.new_barcode"/>
+                                        </td>
+                                    </t>
+                                    <td class="text-center">
+                                        <span>1</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="o.date"/>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                        <div class="oe_structure"/>
+                        </div>
+                    </t>
+            </template>
+
 
 </odoo>

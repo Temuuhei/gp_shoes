@@ -6,14 +6,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-22 02:08+0000\n"
-"PO-Revision-Date: 2017-11-22 02:08+0000\n"
+"POT-Creation-Date: 2019-11-04 20:25+0000\n"
+"PO-Revision-Date: 2019-11-04 20:25+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Barcode</strong>"
+msgstr "<strong>Зураасан код</strong>"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Code</strong>"
+msgstr "<strong>Код</strong>"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Order Date</strong>"
+msgstr "<strong>Захиалсан огноо</strong>"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Product</strong>"
+msgstr "<strong>Бараа</strong>"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Quantity</strong>"
+msgstr "<strong>Тоо хэмжээ</strong>"
 
 #. module: gp_shoes_daily_order
 #: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_active
@@ -34,12 +59,12 @@ msgstr "Батлах"
 #. module: gp_shoes_daily_order
 #: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_create_uid
 msgid "Created by"
-msgstr "Үүсгэгч"
+msgstr "Created by"
 
 #. module: gp_shoes_daily_order
 #: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_create_date
 msgid "Created on"
-msgstr "Үүсгэгдсэн"
+msgstr "Created on"
 
 #. module: gp_shoes_daily_order
 #: model:ir.actions.act_window,name:gp_shoes_daily_order.action_daily_order
@@ -50,12 +75,23 @@ msgid "Daily Order"
 msgstr "Өдөр бүрийн захиалга"
 
 #. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_daily_order_wizard
+msgid "Daily Order Wizard"
+msgstr "Daily Order Wizard"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_do_wizard_line
+msgid "Daily Order Wizard Line"
+msgstr "Daily Order Wizard Line"
+
+#. module: gp_shoes_daily_order
 #: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
 msgid "Date"
 msgstr "Огноо"
 
 #. module: gp_shoes_daily_order
 #: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_display_name
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_report_gp_shoes_daily_order_record_daily_order_view111_display_name
 msgid "Display Name"
 msgstr "Дэлгэцийн Нэр"
 
@@ -92,23 +128,25 @@ msgstr "Бүлэглэх..."
 
 #. module: gp_shoes_daily_order
 #: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_id
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_report_gp_shoes_daily_order_record_daily_order_view111_id
 msgid "ID"
 msgstr "ID"
 
 #. module: gp_shoes_daily_order
 #: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order___last_update
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_report_gp_shoes_daily_order_record_daily_order_view111___last_update
 msgid "Last Modified on"
-msgstr "Сүүлд Өөрчлөгдсөн"
+msgstr "Сүүлийн засвар хийсэн огноо"
 
 #. module: gp_shoes_daily_order
 #: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_write_uid
 msgid "Last Updated by"
-msgstr "Сүүлд Шинэчлэгч"
+msgstr "Last Updated by"
 
 #. module: gp_shoes_daily_order
 #: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_write_date
 msgid "Last Updated on"
-msgstr "Сүүлд Шинэчлэгдсэн"
+msgstr "Сүүлийн засвар хийсэн огноо"
 
 #. module: gp_shoes_daily_order
 #: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
@@ -118,10 +156,10 @@ msgstr "Байршил"
 #. module: gp_shoes_daily_order
 #: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
 msgid "Locations"
-msgstr "Салбарууд"
+msgstr "Байрлалууд"
 
 #. module: gp_shoes_daily_order
-#: code:addons/gp_shoes_daily_order/models/daily_order.py:181
+#: code:addons/gp_shoes_daily_order/models/daily_order.py:244
 #, python-format
 msgid "Main Warehouse doesnt detected!! \n"
 " Configure the main warehouse!"
@@ -134,6 +172,11 @@ msgid "Pending"
 msgstr "Замд яваа"
 
 #. module: gp_shoes_daily_order
+#: model:ir.actions.report.xml,name:gp_shoes_daily_order.record_daily_order_view111
+msgid "Print"
+msgstr "Хэвлэх"
+
+#. module: gp_shoes_daily_order
 #: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
 msgid "Product"
 msgstr "Бараа"
@@ -144,9 +187,14 @@ msgid "Product Qty"
 msgstr "Тоо ширхэг"
 
 #. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "Products"
+msgstr "Бараанууд"
+
+#. module: gp_shoes_daily_order
 #: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_tree
 msgid "Ready"
-msgstr "Илгээх"
+msgstr "Бэлэн"
 
 #. module: gp_shoes_daily_order
 #: model:ir.model,name:gp_shoes_daily_order.model_sale_order
@@ -156,10 +204,11 @@ msgstr "Борлуулалтын захиалга"
 #. module: gp_shoes_daily_order
 #: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
 msgid "State"
-msgstr "Төлөв"
+msgstr "Муж"
 
 #. module: gp_shoes_daily_order
 #: model:ir.model,name:gp_shoes_daily_order.model_stock_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
 msgid "Warehouse"
 msgstr "Агуулах"
 
@@ -172,3 +221,38 @@ msgstr "calls python function"
 #: model:ir.model,name:gp_shoes_daily_order.model_daily_order
 msgid "daily.order"
 msgstr "Өдөр бүрийн захиалга"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_gp_shoes_daily_order_report_daily_order
+msgid "gp_shoes_daily_order.report_daily_order"
+msgstr "gp_shoes_daily_order.report_daily_order"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_report_daily_order
+msgid "report.daily.order"
+msgstr "report.daily.order"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_report_gp_shoes_daily_order_record_daily_order_view111
+msgid "report.gp_shoes_daily_order.record_daily_order_view111"
+msgstr "report.gp_shoes_daily_order.record_daily_order_view111"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_report_gp_shoes_daily_order_report_daily_order_view
+msgid "report.gp_shoes_daily_order.report_daily_order_view"
+msgstr "report.gp_shoes_daily_order.report_daily_order_view"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_report_gp_shoes_daily_order_report_daily_order_view1
+msgid "report.gp_shoes_daily_order.report_daily_order_view1"
+msgstr "report.gp_shoes_daily_order.report_daily_order_view1"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_report_gp_shoes_daily_order_report_dailyorder
+msgid "report.gp_shoes_daily_order.report_dailyorder"
+msgstr "report.gp_shoes_daily_order.report_dailyorder"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_report_gp_shoes_daily_order_template_report_daily_order
+msgid "report.gp_shoes_daily_order.template_report_daily_order"
+msgstr "report.gp_shoes_daily_order.template_report_daily_order"
