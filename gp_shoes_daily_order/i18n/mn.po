@@ -41,6 +41,11 @@ msgid "<strong>Quantity</strong>"
 msgstr "<strong>Тоо хэмжээ</strong>"
 
 #. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Size</strong>"
+msgstr "<strong>Размер</strong>"
+
+#. module: gp_shoes_daily_order
 #: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_active
 #: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_tree
 msgid "Archive"

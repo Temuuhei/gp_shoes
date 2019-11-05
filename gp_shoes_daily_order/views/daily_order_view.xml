@@ -156,6 +156,7 @@
                                     <th class="text-center"><strong>Code</strong></th>
                                     <th class="text-center"><strong>Barcode</strong></th>
                                     <th class="text_center"><strong>Quantity</strong></th>
+                                    <th class="text_center"><strong>Size</strong></th>
                                     <th class="text-center"><strong>Order Date</strong></th>
                                 </tr>
                             </thead>
@@ -165,7 +166,7 @@
                                         <span t-esc="o.product_id.name"/>
                                     </td>
 
-                                    <td class="text-center  ">
+                                    <td class="text-center">
                                         <span t-esc="o.product_id.default_code"/>
                                     </td><t>
                                     <td class="text-center">
@@ -174,6 +175,9 @@
                                     </t>
                                     <td class="text-center">
                                         <span>1</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-esc="o.product_id.attribute_value_ids[0].name"></span>
                                     </td>
                                     <td class="text-center">
                                         <span t-esc="o.date"/>
