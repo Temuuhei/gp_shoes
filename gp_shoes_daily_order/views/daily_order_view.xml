@@ -174,7 +174,7 @@
                                         </td>
                                     </t>
                                     <td class="text-center">
-                                        <span>1</span>
+                                        <span t-esc="int(float(o.product_qty))"></span>
                                     </td>
                                     <td class="text-center">
                                         <span t-esc="o.product_id.attribute_value_ids[0].name"></span>

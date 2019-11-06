@@ -38,7 +38,7 @@ msgstr "<strong>Бараа</strong>"
 #. module: gp_shoes_daily_order
 #: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
 msgid "<strong>Quantity</strong>"
-msgstr "<strong>Тоо хэмжээ</strong>"
+msgstr "<strong>Төв Агуулахын нөөц</strong>"
 
 #. module: gp_shoes_daily_order
 #: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
