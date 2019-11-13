@@ -74,7 +74,7 @@ class SaleOrder(models.Model):
                     elif cash.type == 'mobile' and mobile_amount:
                         cash.history.create({
                             'parent_id': cash.id,
-                            'amount': card_amount,
+                            'amount': mobile_amount,
                             'remaining_amount': cash.amount,
                             'description': order.name + u' дугаартай борлуулалтаас [%s]' % order.id + u' [' + payment_type + u']',
                             'date': datetime.today(),
