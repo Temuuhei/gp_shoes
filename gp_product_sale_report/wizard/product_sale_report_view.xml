@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form string="Report product sale">
                     <group>
-                        <field name="stock_warehouse" widget="selection"  domain="[('id','in',map(lambda x:x.id,user.allowed_warehouses))]"/>
+                        <field name="stock_warehouse" widget="selection"/>
                         <field name="date_from"/>
                         <field name="date_until"/>
                         <field name="show_cost" groups="base.group_erp_manager"/>
