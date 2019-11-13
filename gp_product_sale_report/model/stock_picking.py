@@ -175,12 +175,14 @@ class StockImmediateTransfer(models.TransientModel):
                     if created_out:
                         wizard.cash.amount = created_out.remaining_amount
                 stock_move = self.env['stock.move'].search([('picking_id', '=', sp.id)])
-                if stock_move.origin_returned_move_id:
-                    return_stock_move = self.env['stock.move'].search([('id', '=', stock_move.origin_returned_move_id.id)])
-                    if return_stock_move:
-                        sale_line = self.env['sale.order.line'].search([('id', '=',return_stock_move.procurement_id.sale_line_id.id)])
-                        if sale_line:
-                            sale_line.update({'is_return': True})
+                if stock_move:
+                    for s in stock_move:
+                        if s.origin_returned_move_id:
+                            return_stock_move = self.env['stock.move'].search([('id', '=', stock_move.origin_returned_move_id.id)])
+                            if return_stock_move:
+                                sale_line = self.env['sale.order.line'].search([('id', '=',return_stock_move.procurement_id.sale_line_id.id)])
+                                if sale_line:
+                                    sale_line.update({'is_return': True})
 
 
             for ml in sp.move_lines:
