@@ -178,7 +178,7 @@ class StockImmediateTransfer(models.TransientModel):
                 if stock_move:
                     for s in stock_move:
                         if s.origin_returned_move_id:
-                            return_stock_move = self.env['stock.move'].search([('id', '=', stock_move.origin_returned_move_id.id)])
+                            return_stock_move = self.env['stock.move'].search([('id', '=', s.origin_returned_move_id.id)])
                             if return_stock_move:
                                 sale_line = self.env['sale.order.line'].search([('id', '=',return_stock_move.procurement_id.sale_line_id.id)])
                                 if sale_line:
