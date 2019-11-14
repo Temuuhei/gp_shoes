@@ -19,9 +19,22 @@
         <field name="arch" type="xml">
             <xpath expr="//form/group" position="inside">
                 <group colspan = "2">
-                    <field name="cash" attrs="{'required': [('is_return', '=', True)],'invisible': [('is_return', '=', False)]}"/>
-                    <field name="amount" attrs="{'required': [('is_return', '=', True)],'invisible': [('is_return', '=', False)]}"/>
+                    <field name="cash" attrs="{'invisible': [('is_return', '=', False)]}"
+                           domain="[('type', '=', 'cash')]"
+                            />
+                    <field name="amount" attrs="{'invisible': [('is_return', '=', False)]}"/>
+                    <field name="card" attrs="{'invisible': [('is_return', '=', False)]}"
+                           domain="[('type', '=', 'card')]"
+                            />
+                    <field name="amount1" attrs="{'invisible': [('is_return', '=', False)]}"/>
+                    <field name="mobile" attrs="{'invisible': [('is_return', '=', False)]}"
+                           domain="[('type', '=', 'mobile')]"
+                            />
+                    <field name="amount2" attrs="{'required': [('is_return', '=', True)],'invisible': [('is_return', '=', False)]}"/>
                     <field name="is_return" groups="stock.group_stock_manager"/>
+                    <field name="is_hide" attrs="{'invisible': [('is_return', '=', False)]}" groups="stock.group_stock_manager"/>
+                    <field name="is_error" help = "Хэрэглэгчийн алдаанаас болж буцаалт хийсэн энэ талбарыг чеклэх ба
+                    Буцаалтын борлуулалтын захиалгын мөр цэс дээр улаанаар харагдана"   attrs="{'invisible': [('is_return', '=', False)]}" groups="stock.group_stock_manager"/>
                 </group>
             </xpath>
         </field>

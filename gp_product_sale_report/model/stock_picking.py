@@ -145,8 +145,14 @@ class StockImmediateTransfer(models.TransientModel):
             #         self.is_return = True
 
     cash = fields.Many2one('cash','Cash')
+    card = fields.Many2one('cash','Card')
+    mobile = fields.Many2one('cash','Mobile')
     amount = fields.Float('Amount', default = 0.0)
+    amount1 = fields.Float('Card Amount', default = 0.0)
+    amount2 = fields.Float('Mobile Amount', default = 0.0)
     is_return = fields.Boolean(string = 'Is return', invisible = False, default = False)
+    is_hide = fields.Boolean(string = 'Is hide SOL', invisible = False, default = True)
+    is_error = fields.Boolean(string = 'Is user Error', invisible = False, default = False)
 
     @api.one
     def process(self):
@@ -156,24 +162,64 @@ class StockImmediateTransfer(models.TransientModel):
             cash_history = self.env['cash.history']
             if self.is_return == True:
                 for wizard in self:
-                    if wizard.cash.amount < wizard.amount:
-                        raise ValidationError(
-                            _('Not enough money in the cash register.'))
-                    sp.write({'return_cash': sp.return_cash - wizard.amount})
-                    # print 'sp.return_cash',sp.return_cash
-                    wizard.cash.amount -= wizard.amount
-                    created_out = cash_history.create({
-                        'parent_id': wizard.cash.id,
-                        'amount': wizard.amount,
-                        'remaining_amount': wizard.cash.amount,
-                        'description': u' дугаартай буцаалт [%s]' %sp.name ,
-                        'date': datetime.today(),
-                        'user': self.env.uid,
-                        'action': 'out'
+                    if wizard.cash and wizard.amount > 0:
+                        print '1 \n\n'
+                        if wizard.cash.amount < wizard.amount:
+                            raise ValidationError(
+                                _('Not enough money in the cash register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.cash.amount -= wizard.amount
+                        created_out = cash_history.create({
+                            'parent_id': wizard.cash.id,
+                            'amount': wizard.amount,
+                            'remaining_amount': wizard.cash.amount,
+                            'description': u' дугаартай буцаалт [%s]' %sp.name ,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
 
-                        })
-                    if created_out:
-                        wizard.cash.amount = created_out.remaining_amount
+                            })
+                        if created_out:
+                            wizard.cash.amount = created_out.remaining_amount
+                        if wizard.card and wizard.amount1 > 0:
+                            print '2 \n\n'
+                            if wizard.card.amount < wizard.amount1:
+                                raise ValidationError(
+                                    _('Not enough money in the card register.'))
+                            # print 'sp.return_cash',sp.return_cash
+                            wizard.card.amount -= wizard.amount1
+                            created_bank_out = cash_history.create({
+                                'parent_id': wizard.card.id,
+                                'amount': wizard.amount1,
+                                'remaining_amount': wizard.card.amount,
+                                'description': u' дугаартай буцаалт [%s]' %sp.name ,
+                                'date': datetime.today(),
+                                'user': self.env.uid,
+                                'action': 'out'
+
+                                })
+                            if created_bank_out:
+                                wizard.card.amount = created_bank_out.remaining_amount
+                            if wizard.mobile and wizard.amount2 > 0:
+                                print '3 \n\n'
+                                if wizard.mobile.amount < wizard.amount2:
+                                    raise ValidationError(
+                                        _('Not enough money in the mobile register.'))
+                                # print 'sp.return_cash',sp.return_cash
+                                wizard.mobile.amount -= wizard.amount2
+                                created_mobile_out = cash_history.create({
+                                    'parent_id': wizard.mobile.id,
+                                    'amount': wizard.amount2,
+                                    'remaining_amount': wizard.mobile.amount,
+                                    'description': u' дугаартай буцаалт [%s]' %sp.name ,
+                                    'date': datetime.today(),
+                                    'user': self.env.uid,
+                                    'action': 'out'
+
+                                    })
+                                if created_mobile_out:
+                                        wizard.mobile.amount = created_mobile_out.remaining_amount
+                    sp.write({'return_cash': sp.return_cash - (wizard.amount + wizard.amount1 + wizard.amount2)})
                 stock_move = self.env['stock.move'].search([('picking_id', '=', sp.id)])
                 if stock_move:
                     for s in stock_move:
@@ -182,7 +228,11 @@ class StockImmediateTransfer(models.TransientModel):
                             if return_stock_move:
                                 sale_line = self.env['sale.order.line'].search([('id', '=',return_stock_move.procurement_id.sale_line_id.id)])
                                 if sale_line:
-                                    sale_line.update({'is_return': True})
+                                    if self.is_hide:
+                                        sale_line.update({'is_return': True})
+                                    if self.is_error:
+                                        sale_line.update({'is_user_error': True})
+
 
 
             for ml in sp.move_lines:

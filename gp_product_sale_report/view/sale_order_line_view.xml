@@ -83,8 +83,9 @@
             <field name="name">sale.order.line.tree</field>
             <field name="model">sale.order.line</field>
             <field name="arch" type="xml">
-                <tree string="Sales Order Lines" create="false">
+                <tree string="Sales Order Lines" create="false" colors="red:is_user_error == True">
                     <field name="product_id" invisible="1"/>
+                    <field name="is_user_error" invisible="1"/>
                     <field name="order_id"/>
                     <field name="order_partner_id"/>
                     <field name="name"/>
