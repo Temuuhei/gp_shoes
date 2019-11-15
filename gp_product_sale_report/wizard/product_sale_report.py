@@ -6,6 +6,7 @@ import xlwt
 from StringIO import StringIO
 import base64
 from datetime import datetime, timedelta
+from odoo.exceptions import UserError
 
 style_title = xlwt.easyxf('font: bold 1, name Tahoma, height 160;'
                           'align: vertical center, horizontal center, wrap on;'
@@ -20,7 +21,20 @@ base_style = xlwt.easyxf('align: wrap yes')
 class ProductSaleReport(models.TransientModel):
     _name = 'product.sale.report'
 
-    stock_warehouse = fields.Many2one('stock.warehouse', 'Stock warehouse', required=True)
+    def _get_warehouse_ids(self):
+        ware_ids = []
+        res_users = self.env['res.users'].search([('id', '=', self._uid)])[0]
+        if res_users:
+            for  w in res_users.allowed_warehouses:
+                if w.id  not in ware_ids:
+                    ware_ids.append(w.id)
+            if not ware_ids :
+                raise UserError(
+                            _(u'Таньд зөвшөөрөгдсөн агуулах тохируулагдаагүй байна! Админд хандана уу'))
+        return ware_ids[0]
+
+
+    stock_warehouse = fields.Many2one('stock.warehouse', 'Stock warehouse', required=True, default = _get_warehouse_ids)
     date_from = fields.Date('Date from', required=True)
     date_until = fields.Date('Date until', required=True)
     show_cost = fields.Boolean('Show cost')
