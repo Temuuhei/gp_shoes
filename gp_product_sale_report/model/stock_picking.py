@@ -162,14 +162,13 @@ class StockImmediateTransfer(models.TransientModel):
             cash_history = self.env['cash.history']
             if self.is_return == True:
                 for wizard in self:
-                    if wizard.cash and wizard.amount > 0:
-                        print '1 \n\n'
+                    if wizard.cash and wizard.amount > 0 and not wizard.card and not wizard.mobile:
                         if wizard.cash.amount < wizard.amount:
                             raise ValidationError(
                                 _('Not enough money in the cash register.'))
                         # print 'sp.return_cash',sp.return_cash
                         wizard.cash.amount -= wizard.amount
-                        created_out = cash_history.create({
+                        created_out1 = cash_history.create({
                             'parent_id': wizard.cash.id,
                             'amount': wizard.amount,
                             'remaining_amount': wizard.cash.amount,
@@ -179,46 +178,203 @@ class StockImmediateTransfer(models.TransientModel):
                             'action': 'out'
 
                             })
-                        if created_out:
-                            wizard.cash.amount = created_out.remaining_amount
-                        if wizard.card and wizard.amount1 > 0:
-                            print '2 \n\n'
-                            if wizard.card.amount < wizard.amount1:
-                                raise ValidationError(
-                                    _('Not enough money in the card register.'))
-                            # print 'sp.return_cash',sp.return_cash
-                            wizard.card.amount -= wizard.amount1
-                            created_bank_out = cash_history.create({
-                                'parent_id': wizard.card.id,
-                                'amount': wizard.amount1,
-                                'remaining_amount': wizard.card.amount,
-                                'description': u' дугаартай буцаалт [%s]' %sp.name ,
-                                'date': datetime.today(),
-                                'user': self.env.uid,
-                                'action': 'out'
+                        if created_out1:
+                            wizard.cash.amount = created_out1.remaining_amount
+                    elif wizard.card and wizard.amount1 > 0 and not wizard.cash and not wizard.mobile:
+                        if wizard.card.amount < wizard.amount1:
+                            raise ValidationError(
+                                _('Not enough money in the card register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.card.amount -= wizard.amount1
+                        created_bank_out = cash_history.create({
+                            'parent_id': wizard.card.id,
+                            'amount': wizard.amount1,
+                            'remaining_amount': wizard.card.amount,
+                            'description': u' дугаартай буцаалт [%s]' %sp.name ,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
 
-                                })
-                            if created_bank_out:
-                                wizard.card.amount = created_bank_out.remaining_amount
-                            if wizard.mobile and wizard.amount2 > 0:
-                                print '3 \n\n'
-                                if wizard.mobile.amount < wizard.amount2:
-                                    raise ValidationError(
-                                        _('Not enough money in the mobile register.'))
-                                # print 'sp.return_cash',sp.return_cash
-                                wizard.mobile.amount -= wizard.amount2
-                                created_mobile_out = cash_history.create({
-                                    'parent_id': wizard.mobile.id,
-                                    'amount': wizard.amount2,
-                                    'remaining_amount': wizard.mobile.amount,
-                                    'description': u' дугаартай буцаалт [%s]' %sp.name ,
-                                    'date': datetime.today(),
-                                    'user': self.env.uid,
-                                    'action': 'out'
+                            })
+                        if created_bank_out:
+                            wizard.card.amount = created_bank_out.remaining_amount
+                    elif wizard.mobile and wizard.amount2 > 0 and not wizard.card and not wizard.cash:
+                        if wizard.mobile.amount < wizard.amount2:
+                            raise ValidationError(
+                                _('Not enough money in the mobile register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.mobile.amount -= wizard.amount2
+                        created_mobile_out = cash_history.create({
+                            'parent_id': wizard.mobile.id,
+                            'amount': wizard.amount2,
+                            'remaining_amount': wizard.mobile.amount,
+                            'description': u' дугаартай буцаалт [%s]' %sp.name ,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
 
-                                    })
-                                if created_mobile_out:
-                                        wizard.mobile.amount = created_mobile_out.remaining_amount
+                            })
+                        if created_mobile_out:
+                                wizard.mobile.amount = created_mobile_out.remaining_amount
+                    elif wizard.cash and wizard.card and not wizard.mobile:
+                        if wizard.cash.amount < wizard.amount:
+                            raise ValidationError(
+                                _('Not enough money in the cash register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.cash.amount -= wizard.amount
+                        created_out2 = cash_history.create({
+                            'parent_id': wizard.cash.id,
+                            'amount': wizard.amount,
+                            'remaining_amount': wizard.cash.amount,
+                            'description': u' дугаартай буцаалт [%s]' % sp.name,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
+
+                        })
+                        if created_out2:
+                            wizard.cash.amount = created_out2.remaining_amount
+                        if wizard.card.amount < wizard.amount1:
+                            raise ValidationError(
+                                _('Not enough money in the card register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.card.amount -= wizard.amount1
+                        created_bank_out2 = cash_history.create({
+                            'parent_id': wizard.card.id,
+                            'amount': wizard.amount1,
+                            'remaining_amount': wizard.card.amount,
+                            'description': u' дугаартай буцаалт [%s]' % sp.name,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
+
+                        })
+                        if created_bank_out2:
+                            wizard.card.amount = created_bank_out2.remaining_amount
+                    elif wizard.cash and not wizard.card and wizard.mobile:
+                        if wizard.cash.amount < wizard.amount:
+                            raise ValidationError(
+                                _('Not enough money in the cash register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.cash.amount -= wizard.amount
+                        created_out3 = cash_history.create({
+                            'parent_id': wizard.cash.id,
+                            'amount': wizard.amount,
+                            'remaining_amount': wizard.cash.amount,
+                            'description': u' дугаартай буцаалт [%s]' % sp.name,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
+
+                        })
+                        if created_out3:
+                            wizard.cash.amount = created_out3.remaining_amount
+                        if wizard.mobile.amount < wizard.amount2:
+                            raise ValidationError(
+                                _('Not enough money in the mobile register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.mobile.amount -= wizard.amount2
+                        created_mobile_out3 = cash_history.create({
+                            'parent_id': wizard.mobile.id,
+                            'amount': wizard.amount2,
+                            'remaining_amount': wizard.mobile.amount,
+                            'description': u' дугаартай буцаалт [%s]' % sp.name,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
+
+                        })
+                        if created_mobile_out3:
+                            wizard.mobile.amount = created_mobile_out3.remaining_amount
+                    elif not wizard.cash and wizard.card and wizard.mobile:
+                        if wizard.card.amount < wizard.amount1:
+                            raise ValidationError(
+                                _('Not enough money in the card register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.card.amount -= wizard.amount1
+                        created_card_out4 = cash_history.create({
+                            'parent_id': wizard.card.id,
+                            'amount': wizard.amount1,
+                            'remaining_amount': wizard.card.amount,
+                            'description': u' дугаартай буцаалт [%s]' % sp.name,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
+
+                        })
+                        if created_card_out4:
+                            wizard.card.amount = created_card_out4.remaining_amount
+                        if wizard.mobile.amount < wizard.amount2:
+                            raise ValidationError(
+                                _('Not enough money in the mobile register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.mobile.amount -= wizard.amount2
+                        created_mobile_out4 = cash_history.create({
+                            'parent_id': wizard.mobile.id,
+                            'amount': wizard.amount2,
+                            'remaining_amount': wizard.mobile.amount,
+                            'description': u' дугаартай буцаалт [%s]' % sp.name,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
+
+                        })
+                        if created_mobile_out4:
+                            wizard.mobile.amount = created_mobile_out4.remaining_amount
+                    elif wizard.cash and wizard.card and wizard.mobile:
+                        if wizard.card.amount < wizard.amount1:
+                            raise ValidationError(
+                                _('Not enough money in the card register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.card.amount -= wizard.amount1
+                        created_card_out5 = cash_history.create({
+                            'parent_id': wizard.card.id,
+                            'amount': wizard.amount1,
+                            'remaining_amount': wizard.card.amount,
+                            'description': u' дугаартай буцаалт [%s]' % sp.name,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
+
+                        })
+                        if created_card_out5:
+                            wizard.card.amount = created_card_out5.remaining_amount
+                        if wizard.mobile.amount < wizard.amount2:
+                            raise ValidationError(
+                                _('Not enough money in the mobile register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.mobile.amount -= wizard.amount2
+                        created_mobile_out5 = cash_history.create({
+                            'parent_id': wizard.mobile.id,
+                            'amount': wizard.amount2,
+                            'remaining_amount': wizard.mobile.amount,
+                            'description': u' дугаартай буцаалт [%s]' % sp.name,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
+
+                        })
+                        if created_mobile_out5:
+                            wizard.mobile.amount = created_mobile_out5.remaining_amount
+                        if wizard.cash.amount < wizard.amount:
+                            raise ValidationError(
+                                _('Not enough money in the cash register.'))
+                        # print 'sp.return_cash',sp.return_cash
+                        wizard.cash.amount -= wizard.amount
+                        created_cash_out5 = cash_history.create({
+                            'parent_id': wizard.cash.id,
+                            'amount': wizard.amount,
+                            'remaining_amount': wizard.cash.amount,
+                            'description': u' дугаартай буцаалт [%s]' % sp.name,
+                            'date': datetime.today(),
+                            'user': self.env.uid,
+                            'action': 'out'
+
+                        })
+                        if created_cash_out5:
+                            wizard.cash.amount = created_cash_out5.remaining_amount
+
+
                     sp.write({'return_cash': sp.return_cash - (wizard.amount + wizard.amount1 + wizard.amount2)})
                 stock_move = self.env['stock.move'].search([('picking_id', '=', sp.id)])
                 if stock_move:
