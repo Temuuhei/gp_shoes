@@ -40,7 +40,7 @@ class SaleOrderLine(models.Model):
     is_return = fields.Boolean('Is Return',default=False)
     is_user_error = fields.Boolean('Is User Error',default=False)
     is_discount = fields.Boolean('Is Discount',default=False)
-    is_boss = fields.Boolean('Is Boss',default=False)
+    is_boss = fields.Boolean('Is Boss',default=False,copy=False)
 
 
     @api.multi
