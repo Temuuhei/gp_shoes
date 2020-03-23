@@ -11,7 +11,7 @@
                 </xpath>
                  <xpath expr="//field[@name='date_order']" position="replace">
                      <!--attrs="{'readonly': [('is_date_write', '=', False)]}"-->
-                    <field name="date"/>
+                    <field name="date" attrs="{'readonly': [('is_date_write', '=', False)]}"/>
                     <field name="is_date_write" groups="stock.group_stock_manager"/>
                 </xpath>
 
