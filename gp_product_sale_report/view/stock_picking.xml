@@ -12,6 +12,18 @@
             </xpath>
         </field>
     </record>
+
+    <record id="view_stock_location_gp_form" model="ir.ui.view">
+            <field name="name">stock.location.gp.form.inherit</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                        <field name="daily_order"/>
+                </xpath>
+            </field>
+        </record>
+
     <record id="view_immediate_transfer_gp" model="ir.ui.view">
         <field name="name">stock.immediate.transfer.view.form.gp</field>
         <field name="model">stock.immediate.transfer</field>

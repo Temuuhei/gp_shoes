@@ -3,25 +3,18 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 from datetime import datetime
+class StockLocation(models.Model):
+    _inherit = "stock.location"
+
+
+    daily_order = fields.Boolean('Daily Order create')
+
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    # @api.one
-    # def _check_return(self):
-    #     # print ' Check'
-    #     for sm in self:
-    #         return_sm = self.env['stock.move'].browse(sm.id)
-    #         if return_sm:
-    #             for s in return_sm:
-    #                 if s.origin_returned_move_id:
-    #                     self.write({'is_return':True})
-    #                     return True
-    #                 else:
-    #                     return False
 
     product_template = fields.Many2one('product.template', 'Main product')
     is_existed_products = fields.Boolean('Байгаа бараануудыг харуулах', default = False)
-    # is_return = fields.Boolean(compute = '_check_return',string='Is return', type="boolean", store = True)
     return_cash = fields.Float('Return cash', default = 0.0)
 
     @api.multi
@@ -104,45 +97,10 @@ class StockPicking(models.Model):
                     raise ValidationError(
                         _(u'Танай агуулахад тухайн бараа байхгүй байна! : %s') % ml.product_id.name_get())
         return True
-# class StockMove(models.Model):
-#     _inherit = "stock.move"
-
-    # @api.model
-    # def create(self, values):
-    #     create = super(StockMove, self).create(values)
-    #     quant = self.env['stock.quant'].search([('location_id', '=', create.picking_id.location_id.id),
-    #                                             ('product_id', '=', create.product_id.id)])
-    #     if quant.qty < create.product_uom_qty:
-    #         raise ValidationError(_('There is no product in your stock or not enough!'))
-    #     return create
-    #
-    # @api.multi
-    # def write(self, values):
-    #     write = super(StockMove, self).write(values)
-    #     if "product_uom_qty" in values or "product_id" in values:
-    #         quant = self.env['stock.quant'].search(
-    #             [('location_id', '=', self.picking_id.location_id.id),
-    #              ('product_id', '=', self.product_id.id)])
-    #         if quant.qty < self.product_uom_qty:
-    #             raise ValidationError(_('There is no product in your stock or not enough!'))
-    #     return write
 
 class StockImmediateTransfer(models.TransientModel):
     _inherit = 'stock.immediate.transfer'
 
-
-    # @api.one
-    # def _check_return(self):
-    #     ctx = self.env.context.copy()
-    #     if 'active_id' in ctx:
-    #         print 'INNNNNN \n\n',ctx,self
-    #         sp = self.env['stock.picking'].browse(ctx['active_id'])
-            # return_sm  = self.env ['stock.move'].browse(sp.id)
-            # print 'sp \n\n',sp,return_sm
-            # for sm in return_sm:
-            #     if sm.origin_returned_move_id:
-            #         print 'self.is_return111111111 \n\n',self.is_return
-            #         self.is_return = True
 
     cash = fields.Many2one('cash','Cash')
     card = fields.Many2one('cash','Card')
@@ -184,7 +142,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.card.amount < wizard.amount1:
                             raise ValidationError(
                                 _('Not enough money in the card register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.card.amount -= wizard.amount1
                         created_bank_out = cash_history.create({
                             'parent_id': wizard.card.id,
@@ -202,7 +159,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.mobile.amount < wizard.amount2:
                             raise ValidationError(
                                 _('Not enough money in the mobile register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.mobile.amount -= wizard.amount2
                         created_mobile_out = cash_history.create({
                             'parent_id': wizard.mobile.id,
@@ -220,7 +176,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.cash.amount < wizard.amount:
                             raise ValidationError(
                                 _('Not enough money in the cash register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.cash.amount -= wizard.amount
                         created_out2 = cash_history.create({
                             'parent_id': wizard.cash.id,
@@ -237,7 +192,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.card.amount < wizard.amount1:
                             raise ValidationError(
                                 _('Not enough money in the card register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.card.amount -= wizard.amount1
                         created_bank_out2 = cash_history.create({
                             'parent_id': wizard.card.id,
@@ -255,7 +209,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.cash.amount < wizard.amount:
                             raise ValidationError(
                                 _('Not enough money in the cash register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.cash.amount -= wizard.amount
                         created_out3 = cash_history.create({
                             'parent_id': wizard.cash.id,
@@ -272,7 +225,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.mobile.amount < wizard.amount2:
                             raise ValidationError(
                                 _('Not enough money in the mobile register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.mobile.amount -= wizard.amount2
                         created_mobile_out3 = cash_history.create({
                             'parent_id': wizard.mobile.id,
@@ -290,7 +242,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.card.amount < wizard.amount1:
                             raise ValidationError(
                                 _('Not enough money in the card register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.card.amount -= wizard.amount1
                         created_card_out4 = cash_history.create({
                             'parent_id': wizard.card.id,
@@ -307,7 +258,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.mobile.amount < wizard.amount2:
                             raise ValidationError(
                                 _('Not enough money in the mobile register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.mobile.amount -= wizard.amount2
                         created_mobile_out4 = cash_history.create({
                             'parent_id': wizard.mobile.id,
@@ -325,7 +275,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.card.amount < wizard.amount1:
                             raise ValidationError(
                                 _('Not enough money in the card register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.card.amount -= wizard.amount1
                         created_card_out5 = cash_history.create({
                             'parent_id': wizard.card.id,
@@ -342,7 +291,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.mobile.amount < wizard.amount2:
                             raise ValidationError(
                                 _('Not enough money in the mobile register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.mobile.amount -= wizard.amount2
                         created_mobile_out5 = cash_history.create({
                             'parent_id': wizard.mobile.id,
@@ -359,7 +307,6 @@ class StockImmediateTransfer(models.TransientModel):
                         if wizard.cash.amount < wizard.amount:
                             raise ValidationError(
                                 _('Not enough money in the cash register.'))
-                        # print 'sp.return_cash',sp.return_cash
                         wizard.cash.amount -= wizard.amount
                         created_cash_out5 = cash_history.create({
                             'parent_id': wizard.cash.id,
@@ -390,6 +337,46 @@ class StockImmediateTransfer(models.TransientModel):
                                         sale_line.update({'is_user_error': True})
 
 
+            for l in sp:
+                if l.location_dest_id.daily_order:
+                    for line in sp.move_lines:
+                        qty = 0
+                        already_sent_qty = 0
+                        sent_do = []
+                        if l.location_id:
+                            wh = self.env['stock.warehouse'].search([('lot_stock_id', '=', l.location_id.id)])[0]
+                        main_wh = self.env['stock.warehouse'].search([('main_warehouse', '=', True)])[0]
+                        do_obj = self.env['daily.order'].search(
+                            [('state', '=', 'pending'), ('product_id', '=', line.product_id.id)])
+                        if do_obj:
+                            for d in do_obj:
+                                already_sent_qty += 1
+                                sent_do.append(d.name)
+                        if main_wh:
+                            qty_obj = self.env['stock.quant'].search([('product_id', '=', line.product_id.id),
+                                                                      ('location_id', '=', main_wh.lot_stock_id.id)])
+                            for q in qty_obj:
+                                qty += q.qty
+
+                            print 'type \n',type(l.min_date),l.min_date
+                            vals = {
+                                'product_id': line.product_id.id,
+                                'location_id': l.location_id.id,
+                                'warehouse_id': wh.id,
+                                'date': l.min_date,
+                                'state': 'draft',
+                                'product_qty': qty,
+                                'sent_product_qty': already_sent_qty,
+                                'sent_daily_order': sent_do,
+                                'active': True,
+                                'name': u'%s-ны %s дугаартай Бараа шилжүүлэх цэснээс шууд захиалга үүсэв' % (
+                                l.min_date, l.name)
+
+                            }
+                            do_obj = self.env['daily.order'].create(vals)
+                        else:
+                            raise ValidationError(_(
+                                'Main Warehouse doesnt detected!! \n Configure the main warehouse!'))
 
             for ml in sp.move_lines:
                 quant = self.env['stock.quant'].search([('location_id', '=', sp.location_id.id),

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 15:24+0000\n"
-"PO-Revision-Date: 2019-11-14 15:24+0000\n"
+"POT-Creation-Date: 2020-04-10 21:08+0000\n"
+"PO-Revision-Date: 2020-04-10 21:08+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -130,6 +130,11 @@ msgid "Created on"
 msgstr "Created on"
 
 #. module: gp_product_sale_report
+#: model:ir.model.fields,field_description:gp_product_sale_report.field_stock_location_daily_order
+msgid "Daily Order create"
+msgstr "Өдөр бүрийн захиалга үүсгэх?"
+
+#. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_sale_order_line_order_date
 #: model:ir.ui.view,arch_db:gp_product_sale_report.view_sales_order_line_filter_gp
 msgid "Date"
@@ -230,6 +235,11 @@ msgid "Inventory Line"
 msgstr "Тооллогын мөр"
 
 #. module: gp_product_sale_report
+#: model:ir.model,name:gp_product_sale_report.model_stock_location
+msgid "Inventory Locations"
+msgstr "Тооллогын Байрлалууд"
+
+#. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_sale_order_line_is_boss
 msgid "Is Boss"
 msgstr "Босс?"
@@ -297,6 +307,14 @@ msgid "Last Updated on"
 msgstr "Сүүлийн засвар хийсэн огноо"
 
 #. module: gp_product_sale_report
+#: code:addons/gp_product_sale_report/model/stock_picking.py:378
+#, python-format
+msgid "Main Warehouse doesnt detected!! \n"
+" Configure the main warehouse!"
+msgstr "Main Warehouse doesnt detected!! \n"
+" Configure the main warehouse!"
+
+#. module: gp_product_sale_report
 #: model:ir.model.fields,field_description:gp_product_sale_report.field_stock_picking_product_template
 msgid "Main product"
 msgstr "Main product"
@@ -334,19 +352,28 @@ msgid "Non exist product"
 msgstr "Байхгүй бараа"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/model/stock_picking.py:188
+#: code:addons/gp_product_sale_report/model/stock_picking.py:144
+#: code:addons/gp_product_sale_report/model/stock_picking.py:194
+#: code:addons/gp_product_sale_report/model/stock_picking.py:244
+#: code:addons/gp_product_sale_report/model/stock_picking.py:277
 #, python-format
 msgid "Not enough money in the card register."
 msgstr "КАРТ-нд хангалттай үлдэгдэл байхгүй байна!"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/model/stock_picking.py:169
+#: code:addons/gp_product_sale_report/model/stock_picking.py:126
+#: code:addons/gp_product_sale_report/model/stock_picking.py:178
+#: code:addons/gp_product_sale_report/model/stock_picking.py:211
+#: code:addons/gp_product_sale_report/model/stock_picking.py:309
 #, python-format
 msgid "Not enough money in the cash register."
-msgstr "КАСС-нд хангалттай үлдэгдэл байхгүй байна!"
+msgstr "Not enough money in the cash register."
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/model/stock_picking.py:207
+#: code:addons/gp_product_sale_report/model/stock_picking.py:161
+#: code:addons/gp_product_sale_report/model/stock_picking.py:227
+#: code:addons/gp_product_sale_report/model/stock_picking.py:260
+#: code:addons/gp_product_sale_report/model/stock_picking.py:293
 #, python-format
 msgid "Not enough money in the mobile register."
 msgstr "МОБАЙЛ-д хангалттай үлдэгдэл байхгүй байна!"
@@ -390,7 +417,7 @@ msgid "Product compare report"
 msgstr "Product compare report"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:747
+#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:761
 #: model:ir.actions.act_window,name:gp_product_sale_report.action_product_sale_report
 #: model:ir.ui.menu,name:gp_product_sale_report.menu_product_sale_report
 #, python-format
@@ -513,7 +540,7 @@ msgid "Total"
 msgstr "Дүн"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:1035
+#: code:addons/gp_product_sale_report/wizard/product_sale_report.py:1049
 #, python-format
 msgid "Total: "
 msgstr "Нийт: "
@@ -617,7 +644,7 @@ msgid "Касс,Карт, Мобайлаар төлбөр төлсөн нийл�
 msgstr "Касс,Карт, Мобайлаар төлбөр төлсөн нийлбэр нь бараа борлуулсан орлоготой таарахгүй байна : %s != %s + %s + %s"
 
 #. module: gp_product_sale_report
-#: code:addons/gp_product_sale_report/model/stock_picking.py:90
+#: code:addons/gp_product_sale_report/model/stock_picking.py:83
 #, python-format
 msgid "Та энэ барааг 1 ээс дээш эхний шаардлага табанд бүртгэсэн байна! : %s"
 msgstr "Та энэ барааг 1 ээс дээш эхний шаардлага табанд бүртгэсэн байна! : %s"
