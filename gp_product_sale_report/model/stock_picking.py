@@ -358,7 +358,7 @@ class StockImmediateTransfer(models.TransientModel):
                             for q in qty_obj:
                                 qty += q.qty
 
-                            print 'type \n',type(l.min_date),l.min_date
+                            # print 'type \n',type(l.min_date),l.min_date
                             vals = {
                                 'product_id': line.product_id.id,
                                 'location_id': l.location_id.id,
