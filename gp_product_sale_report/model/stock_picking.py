@@ -346,7 +346,7 @@ class StockImmediateTransfer(models.TransientModel):
                     if user not in groups_obj.users:
                         wh = self.env['stock.warehouse'].search([('lot_stock_id', '=', s.location_dest_id.id)])[0]
                         if wh:
-                            if user.allowed_warehouses[0] != wh.id:
+                            if user.allowed_warehouses[0].id != wh.id:
                                 raise ValidationError(
                                     _(u'Уучлаарай таны хандах агуулах биш байна! Хандах агуулах: %s') % user.allowed_warehouses[0].name)
 
