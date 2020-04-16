@@ -615,6 +615,7 @@ class ProductSaleReport(models.TransientModel):
                                       %s"""
                                  % (self.stock_warehouse.lot_stock_id.id, each_data['product_id'], where_date_sp))
                 in_data = self._cr.dictfetchall()
+                print 'in_data',in_data
 
                 self._cr.execute("""SELECT sp.id AS spid,
                                            sp.name AS name,
@@ -802,7 +803,7 @@ class ProductSaleReport(models.TransientModel):
                             dataEachPrdDict[everyDl]['out_data'] += ",\n"+d[everyDl]['out_data'] if dataEachPrdDict[everyDl]['out_data'] else d[everyDl]['out_data']
                             dataEachPrdDict[everyDl]['in_data'] += ",\n"+d[everyDl]['in_data'] if dataEachPrdDict[everyDl]['in_data'] else d[everyDl]['in_data']
                             dataEachPrdDict[everyDl]['inInt'] += d[everyDl]['inInt']
-                            dataEachPrdDict[everyDl]['return_cash'] = d[everyDl]['return_cash']
+                            dataEachPrdDict[everyDl]['return_cash'] += d[everyDl]['return_cash']
                             dataEachPrdDict[everyDl]['outInt'] += d[everyDl]['outInt']
                         dataEachPrdDict['sub_total']['total_qty'] += d['sub_total']['total_qty']
                         dataEachPrdDict['sub_total']['total_in'] += d['sub_total']['total_in']
@@ -812,7 +813,7 @@ class ProductSaleReport(models.TransientModel):
                         dataEachPrdDict['sub_total']['total_cash'] += d['sub_total']['total_cash']
                         dataEachPrdDict['sub_total']['total_card'] += d['sub_total']['total_card']
                         dataEachPrdDict['sub_total']['total_mobile'] += d['sub_total']['total_mobile']
-                        dataEachPrdDict['sub_total']['total_Rcash'] = d['sub_total']['total_Rcash']
+                        dataEachPrdDict['sub_total']['total_Rcash'] += d['sub_total']['total_Rcash']
                     else:
                         dataEachPrdList.append(dataEachPrdDict)
                         dataEachPrdDict = d

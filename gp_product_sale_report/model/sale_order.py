@@ -23,6 +23,35 @@ class SaleOrder(models.Model):
                 raise UserError(
                         _(u'Та батлагдсан борлуулалтын захиалгын мөрийг устгаж болохгүй'))
 
+    @api.model
+    def create(self,vals):
+        products = []
+        if 'order_line' in vals:
+            for l in vals.get('order_line'):
+                for key, value in l[2].items():
+                    if 'product_id' in key:
+                        product_obj = self.env['product.product'].browse(value)
+                        if product_obj:
+                            if product_obj.id not in products:
+                                products.append(product_obj.id)
+                            else:
+                                raise UserError(_('You try to create duplicated record! %s') % ("%s (%s)" % (product_obj.default_code,product_obj.product_tmpl_id.name)))
+        result = super(SaleOrder, self).create(vals)
+        return result
+
+    @api.multi
+    def write(self, values):
+        products = []
+        for s in self.order_line:
+            if s.product_id:
+                if s.product_id not in products:
+                    products.append(s.product_id)
+                else:
+                    raise UserError(_('You try to create duplicated record! %s') % (
+                        "%s (%s)" % (s.product_id.default_code, s.product_id.product_tmpl_id.name)))
+        result = super(SaleOrder, self).write(values)
+        return result
+
 
     @api.multi
     def custom_confirm(self):
@@ -154,4 +183,7 @@ class SaleChangeDate(models.TransientModel):
                 raise UserError(_(
                     'Please you select change date'))
         return {'type': 'ir.actions.act_window_close'}
+
+
+
 

@@ -114,6 +114,7 @@ class StockImmediateTransfer(models.TransientModel):
 
     @api.one
     def process(self):
+        ir_model_data = self.env['ir.model.data']
         ctx = self.env.context.copy()
         if 'active_id' in ctx:
             sp = self.env['stock.picking'].browse(ctx['active_id'])
@@ -321,8 +322,8 @@ class StockImmediateTransfer(models.TransientModel):
                         if created_cash_out5:
                             wizard.cash.amount = created_cash_out5.remaining_amount
 
-
-                    sp.write({'return_cash': sp.return_cash - (wizard.amount + wizard.amount1 + wizard.amount2)})
+                    # Борлуулалтын тайлан дээр олон барааг буцаахад буруу гарч ирж байсан учир барааны хөдөлгөөний мөрт хуваав
+                    sp.write({'return_cash': sp.return_cash - ((wizard.amount + wizard.amount1 + wizard.amount2)/len(sp.move_lines))})
                 stock_move = self.env['stock.move'].search([('picking_id', '=', sp.id)])
                 if stock_move:
                     for s in stock_move:
@@ -335,7 +336,19 @@ class StockImmediateTransfer(models.TransientModel):
                                         sale_line.update({'is_return': True})
                                     if self.is_error:
                                         sale_line.update({'is_user_error': True})
-
+            for s in sp:
+                context = self._context
+                current_uid = context.get('uid')
+                user = self.env['res.users'].browse(current_uid)
+                groups = ir_model_data.get_object_reference('stock','group_stock_manager')
+                groups_obj = self.env['res.groups'].browse(groups[1])
+                if s.location_dest_id:
+                    if user not in groups_obj.users:
+                        wh = self.env['stock.warehouse'].search([('lot_stock_id', '=', s.location_dest_id.id)])[0]
+                        if wh:
+                            if user.allowed_warehouses[0] != wh.id:
+                                raise ValidationError(
+                                    _(u'Уучлаарай таны хандах агуулах биш байна! Хандах агуулах: %s') % user.allowed_warehouses[0].name)
 
             for l in sp:
                 if l.location_dest_id.daily_order:
