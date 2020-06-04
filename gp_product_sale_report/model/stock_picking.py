@@ -8,6 +8,7 @@ class StockLocation(models.Model):
 
 
     daily_order = fields.Boolean('Daily Order create')
+    is_check = fields.Boolean('Is check?',default = False)
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
@@ -16,6 +17,7 @@ class StockPicking(models.Model):
     product_template = fields.Many2one('product.template', 'Main product')
     is_existed_products = fields.Boolean('Байгаа бараануудыг харуулах', default = False)
     return_cash = fields.Float('Return cash', default = 0.0)
+    is_check = fields.Boolean('Is check?',default = False)
 
     @api.multi
     def insert_products(self):
@@ -402,5 +404,14 @@ class StockImmediateTransfer(models.TransientModel):
                 print ' TQTY___', qty
                 if qty < ml.product_uom_qty:
                     raise ValidationError(_(u'Танай агуулахад тухайн бараа байхгүй байна! : %s') % ml.product_id.name_get())
+            if sp.location_dest_id.is_check:
+                if not sp.is_check:
+                    raise ValidationError(
+                        _(u'Та %s  энэ баримтыг Хийгдсэн төлөвт оруулахын тулд заавал хянуулах хэрэгтэй (Агий)') % sp.name)
+            if sp.location_id.is_check:
+                if not sp.is_check:
+                    raise ValidationError(
+                        _(u'Та %s  энэ баримтыг Хийгдсэн төлөвт оруулахын тулд заавал хянуулах хэрэгтэй (Агий)') % sp.name)
+
         prcs = super(StockImmediateTransfer, self).process()
         return prcs
