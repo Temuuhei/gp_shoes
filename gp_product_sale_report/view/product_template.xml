@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="stock_account.view_template_property_form"/>
         <field name="arch" type="xml">
             <field name="standard_price" position="replace">
-                <field name="standard_price" attrs="{'readonly': False}" class="oe_inline" groups="gp_product_sale_report.group_discount_manager"/>
+                <field name="standard_price" attrs="{'readonly': False}" class="oe_inline" groups="gp_product_sale_report.group_boss_manager"/>
             </field>
         </field>
     </record>

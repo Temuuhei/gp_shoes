@@ -11,7 +11,7 @@
                         <field name="stock_warehouse" groups="base.group_erp_manager"/>
                         <field name="date_from"/>
                         <field name="date_until"/>
-                        <field name="show_cost" groups="base.group_erp_manager"/>
+                        <field name="show_cost" groups="gp_product_sale_report.group_boss_manager"/>
                     </group>
                     <footer>
                         <button class="oe_highlight" name="export_report" string="Export" type="object"/>
