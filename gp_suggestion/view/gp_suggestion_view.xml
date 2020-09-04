@@ -1,29 +1,5 @@
 <odoo>
 
-    <!--<record id="daily_order_search_view" model="ir.ui.view">-->
-        <!--<field name="name">daily.order.search</field>-->
-        <!--<field name="model">daily.order</field>-->
-        <!--<field eval="10" name="priority"/>-->
-        <!--<field name="arch" type="xml">-->
-            <!--<search string="Locations">-->
-                <!--<field name="location_id"/>-->
-                <!--<field name="product_id"/>-->
-                <!--<field name="product_qty"/>-->
-                <!--&lt;!&ndash;<field name="virtual_available"/>&ndash;&gt;-->
-                <!--<field name="state"/>-->
-                <!--<group expand='0' string='Group by...'>-->
-                    <!--<filter string='Location' name="locationgroup" domain="[]" context="{'group_by': 'location_id'}"/>-->
-                    <!--<filter string='Warehouse' name="warehousegroup" domain="[]" context="{'group_by': 'warehouse_id'}"/>-->
-                    <!--<filter string='Product'    name="productgroup" context="{'group_by': 'product_id'}"/>-->
-                    <!--<filter string='Product Qty' name="productqtygroup" context="{'group_by': 'product_qty'}"/>-->
-                    <!--&lt;!&ndash;<filter string='Product Forecast Qty' name="forecastproductqtygroup" context="{'group_by': 'virtual_available'}"/>&ndash;&gt;-->
-                    <!--<filter string='State' name="stategroup" context="{'group_by': 'state'}"/>-->
-                    <!--<filter string='Date' name="dategroup" context="{'group_by': 'date'}"/>-->
-               <!--</group>-->
-            <!--</search>-->
-        <!--</field>-->
-    <!--</record>-->
-
     <record id="view_suggestion_order_tree" model="ir.ui.view">
             <field name="name">suggestion.order.tree</field>
             <field name="model">suggestion.order</field>
@@ -58,18 +34,8 @@
                         </group>
                     <notebook>
                         <page string="Order Lines">
-                            <field name="suggestion_lines" mode="tree,kanban">
-                                <form string="Suggestion Order Lines">
-                                    <group>
-                                        <group>
-                                            <field name="product_id"/>
-                                            <field name="sale_count"/>
-                                            <field name="warehouse_id"/>
-                                            <button name="transit_order" string="Transit" type="object" colspan="1" class="oe_highlight"/>
-                                        </group>
-                                        </group>
-                                   </form>
-                                 <tree string="Sales Order Lines" editable="bottom" decoration-info="invoice_status=='to invoice'">
+                            <field name="suggestion_lines" mode="tree">
+                                <tree string="Suggestion Order Lines" editable="bottom">
                                     <field name="product_id"/>
                                     <field name="sale_count"/>
                                     <field name="warehouse_id"/>
@@ -78,26 +44,18 @@
 
                         </page>
                         <page string="Warehouse Information">
-                             <field name="top_warehouse_lines" mode="tree,kanban">
-                             <tree>
-                                  <group>
-                                        <group string="Warehouse Information">
+                             <field name="top_warehouse_lines" mode="tree">
+                             <tree editable="bottom">
                                         <field name="warehouse_id"/>
                                         <field name="amount"/>
-                                </group>
-                            </group>
                              </tree>
                              </field>
                         </page>
                         <page string="Product Information">
-                             <field name="top_product_lines" mode="tree,kanban">
-                            <tree>
-                                <group>
-                                <group string="Product Information" name="sales_person">
+                             <field name="top_product_lines" mode="tree">
+                            <tree editable="bottom">
                                     <field name="product_id"/>
                                     <field name="amount"/>
-                                </group>
-                            </group>
                             </tree>
                              </field>
                         </page>

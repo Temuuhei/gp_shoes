@@ -11,9 +11,9 @@ import odoo.addons.decimal_precision as dp
 
 class SuggestionOrderLine(models.Model):
     _name = "suggestion.order.line"
-    _order = 'amount desc'
+    # _order = 'amount desc'
 
-    suggestion_id = fields.Many2one('suggestion.order','Suggestion'),
+    suggestion_id = fields.Many2one('suggestion.order','Suggestion')
     product_id = fields.Many2one('product.product', string='Бараа', domain=[('sale_ok', '=', True)],
                                  change_default=True, ondelete='restrict', readonly=True)
     sale_count = fields.Float('Sale Count')
@@ -26,18 +26,18 @@ class SuggestionOrderProductLine(models.Model):
     _name = "suggestion.order.product.line"
     _order = 'amount desc'
 
-    suggestion_id = fields.Many2one('suggestion.order', 'Suggestion'),
+    suggestion_id = fields.Many2one('suggestion.order', 'Suggestion')
     product_id = fields.Many2one('product.product', string='Бараа', domain=[('sale_ok', '=', True)],
-                                 change_default=True, ondelete='restrict', readonly=True)
+                                 change_default=True, ondelete='restrict')
     amount = fields.Float('Amount')
 
 class SuggestionOrderWarehouseLine(models.Model):
     _name = "suggestion.order.warehouse.line"
     _order = 'amount desc'
 
-    suggestion_id = fields.Many2one('suggestion.order', 'Suggestion'),
+    suggestion_id = fields.Many2one('suggestion.order', 'Suggestion')
     warehouse_id = fields.Many2one('stock.warehouse', string='Салбар',
-                                 change_default=True, ondelete='restrict', readonly=True)
+                                 change_default=True, ondelete='restrict')
     amount = fields.Float('Amount')
 
 class SuggestionOrder(models.Model):
