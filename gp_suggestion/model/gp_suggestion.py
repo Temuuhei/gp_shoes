@@ -36,6 +36,7 @@ class SuggestionOrderWarehouseLine(models.Model):
     _order = 'amount desc'
 
     suggestion_id = fields.Many2one('suggestion.order', 'Suggestion')
+    number = fields.Integer('Rank')
     warehouse_id = fields.Many2one('stock.warehouse', string='Салбар',
                                  change_default=True, ondelete='restrict')
     amount = fields.Float('Amount')
@@ -60,7 +61,38 @@ class SuggestionOrder(models.Model):
     top_warehouse_lines = fields.One2many('suggestion.order.warehouse.line', 'suggestion_id', string='Top Warehouses')
 
     def compute_order(self):
-        print 'Temka here coding bro'
+        start_date = datetime.strptime(self.start_date, '%Y-%m-%d').date()
+        end_date = datetime.strptime(self.end_date, '%Y-%m-%d').date()
+        print 'Temka here coding bro', end_date,type(start_date)
+        self._cr.execute("""SELECT w.id as warehouse,
+                                   pt.name AS name,
+                                   pt.id AS tmpl,
+                                   sum(sol.price_total) AS total,
+                                   sum(sol.qty_delivered) AS qty
+                                     FROM sale_order_line AS sol
+                                     LEFT JOIN product_product AS pp
+                                    ON pp.id = sol.product_id
+                                     LEFT join product_template AS pt
+                                    ON pp.product_tmpl_id = pt.id
+                                     LEFT JOIN stock_warehouse w
+					                ON w.id = sol.warehouse_id
+                                     WHERE
+                                       sol.state = 'done'
+                                       AND sol.is_return <> 't'
+                                        AND order_date BETWEEN '%s' AND '%s'
+                                    GROUP BY w.id,
+                                               pt.id
+                                               ORDER BY qty DESC"""
+                         % (start_date, end_date))
+        sol_list = self._cr.dictfetchall()
+        warehouse_ids = []
+        product_template_ids = []
+        if sol_list:
+            for f in sol_list:
+                if f['warehouse'] not in warehouse_ids:
+                    print 'temka \n\n'
+
+            print 'sol \n',sol_list
 
 
 
