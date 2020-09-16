@@ -21,13 +21,7 @@ class SuggestionOrderLineLine(models.Model):
             res.append((rec.warehouse_id.name, rec.product_id.name + ': ' + str(rec.qty)))
         return res
 
-    # @api.multi
-    # def name_get(self):
-    #
-    #     return [('%s : %s : %s'  % (line.warehouse.name, line.product_id,line.qty)) for line in self]
-
     def ready_order(self):
-        print'temka temka'
         stock_move = []
         qty = 0
         for item in self:
@@ -263,7 +257,6 @@ class SuggestionOrder(models.Model):
             product_template_ids = [{'tmpl': tmpl, 'qty': qty} for tmpl, qty in a.items()]
 
             for p in product_template_ids:
-                print'p',p['tmpl']
                 product_line.create({'product_id': int(p['tmpl']),
                                      'sale_count': p['qty'],
                                      'suggestion_id': self.id
@@ -285,7 +278,6 @@ class SuggestionOrder(models.Model):
                     for f in product_product:
                         # Боломжит үлдэгдлийг олох Бусад агуулахад
                         for w in warehouses:
-                            print 'w and remainder', f, w
                             self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
                                              "where date <= %s "
                                              "and location_id = %s and product_id = %s and state = 'done'",
@@ -320,187 +312,4 @@ class SuggestionOrder(models.Model):
                                                     'qty': remainder})
                                 if temka:
                                     created_values.update({'is_useful':True})
-                                print'Temka 11111111',temka
 
-
-                # def to_archive(self):
-                #     self.update({'active': False})
-
-                # def ready_order(self):
-                #     stock_move = []
-                #     qty = 0
-                #     for item in self:
-                #         main_warehouse = self.env['stock.warehouse'].search([('main_warehouse','=',True)])[0]
-                #         if main_warehouse:
-                #             picking_type = self.env['stock.picking.type'].search([('warehouse_id', '=', main_warehouse.id),
-                #                                                                   ('code', '=', 'internal')], limit=1)
-                #             outgoing_location = self.env['stock.picking.type'].search([('warehouse_id', '=', main_warehouse.id),
-                #                                                                        ('code', '=', 'outgoing')], limit=1)
-                #
-                #             stock_move.append((0, 0, {'product_id': item.product_id.id,
-                #                                       'product_uom_qty': 1,
-                #                                       'state': 'draft',
-                #                                       'product_uom': item.product_id.product_tmpl_id.uom_id.id,
-                #                                       'procure_method': 'make_to_stock',
-                #                                       'location_id': main_warehouse.lot_stock_id.id,
-                #                                       'location_dest_id': item.location_id.id,
-                #                                       'company_id': 1,
-                #                                       'date_expected': datetime.now(),
-                #                                       'date': datetime.now(),
-                #                                       'name': item.product_id.product_tmpl_id.name,
-                #                                       'scrapped': False,
-                #                                       }))
-                #             vals={
-                #                 'location_id':main_warehouse.lot_stock_id.id,
-                #                 'picking_type_id':picking_type.id,
-                #                 'move_type':'direct',
-                #                 'company_id':1,
-                #                 'location_dest_id':item.location_id.id,
-                #                 'date': datetime.now(),
-                #                 'note':u'%s-ны Өдрийн захиалгаас үүсэв'%(self.date),
-                #                 'origin':u'%s-ны Өдрийн захиалгаас үүсэв'%(self.date),
-                #                 'move_lines': stock_move,
-                #             }
-                #             new_picking = self.env['stock.picking'].create(vals)
-                #             wiz_act = new_picking.action_confirm()
-                #             wiz_act = new_picking.force_assign()
-                #             qty_obj = self.env['stock.quant'].search([('product_id', '=', item.product_id.id),
-                #                                                       ('location_id', '=', main_warehouse.lot_stock_id.id)])
-                #             for q in qty_obj:
-                #                 qty += q.qty
-                #             self.update({'state':'pending',
-                #                          'product_qty':qty,
-                #                          'origin':new_picking.name})
-
-                # def confirm_order(self):
-                #     stock_move = []
-                #     qty = 0
-                #     for item in self:
-                #         main_warehouse = self.env['stock.warehouse'].search([('main_warehouse','=',True)])[0]
-                #         if main_warehouse:
-                #             picking_type = self.env['stock.picking.type'].search([('warehouse_id', '=', main_warehouse.id),
-                #                                                                   ('code', '=', 'internal')], limit=1)
-                #             outgoing_location = self.env['stock.picking.type'].search([('warehouse_id', '=', main_warehouse.id),
-                #                                                                        ('code', '=', 'outgoing')], limit=1)
-                #
-                #             stock_move.append((0, 0, {'product_id': item.product_id.id,
-                #                                       'product_uom_qty': 1,
-                #                                       'state': 'draft',
-                #                                       'product_uom': item.product_id.product_tmpl_id.uom_id.id,
-                #                                       'procure_method': 'make_to_stock',
-                #                                       'location_id': main_warehouse.lot_stock_id.id,
-                #                                       'location_dest_id': item.location_id.id,
-                #                                       'company_id': 1,
-                #                                       'date_expected': datetime.now(),
-                #                                       'date': datetime.now(),
-                #                                       'name': item.product_id.product_tmpl_id.name,
-                #                                       'scrapped': False,
-                #                                       }))
-                #             vals={
-                #                 'location_id':main_warehouse.lot_stock_id.id,
-                #                 'picking_type_id':picking_type.id,
-                #                 'move_type':'direct',
-                #                 'company_id':1,
-                #                 'location_dest_id':item.location_id.id,
-                #                 'date': datetime.now(),
-                #                 'note':u'%s-ны Өдрийн захиалгаас үүсэв'%(self.date),
-                #                 'origin':u'%s-ны Өдрийн захиалгаас үүсэв'%(self.date),
-                #                 'move_lines': stock_move,
-                #             }
-                #             new_picking = self.env['stock.picking'].create(vals)
-                #             wiz_act = new_picking.do_new_transfer()
-                #             wiz = self.env[wiz_act['res_model']].browse(wiz_act['res_id'])
-                #             wiz.process()
-                #             qty_obj = self.env['stock.quant'].search([('product_id', '=', item.product_id.id),
-                #                                                       ('location_id', '=', main_warehouse.lot_stock_id.id)])
-                #             for q in qty_obj:
-                #                 qty += q.qty
-                #             self.update({'state':'done',
-                #                          'product_qty':qty,
-                #                          'origin':new_picking.name})
-#
-
-# class RecordDailyOrderView111(models.AbstractModel):
-#     _name = 'report.gp_shoes_daily_order.record_daily_order_view111'
-#
-#     @api.model
-#     def _get_report_values(self, docids, data=None):
-#         print 'qqqqqqqqqqq \n\n\n',docids
-#         return docids
-#
-#
-#
-#     @api.model
-#     def render_html(self, docids, data=None):
-#         print 'hahahahahahah \n\n',docids
-#         report_obj = self.env['ir.actions.report']
-#         report = report_obj._get_report_from_name('gp_shoes_daily_order.record_daily_order_view111')
-#
-#         docargs = {
-#             'doc_ids': docids,
-#             'doc_model': report.template_report_daily_order,
-#             'docs': self,
-#         }
-#         print 'docargs \n\n\n',docargs
-#         return docargs
-
-# class StockWarehouse(models.Model):
-#     _inherit = "stock.warehouse"
-#
-#     main_warehouse = fields.Boolean(string = "Төв агуулах")
-#
-# class SaleOrder(models.Model):
-#     _inherit = "sale.order"
-#
-#     @api.multi
-#     def action_confirm(self):
-#         module_id = self.env['ir.module.module'].search([('name','=','gp_shoes_daily_order'),
-#                                                          ('state','=','installed')])
-#         if module_id:
-#             if self.order_line:
-#                 for line in self.order_line:
-#                     qty = 0
-#                     already_sent_qty = 0
-#                     sent_do = []
-#                     main_wh = self.env['stock.warehouse'].search([('main_warehouse','=',True)])[0]
-#                     do_obj = self.env['daily.order'].search([('state','=','pending'),('product_id','=',line.product_id.id)])
-#                     if do_obj:
-#                         for d in do_obj:
-#                             already_sent_qty += 1
-#                             sent_do.append(d.name)
-#                     if main_wh:
-#                         qty_obj = self.env['stock.quant'].search([('product_id', '=', line.product_id.id),
-#                                                                   ('location_id','=', main_wh.lot_stock_id.id)])
-#                         for q in qty_obj:
-#                             qty += q.qty
-#
-#                         vals = {
-#                             'product_id': line.product_id.id,
-#                             'location_id': self.warehouse_id.lot_stock_id.id,
-#                             'warehouse_id': self.warehouse_id.id,
-#                             'date': self.date_order,
-#                             'state': 'draft',
-#                             'product_qty': qty,
-#                             'sent_product_qty': already_sent_qty,
-#                             'sent_daily_order': sent_do,
-#                             'active': True,
-#                             'name':u'%s-ны %s Дугаартай Борлуулалтын захиалгаас шууд захиалга үүсэв'%(self.date_order, self.name)
-#
-#                         }
-#                         do_obj = self.env['daily.order'].create(vals)
-#                     else:
-#                         raise UserError(_(
-#                             'Main Warehouse doesnt detected!! \n Configure the main warehouse!'))
-#
-#
-#
-#         for order in self:
-#             order.state = 'sale'
-#             order.confirmation_date = fields.Datetime.now()
-#             if self.env.context.get('send_email'):
-#                 self.force_quotation_send()
-#             order.order_line._action_procurement_create()
-#         if self.env['ir.values'].get_default('sale.config.settings', 'auto_done_setting'):
-#             self.action_done()
-#         return True
-#
