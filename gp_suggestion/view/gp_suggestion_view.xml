@@ -13,6 +13,37 @@
             </field>
         </record>
 
+    <record id="view_suggestion_order_line_line_form" model="ir.ui.view">
+            <field name="name">suggestion.order.line.form</field>
+            <field name="model">suggestion.order.line</field>
+            <field name="priority">4</field>
+            <field name="arch" type="xml">
+            <form>
+                    <group>
+                        <field name="product_id"/>
+                        <field name="sale_count"/>
+                        <field name="remaining_qty"/>
+                        <field name="warehouse_id"/>
+                        <field name="product_ids" widget="many2many_tags"/>
+                        <notebook>
+                            <page string = "Other WH Info">
+                            <field name="warehouse_line_id">
+                                <tree mode="tree">
+                                     <field name="warehouse_id"/>
+                                     <field name="product_id"/>
+                                     <field name="qty"/>
+                                    <field name="picking_id"/>
+                                    <button name="ready_order" string="Create Transfer" type="object" help="Create Stock Picking"/>
+                                </tree>
+                            </field>
+                        </page>
+                        </notebook>
+
+                    </group>
+            </form>
+            </field>
+        </record>
+
 
     <!--Form view of Daily Order-->
     <record id="view_suggestion_order_form" model="ir.ui.view">
@@ -34,20 +65,37 @@
                         </group>
                     <notebook>
                         <page string="Order Lines">
-                            <field name="suggestion_lines" mode="tree">
-                                <tree string="Suggestion Order Lines" editable="bottom">
+                            <field name="suggestion_lines" mode="tree" domain="[('is_useful', '=', True)]"
+                            >
+                                <!--<form>-->
+                                    <!--<group>-->
+                                        <!--<field name="product_id"/>-->
+                                        <!--<field name="sale_count"/>-->
+                                        <!--<field name="warehouse_id"/>-->
+                                        <!--<field name="product_ids" widget="many2many_tags"/>-->
+                                        <!--<page string = "Other WH Info">-->
+                                            <!--<field name="warehouse_line_id"/>-->
+                                        <!--</page>-->
+
+                                    <!--</group>-->
+                                <!--</form>-->
+                                <tree string="Suggestion Order Lines" editable="bottom" colors="red:remaining_qty == 0.0">
                                     <field name="product_id"/>
                                     <field name="sale_count"/>
+                                    <field name="remaining_qty"/>
                                     <field name="warehouse_id"/>
+                                    <field name="product_ids" widget="many2many_tag"/>
+                                    <field name="is_useful"/>
+                                    <field name="warehouse_line_id" widget="many2many_tag"/>
                                 </tree>
                             </field>
-
                         </page>
-                        <page string="Warehouse Information">
+                        <page string="Топ Салбарууд">
                              <field name="top_warehouse_lines" mode="tree">
                              <tree editable="bottom">
                                         <field name="warehouse_id"/>
-                                        <field name="amount"/>
+                                        <field name="amount" sum="Total"/>
+                                        <field name="number"/>
                              </tree>
                              </field>
                         </page>
@@ -55,7 +103,8 @@
                              <field name="top_product_lines" mode="tree">
                             <tree editable="bottom">
                                     <field name="product_id"/>
-                                    <field name="amount"/>
+                                    <field name="sale_count" sum="Total"/>
+                                    <!--<field name="amount" sum="Total"/>-->
                             </tree>
                              </field>
                         </page>
