@@ -161,7 +161,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="docs" t-as="o" style="text-align: center;font-family:arial,sans-serif; font-size:11px">
+                                <tr t-foreach="docs" t-as="o" style="text-align: center;font-family:arial,sans-serif; font-size:9px">
                                     <td>
                                         <span t-esc="o.product_id.name"/>
                                     </td>
