@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-16 05:03+0000\n"
-"PO-Revision-Date: 2020-09-16 05:03+0000\n"
+"POT-Creation-Date: 2020-09-18 06:23+0000\n"
+"PO-Revision-Date: 2020-09-18 06:23+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -20,6 +20,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_amount
 msgid "Amount"
 msgstr "Дүн"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_balance_product_ids
+msgid "Balance Sizes"
+msgstr "Үлдсэн Бараанууд"
 
 #. module: gp_suggestion
 #: selection:suggestion.order.line,state:0
@@ -48,7 +53,7 @@ msgstr "А.Хөдөлгөөн үүсгэх"
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_create_uid
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_create_uid
 msgid "Created by"
-msgstr "Үүсгэгч"
+msgstr "Created by"
 
 #. module: gp_suggestion
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_create_date
@@ -57,7 +62,7 @@ msgstr "Үүсгэгч"
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_create_date
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_create_date
 msgid "Created on"
-msgstr "Үүсгэсэн"
+msgstr "Created on"
 
 #. module: gp_suggestion
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_display_name
@@ -105,7 +110,7 @@ msgstr "Сүүлийн засвар хийсэн огноо"
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_write_uid
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_write_uid
 msgid "Last Updated by"
-msgstr "Сүүлийн засвар хийсэн"
+msgstr "Last Updated by"
 
 #. module: gp_suggestion
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_write_date
@@ -114,7 +119,7 @@ msgstr "Сүүлийн засвар хийсэн"
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_write_date
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_write_date
 msgid "Last Updated on"
-msgstr "Сүүлийн засвар хийсэн огноо"
+msgstr "Last Updated on"
 
 #. module: gp_suggestion
 #: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
@@ -168,7 +173,7 @@ msgid "Sold Sizes"
 msgstr "Борлуулсан бараанууд"
 
 #. module: gp_suggestion
-#: code:addons/gp_suggestion/model/gp_suggestion.py:35
+#: code:addons/gp_suggestion/model/gp_suggestion.py:29
 #, python-format
 msgid "Stock Picking is already created!! \n"
 " Check!"
@@ -232,11 +237,6 @@ msgstr "Дүн"
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_is_useful
 msgid "Useful"
 msgstr "Ашиглах"
-
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
-msgid "Warehouse Information"
-msgstr "Warehouse Information"
 
 #. module: gp_suggestion
 #: model:ir.model,name:gp_suggestion.model_suggestion_order
