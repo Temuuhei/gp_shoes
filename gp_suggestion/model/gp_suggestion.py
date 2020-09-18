@@ -141,6 +141,51 @@ class SuggestionOrderLine(models.Model):
            self.product_ids = product_ids
         return self.product_ids
 
+    @api.one
+    @api.depends('remaining_qty')
+    def _compute_balance_product_ids(self):
+        warehouses = self.env['stock.warehouse'].search([('id', '<>', self.warehouse_id.id)])
+        start_date = datetime.strptime(self.suggestion_id.start_date, '%Y-%m-%d').date()
+        end_date = datetime.strptime(self.suggestion_id.end_date, '%Y-%m-%d').date()
+        # obj = self.env['suggestion.order.line.product.product.rel']
+        product_ids = []
+        product_product = self.env['product.product'].search([('product_tmpl_id', '=', self.product_id.id)])
+        start_date = datetime.strptime(self.suggestion_id.start_date, '%Y-%m-%d').date()
+        end_date = datetime.strptime(self.suggestion_id.end_date, '%Y-%m-%d').date()
+        remainder_qty = 0.0
+        for m in self:
+            for f in product_product:
+                self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                 "where date <= %s "
+                                 "and location_id = %s and product_id = %s and state = 'done'",
+                                 (str(end_date) + ' 23:59:59', m.warehouse_id.lot_stock_id.id,
+                                  f.id))
+                fetched = self._cr.dictfetchall()
+                print'fetched \n',fetched
+                if fetched:
+                    for k in fetched:
+                        if k['product_qty'] is None:
+                            qty = 0.0
+                        else:
+                            qty = k['product_qty']
+                self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                 "where date <= %s "
+                                 "and location_dest_id = %s and product_id = %s and state = 'done'",
+                                 (str(end_date) + ' 23:59:59', m.warehouse_id.lot_stock_id.id, f.id))
+                in_moves = self._cr.dictfetchall()
+                print'in_moves \n', in_moves
+                if in_moves:
+                    for i in in_moves:
+                        if i['product_qty'] is None:
+                            qty2 = 0.0
+                        else:
+                            qty2 = i['product_qty']
+                remainder = qty2 - qty
+                if remainder > 0.0:
+                    product_ids.append(f.id)
+        self.balance_product_ids = product_ids
+        return self.balance_product_ids
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('pending', 'Pending'),
@@ -153,6 +198,7 @@ class SuggestionOrderLine(models.Model):
                                  change_default=True, ondelete='restrict', readonly=True)
     sale_count = fields.Float('Sale Count')
     remaining_qty = fields.Float('Remaining Qty',compute = _qty_available, store = True)
+    balance_product_ids = fields.Many2many('product.product', string='Balance Sizes', compute=_compute_balance_product_ids)
     warehouse_id = fields.Many2one('stock.warehouse', string='Салбар',
                                    change_default=True, ondelete='restrict', readonly=True)
     product_ids = fields.Many2many('product.product', string='Sold Sizes',compute = _compute_product_ids)
@@ -190,6 +236,7 @@ class SuggestionOrder(models.Model):
     end_date = fields.Date(string='Дуусах огноо', required=True,index=True,
                            copy=False,
                            default=fields.Datetime.now)
+    warehouse_id = fields.Many2one('stock.warehouse', string = 'Салбар')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('done', 'Done'),
@@ -221,7 +268,7 @@ class SuggestionOrder(models.Model):
                                      LEFT join product_template AS pt
                                     ON pp.product_tmpl_id = pt.id
                                      LEFT JOIN stock_warehouse w
-					                ON w.id = sol.warehouse_id
+                                    ON w.id = sol.warehouse_id
                                      WHERE
                                        sol.state = 'done'
                                        AND sol.is_return <> 't'
@@ -262,17 +309,66 @@ class SuggestionOrder(models.Model):
                                      'suggestion_id': self.id
                                      })
             product_sizes = []
-            for m in sol_list:
+            if self.warehouse_id:
+                for m in sol_list:
+                    if m['warehouse'] == self.warehouse_id.id:
+                        created_values =main_line.create({
+                            'warehouse_id': m['warehouse'],
+                            'product_id': m['tmpl'],
+                            'sale_count': m['qty'],
+                            'suggestion_id': self.id
+                                             })
 
-                    created_values =main_line.create({
+                        warehouses = self.env['stock.warehouse'].search([('id', '<>', m['warehouse'])])
+                        product_product = self.env['product.product'].search([('product_tmpl_id', '=', m['tmpl']),('id','not in',created_values.balance_product_ids.ids)])
+                        qty = 0.0
+                        qty2 = 0.0
+                        for f in product_product:
+                            # Боломжит үлдэгдлийг олох Бусад агуулахад
+                            for w in warehouses:
+                                self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                                 "where date <= %s "
+                                                 "and location_id = %s and product_id = %s and state = 'done'",
+                                                 (str(end_date) + ' 23:59:59', w.lot_stock_id.id,
+                                                  f.id))
+                                fetched = self._cr.dictfetchall()
+                                if fetched:
+                                    for k in fetched:
+                                        if k['product_qty'] is None:
+                                            qty = 0.0
+                                        else:
+                                            qty = k['product_qty']
+                                self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                                 "where date <= %s "
+                                                 "and location_dest_id = %s and product_id = %s and state = 'done'",
+                                                 (str(end_date) + ' 23:59:59', w.lot_stock_id.id, f.id))
+                                in_moves = self._cr.dictfetchall()
+                                if in_moves:
+                                    for i in in_moves:
+                                        if i['product_qty'] is None:
+                                            qty2 = 0.0
+                                        else:
+                                            qty2 = i['product_qty']
+                                remainder = qty2 - qty
+                                if remainder > 0.0:
+                                    temka = line_line.create({'line_id': created_values.id,
+                                                        'warehouse_id': w.id,
+                                                        'product_id': f.id,
+                                                        'qty': remainder})
+                                    if temka:
+                                        created_values.update({'is_useful':True})
+            else:
+                for m in sol_list:
+                    created_values = main_line.create({
                         'warehouse_id': m['warehouse'],
                         'product_id': m['tmpl'],
                         'sale_count': m['qty'],
                         'suggestion_id': self.id
-                                         })
+                    })
 
                     warehouses = self.env['stock.warehouse'].search([('id', '<>', m['warehouse'])])
-                    product_product = self.env['product.product'].search([('product_tmpl_id', '=', m['tmpl'])])
+                    product_product = self.env['product.product'].search(
+                        [('product_tmpl_id', '=', m['tmpl']), ('id', 'not in', created_values.balance_product_ids.ids)])
                     qty = 0.0
                     qty2 = 0.0
                     for f in product_product:
@@ -307,9 +403,9 @@ class SuggestionOrder(models.Model):
                                 #                 'warehouse_id': w.id,
                                 #                 'qty': remainder})]
                                 temka = line_line.create({'line_id': created_values.id,
-                                                    'warehouse_id': w.id,
-                                                    'product_id': f.id,
-                                                    'qty': remainder})
+                                                          'warehouse_id': w.id,
+                                                          'product_id': f.id,
+                                                          'qty': remainder})
                                 if temka:
-                                    created_values.update({'is_useful':True})
+                                    created_values.update({'is_useful': True})
 
