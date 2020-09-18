@@ -23,6 +23,7 @@
                         <field name="product_id"/>
                         <field name="sale_count"/>
                         <field name="remaining_qty"/>
+                        <field name="balance_product_ids" widget="many2many_tags"/>
                         <field name="warehouse_id"/>
                         <field name="product_ids" widget="many2many_tags"/>
                         <notebook>
@@ -62,6 +63,7 @@
                               </group>
 
                             <button name="compute_order" string="Compute" type="object" colspan="1" class="oe_highlight"/>
+                            <field name = "warehouse_id"/>
                         </group>
                     <notebook>
                         <page string="Order Lines">
@@ -83,6 +85,7 @@
                                     <field name="product_id"/>
                                     <field name="sale_count"/>
                                     <field name="remaining_qty"/>
+                                    <field name="balance_product_ids" widget="many2many_tags"/>
                                     <field name="warehouse_id"/>
                                     <field name="product_ids" widget="many2many_tag"/>
                                     <field name="is_useful"/>
