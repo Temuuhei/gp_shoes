@@ -161,7 +161,7 @@ class SuggestionOrderLine(models.Model):
                                  (str(end_date) + ' 23:59:59', m.warehouse_id.lot_stock_id.id,
                                   f.id))
                 fetched = self._cr.dictfetchall()
-                print'fetched \n',fetched
+                # print'fetched \n',fetched
                 if fetched:
                     for k in fetched:
                         if k['product_qty'] is None:
@@ -173,7 +173,7 @@ class SuggestionOrderLine(models.Model):
                                  "and location_dest_id = %s and product_id = %s and state = 'done'",
                                  (str(end_date) + ' 23:59:59', m.warehouse_id.lot_stock_id.id, f.id))
                 in_moves = self._cr.dictfetchall()
-                print'in_moves \n', in_moves
+                # print'in_moves \n', in_moves
                 if in_moves:
                     for i in in_moves:
                         if i['product_qty'] is None:
