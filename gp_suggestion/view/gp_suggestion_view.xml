@@ -1,5 +1,16 @@
 <odoo>
 
+    <record id="view_warehouse_gp_so_inherited" model="ir.ui.view">
+            <field name="name">Stock Warehouse Inherited Suggestion ORder</field>
+            <field name="model">stock.warehouse</field>
+            <field name="inherit_id" ref="stock.view_warehouse"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='default_resupply_wh_id']" position="after">
+                    <field name="real_warehouse" />
+                </xpath>
+            </field>
+    </record>
+
     <record id="view_suggestion_order_tree" model="ir.ui.view">
             <field name="name">suggestion.order.tree</field>
             <field name="model">suggestion.order</field>

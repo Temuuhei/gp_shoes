@@ -9,6 +9,10 @@ from datetime import datetime
 from collections import Counter
 import odoo.addons.decimal_precision as dp
 
+class StockWarehouse(models.Model):
+    _inherit = "stock.warehouse"
+
+    real_warehouse = fields.Boolean(string = "Бодит агуулах", default =False)
 
 class SuggestionOrderLineLine(models.Model):
     _name = "suggestion.order.line.line"
@@ -320,7 +324,7 @@ class SuggestionOrder(models.Model):
                             'suggestion_id': self.id
                                              })
 
-                        warehouses = self.env['stock.warehouse'].search([('id', '<>', m['warehouse'])])
+                        warehouses = self.env['stock.warehouse'].search([('id', '<>', m['warehouse']),('real_warehouse','=',True)])
                         product_product = self.env['product.product'].search([('product_tmpl_id', '=', m['tmpl']),('id','not in',created_values.balance_product_ids.ids)])
                         qty = 0.0
                         qty2 = 0.0
@@ -372,7 +376,7 @@ class SuggestionOrder(models.Model):
                         'suggestion_id': self.id
                     })
 
-                    warehouses = self.env['stock.warehouse'].search([('id', '<>', m['warehouse'])])
+                    warehouses = self.env['stock.warehouse'].search([('id', '<>', m['warehouse']),('real_warehouse','=',True)])
                     product_product = self.env['product.product'].search(
                         [('product_tmpl_id', '=', m['tmpl']), ('id', 'not in', created_values.balance_product_ids.ids)])
                     qty = 0.0
