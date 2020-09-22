@@ -12,7 +12,7 @@ import odoo.addons.decimal_precision as dp
 
 class SuggestionOrderLineLine(models.Model):
     _name = "suggestion.order.line.line"
-    # _order = 'amount desc'
+    _order = 'number desc'
 
     @api.multi
     def name_get(self):
@@ -63,6 +63,7 @@ class SuggestionOrderLineLine(models.Model):
     line_id = fields.Many2one('suggestion.order.line', 'Suggestion Line')
     warehouse_id = fields.Many2one('stock.warehouse', string='Салбар',
                                    change_default=True, ondelete='restrict')
+    number = fields.Integer('Rank')
     product_id = fields.Many2one('product.product', string = 'Бараа')
     picking_id = fields.Many2one('stock.picking', string = 'Барааны хөдөлгөөн')
     qty = fields.Float('Qty')
@@ -351,9 +352,14 @@ class SuggestionOrder(models.Model):
                                             qty2 = i['product_qty']
                                 remainder = qty2 - qty
                                 if remainder > 0.0:
+                                    rank = 0
+                                    for h in self.top_warehouse_lines:
+                                        if h.warehouse_id.id == w.id:
+                                            rank = h.number
                                     temka = line_line.create({'line_id': created_values.id,
                                                         'warehouse_id': w.id,
                                                         'product_id': f.id,
+                                                        'number': rank,
                                                         'qty': remainder})
                                     if temka:
                                         created_values.update({'is_useful':True})
@@ -402,9 +408,15 @@ class SuggestionOrder(models.Model):
                                 # vals = [(0, 0, {'line_id': created_values.id,
                                 #                 'warehouse_id': w.id,
                                 #                 'qty': remainder})]
+                                rank = 0
+                                for h in self.top_warehouse_lines:
+                                    if h.warehouse_id.id == w.id:
+                                        rank = h.number
+
                                 temka = line_line.create({'line_id': created_values.id,
                                                           'warehouse_id': w.id,
                                                           'product_id': f.id,
+                                                          'number': rank,
                                                           'qty': remainder})
                                 if temka:
                                     created_values.update({'is_useful': True})
