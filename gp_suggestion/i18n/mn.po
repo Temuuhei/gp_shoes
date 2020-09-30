@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-18 06:23+0000\n"
-"PO-Revision-Date: 2020-09-18 06:23+0000\n"
+"POT-Creation-Date: 2020-09-30 07:12+0000\n"
+"PO-Revision-Date: 2020-09-30 07:12+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -22,14 +22,32 @@ msgid "Amount"
 msgstr "Дүн"
 
 #. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
+#, python-format
+msgid "Balance"
+msgstr "Balance"
+
+#. module: gp_suggestion
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_balance_product_ids
 msgid "Balance Sizes"
 msgstr "Үлдсэн Бараанууд"
 
 #. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
+#, python-format
+msgid "Balance sizes"
+msgstr "Balance sizes"
+
+#. module: gp_suggestion
 #: selection:suggestion.order.line,state:0
 msgid "Cancelled"
 msgstr "Cancelled"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
+#, python-format
+msgid "Code"
+msgstr "Code"
 
 #. module: gp_suggestion
 #: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
@@ -86,6 +104,67 @@ msgid "Draft"
 msgstr "Ноорог"
 
 #. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:329
+#, python-format
+msgid "EMART SHOEGALLERY"
+msgstr "EMART SHOEGALLERY"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_emart
+msgid "EMART Sizes"
+msgstr "EMART Sizes"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:351
+#, python-format
+msgid "End Date : %s"
+msgstr "Дуусах огноо : %s"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_gragu
+msgid "GRAGU Sizes"
+msgstr "GRAGU Sizes"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:329
+#, python-format
+msgid "GRAND 1"
+msgstr "GRAND 1"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_grand1
+msgid "GRAND1 Sizes"
+msgstr "GRAND1 Sizes"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
+#, python-format
+msgid "Grand Gutal"
+msgstr "Grand Gutal"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_hubas
+msgid "HUBAS Sizes"
+msgstr "HUBAS Sizes"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_hubug
+msgid "HUBUG Sizes"
+msgstr "HUBUG Sizes"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:329
+#, python-format
+msgid "HUNNU BASCONI"
+msgstr "HUNNU BASCONI"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:329
+#, python-format
+msgid "HUNNU BUGATTI"
+msgstr "HUNNU BUGATTI"
+
+#. module: gp_suggestion
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_id
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_id
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_id
@@ -122,6 +201,39 @@ msgid "Last Updated on"
 msgstr "Last Updated on"
 
 #. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
+#, python-format
+msgid "MAX Basconi"
+msgstr "MAX Basconi"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:329
+#, python-format
+msgid "MAX SASHA FABIANI"
+msgstr "MAX SASHA FABIANI"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
+#, python-format
+msgid "MAX SHOEGALLERY"
+msgstr "MAX SHOEGALLERY"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_maxba
+msgid "MAXBA Sizes"
+msgstr "MAXBA Sizes"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_maxsf
+msgid "MAXSF Sizes"
+msgstr "MAXSF Sizes"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_maxsg
+msgid "MAXSG Sizes"
+msgstr "MAXSG Sizes"
+
+#. module: gp_suggestion
 #: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
 msgid "Order Lines"
 msgstr "Захиалгын мөрүүд"
@@ -142,6 +254,12 @@ msgid "Pending"
 msgstr "Pending"
 
 #. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
+#, python-format
+msgid "Product"
+msgstr "Бараа"
+
+#. module: gp_suggestion
 #: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
 msgid "Product Information"
 msgstr "Барааны мэдээлэл"
@@ -152,6 +270,7 @@ msgid "Qty"
 msgstr "Тоо"
 
 #. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_number
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_number
 msgid "Rank"
 msgstr "Rank"
@@ -162,18 +281,48 @@ msgid "Remaining Qty"
 msgstr "Үлдэгдэл тоо хэмжээ"
 
 #. module: gp_suggestion
+#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
+msgid "Report"
+msgstr "Тайлан"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sale_sizes
+msgid "SSizes"
+msgstr "Борлуулсан Размерууд"
+
+#. module: gp_suggestion
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sale_count
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_sale_count
 msgid "Sale Count"
 msgstr "Нийт борлуулалсан, Ш"
 
 #. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
+#, python-format
+msgid "Sold Qty"
+msgstr "Борлуулсан тоо"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_product_ids
+#, python-format
 msgid "Sold Sizes"
 msgstr "Борлуулсан бараанууд"
 
 #. module: gp_suggestion
-#: code:addons/gp_suggestion/model/gp_suggestion.py:29
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
+#, python-format
+msgid "Sold WH"
+msgstr "Борлуулалт хийсэн Салбар"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:347
+#, python-format
+msgid "Start Date : %s"
+msgstr "Эхлэх огноо : %s"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:48
 #, python-format
 msgid "Stock Picking is already created!! \n"
 " Check!"
@@ -214,9 +363,20 @@ msgid "Suggestion Order Lines"
 msgstr "SСанал болгох захиалга"
 
 #. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:317
+#, python-format
+msgid "Suggestion Order Report"
+msgstr "Санал болголтын тайлан"
+
+#. module: gp_suggestion
 #: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_tree
 msgid "Suggestion Order Tree"
 msgstr "Санал болгох захиалга"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_total_sizes
+msgid "TSizes"
+msgstr "Үлдэгдэл размерууд"
 
 #. module: gp_suggestion
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_top_product_lines
@@ -229,14 +389,69 @@ msgid "Top Warehouses"
 msgstr "Топ салбарууд"
 
 #. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:327
+#, python-format
+msgid "Top Warehouses :"
+msgstr "Top Warehouses :"
+
+#. module: gp_suggestion
 #: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
 msgid "Total"
 msgstr "Дүн"
 
 #. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_tuv_sizes
+msgid "Tuv Sizes"
+msgstr "Төв агуулах"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:328
+#, python-format
+msgid "Tuv WH"
+msgstr "TUV Агуулах"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:329
+#, python-format
+msgid "UB BASCONI"
+msgstr "UB BASCONI"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:329
+#, python-format
+msgid "UB BUGATTI"
+msgstr "UB BUGATTI"
+
+#. module: gp_suggestion
+#: code:addons/gp_suggestion/model/gp_suggestion.py:329
+#, python-format
+msgid "UB SASHA FABIANI"
+msgstr "UB SASHA FABIANI"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_ub_sf
+msgid "UB-SF Sizes"
+msgstr "UB-SF Sizes"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_ubbas
+msgid "UBBAS Sizes"
+msgstr "UBBAS Sizes"
+
+#. module: gp_suggestion
+#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sizes_ubbug
+msgid "UBBUG Sizes"
+msgstr "UBBUG Sizes"
+
+#. module: gp_suggestion
 #: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_is_useful
 msgid "Useful"
 msgstr "Ашиглах"
+
+#. module: gp_suggestion
+#: model:ir.model,name:gp_suggestion.model_stock_warehouse
+msgid "Warehouse"
+msgstr "Агуулах"
 
 #. module: gp_suggestion
 #: model:ir.model,name:gp_suggestion.model_suggestion_order

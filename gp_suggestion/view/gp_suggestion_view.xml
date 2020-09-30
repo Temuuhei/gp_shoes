@@ -65,6 +65,9 @@
             <field name="priority">4</field>
             <field name="arch" type="xml">
                 <form string = "Suggestion Order Form">
+                     <header>
+                        <button name="export_report" type="object" string="Report" class="oe_highlight"/>
+                    </header>
                     <sheet>
                         <group>
                             <group>
@@ -97,10 +100,24 @@
                                     <field name="product_id"/>
                                     <field name="sale_count"/>
                                     <field name="remaining_qty"/>
-                                    <field name="balance_product_ids" widget="many2many_tags"/>
+                                    <!--<field name="balance_product_ids" widget="many2many_tags"/>-->
+                                    <field name="total_sizes"/>
                                     <field name="warehouse_id"/>
-                                    <field name="product_ids" widget="many2many_tag"/>
+                                    <!--<field name="product_ids" widget="many2many_tag"/>-->
+                                    <field name="sale_sizes"/>
                                     <field name="is_useful"/>
+                                    <field name="tuv_sizes"/>
+                                    <field name="sizes_gragu"/>
+                                    <field name="sizes_maxba"/>
+                                    <field name="sizes_maxsg"/>
+                                    <field name="sizes_maxsf"/>
+                                    <field name="sizes_ubbas"/>
+                                    <field name="sizes_ub_sf"/>
+                                    <field name="sizes_ubbug"/>
+                                    <field name="sizes_hubas"/>
+                                    <field name="sizes_hubug"/>
+                                    <field name="sizes_emart"/>
+                                    <field name="sizes_grand1"/>
                                     <field name="warehouse_line_id" widget="many2many_tag"/>
                                 </tree>
                             </field>
