@@ -114,6 +114,34 @@ class StockImmediateTransfer(models.TransientModel):
     is_hide = fields.Boolean(string = 'Is hide SOL', invisible = False, default = True)
     is_error = fields.Boolean(string = 'Is user Error', invisible = False, default = False)
 
+    @api.onchange('is_return')
+    def onChangeReturn(self):
+        ctx = self.env.context.copy()
+        if 'active_id' in ctx:
+            sp = self.env['stock.picking'].browse(ctx['active_id'])
+            if sp:
+                pro_group = sp.group_id.id
+                so = self.env['sale.order'].search([('procurement_group_id','=',pro_group)])[0]
+                cash = self.env['cash'].search([('warehouse','=',sp.picking_type_id.warehouse_id.id),('type','=','cash')])
+                card = self.env['cash'].search([('warehouse','=',sp.picking_type_id.warehouse_id.id),('type','=','card')])
+                mobile = self.env['cash'].search([('warehouse','=',sp.picking_type_id.warehouse_id.id),('type','=','mobile')])
+                if sp:
+                    for s in so:
+                        if s.cash_pay > 0:
+                            self.cash = cash.id
+                            self.amount = s.cash_pay
+                        elif s.card_pay > 0:
+                            self.card = card.id
+                            self.amount1 = s.card_pay
+                        elif s.mobile_pay > 0:
+                            self.cash = mobile.id
+                            self.amount3 = s.mobile_pay
+
+
+
+
+
+
     @api.one
     def process(self):
         ir_model_data = self.env['ir.model.data']
