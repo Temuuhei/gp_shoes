@@ -134,7 +134,7 @@ class StockImmediateTransfer(models.TransientModel):
                             self.card = card.id
                             self.amount1 = s.card_pay
                         elif s.mobile_pay > 0:
-                            self.cash = mobile.id
+                            self.mobile = mobile.id
                             self.amount3 = s.mobile_pay
 
 
