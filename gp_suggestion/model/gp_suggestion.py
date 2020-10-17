@@ -29,6 +29,13 @@ class StockWarehouse(models.Model):
 
     real_warehouse = fields.Boolean(string = "Бодит агуулах", default =False)
 
+
+class ProductProduct(models.Model):
+    _inherit = "product.product"
+
+    suggestion_line_sid = fields.Many2one('suggestion.order.line',string = "Suggestion line sid")
+    suggestion_line_bid = fields.Many2one('suggestion.order.line',string = "Suggestion line bid")
+
 class SuggestionOrderLineLine(models.Model):
     _name = "suggestion.order.line.line"
     _order = 'number desc'
@@ -211,11 +218,15 @@ class SuggestionOrderLine(models.Model):
     product_id = fields.Many2one('product.template', string='Бараа',
                                  change_default=True, ondelete='restrict', readonly=True)
     sale_count = fields.Float('Sale Count')
-    remaining_qty = fields.Float('Remaining Qty',compute = _qty_available, store = True)
-    balance_product_ids = fields.Many2many('product.product', string='Balance Sizes', compute=_compute_balance_product_ids)
+    # remaining_qty = fields.Float('Remaining Qty',compute = _qty_available, store = True)
+    remaining_qty = fields.Float('Remaining Qty')
+
+    balance_product_ids = fields.One2many('product.product','suggestion_line_bid', string='Balance Sizes')
+    product_ids = fields.One2many('product.product','suggestion_line_sid', string='Sold Sizes')
+    # balance_product_ids = fields.Many2many('product.product', string='Balance Sizes', compute=_compute_balance_product_ids,store = True)
     warehouse_id = fields.Many2one('stock.warehouse', string='Салбар',
                                    change_default=True, ondelete='restrict', readonly=True)
-    product_ids = fields.Many2many('product.product', string='Sold Sizes',compute = _compute_product_ids)
+    # product_ids = fields.Many2many('product.product', string='Sold Sizes',compute = _compute_product_ids,store = True)
     sale_sizes = fields.Char(string = 'SSizes',default =' ')
     total_sizes = fields.Char(string = 'TSizes',default =' ')
     warehouse_line_id = fields.One2many('suggestion.order.line.line', 'line_id', string='Other Warehouses')
@@ -268,7 +279,7 @@ class SuggestionOrder(models.Model):
     end_date = fields.Date(string='Дуусах огноо', required=True,index=True,
                            copy=False,
                            default=fields.Datetime.now)
-    warehouse_id = fields.Many2one('stock.warehouse', string = 'Салбар')
+    warehouse_id = fields.Many2one('stock.warehouse',  required=True, string = 'Салбар')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('done', 'Done'),
@@ -276,6 +287,555 @@ class SuggestionOrder(models.Model):
     suggestion_lines = fields.One2many('suggestion.order.line', 'suggestion_id', string='Suggestion Lines')
     top_product_lines = fields.One2many('suggestion.order.product.line', 'suggestion_id', string='Top Products')
     top_warehouse_lines = fields.One2many('suggestion.order.warehouse.line', 'suggestion_id', string='Top Warehouses')
+
+
+    def compute_order(self):
+        if self.top_warehouse_lines or self.top_product_lines or self.suggestion_lines:
+            self._cr.execute("""DELETE FROM suggestion_order_warehouse_line WHERE suggestion_id = %s """ % (self.id,))
+            self._cr.execute("""DELETE FROM suggestion_order_product_line WHERE suggestion_id = %s """ % (self.id,))
+            self._cr.execute("""DELETE FROM suggestion_order_line WHERE suggestion_id = %s """ % (self.id,))
+
+        warehouse_line = self.env['suggestion.order.warehouse.line']
+        product_line = self.env['suggestion.order.product.line']
+        line_line = self.env['suggestion.order.line.line']
+        main_line = self.env['suggestion.order.line']
+        product_objs = self.env['product.product']
+        start_date = datetime.strptime(self.start_date, '%Y-%m-%d').date()
+        end_date = datetime.strptime(self.end_date, '%Y-%m-%d').date()
+        diff = end_date - start_date
+        if diff.days > 7:
+            raise UserError(_(
+                       'Too Large. You only can get 7 days calculation \n Check!'))
+        self._cr.execute("""SELECT w.id as warehouse,
+                                    sl.id as location,
+                                   pt.name AS name,
+                                   pt.id AS tmpl,
+                                   sum(sol.price_total) AS total,
+                                   sum(sol.qty_delivered) AS qty
+                                     FROM sale_order_line AS sol
+                                     LEFT JOIN product_product AS pp
+                                    ON pp.id = sol.product_id
+                                     LEFT join product_template AS pt
+                                    ON pp.product_tmpl_id = pt.id
+                                     LEFT JOIN stock_warehouse w
+                                    ON w.id = sol.warehouse_id
+                                     LEFT JOIN stock_location sl
+                                    ON w.lot_stock_id = sl.id
+                                     WHERE
+                                       sol.state = 'done'
+                                       AND sol.is_return <> 't'
+                                        AND order_date BETWEEN '%s' AND '%s'
+                                    GROUP BY w.id,
+                                            sl.id,
+                                               pt.id
+                                               ORDER BY qty DESC"""
+                         % (start_date, end_date))
+        sol_list = self._cr.dictfetchall()
+        if sol_list:
+            # Агуулахын мэдээллийг олох
+            c = Counter()
+            a = Counter()
+            # List of dic г агуулахаар нь бүлэглэж sum total г олов
+            for v in sol_list:
+                c[v['warehouse']] += v['total']
+            warehouse_data = [{'warehouse': warehouse, 'total': total} for warehouse, total in c.items()]
+            # Rank лахын тулд эрэмблэв
+            sort_orders = sorted(warehouse_data, key=lambda k: k['total'],reverse=True)
+            i = 1
+            for e in sort_orders:
+                warehouse_line.create({'warehouse_id':e['warehouse'],
+                                       'amount':e['total'],
+                                       'number':i,
+                                       'suggestion_id':self.id})
+                i += 1
+            # Хамгийн их борлуулалттай барааны жагсаалт
+            for d in sol_list:
+                a[d['tmpl']] += d['qty']
+
+            product_template_ids = [{'tmpl': tmpl, 'qty': qty} for tmpl, qty in a.items()]
+
+            for p in product_template_ids:
+                product_line.create({'product_id': int(p['tmpl']),
+                                     'sale_count': p['qty'],
+                                     'suggestion_id': self.id
+                                     })
+            product_sizes = []
+            if self.warehouse_id:
+                for m in sol_list:
+                    if m['warehouse'] == self.warehouse_id.id:
+                        # speed Үлдэгдлийг тооцох
+                        remaing_qty_last = 0
+                        product_ids = []
+                        product_product = self.env['product.product'].search([('product_tmpl_id', '=', m['tmpl'])])
+                        end_date = datetime.strptime(self.end_date, '%Y-%m-%d').date()
+                        for f in product_product:
+                            self._cr.execute(
+                                "SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                "where date <= %s "
+                                "and location_id = %s and product_id = %s and state = 'done'",
+                                (str(end_date) + ' 23:59:59', m['location'],
+                                 f.id))
+                            fetched = self._cr.dictfetchall()
+                            # print'fetched \n',fetched
+                            if fetched:
+                                for k in fetched:
+                                    if k['product_qty'] is None:
+                                        qty = 0.0
+                                    else:
+                                        qty = k['product_qty']
+                            self._cr.execute(
+                                "SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                "where date <= %s "
+                                "and location_dest_id = %s and product_id = %s and state = 'done'",
+                                (str(end_date) + ' 23:59:59', m['location'], f.id))
+                            in_moves = self._cr.dictfetchall()
+                            # print'in_moves \n', in_moves
+                            if in_moves:
+                                for i in in_moves:
+                                    if i['product_qty'] is None:
+                                        qty2 = 0.0
+                                    else:
+                                        qty2 = i['product_qty']
+                            remainder = qty2 - qty
+                            if remainder > 0.0:
+                                product_ids.append(f.id)
+                                remaing_qty_last = remainder
+
+                        # speed
+
+                        # speed Борлуулсан бараануудыг тооцох
+                        start_date = datetime.strptime(self.start_date, '%Y-%m-%d').date()
+                        end_date = datetime.strptime(self.end_date, '%Y-%m-%d').date()
+                        sold_product_ids = []
+                        self._cr.execute("""SELECT sol.product_id as product_id,
+                                                            w.id as warehouse_id
+                                                                FROM sale_order_line AS sol
+                                                                    LEFT JOIN product_product AS pp
+                                                                   ON pp.id = sol.product_id
+                                                                    LEFT join product_template AS pt
+                                                                   ON pp.product_tmpl_id = pt.id
+                                                                    LEFT JOIN stock_warehouse w
+                                                                ON w.id = sol.warehouse_id
+                                                                    WHERE
+                                                                      sol.state = 'done'
+                                                                      AND sol.is_return <> 't'
+                                                                       AND order_date BETWEEN '%s' AND '%s'
+                                                                       AND pt.id = %s
+                                                                       AND sol.warehouse_id = %s
+                                                                   GROUP BY sol.product_id,
+                                                                            w.id
+                                                                              """
+                                         % (start_date, end_date, m['tmpl'], m['warehouse']))
+                        sold_products = self._cr.dictfetchall()
+                        if sold_products:
+                            for f in sold_products:
+                                if f['product_id'] not in sold_product_ids:
+                                    sold_product_ids.append(f['product_id'])
+
+                        # speed
+                        created_values = main_line.create({
+                            'warehouse_id': m['warehouse'],
+                            'product_id': m['tmpl'],
+                            'sale_count': m['qty'],
+                            'balance_product_ids': [(6,0,product_ids)],
+                            'product_ids': [(6,0,sold_product_ids)],
+                            'remaining_qty': remaing_qty_last,
+                            'suggestion_id': self.id
+                        })
+                        warehouses = self.env['stock.warehouse'].search(
+                            [('id', '<>', m['warehouse']), ('real_warehouse', '=', True)])
+                        product_product = self.env['product.product'].search(
+                            [('product_tmpl_id', '=', m['tmpl']),
+                             ('id', 'not in', created_values.balance_product_ids.ids)])
+                        qty = 0.0
+                        qty2 = 0.0
+                        for f in product_product:
+                            # Боломжит үлдэгдлийг олох Бусад агуулахад
+                            for w in warehouses:
+                                self._cr.execute(
+                                    "SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                    "where date <= %s "
+                                    "and location_id = %s and product_id = %s and state = 'done'",
+                                    (str(end_date) + ' 23:59:59', w.lot_stock_id.id,
+                                     f.id))
+                                fetched = self._cr.dictfetchall()
+                                if fetched:
+                                    for k in fetched:
+                                        if k['product_qty'] is None:
+                                            qty = 0.0
+                                        else:
+                                            qty = k['product_qty']
+                                self._cr.execute(
+                                    "SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                    "where date <= %s "
+                                    "and location_dest_id = %s and product_id = %s and state = 'done'",
+                                    (str(end_date) + ' 23:59:59', w.lot_stock_id.id, f.id))
+                                in_moves = self._cr.dictfetchall()
+                                if in_moves:
+                                    for i in in_moves:
+                                        if i['product_qty'] is None:
+                                            qty2 = 0.0
+                                        else:
+                                            qty2 = i['product_qty']
+                                remainder = qty2 - qty
+                                if remainder > 0.0:
+                                    rank = len(self.top_warehouse_lines) + 1
+                                    for h in self.top_warehouse_lines:
+                                        if h.warehouse_id.id == w.id:
+                                            rank = h.number
+                                    self._cr.execute(
+                                        'INSERT INTO suggestion_order_line_line (line_id,warehouse_id,product_id,number,qty) '
+                                        'values (%s, %s,%s, %s, %s)',
+                                        (created_values.id, w.id, f.id, rank, remainder))
+                                    # temka1 = line_line.create({'line_id': created_values.id,
+                                    #                           'warehouse_id': w.id,
+                                    #                           'product_id': f.id,
+                                    #                           'number': rank,
+                                    #                           'qty': remainder})
+                                    # if temka1:
+                                    created_values.update({'is_useful': True})
+                        for i in self.suggestion_lines:
+                            if i.warehouse_line_id:
+                                check_product = []
+                                self._cr.execute(
+                                    "SELECT id,product_id as product_id,warehouse_id,number from suggestion_order_line_line "
+                                    "where line_id <= %s ORDER BY number DESC",
+                                    (i.id,))
+                                sorted_line = self._cr.dictfetchall()
+                                for s in sorted_line:
+                                    if s['product_id'] not in check_product:
+                                        check_product.append(s['product_id'])
+                                    else:
+                                        self._cr.execute(
+                                            """DELETE FROM suggestion_order_line_line WHERE id = %s """ % (s['id'],))
+
+                                for temka2 in self.suggestion_lines:
+                                    product_check_sizes = []
+                                    product_check_grand_gutal = []
+                                    product_check_max_basconi = []
+                                    product_check_max_shoegallery = []
+                                    product_check_max_sasha_fabiani = []
+                                    product_check_ub_basconi = []
+                                    product_check_ub_sasha_fabiani = []
+                                    product_check_ub_bugatti = []
+                                    product_check_hunnu_basconi = []
+                                    product_check_hunnu_bugatti = []
+                                    product_check_emart_shoegallery = []
+                                    product_check_grand1 = []
+                                    sizes = ' '
+                                    sizes_gragu = ' '
+                                    sizes_maxba = ' '
+                                    sizes_maxsg = ' '
+                                    sizes_maxsf = ' '
+                                    sizes_ubbas = ' '
+                                    sizes_ub_sf = ' '
+                                    sizes_ubbug = ' '
+                                    sizes_hubas = ' '
+                                    sizes_hubug = ' '
+                                    sizes_emart = ' '
+                                    sizes_grand1 = ' '
+                                    wh_line = self.env['suggestion.order.line.line'].search(
+                                        [('line_id', '=', temka2.id)])
+                                    if wh_line:
+                                        for temka1 in wh_line:
+                                            if temka1.product_id.id not in product_check_sizes and temka1.warehouse_id.id == 1:
+                                                product_check_sizes.append(temka1.product_id.id)
+                                                sizes = sizes + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_grand_gutal and temka1.warehouse_id.id == 2:
+                                                product_check_grand_gutal.append(temka1.product_id.id)
+                                                sizes_gragu = sizes_gragu + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_max_basconi and temka1.warehouse_id.id == 4:
+                                                product_check_max_basconi.append(temka1.product_id.id)
+                                                sizes_maxba = sizes_maxba + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_max_shoegallery and temka1.warehouse_id.id == 6:
+                                                product_check_max_shoegallery.append(temka1.product_id.id)
+                                                sizes_maxsg = sizes_maxsg + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_max_sasha_fabiani and temka1.warehouse_id.id == 7:
+                                                product_check_max_sasha_fabiani.append(temka1.product_id.id)
+                                                sizes_maxsf = sizes_maxsf + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_ub_basconi and temka1.warehouse_id.id == 8:
+                                                product_check_ub_basconi.append(temka1.product_id.id)
+                                                sizes_ubbas = sizes_ubbas + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_ub_sasha_fabiani and temka1.warehouse_id.id == 9:
+                                                product_check_ub_sasha_fabiani.append(temka1.product_id.id)
+                                                sizes_ub_sf = sizes_ub_sf + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_ub_bugatti and temka1.warehouse_id.id == 10:
+                                                product_check_ub_bugatti.append(temka1.product_id.id)
+                                                sizes_ubbug = sizes_ubbug + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_hunnu_basconi and temka1.warehouse_id.id == 19:
+                                                product_check_hunnu_basconi.append(temka1.product_id.id)
+                                                sizes_hubas = sizes_hubas + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_hunnu_bugatti and temka1.warehouse_id.id == 20:
+                                                product_check_hunnu_bugatti.append(temka1.product_id.id)
+                                                sizes_hubug = sizes_hubug + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_emart_shoegallery and temka1.warehouse_id.id == 25:
+                                                product_check_emart_shoegallery.append(temka1.product_id.id)
+                                                sizes_emart = sizes_emart + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                            if temka1.product_id.id not in product_check_grand1 and temka1.warehouse_id.id == 28:
+                                                product_check_grand1.append(temka1.product_id.id)
+                                                sizes_grand1 = sizes_grand1 + ' ' + str(
+                                                    temka1.product_id.attribute_value_ids[0].name)
+                                    temka2.write({'tuv_sizes': sizes,
+                                                  'sizes_gragu': sizes_gragu,
+                                                  'sizes_maxba': sizes_maxba,
+                                                  'sizes_maxsg': sizes_maxsg,
+                                                  'sizes_maxsf': sizes_maxsf,
+                                                  'sizes_ubbas': sizes_ubbas,
+                                                  'sizes_ub_sf': sizes_ub_sf,
+                                                  'sizes_ubbug': sizes_ubbug,
+                                                  'sizes_hubas': sizes_hubas,
+                                                  'sizes_hubug': sizes_hubug,
+                                                  'sizes_emart': sizes_emart,
+                                                  'sizes_grand1': sizes_grand1})
+                if self.suggestion_lines:
+                    for f in self.suggestion_lines:
+                        if f.balance_product_ids:
+                            for p in f.balance_product_ids:
+                                for a in p.attribute_value_ids:
+                                    f.total_sizes = str(f.total_sizes) + ' ' + str(a.name)
+                        if f.product_ids:
+                            for p1 in f.product_ids:
+                                for a1 in p1.attribute_value_ids:
+                                    f.sale_sizes = str(f.sale_sizes) + ' ' + str(a1.name)
+            else:
+                for m in sol_list:
+                    #speed Үлдэгдлийг тооцох
+                    remaing_qty_last = 0
+                    product_ids = []
+                    product_product = self.env['product.product'].search([('product_tmpl_id', '=', m['tmpl'])])
+                    end_date = datetime.strptime(self.end_date, '%Y-%m-%d').date()
+                    for f in product_product:
+                        self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                         "where date <= %s "
+                                         "and location_id = %s and product_id = %s and state = 'done'",
+                                         (str(end_date) + ' 23:59:59', m['location'],
+                                          f.id))
+                        fetched = self._cr.dictfetchall()
+                        # print'fetched \n',fetched
+                        if fetched:
+                            for k in fetched:
+                                if k['product_qty'] is None:
+                                    qty = 0.0
+                                else:
+                                    qty = k['product_qty']
+                        self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                         "where date <= %s "
+                                         "and location_dest_id = %s and product_id = %s and state = 'done'",
+                                         (str(end_date) + ' 23:59:59', m['location'], f.id))
+                        in_moves = self._cr.dictfetchall()
+                        # print'in_moves \n', in_moves
+                        if in_moves:
+                            for i in in_moves:
+                                if i['product_qty'] is None:
+                                    qty2 = 0.0
+                                else:
+                                    qty2 = i['product_qty']
+                        remainder = qty2 - qty
+                        if remainder > 0.0:
+                            product_ids.append(f.id)
+                            remaing_qty_last = remainder
+
+
+                    #speed
+
+                    #speed Борлуулсан бараануудыг тооцох
+                    start_date = datetime.strptime(self.start_date, '%Y-%m-%d').date()
+                    end_date = datetime.strptime(self.end_date, '%Y-%m-%d').date()
+                    sold_product_ids = []
+                    self._cr.execute("""SELECT sol.product_id as product_id,
+                                                        w.id as warehouse_id
+                                                            FROM sale_order_line AS sol
+                                                                LEFT JOIN product_product AS pp
+                                                               ON pp.id = sol.product_id
+                                                                LEFT join product_template AS pt
+                                                               ON pp.product_tmpl_id = pt.id
+                                                                LEFT JOIN stock_warehouse w
+                                                            ON w.id = sol.warehouse_id
+                                                                WHERE
+                                                                  sol.state = 'done'
+                                                                  AND sol.is_return <> 't'
+                                                                   AND order_date BETWEEN '%s' AND '%s'
+                                                                   AND pt.id = %s
+                                                                   AND sol.warehouse_id = %s
+                                                               GROUP BY sol.product_id,
+                                                                        w.id
+                                                                          """
+                                     % (start_date, end_date, m['tmpl'],m['warehouse']))
+                    sold_products = self._cr.dictfetchall()
+                    if sold_products:
+                        for f in sold_products:
+                            if f['product_id'] not in sold_product_ids:
+                                sold_product_ids.append(f['product_id'])
+                    #speed
+                    created_values = main_line.create({
+                        'warehouse_id': m['warehouse'],
+                        'product_id': m['tmpl'],
+                        'sale_count': m['qty'],
+                        'balance_product_ids': [(6, 0, product_ids)],
+                        'product_ids': [(6, 0, sold_product_ids)],
+                        'remaining_qty': remaing_qty_last,
+                        'suggestion_id': self.id
+                    })
+                    warehouses = self.env['stock.warehouse'].search([('id', '<>', m['warehouse']),('real_warehouse','=',True)])
+                    product_product = self.env['product.product'].search(
+                        [('product_tmpl_id', '=', m['tmpl']), ('id', 'not in', created_values.balance_product_ids.ids)])
+                    qty = 0.0
+                    qty2 = 0.0
+                    for f in product_product:
+                        # Боломжит үлдэгдлийг олох Бусад агуулахад
+                        for w in warehouses:
+                            self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                             "where date <= %s "
+                                             "and location_id = %s and product_id = %s and state = 'done'",
+                                             (str(end_date) + ' 23:59:59', w.lot_stock_id.id,
+                                              f.id))
+                            fetched = self._cr.dictfetchall()
+                            if fetched:
+                                for k in fetched:
+                                    if k['product_qty'] is None:
+                                        qty = 0.0
+                                    else:
+                                        qty = k['product_qty']
+                            self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
+                                             "where date <= %s "
+                                             "and location_dest_id = %s and product_id = %s and state = 'done'",
+                                             (str(end_date) + ' 23:59:59', w.lot_stock_id.id, f.id))
+                            in_moves = self._cr.dictfetchall()
+                            if in_moves:
+                                for i in in_moves:
+                                    if i['product_qty'] is None:
+                                        qty2 = 0.0
+                                    else:
+                                        qty2 = i['product_qty']
+                            remainder = qty2 - qty
+                            if remainder > 0.0:
+                                rank = len(self.top_warehouse_lines) + 1
+                                for h in self.top_warehouse_lines:
+                                    if h.warehouse_id.id == w.id:
+                                        rank = h.number
+                                self._cr.execute(
+                                    'INSERT INTO suggestion_order_line_line (line_id,warehouse_id,product_id,number,qty) '
+                                    'values (%s, %s,%s, %s, %s)',
+                                    (created_values.id, w.id,f.id,rank,remainder))
+                                # temka1 = line_line.create({'line_id': created_values.id,
+                                #                           'warehouse_id': w.id,
+                                #                           'product_id': f.id,
+                                #                           'number': rank,
+                                #                           'qty': remainder})
+                                # if temka1:
+                                created_values.update({'is_useful': True})
+                for i in self.suggestion_lines:
+                    if i.warehouse_line_id:
+                        check_product = []
+                        self._cr.execute("SELECT id,product_id as product_id,warehouse_id,number from suggestion_order_line_line "
+                                         "where line_id <= %s ORDER BY number DESC",
+                                         (i.id,))
+                        sorted_line = self._cr.dictfetchall()
+                        for s in sorted_line:
+                            if s['product_id'] not in check_product:
+                                check_product.append(s['product_id'])
+                            else:
+                                self._cr.execute(
+                                    """DELETE FROM suggestion_order_line_line WHERE id = %s """ % (s['id'],))
+
+
+                        for temka2 in self.suggestion_lines:
+                            product_check_sizes = []
+                            product_check_grand_gutal = []
+                            product_check_max_basconi = []
+                            product_check_max_shoegallery = []
+                            product_check_max_sasha_fabiani = []
+                            product_check_ub_basconi = []
+                            product_check_ub_sasha_fabiani = []
+                            product_check_ub_bugatti = []
+                            product_check_hunnu_basconi = []
+                            product_check_hunnu_bugatti = []
+                            product_check_emart_shoegallery = []
+                            product_check_grand1 = []
+                            sizes = ' '
+                            sizes_gragu = ' '
+                            sizes_maxba = ' '
+                            sizes_maxsg = ' '
+                            sizes_maxsf = ' '
+                            sizes_ubbas = ' '
+                            sizes_ub_sf = ' '
+                            sizes_ubbug = ' '
+                            sizes_hubas = ' '
+                            sizes_hubug = ' '
+                            sizes_emart = ' '
+                            sizes_grand1 = ' '
+                            wh_line = self.env['suggestion.order.line.line'].search(
+                                [('line_id', '=', temka2.id)])
+                            if wh_line:
+                                for temka1 in wh_line:
+                                    if temka1.product_id.id not in product_check_sizes and temka1.warehouse_id.id == 1:
+                                        product_check_sizes.append(temka1.product_id.id)
+                                        sizes = sizes + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_grand_gutal and temka1.warehouse_id.id == 2:
+                                        product_check_grand_gutal.append(temka1.product_id.id)
+                                        sizes_gragu = sizes_gragu + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_max_basconi and temka1.warehouse_id.id == 4:
+                                        product_check_max_basconi.append(temka1.product_id.id)
+                                        sizes_maxba = sizes_maxba + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_max_shoegallery and temka1.warehouse_id.id == 6:
+                                        product_check_max_shoegallery.append(temka1.product_id.id)
+                                        sizes_maxsg = sizes_maxsg + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_max_sasha_fabiani and temka1.warehouse_id.id == 7:
+                                        product_check_max_sasha_fabiani.append(temka1.product_id.id)
+                                        sizes_maxsf = sizes_maxsf + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_ub_basconi and temka1.warehouse_id.id == 8:
+                                        product_check_ub_basconi.append(temka1.product_id.id)
+                                        sizes_ubbas = sizes_ubbas + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_ub_sasha_fabiani and temka1.warehouse_id.id == 9:
+                                        product_check_ub_sasha_fabiani.append(temka1.product_id.id)
+                                        sizes_ub_sf = sizes_ub_sf + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_ub_bugatti and temka1.warehouse_id.id == 10:
+                                        product_check_ub_bugatti.append(temka1.product_id.id)
+                                        sizes_ubbug = sizes_ubbug + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_hunnu_basconi and temka1.warehouse_id.id == 19:
+                                        product_check_hunnu_basconi.append(temka1.product_id.id)
+                                        sizes_hubas = sizes_hubas + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_hunnu_bugatti and temka1.warehouse_id.id == 20:
+                                        product_check_hunnu_bugatti.append(temka1.product_id.id)
+                                        sizes_hubug = sizes_hubug + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_emart_shoegallery and temka1.warehouse_id.id == 25:
+                                        product_check_emart_shoegallery.append(temka1.product_id.id)
+                                        sizes_emart = sizes_emart + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                                    if temka1.product_id.id not in product_check_grand1 and temka1.warehouse_id.id == 28:
+                                        product_check_grand1.append(temka1.product_id.id)
+                                        sizes_grand1 = sizes_grand1 + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
+                            temka2.write({'tuv_sizes':sizes,
+                                            'sizes_gragu':sizes_gragu,
+                                            'sizes_maxba':sizes_maxba,
+                                            'sizes_maxsg':sizes_maxsg,
+                                            'sizes_maxsf':sizes_maxsf,
+                                            'sizes_ubbas':sizes_ubbas,
+                                            'sizes_ub_sf':sizes_ub_sf,
+                                            'sizes_ubbug':sizes_ubbug,
+                                            'sizes_hubas':sizes_hubas,
+                                            'sizes_hubug':sizes_hubug,
+                                            'sizes_emart':sizes_emart,
+                                            'sizes_grand1':sizes_grand1})
+                if self.suggestion_lines:
+                    for f in self.suggestion_lines:
+                        if f.balance_product_ids:
+                            for p in f.balance_product_ids:
+                                for a in p.attribute_value_ids:
+                                    f.total_sizes = str(f.total_sizes) + ' ' + str(a.name)
+                        if f.product_ids:
+                            for p1 in f.product_ids:
+                                for a1 in p1.attribute_value_ids:
+                                    f.sale_sizes = str(f.sale_sizes) + ' ' + str(a1.name)
 
 
     def prepare_data(self):
@@ -402,387 +962,3 @@ class SuggestionOrder(models.Model):
 
 
 
-    def compute_order(self):
-        if self.top_warehouse_lines or self.top_product_lines or self.suggestion_lines:
-            self._cr.execute("""DELETE FROM suggestion_order_warehouse_line WHERE suggestion_id = %s """ % (self.id,))
-            self._cr.execute("""DELETE FROM suggestion_order_product_line WHERE suggestion_id = %s """ % (self.id,))
-            self._cr.execute("""DELETE FROM suggestion_order_line WHERE suggestion_id = %s """ % (self.id,))
-
-        warehouse_line = self.env['suggestion.order.warehouse.line']
-        product_line = self.env['suggestion.order.product.line']
-        line_line = self.env['suggestion.order.line.line']
-        main_line = self.env['suggestion.order.line']
-        start_date = datetime.strptime(self.start_date, '%Y-%m-%d').date()
-        end_date = datetime.strptime(self.end_date, '%Y-%m-%d').date()
-        self._cr.execute("""SELECT w.id as warehouse,
-                                   pt.name AS name,
-                                   pt.id AS tmpl,
-                                   sum(sol.price_total) AS total,
-                                   sum(sol.qty_delivered) AS qty
-                                     FROM sale_order_line AS sol
-                                     LEFT JOIN product_product AS pp
-                                    ON pp.id = sol.product_id
-                                     LEFT join product_template AS pt
-                                    ON pp.product_tmpl_id = pt.id
-                                     LEFT JOIN stock_warehouse w
-                                    ON w.id = sol.warehouse_id
-                                     WHERE
-                                       sol.state = 'done'
-                                       AND sol.is_return <> 't'
-                                        AND order_date BETWEEN '%s' AND '%s'
-                                    GROUP BY w.id,
-                                               pt.id
-                                               ORDER BY qty DESC"""
-                         % (start_date, end_date))
-        sol_list = self._cr.dictfetchall()
-        if sol_list:
-            # Агуулахын мэдээллийг олох
-            c = Counter()
-            a = Counter()
-            # List of dic г агуулахаар нь бүлэглэж sum total г олов
-            for v in sol_list:
-                c[v['warehouse']] += v['total']
-            warehouse_data = [{'warehouse': warehouse, 'total': total} for warehouse, total in c.items()]
-            # Rank лахын тулд эрэмблэв
-            sort_orders = sorted(warehouse_data, key=lambda k: k['total'],reverse=True)
-            i = 1
-            for e in sort_orders:
-                warehouse_line.create({'warehouse_id':e['warehouse'],
-                                       'amount':e['total'],
-                                       'number':i,
-                                       'suggestion_id':self.id})
-                i += 1
-            # Хамгийн их борлуулалттай барааны жагсаалт
-            for d in sol_list:
-                a[d['tmpl']] += d['qty']
-
-            product_template_ids = [{'tmpl': tmpl, 'qty': qty} for tmpl, qty in a.items()]
-
-            for p in product_template_ids:
-                product_line.create({'product_id': int(p['tmpl']),
-                                     'sale_count': p['qty'],
-                                     'suggestion_id': self.id
-                                     })
-            product_sizes = []
-            if self.warehouse_id:
-                for m in sol_list:
-                    if m['warehouse'] == self.warehouse_id.id:
-                        created_values =main_line.create({
-                            'warehouse_id': m['warehouse'],
-                            'product_id': m['tmpl'],
-                            'sale_count': m['qty'],
-                            'suggestion_id': self.id
-                                             })
-
-                        warehouses = self.env['stock.warehouse'].search([('id', '<>', m['warehouse']),('real_warehouse','=',True)])
-                        product_product = self.env['product.product'].search([('product_tmpl_id', '=', m['tmpl']),('id','not in',created_values.balance_product_ids.ids)])
-                        qty = 0.0
-                        qty2 = 0.0
-                        for f in product_product:
-                            # Боломжит үлдэгдлийг олох Бусад агуулахад
-                            for w in warehouses:
-                                self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
-                                                 "where date <= %s "
-                                                 "and location_id = %s and product_id = %s and state = 'done'",
-                                                 (str(end_date) + ' 23:59:59', w.lot_stock_id.id,
-                                                  f.id))
-                                fetched = self._cr.dictfetchall()
-                                if fetched:
-                                    for k in fetched:
-                                        if k['product_qty'] is None:
-                                            qty = 0.0
-                                        else:
-                                            qty = k['product_qty']
-                                self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
-                                                 "where date <= %s "
-                                                 "and location_dest_id = %s and product_id = %s and state = 'done'",
-                                                 (str(end_date) + ' 23:59:59', w.lot_stock_id.id, f.id))
-                                in_moves = self._cr.dictfetchall()
-                                if in_moves:
-                                    for i in in_moves:
-                                        if i['product_qty'] is None:
-                                            qty2 = 0.0
-                                        else:
-                                            qty2 = i['product_qty']
-                                remainder = qty2 - qty
-                                if remainder > 0.0:
-                                    rank = len(self.top_warehouse_lines) + 1
-                                    for h in self.top_warehouse_lines:
-                                        if h.warehouse_id.id == w.id:
-                                            rank = h.number
-                                    temka = line_line.create({'line_id': created_values.id,
-                                                        'warehouse_id': w.id,
-                                                        'product_id': f.id,
-                                                        'number': rank,
-                                                        'qty': remainder})
-                                    if temka:
-                                        created_values.update({'is_useful':True})
-                    for i in self.suggestion_lines:
-                        if i.warehouse_line_id:
-                            check_product = []
-                            self._cr.execute(
-                                "SELECT id,product_id as product_id,warehouse_id,number from suggestion_order_line_line "
-                                "where line_id <= %s ORDER BY number DESC",
-                                (i.id,))
-                            sorted_line = self._cr.dictfetchall()
-                            for s in sorted_line:
-                                if s['product_id'] not in check_product:
-                                    check_product.append(s['product_id'])
-                                else:
-                                    self._cr.execute(
-                                        """DELETE FROM suggestion_order_line_line WHERE id = %s """ % (s['id'],))
-
-                            for temka2 in self.suggestion_lines:
-                                product_check_sizes = []
-                                product_check_grand_gutal = []
-                                product_check_max_basconi = []
-                                product_check_max_shoegallery = []
-                                product_check_max_sasha_fabiani = []
-                                product_check_ub_basconi = []
-                                product_check_ub_sasha_fabiani = []
-                                product_check_ub_bugatti = []
-                                product_check_hunnu_basconi = []
-                                product_check_hunnu_bugatti = []
-                                product_check_emart_shoegallery = []
-                                product_check_grand1 = []
-                                sizes = ' '
-                                sizes_gragu = ' '
-                                sizes_maxba = ' '
-                                sizes_maxsg = ' '
-                                sizes_maxsf = ' '
-                                sizes_ubbas = ' '
-                                sizes_ub_sf = ' '
-                                sizes_ubbug = ' '
-                                sizes_hubas = ' '
-                                sizes_hubug = ' '
-                                sizes_emart = ' '
-                                sizes_grand1 = ' '
-                                wh_line = self.env['suggestion.order.line.line'].search(
-                                    [('line_id', '=', temka2.id)])
-                                if wh_line:
-                                    for temka1 in wh_line:
-                                        if temka1.product_id.id not in product_check_sizes and temka1.warehouse_id.id == 1:
-                                            product_check_sizes.append(temka1.product_id.id)
-                                            sizes = sizes + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_grand_gutal and temka1.warehouse_id.id == 2:
-                                            product_check_grand_gutal.append(temka1.product_id.id)
-                                            sizes_gragu = sizes_gragu + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_max_basconi and temka1.warehouse_id.id == 4:
-                                            product_check_max_basconi.append(temka1.product_id.id)
-                                            sizes_maxba = sizes_maxba + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_max_shoegallery and temka1.warehouse_id.id == 6:
-                                            product_check_max_shoegallery.append(temka1.product_id.id)
-                                            sizes_maxsg = sizes_maxsg + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_max_sasha_fabiani and temka1.warehouse_id.id == 7:
-                                            product_check_max_sasha_fabiani.append(temka1.product_id.id)
-                                            sizes_maxsf = sizes_maxsf + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_ub_basconi and temka1.warehouse_id.id == 8:
-                                            product_check_ub_basconi.append(temka1.product_id.id)
-                                            sizes_ubbas = sizes_ubbas + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_ub_sasha_fabiani and temka1.warehouse_id.id == 9:
-                                            product_check_ub_sasha_fabiani.append(temka1.product_id.id)
-                                            sizes_ub_sf = sizes_ub_sf + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_ub_bugatti and temka1.warehouse_id.id == 10:
-                                            product_check_ub_bugatti.append(temka1.product_id.id)
-                                            sizes_ubbug = sizes_ubbug + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_hunnu_basconi and temka1.warehouse_id.id == 19:
-                                            product_check_hunnu_basconi.append(temka1.product_id.id)
-                                            sizes_hubas = sizes_hubas + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_hunnu_bugatti and temka1.warehouse_id.id == 20:
-                                            product_check_hunnu_bugatti.append(temka1.product_id.id)
-                                            sizes_hubug = sizes_hubug + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_emart_shoegallery and temka1.warehouse_id.id == 25:
-                                            product_check_emart_shoegallery.append(temka1.product_id.id)
-                                            sizes_emart = sizes_emart + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                        if temka1.product_id.id not in product_check_grand1 and temka1.warehouse_id.id == 28:
-                                            product_check_grand1.append(temka1.product_id.id)
-                                            sizes_grand1 = sizes_grand1 + ' ' + str(
-                                                temka1.product_id.attribute_value_ids[0].name)
-                                temka2.update({'tuv_sizes': sizes})
-                                temka2.update({'sizes_gragu': sizes_gragu})
-                                temka2.update({'sizes_maxba': sizes_maxba})
-                                temka2.update({'sizes_maxsg': sizes_maxsg})
-                                temka2.update({'sizes_maxsf': sizes_maxsf})
-                                temka2.update({'sizes_ubbas': sizes_ubbas})
-                                temka2.update({'sizes_ub_sf': sizes_ub_sf})
-                                temka2.update({'sizes_ubbug': sizes_ubbug})
-                                temka2.update({'sizes_hubas': sizes_hubas})
-                                temka2.update({'sizes_hubug': sizes_hubug})
-                                temka2.update({'sizes_emart': sizes_emart})
-                                temka2.update({'sizes_grand1': sizes_grand1})
-                if self.suggestion_lines:
-                    for f in self.suggestion_lines:
-                        if f.balance_product_ids:
-                            for p in f.balance_product_ids:
-                                for a in p.attribute_value_ids:
-                                    f.total_sizes = str(f.total_sizes) + ' ' + str(a.name)
-                        if f.product_ids:
-                            for p1 in f.product_ids:
-                                for a1 in p1.attribute_value_ids:
-                                    f.sale_sizes = str(f.sale_sizes) + ' ' + str(a1.name)
-            else:
-                for m in sol_list:
-                    created_values = main_line.create({
-                        'warehouse_id': m['warehouse'],
-                        'product_id': m['tmpl'],
-                        'sale_count': m['qty'],
-                        'suggestion_id': self.id
-                    })
-
-                    warehouses = self.env['stock.warehouse'].search([('id', '<>', m['warehouse']),('real_warehouse','=',True)])
-                    product_product = self.env['product.product'].search(
-                        [('product_tmpl_id', '=', m['tmpl']), ('id', 'not in', created_values.balance_product_ids.ids)])
-                    qty = 0.0
-                    qty2 = 0.0
-                    for f in product_product:
-                        # Боломжит үлдэгдлийг олох Бусад агуулахад
-                        for w in warehouses:
-                            self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
-                                             "where date <= %s "
-                                             "and location_id = %s and product_id = %s and state = 'done'",
-                                             (str(end_date) + ' 23:59:59', w.lot_stock_id.id,
-                                              f.id))
-                            fetched = self._cr.dictfetchall()
-                            if fetched:
-                                for k in fetched:
-                                    if k['product_qty'] is None:
-                                        qty = 0.0
-                                    else:
-                                        qty = k['product_qty']
-                            self._cr.execute("SELECT sum(product_qty)::decimal(16,2) AS product_qty from stock_move "
-                                             "where date <= %s "
-                                             "and location_dest_id = %s and product_id = %s and state = 'done'",
-                                             (str(end_date) + ' 23:59:59', w.lot_stock_id.id, f.id))
-                            in_moves = self._cr.dictfetchall()
-                            if in_moves:
-                                for i in in_moves:
-                                    if i['product_qty'] is None:
-                                        qty2 = 0.0
-                                    else:
-                                        qty2 = i['product_qty']
-                            remainder = qty2 - qty
-                            if remainder > 0.0:
-                                rank = len(self.top_warehouse_lines) + 1
-                                for h in self.top_warehouse_lines:
-                                    if h.warehouse_id.id == w.id:
-                                        rank = h.number
-
-                                temka1 = line_line.create({'line_id': created_values.id,
-                                                          'warehouse_id': w.id,
-                                                          'product_id': f.id,
-                                                          'number': rank,
-                                                          'qty': remainder})
-                                if temka1:
-                                    created_values.update({'is_useful': True})
-                for i in self.suggestion_lines:
-                    if i.warehouse_line_id:
-                        check_product = []
-                        self._cr.execute("SELECT id,product_id as product_id,warehouse_id,number from suggestion_order_line_line "
-                                         "where line_id <= %s ORDER BY number DESC",
-                                         (i.id,))
-                        sorted_line = self._cr.dictfetchall()
-                        for s in sorted_line:
-                            if s['product_id'] not in check_product:
-                                check_product.append(s['product_id'])
-                            else:
-                                self._cr.execute(
-                                    """DELETE FROM suggestion_order_line_line WHERE id = %s """ % (s['id'],))
-
-
-                        for temka2 in self.suggestion_lines:
-                            product_check_sizes = []
-                            product_check_grand_gutal = []
-                            product_check_max_basconi = []
-                            product_check_max_shoegallery = []
-                            product_check_max_sasha_fabiani = []
-                            product_check_ub_basconi = []
-                            product_check_ub_sasha_fabiani = []
-                            product_check_ub_bugatti = []
-                            product_check_hunnu_basconi = []
-                            product_check_hunnu_bugatti = []
-                            product_check_emart_shoegallery = []
-                            product_check_grand1 = []
-                            sizes = ' '
-                            sizes_gragu = ' '
-                            sizes_maxba = ' '
-                            sizes_maxsg = ' '
-                            sizes_maxsf = ' '
-                            sizes_ubbas = ' '
-                            sizes_ub_sf = ' '
-                            sizes_ubbug = ' '
-                            sizes_hubas = ' '
-                            sizes_hubug = ' '
-                            sizes_emart = ' '
-                            sizes_grand1 = ' '
-                            wh_line = self.env['suggestion.order.line.line'].search(
-                                [('line_id', '=', temka2.id)])
-                            if wh_line:
-                                for temka1 in wh_line:
-                                    if temka1.product_id.id not in product_check_sizes and temka1.warehouse_id.id == 1:
-                                        product_check_sizes.append(temka1.product_id.id)
-                                        sizes = sizes + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_grand_gutal and temka1.warehouse_id.id == 2:
-                                        product_check_grand_gutal.append(temka1.product_id.id)
-                                        sizes_gragu = sizes_gragu + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_max_basconi and temka1.warehouse_id.id == 4:
-                                        product_check_max_basconi.append(temka1.product_id.id)
-                                        sizes_maxba = sizes_maxba + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_max_shoegallery and temka1.warehouse_id.id == 6:
-                                        product_check_max_shoegallery.append(temka1.product_id.id)
-                                        sizes_maxsg = sizes_maxsg + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_max_sasha_fabiani and temka1.warehouse_id.id == 7:
-                                        product_check_max_sasha_fabiani.append(temka1.product_id.id)
-                                        sizes_maxsf = sizes_maxsf + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_ub_basconi and temka1.warehouse_id.id == 8:
-                                        product_check_ub_basconi.append(temka1.product_id.id)
-                                        sizes_ubbas = sizes_ubbas + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_ub_sasha_fabiani and temka1.warehouse_id.id == 9:
-                                        product_check_ub_sasha_fabiani.append(temka1.product_id.id)
-                                        sizes_ub_sf = sizes_ub_sf + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_ub_bugatti and temka1.warehouse_id.id == 10:
-                                        product_check_ub_bugatti.append(temka1.product_id.id)
-                                        sizes_ubbug = sizes_ubbug + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_hunnu_basconi and temka1.warehouse_id.id == 19:
-                                        product_check_hunnu_basconi.append(temka1.product_id.id)
-                                        sizes_hubas = sizes_hubas + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_hunnu_bugatti and temka1.warehouse_id.id == 20:
-                                        product_check_hunnu_bugatti.append(temka1.product_id.id)
-                                        sizes_hubug = sizes_hubug + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_emart_shoegallery and temka1.warehouse_id.id == 25:
-                                        product_check_emart_shoegallery.append(temka1.product_id.id)
-                                        sizes_emart = sizes_emart + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                                    if temka1.product_id.id not in product_check_grand1 and temka1.warehouse_id.id == 28:
-                                        product_check_grand1.append(temka1.product_id.id)
-                                        sizes_grand1 = sizes_grand1 + ' ' + str(temka1.product_id.attribute_value_ids[0].name)
-                            temka2.update({'tuv_sizes':sizes})
-                            temka2.update({'sizes_gragu':sizes_gragu})
-                            temka2.update({'sizes_maxba':sizes_maxba})
-                            temka2.update({'sizes_maxsg':sizes_maxsg})
-                            temka2.update({'sizes_maxsf':sizes_maxsf})
-                            temka2.update({'sizes_ubbas':sizes_ubbas})
-                            temka2.update({'sizes_ub_sf':sizes_ub_sf})
-                            temka2.update({'sizes_ubbug':sizes_ubbug})
-                            temka2.update({'sizes_hubas':sizes_hubas})
-                            temka2.update({'sizes_hubug':sizes_hubug})
-                            temka2.update({'sizes_emart':sizes_emart})
-                            temka2.update({'sizes_grand1':sizes_grand1})
-                if self.suggestion_lines:
-                    for f in self.suggestion_lines:
-                        if f.balance_product_ids:
-                            for p in f.balance_product_ids:
-                                for a in p.attribute_value_ids:
-                                    f.total_sizes = str(f.total_sizes) + ' ' + str(a.name)
-                        if f.product_ids:
-                            for p1 in f.product_ids:
-                                for a1 in p1.attribute_value_ids:
-                                    f.sale_sizes = str(f.sale_sizes) + ' ' + str(a1.name)
