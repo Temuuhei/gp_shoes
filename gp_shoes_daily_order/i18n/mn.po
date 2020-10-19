@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* gp_suggestion
+#	* gp_shoes_daily_order
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-18 06:23+0000\n"
-"PO-Revision-Date: 2020-09-18 06:23+0000\n"
+"POT-Creation-Date: 2020-10-19 11:06+0000\n"
+"PO-Revision-Date: 2020-10-19 11:06+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,250 +15,206 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_amount
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_amount
-msgid "Amount"
-msgstr "Дүн"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Barcode</strong>"
+msgstr "<strong>Зураасан код</strong>"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_balance_product_ids
-msgid "Balance Sizes"
-msgstr "Үлдсэн Бараанууд"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Code</strong>"
+msgstr "<strong>Барааны Код</strong>"
 
-#. module: gp_suggestion
-#: selection:suggestion.order.line,state:0
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Order Date</strong>"
+msgstr "<strong>Захиалсан огноо</strong>"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Product</strong>"
+msgstr "<strong>Бараа</strong>"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Quantity</strong>"
+msgstr "<strong>Т.А нөөц</strong>"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "<strong>Size</strong>"
+msgstr "<strong>Размер</strong>"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_active
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_tree
+msgid "Archive"
+msgstr "Архивлах"
+
+#. module: gp_shoes_daily_order
+#: selection:daily.order,state:0
 msgid "Cancelled"
-msgstr "Cancelled"
+msgstr "Цуцалсан"
 
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
-msgid "Compute"
-msgstr "Тооцоолох"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_tree
+msgid "Confirm"
+msgstr "Батлах"
 
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_line_line_form
-msgid "Create Stock Picking"
-msgstr "А.Хөдөлгөөн үүсгэх"
-
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_line_line_form
-msgid "Create Transfer"
-msgstr "А.Хөдөлгөөн үүсгэх"
-
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_create_uid
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_create_uid
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_create_uid
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_create_uid
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_create_uid
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_create_uid
 msgid "Created by"
 msgstr "Created by"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_create_date
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_create_date
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_create_date
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_create_date
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_create_date
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_create_date
 msgid "Created on"
 msgstr "Created on"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_display_name
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_display_name
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_display_name
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_display_name
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_display_name
+#. module: gp_shoes_daily_order
+#: model:ir.actions.act_window,name:gp_shoes_daily_order.action_daily_order
+#: model:ir.ui.menu,name:gp_shoes_daily_order.menu_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_form
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_tree
+msgid "Daily Order"
+msgstr "Өдөр бүрийн захиалга"
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Date"
+msgstr "Огноо"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_display_name
 msgid "Display Name"
 msgstr "Дэлгэцийн Нэр"
 
-#. module: gp_suggestion
-#: selection:suggestion.order,state:0
-#: selection:suggestion.order.line,state:0
+#. module: gp_shoes_daily_order
+#: selection:daily.order,state:0
 msgid "Done"
-msgstr "Done"
+msgstr "Шилжүүлсэн"
 
-#. module: gp_suggestion
-#: selection:suggestion.order,state:0
-#: selection:suggestion.order.line,state:0
+#. module: gp_shoes_daily_order
+#: selection:daily.order,state:0
 msgid "Draft"
-msgstr "Ноорог"
+msgstr "Шинэ"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_id
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_id
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_id
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_id
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_id
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_virtual_available
+msgid "Forecast Quantity"
+msgstr "Тоо хэмжээний урьдчилсан таамаг"
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,help:gp_shoes_daily_order.field_daily_order_virtual_available
+msgid "Forecast quantity (computed as Quantity On Hand - Outgoing + Incoming)\n"
+"In a context with a single Stock Location, this includes goods stored in this location, or any of its children.\n"
+"In a context with a single Warehouse, this includes goods stored in the Stock Location of this Warehouse, or any of its children.\n"
+"Otherwise, this includes goods stored in any Stock Location with 'internal' type."
+msgstr "Тоо хэмжээний урьдчилсан таамаг (Тооцоолохдоо = Гарт байгаа тоо хэмжээнээс - Гарах + Ирэх)\n"
+"Нэг хадгалах байрлалын хувьд энэ байрлал болон дэд байрлалуудад хадгалагдаж байгаа бараанууд байна.\n"
+"Нэг агуулахын хувьд агуулахын хадгалах байрлал болон дэд байрлалуудад хадгалагдаж байгаа бараанууд байна.\n"
+"Бусад тохиолдолд, 'дотоод' гэсэн төрөлтэй хадгалах байрлалд хадгалагдаж байгаа бараанууд байна."
+
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Group by..."
+msgstr "Бүлэглэх..."
+
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_id
 msgid "ID"
 msgstr "ID"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order___last_update
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line___last_update
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line___last_update
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line___last_update
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line___last_update
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order___last_update
 msgid "Last Modified on"
 msgstr "Сүүлийн засвар хийсэн огноо"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_write_uid
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_write_uid
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_write_uid
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_write_uid
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_write_uid
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_write_uid
 msgid "Last Updated by"
 msgstr "Last Updated by"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_write_date
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_write_date
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_write_date
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_write_date
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_write_date
+#. module: gp_shoes_daily_order
+#: model:ir.model.fields,field_description:gp_shoes_daily_order.field_daily_order_write_date
 msgid "Last Updated on"
 msgstr "Last Updated on"
 
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
-msgid "Order Lines"
-msgstr "Захиалгын мөрүүд"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Location"
+msgstr "Байршил"
 
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_line_line_form
-msgid "Other WH Info"
-msgstr "Бусад салбар"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Locations"
+msgstr "Байрлалууд"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_warehouse_line_id
-msgid "Other Warehouses"
-msgstr "Бусад салбар"
-
-#. module: gp_suggestion
-#: selection:suggestion.order.line,state:0
-msgid "Pending"
-msgstr "Pending"
-
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
-msgid "Product Information"
-msgstr "Барааны мэдээлэл"
-
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_qty
-msgid "Qty"
-msgstr "Тоо"
-
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_number
-msgid "Rank"
-msgstr "Rank"
-
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_remaining_qty
-msgid "Remaining Qty"
-msgstr "Үлдэгдэл тоо хэмжээ"
-
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_sale_count
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_sale_count
-msgid "Sale Count"
-msgstr "Нийт борлуулалсан, Ш"
-
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_product_ids
-msgid "Sold Sizes"
-msgstr "Борлуулсан бараанууд"
-
-#. module: gp_suggestion
-#: code:addons/gp_suggestion/model/gp_suggestion.py:29
+#. module: gp_shoes_daily_order
+#: code:addons/gp_shoes_daily_order/models/daily_order.py:223
 #, python-format
-msgid "Stock Picking is already created!! \n"
-" Check!"
-msgstr "Агуулахын хөдөлгөөн аль хэдийн үүссэн байна!! \n"
-" Дахин шалгаарай!"
+msgid "Main Warehouse doesnt detected!! \n"
+" Configure the main warehouse!"
+msgstr "Үндсэн төв агуулах олдсонгүй!! \n"
+"Төв агуулах дээр тохиргоо хийнэ үү"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_suggestion_id
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_product_line_suggestion_id
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_warehouse_line_suggestion_id
-msgid "Suggestion"
-msgstr "Санал болгох захиалга"
+#. module: gp_shoes_daily_order
+#: selection:daily.order,state:0
+msgid "Pending"
+msgstr "Замд яваа"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_line_line_id
-msgid "Suggestion Line"
-msgstr "Санал болгох захиалгын мөр"
+#. module: gp_shoes_daily_order
+#: model:ir.actions.report.xml,name:gp_shoes_daily_order.record_daily_order_view111
+msgid "Print"
+msgstr "Хэвлэх"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_suggestion_lines
-msgid "Suggestion Lines"
-msgstr "Санал болгох захиалгын мөр"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Product"
+msgstr "Бараа"
 
-#. module: gp_suggestion
-#: model:ir.actions.act_window,name:gp_suggestion.action_suggestion_order
-#: model:ir.ui.menu,name:gp_suggestion.menu_suggestion_order
-msgid "Suggestion Order"
-msgstr "Санал болгох захиалга"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Product Qty"
+msgstr "Тоо ширхэг"
 
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
-msgid "Suggestion Order Form"
-msgstr "Санал болгох захиалга"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.template_report_daily_order
+msgid "Products"
+msgstr "Бараанууд"
 
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
-msgid "Suggestion Order Lines"
-msgstr "SСанал болгох захиалга"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_tree
+msgid "Ready"
+msgstr "Бэлэн"
 
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_tree
-msgid "Suggestion Order Tree"
-msgstr "Санал болгох захиалга"
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_sale_order
+msgid "Sales Order"
+msgstr "Борлуулалтын захиалга"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_top_product_lines
-msgid "Top Products"
-msgstr "Топ Бараанууд"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "State"
+msgstr "Муж"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_top_warehouse_lines
-msgid "Top Warehouses"
-msgstr "Топ салбарууд"
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_stock_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.daily_order_search_view
+msgid "Warehouse"
+msgstr "Агуулах"
 
-#. module: gp_suggestion
-#: model:ir.ui.view,arch_db:gp_suggestion.view_suggestion_order_form
-msgid "Total"
-msgstr "Дүн"
+#. module: gp_shoes_daily_order
+#: model:ir.ui.view,arch_db:gp_shoes_daily_order.view_daily_order_tree
+msgid "calls python function"
+msgstr "calls python function"
 
-#. module: gp_suggestion
-#: model:ir.model.fields,field_description:gp_suggestion.field_suggestion_order_line_is_useful
-msgid "Useful"
-msgstr "Ашиглах"
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_daily_order
+msgid "daily.order"
+msgstr "Өдөр бүрийн захиалга"
 
-#. module: gp_suggestion
-#: model:ir.model,name:gp_suggestion.model_suggestion_order
-msgid "suggestion.order"
-msgstr "Санал болгох захиалга"
-
-#. module: gp_suggestion
-#: model:ir.model,name:gp_suggestion.model_suggestion_order_line
-msgid "suggestion.order.line"
-msgstr "Санал болгох захиалгын мөр"
-
-#. module: gp_suggestion
-#: model:ir.model,name:gp_suggestion.model_suggestion_order_line_line
-msgid "suggestion.order.line.line"
-msgstr "Санал болгох захиалгын мөр дэх мэдээлэл"
-
-#. module: gp_suggestion
-#: model:ir.model,name:gp_suggestion.model_suggestion_order_product_line
-msgid "suggestion.order.product.line"
-msgstr "Санал болгох захиалгын барааны мөр"
-
-#. module: gp_suggestion
-#: model:ir.model,name:gp_suggestion.model_suggestion_order_warehouse_line
-msgid "suggestion.order.warehouse.line"
-msgstr "Санал болгох захиалгын агуулахын мөр"
+#. module: gp_shoes_daily_order
+#: model:ir.model,name:gp_shoes_daily_order.model_report_gp_shoes_daily_order_record_daily_order_view111
+msgid "report.gp_shoes_daily_order.record_daily_order_view111"
+msgstr "report.gp_shoes_daily_order.record_daily_order_view111"
