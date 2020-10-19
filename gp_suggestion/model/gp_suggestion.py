@@ -643,7 +643,7 @@ class SuggestionOrder(models.Model):
                         remainder = qty2 - qty
                         if remainder > 0.0:
                             product_ids.append(f.id)
-                            remaing_qty_last = remainder
+                            remaing_qty_last += remainder
 
 
                     #speed
