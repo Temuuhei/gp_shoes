@@ -166,8 +166,8 @@
                                         <span t-esc="o.product_id.name"/>
                                     </td>
 
-                                    <td class="text-center">
-                                        <span t-esc="o.product_id.default_code"/>
+                                    <td class="text-left; font-size:7px">
+                                        <span t-esc="o.product_id.default_code" />
                                     </td><t>
                                     <td class="text-center">
                                             <span t-esc="o.product_id.new_barcode"/>
