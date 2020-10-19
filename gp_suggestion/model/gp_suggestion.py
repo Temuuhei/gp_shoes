@@ -279,7 +279,7 @@ class SuggestionOrder(models.Model):
     end_date = fields.Date(string='Дуусах огноо', required=True,index=True,
                            copy=False,
                            default=fields.Datetime.now)
-    warehouse_id = fields.Many2one('stock.warehouse',  required=True, string = 'Салбар')
+    warehouse_id = fields.Many2one('stock.warehouse', string = 'Салбар')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('done', 'Done'),
