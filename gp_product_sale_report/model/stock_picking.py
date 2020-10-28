@@ -17,7 +17,7 @@ class StockPicking(models.Model):
     product_template = fields.Many2one('product.template', 'Main product')
     is_existed_products = fields.Boolean('Байгаа бараануудыг харуулах', default = False)
     return_cash = fields.Float('Return cash', default = 0.0)
-    is_check = fields.Boolean('Is check?',default = False)
+    is_check = fields.Boolean('Is check?',default = False, copy = False)
 
     @api.multi
     def insert_products(self):
