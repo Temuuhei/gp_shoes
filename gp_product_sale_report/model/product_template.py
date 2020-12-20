@@ -2,6 +2,72 @@
 
 from odoo import api, fields, models, tools, _
 import odoo.addons.decimal_precision as dp
+from odoo.http import request
+from odoo import http
+
+class ProductProduct(http.Controller):
+    @http.route('/get_products_info', type = 'json',auth = 'user')
+    def get_products_info(self):
+        print ('Yes entered here')
+        product_recs = request.env['product.product'].search([('active','=',True),('qty_available','>',0)])
+        products = []
+        for rec in product_recs:
+            if rec.qty_available:
+                query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.list_price as price
+                                        FROM stock_quant AS sq
+                                            left join product_product AS pp
+                                               ON pp.id = sq.product_id
+                                            JOIN product_template AS pt
+                                               ON pt.id = pp.product_tmpl_id
+                                            JOIN stock_warehouse AS w
+                                               ON sq.location_id = w.lot_stock_id
+                                        WHERE sq.product_id = %s
+                                        GROUP BY w.id,pt.list_price
+                                       """
+
+                request.env.cr.execute(query % (rec.id,))
+                stock_locations = request.env.cr.dictfetchall()
+                vals = {
+                    'id': rec.id,
+                    'name' : rec.name_get(),
+                    'barcode' : rec.new_barcode,
+                    'price' : int(rec.product_tmpl_id.list_price),
+                    'stock_locations' : stock_locations,
+                }
+                products.append(vals)
+            data = {'status':200, 'response' : products, 'message' : 'Done All Products info Returned' }
+            return data
+
+class StockQuant(http.Controller):
+
+    @http.route('/stock_locations', type = 'json',auth = 'user')
+    def stock_locations(self):
+        print ('Yes entered here stock Locations')
+        warehouse_recs = request.env['stock.warehouse'].search([('real_warehouse','=',True)])
+        warehouses = []
+        for rec in warehouse_recs:
+            vals = {
+                'id': rec.id,
+                'name' : rec.name,
+            }
+            warehouses.append(vals)
+        data = {'status':200, 'response' : warehouses, 'message' : 'Returns List of All known locations' }
+        return data
+
+    @http.route('/products', type='json', auth='user')
+    def products(self):
+        product_recs = request.env['product.product'].search([('active', '=', True)])
+        products = []
+        for rec in product_recs:
+            vals = {
+                'id': rec.id,
+                'name': rec.name_get(),
+                            }
+            products.append(vals)
+        data = {'status': 200, 'response': products, 'message': 'Return List of All Products'}
+        return data
+
+
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
