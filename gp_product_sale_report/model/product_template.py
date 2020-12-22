@@ -35,8 +35,8 @@ class ProductProduct(http.Controller):
                     'stock_locations' : stock_locations,
                 }
                 products.append(vals)
-            data = {'status':200, 'response' : products, 'message' : 'Done All Products info Returned' }
-            return data
+        data = {'status':200, 'response' : products, 'message' : 'Done All Products info Returned' }
+        return data
 
 class StockQuant(http.Controller):
 
