@@ -83,7 +83,13 @@ class Picking(models.Model):
     def _default_stock_picking(self):
         # if self.location_id:
             # warehouse = self.env['stock.warehouse'].search([('lot_stock_id', '=', self.location_id.id)], limit=1)
-        picking_type = self.env['stock.picking.type'].search([('active', '=',True),
+        if self.location_id:
+            warehouse = self.env['stock.warehouse'].search([('lot_stock_id', '=', self.location_id.id)], limit=1)
+            picking_type = self.env['stock.picking.type'].search([('active', '=', True),
+                                                                  ('code', '=', 'internal'),
+                                                                  ('warehouse_id', '=',warehouse.id)], limit=1)
+        else:
+            picking_type = self.env['stock.picking.type'].search([('active', '=',True),
                                                               ('code', '=', 'internal'),
                                                              ('warehouse_id', '=',self.env.user.allowed_warehouses[0].id)], limit=1)
         return picking_type
