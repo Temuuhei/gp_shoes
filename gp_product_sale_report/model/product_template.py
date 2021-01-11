@@ -55,7 +55,38 @@ class StockQuant(http.Controller):
         return data
 
     @http.route('/products', type='json', auth='user')
-    def products(self):
+    def products(self, **rec):
+        if request.jsonrequest:
+            if rec['id']:
+                product_recs = request.env['product.product'].search([('active', '=', True), ('qty_available', '>', 0),('id', '=', rec['id'])])
+                products = []
+                if product_recs:
+                    query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.list_price as price
+                                                            FROM stock_quant AS sq
+                                                                left join product_product AS pp
+                                                                   ON pp.id = sq.product_id
+                                                                JOIN product_template AS pt
+                                                                   ON pt.id = pp.product_tmpl_id
+                                                                JOIN stock_warehouse AS w
+                                                                   ON sq.location_id = w.lot_stock_id
+                                                            WHERE sq.product_id = %s
+                                                            GROUP BY w.id,pt.list_price
+                                                           """
+
+                    request.env.cr.execute(query % (rec['id'],))
+                    stock_locations = request.env.cr.dictfetchall()
+                    vals = {
+                        'id': product_recs.id,
+                        'name': product_recs.name_get(),
+                        'barcode': product_recs.new_barcode,
+                        'price': int(product_recs.product_tmpl_id.list_price),
+                        'stock_locations': stock_locations,
+                    }
+                    products.append(vals)
+                data = {'status': 200, 'response': products, 'message': 'Done All Products info Returned'}
+            else:
+                data = {'status': 200, 'response': [], 'message': 'Not Found Products or Unavailable'}
+            return data
         product_recs = request.env['product.product'].search([('active', '=', True)])
         products = []
         for rec in product_recs:
