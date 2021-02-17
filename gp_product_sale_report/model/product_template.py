@@ -13,7 +13,7 @@ class ProductProduct(http.Controller):
         products = []
         for rec in product_recs:
             if rec.qty_available:
-                query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.list_price as price
+                query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.main_price as price
                                         FROM stock_quant AS sq
                                             left join product_product AS pp
                                                ON pp.id = sq.product_id
@@ -31,7 +31,7 @@ class ProductProduct(http.Controller):
                     'id': rec.id,
                     'name' : rec.name_get(),
                     'barcode' : rec.new_barcode,
-                    'price' : int(rec.product_tmpl_id.list_price),
+                    'price' : int(rec.product_tmpl_id.main_price),
                     'stock_locations' : stock_locations,
                 }
                 products.append(vals)
@@ -61,7 +61,7 @@ class StockQuant(http.Controller):
                 product_recs = request.env['product.product'].search([('active', '=', True), ('qty_available', '>', 0),('id', '=', rec['id'])])
                 products = []
                 if product_recs:
-                    query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.list_price as price
+                    query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.main_price as price
                                                             FROM stock_quant AS sq
                                                                 left join product_product AS pp
                                                                    ON pp.id = sq.product_id
@@ -79,7 +79,7 @@ class StockQuant(http.Controller):
                         'id': product_recs.id,
                         'name': product_recs.name_get(),
                         'barcode': product_recs.new_barcode,
-                        'price': int(product_recs.product_tmpl_id.list_price),
+                        'price': int(product_recs.product_tmpl_id.main_price),
                         'stock_locations': stock_locations,
                     }
                     products.append(vals)
