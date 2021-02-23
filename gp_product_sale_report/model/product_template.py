@@ -22,7 +22,7 @@ class ProductProduct(http.Controller):
                                             JOIN stock_warehouse AS w
                                                ON sq.location_id = w.lot_stock_id
                                         WHERE sq.product_id = %s
-                                        GROUP BY w.id,pt.list_price
+                                        GROUP BY w.id,pt.main_price
                                        """
 
                 request.env.cr.execute(query % (rec.id,))
@@ -70,7 +70,7 @@ class StockQuant(http.Controller):
                                                                 JOIN stock_warehouse AS w
                                                                    ON sq.location_id = w.lot_stock_id
                                                             WHERE sq.product_id = %s
-                                                            GROUP BY w.id,pt.list_price
+                                                            GROUP BY w.id,pt.main_price
                                                            """
 
                     request.env.cr.execute(query % (rec['id'],))
