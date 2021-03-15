@@ -13,7 +13,7 @@ class ProductProduct(http.Controller):
         products = []
         for rec in product_recs:
             if rec.qty_available:
-                query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.main_price as price
+                query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.main_price as price, pt.list_price as list_price
                                         FROM stock_quant AS sq
                                             left join product_product AS pp
                                                ON pp.id = sq.product_id
@@ -21,8 +21,8 @@ class ProductProduct(http.Controller):
                                                ON pt.id = pp.product_tmpl_id
                                             JOIN stock_warehouse AS w
                                                ON sq.location_id = w.lot_stock_id
-                                        WHERE sq.product_id = %s
-                                        GROUP BY w.id,pt.main_price
+                                        WHERE sq.product_id = %s AND w.
+                                        GROUP BY w.id,pt.main_price,pt.list_price
                                        """
 
                 request.env.cr.execute(query % (rec.id,))
@@ -32,6 +32,7 @@ class ProductProduct(http.Controller):
                     'name' : rec.name_get(),
                     'barcode' : rec.new_barcode,
                     'price' : int(rec.product_tmpl_id.main_price),
+                    'price_sale' : int(rec.product_tmpl_id.list_price),
                     'stock_locations' : stock_locations,
                 }
                 products.append(vals)
@@ -61,7 +62,7 @@ class StockQuant(http.Controller):
                 product_recs = request.env['product.product'].search([('active', '=', True), ('qty_available', '>', 0),('id', '=', rec['id'])])
                 products = []
                 if product_recs:
-                    query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.main_price as price
+                    query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.main_price as price, pt.list_price as list_price
                                                             FROM stock_quant AS sq
                                                                 left join product_product AS pp
                                                                    ON pp.id = sq.product_id
@@ -70,7 +71,7 @@ class StockQuant(http.Controller):
                                                                 JOIN stock_warehouse AS w
                                                                    ON sq.location_id = w.lot_stock_id
                                                             WHERE sq.product_id = %s
-                                                            GROUP BY w.id,pt.main_price
+                                                            GROUP BY w.id,pt.main_price,pt.list_price
                                                            """
 
                     request.env.cr.execute(query % (rec['id'],))
@@ -80,6 +81,7 @@ class StockQuant(http.Controller):
                         'name': product_recs.name_get(),
                         'barcode': product_recs.new_barcode,
                         'price': int(product_recs.product_tmpl_id.main_price),
+                        'price_sale': int(product_recs.product_tmpl_id.list_price),
                         'stock_locations': stock_locations,
                     }
                     products.append(vals)
