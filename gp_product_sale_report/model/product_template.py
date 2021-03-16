@@ -9,7 +9,7 @@ class ProductProduct(http.Controller):
     @http.route('/get_products_info', type = 'json',auth = 'user')
     def get_products_info(self):
         print ('Yes entered here')
-        product_recs = request.env['product.product'].search([('active','=',True),('qty_available','>',0)])
+        product_recs = request.env['product.product'].search([('active','=',True),('qty_available','>=',0)])
         products = []
         for rec in product_recs:
             if rec.qty_available:
@@ -59,7 +59,7 @@ class StockQuant(http.Controller):
     def products(self, **rec):
         if request.jsonrequest:
             if rec['id']:
-                product_recs = request.env['product.product'].search([('active', '=', True), ('qty_available', '>', 0),('id', '=', rec['id'])])
+                product_recs = request.env['product.product'].search([('active', '=', True), ('qty_available', '>=', 0),('id', '=', rec['id'])])
                 products = []
                 if product_recs:
                     query = """ SELECT w.id AS location_id, sum(qty) as count_on_hand, pt.main_price as price, pt.list_price as list_price
