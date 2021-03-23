@@ -21,7 +21,7 @@ class ProductProduct(http.Controller):
                                                ON pt.id = pp.product_tmpl_id
                                             JOIN stock_warehouse AS w
                                                ON sq.location_id = w.lot_stock_id
-                                        WHERE sq.product_id = %s AND w.
+                                        WHERE sq.product_id = %s
                                         GROUP BY w.id,pt.main_price,pt.list_price
                                        """
 
