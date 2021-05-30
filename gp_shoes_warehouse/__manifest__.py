@@ -19,6 +19,7 @@
         'views/stock_product_initial_view.xml',
         'views/product_template.xml',
         'views/res_users.xml',
+        'views/product_template_discount_view.xml',
         # 'views/product_initial_insertion_view.xml',
 
     ],
