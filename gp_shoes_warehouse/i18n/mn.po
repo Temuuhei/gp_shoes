@@ -1,0 +1,470 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* gp_shoes_warehouse
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-30 13:54+0000\n"
+"PO-Revision-Date: 2021-05-30 13:54+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_res_users_allowed_cash
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_res_users_inherited_gp_form
+msgid "Allowed Cash"
+msgstr "Зөвшөөрөгдсөн касс"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_res_users_inherited_gp_form
+msgid "Allowed Warehouses"
+msgstr "Allowed Warehouses"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_product_template_discount_form
+msgid "Approve"
+msgstr "Батлах"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_product_new_barcode
+msgid "Barcode"
+msgstr "Зураасан код"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,help:gp_shoes_warehouse.field_product_template_discount_line_price_unit_discount
+msgid "Base price to compute the customer price. Sometimes called the catalog price."
+msgstr "Захиалагчийн үнийг тооцоолох суурь үнэ. Заримдаа каталогийн үнэ гэдэг."
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.action_excel_output_view
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_stock_product_initial
+msgid "Close"
+msgstr "Хаах"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Company"
+msgstr "Компани"
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/product.py:157
+#, python-format
+msgid "Consumable"
+msgstr "Consumable"
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/stock_quant.py:254
+#, python-format
+msgid "Could not reserve all requested products. Please use the 'Mark as Todo' button to handle the reservation manually."
+msgstr "Could not reserve all requested products. Please use the 'Mark as Todo' button to handle the reservation manually."
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_picking_inv
+msgid "Create user"
+msgstr "Create user"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_create_uid
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_create_uid
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial_create_uid
+msgid "Created by"
+msgstr "Үүсгэгч"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_create_date
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_create_date
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial_create_date
+msgid "Created on"
+msgstr "Үүсгэсэн"
+
+#. module: gp_shoes_warehouse
+#: model:ir.actions.act_window,name:gp_shoes_warehouse.location_open_quants
+msgid "Current Stock"
+msgstr "Одоогийн Нөөц"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial_date
+msgid "Date Of Inventory"
+msgstr "Date Of Inventory"
+
+#. module: gp_shoes_warehouse
+#: selection:stock.product.initial,type:0
+msgid "Default code"
+msgstr "Барааны код"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_stock_quant_form
+msgid "Destination Location Zone"
+msgstr "Хүргэх байрлалын бүс"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_discount
+msgid "Discount"
+msgstr "Хөнгөлөлт"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_id_6297
+msgid "Discount Lines"
+msgstr "Хөнгөлөлт идэвхижүүлэх бараанууд"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_price_unit_discount
+msgid "Discounted price"
+msgstr "Зарах үнэ"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_display_name
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_display_name
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial_display_name
+msgid "Display Name"
+msgstr "Дэлгэцийн Нэр"
+
+#. module: gp_shoes_warehouse
+#: selection:product.template.discount,state:0
+msgid "Done"
+msgstr "Батлагдсан"
+
+#. module: gp_shoes_warehouse
+#: selection:product.template.discount,state:0
+msgid "Draft"
+msgstr "Шинэ"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial_data
+msgid "Excel File"
+msgstr "Excel файл"
+
+#. module: gp_shoes_warehouse
+#: model:ir.actions.act_window,name:gp_shoes_warehouse.action_report_excel_output
+msgid "Excel Report Output"
+msgstr "Excel Тайлангийн үр дүн"
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/stock_product_initial.py:373
+#: code:addons/gp_shoes_warehouse/model/stock_product_initial.py:711
+#, python-format
+msgid "Excel sheet must be 6 columned : Code, Price,Size,Qty,Season,Cost: error on row %s "
+msgstr "Excel sheet must be 6 columned : Code, Price,Size,Qty,Season,Cost: error on row %s "
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_stock_product_initial
+msgid "Execute"
+msgstr "Execute"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Filters"
+msgstr "Шүүлтүүр"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Group by..."
+msgstr "Бүлэглэх..."
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_stock_quant_form
+msgid "History"
+msgstr "Түүх"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_id
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_id
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial_id
+msgid "ID"
+msgstr "ID"
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/stock_product_initial.py:198
+#: code:addons/gp_shoes_warehouse/model/stock_product_initial.py:243
+#: code:addons/gp_shoes_warehouse/model/stock_product_initial.py:280
+#, python-format
+msgid "INV- %s: %s -%s"
+msgstr "INV- %s: %s -%s"
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/stock_product_initial.py:362
+#, python-format
+msgid "INV-%s: %s - %s"
+msgstr "INV-%s: %s - %s"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model,name:gp_shoes_warehouse.model_stock_immediate_transfer
+msgid "Immediate Transfer"
+msgstr "Даруй шилжүүлэх"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial_type
+msgid "Import type"
+msgstr "Import type"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.menu,name:gp_shoes_warehouse.menu_initial_data
+msgid "Initial Stock Data Insertion"
+msgstr "Initial Stock Data Insertion"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Internal Locations"
+msgstr "Дотоод Байрлалууд"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model,name:gp_shoes_warehouse.model_stock_inventory
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_stock_quant_pivot
+msgid "Inventory"
+msgstr "Хадгалах"
+
+#. module: gp_shoes_warehouse
+#: model:ir.actions.act_window,name:gp_shoes_warehouse.quantsact
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_stock_quant_form
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_stock_quant_graph_value
+msgid "Inventory Valuation"
+msgstr "Агуулахын нөөц"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount___last_update
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line___last_update
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial___last_update
+msgid "Last Modified on"
+msgstr "Сүүлийн засвар хийсэн огноо"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_write_uid
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_write_uid
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial_write_uid
+msgid "Last Updated by"
+msgstr "Сүүлийн засвар хийсэн"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_write_date
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_write_date
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial_write_date
+msgid "Last Updated on"
+msgstr "Сүүлийн засвар хийсэн огноо"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Location"
+msgstr "Байрлал"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Lot/Serial Number"
+msgstr "Цувралын Дугаар"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_product_main_price
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_product_old_code
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_main_price
+msgid "Main price"
+msgstr "Үндсэн үнэ"
+
+#. module: gp_shoes_warehouse
+#: selection:stock.product.initial,type:0
+msgid "Name"
+msgstr "Нэр"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Negative"
+msgstr "Сөрөг"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Owner"
+msgstr "Эзэмшигч"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Package"
+msgstr "Баглаа"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_discount_id
+msgid "Parent Discount"
+msgstr "Барааны хөнгөлөлт"
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/product_template_discount.py:40
+#, python-format
+msgid "Please select the products in line \n"
+" Check!"
+msgstr "Уучлаарай та эхлээд хөнгөлөлт тооцох бараануудыг сонгох ёстой \n"
+" Шалгана уу!"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Positive"
+msgstr "Эерэг"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model,name:gp_shoes_warehouse.model_product_product
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_product_tmpl_id
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Product"
+msgstr "Бараа"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model,name:gp_shoes_warehouse.model_product_template
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Product Template"
+msgstr "Барааны үлгэр"
+
+#. module: gp_shoes_warehouse
+#: model:ir.actions.act_window,name:gp_shoes_warehouse.action_product_template_discount
+#: model:ir.ui.menu,name:gp_shoes_warehouse.menu_product_template_discount
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_product_temlate_discount_tree
+msgid "Product Template Discount"
+msgstr "Барааны хөнгөлөлт тооцох"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_product_template_discount_form
+msgid "Product Template Discount Lines"
+msgstr "Хөнгөлөлт тооцох бараанууд"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_product_template_discount_form
+msgid "Product Template Discounts Form"
+msgstr "Барааны хөнгөлөлт тооцох"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_quant_product_tmp_id
+msgid "Product related"
+msgstr "Product related"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_product_template_discount_form
+msgid "Products Lines"
+msgstr "Products Lines"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model,name:gp_shoes_warehouse.model_stock_quant
+msgid "Quants"
+msgstr "Тоо бүртгэлүүд"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.product_template_form_hide_barcode_view
+msgid "Reload"
+msgstr "Reload"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.action_excel_output_view
+msgid "Report Output"
+msgstr "Тайлан татах үйлдэл"
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/product.py:158
+#, python-format
+msgid "Service"
+msgstr "Service"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_stock_quant_form
+msgid "Source Location Zone"
+msgstr "Эх байрлалын бүс"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_product_new_standard_price
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_line_price_unit
+msgid "Standard price"
+msgstr "Standard price"
+
+#. module: gp_shoes_warehouse
+#: model:ir.actions.act_window,name:gp_shoes_warehouse.product_open_quants
+#: model:ir.actions.act_window,name:gp_shoes_warehouse.product_template_open_quants
+msgid "Stock On Hand"
+msgstr "Гарт байгаа"
+
+#. module: gp_shoes_warehouse
+#: model:ir.actions.act_window,name:gp_shoes_warehouse.action_stock_product_initial
+#: model:ir.model,name:gp_shoes_warehouse.model_stock_product_initial
+#: model:ir.ui.menu,name:gp_shoes_warehouse.menu_action_stock_product_initial
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.view_stock_product_initial
+msgid "Stock Product Initial"
+msgstr "Stock Product Initial"
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/stock_quant.py:62
+#, python-format
+msgid "Stock Transit Order"
+msgstr "Stock Transit Order"
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/product.py:159
+#, python-format
+msgid "Stockable Product"
+msgstr "Stockable Product"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_product_default_code_r
+msgid "Taxes"
+msgstr "Татварууд"
+
+#. module: gp_shoes_warehouse
+#: model:ir.actions.act_window,help:gp_shoes_warehouse.quantsact
+msgid "This analysis gives you a fast overview on the current stock level of your products and their current inventory value."
+msgstr "Энэ шинжилгээ нь одоогийн нөөцийн түвшин, нөөцийн үнэлгээний мэдээллийг түргэн зуур тоймлон харах боломжтой."
+
+#. module: gp_shoes_warehouse
+#: model:ir.model,name:gp_shoes_warehouse.model_stock_picking
+msgid "Transfer"
+msgstr "Шилжүүлэх"
+
+#. module: gp_shoes_warehouse
+#: model:ir.ui.view,arch_db:gp_shoes_warehouse.quant_search_view
+msgid "Transit Locations"
+msgstr "Дамжин өнгөрөх байрлалууд"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_product_template_discount_user_id
+msgid "User"
+msgstr "Хэрэглэгч"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model,name:gp_shoes_warehouse.model_res_users
+msgid "Users"
+msgstr "Хэрэглэгчид"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_stock_product_initial_location_id
+msgid "Warehouse"
+msgstr "Агуулах"
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/stock_quant.py:45
+#, python-format
+msgid "You can create transit order only for one location at time."
+msgstr "You can create transit order only for one location at time."
+
+#. module: gp_shoes_warehouse
+#: code:addons/gp_shoes_warehouse/model/stock_quant.py:104
+#: code:addons/gp_shoes_warehouse/model/stock_quant.py:282
+#, python-format
+msgid "You must define a warehouse for the company: %s."
+msgstr "You must define a warehouse for the company: %s."
+
+#. module: gp_shoes_warehouse
+#: model:ir.model.fields,field_description:gp_shoes_warehouse.field_res_users_allowed_warehouses
+msgid "allowed Warehouse"
+msgstr "allowed Warehouse"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model,name:gp_shoes_warehouse.model_product_attribute_value
+msgid "product.attribute.value"
+msgstr "product.attribute.value"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model,name:gp_shoes_warehouse.model_product_template_discount
+msgid "product.template.discount"
+msgstr "Барааны хөнгөлөлт"
+
+#. module: gp_shoes_warehouse
+#: model:ir.model,name:gp_shoes_warehouse.model_product_template_discount_line
+msgid "product.template.discount.line"
+msgstr "product.template.discount.line"
