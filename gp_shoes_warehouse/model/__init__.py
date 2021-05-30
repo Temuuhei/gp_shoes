@@ -2,4 +2,5 @@ import stock_quant
 import product
 import stock_product_initial
 import res_users
+import product_template_discount
 # import product_initial_insertion
