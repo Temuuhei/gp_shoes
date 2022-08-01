@@ -11,6 +11,7 @@
                 <field name="mobile_payment"/>
                 <field name="is_discount"/>
                 <field name="is_boss" groups="stock.group_stock_manager"/>
+                <field name="phone_number"/>
             </xpath>
             <xpath expr="//sheet/notebook/page/field/form/group/group/field[@name='tax_id']" position="after">
                 <field name="cash_payment"/>
@@ -18,6 +19,7 @@
                 <field name="mobile_payment"/>
                 <field name="is_discount"/>
                 <field name="is_boss" groups="stock.group_stock_manager"/>
+                <field name="phone_number"/>
             </xpath>
             <xpath expr="//sheet/notebook/page/field/form/group/group/field[@name='product_id']" position="replace">
                 <field name="product_id" options="{'no_create': True}"/>
@@ -88,6 +90,7 @@
                     <field name="is_user_error" invisible="1"/>
                     <field name="order_id"/>
                     <field name="order_partner_id"/>
+                    <field name="phone_number"/>
                     <field name="name"/>
                     <field name="salesman_id"/>
                     <field name="cash_payment" sum="Total" widget="monetary"/>

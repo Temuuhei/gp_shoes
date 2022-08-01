@@ -41,6 +41,7 @@ class SaleOrderLine(models.Model):
     is_user_error = fields.Boolean('Is User Error',default=False)
     is_discount = fields.Boolean('Is Discount',default=False)
     is_boss = fields.Boolean('Is Boss',default=False,copy=False)
+    phone_number = fields.Char(string='Утасны дугаар')
 
 
     @api.multi
