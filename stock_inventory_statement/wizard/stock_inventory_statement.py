@@ -131,6 +131,7 @@ class stock_inventory_statement(models.Model):
                 # Размер болгож өөрчлөв
                 # headers[0] += [u'Х.нэгж']
                 headers[0] += [u'Размер']
+                headers[0] += [u'Үндсэн үнэ']
                 headers[1] += [None]
                 headers[2] += [None]
                 header_span += [((colx, 0), (colx, 2))]
@@ -147,11 +148,11 @@ class stock_inventory_statement(models.Model):
                     colx += 13
                     widths += [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
                 for wh in warehouses:
-                    headers[0] += [wh.name, None, None, None, None, None, None, None, None, None, None, None, None, None, None]
+                    headers[0] += [wh.name, None, None, None, None, None, None, None, None, None, None, None, None, None]
                     headers[1] += [u'Худалдах үнэ', u'Эхний үлдэгдэл', None, None, u'Нэмэлт', None, None, u'Хасалт', None, None, u'Үнэ өөрчлөлт', u'Эцсийн үлдэгдэл', None, None]
                     headers[2] += [None, u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн', u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн',
                                    u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн', None, u'Тоо хэмжээ', u'Зарах үнийн дүн', u'Өртөгийн дүн']
-                    header_span += [((colx, 0), (colx + 13, 0)), ((colx, 1), (colx, 2)), ((colx + 1, 1), (colx + 3, 1)),
+                    header_span += [((colx, 0), (colx + 14, 0)), ((colx, 1), (colx, 2)), ((colx + 1, 1), (colx + 3, 1)),
                                     ((colx + 4, 1), (colx + 6, 1)), ((colx + 7, 1), (colx + 9, 1)), ((colx + 10, 1), (colx + 10, 2)), ((colx + 11, 1), (colx + 13, 1))]
                     colx += 14
                     widths += [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
@@ -196,6 +197,7 @@ class stock_inventory_statement(models.Model):
                 # Размер болгож өөрчлөв
                 # headers[0] += [u'Х.нэгж']
                 headers[0] += [u'Размер']
+                headers[0] += [u'Үндсэн үнэ']
                 headers[1] += [None]
                 widths += [3]
                 header_span += [((colx, 0), (colx, 1))]
@@ -910,7 +912,7 @@ class stock_inventory_statement(models.Model):
                                 count += 1
                         number += 1
                 else:
-                    print '22222222222222222222222222222'
+                    # print '22222222222222222222222222222'
                     pro = product_obj.browse(prod_ids)
                     prods = dict([(x['id'], x) for x in pro.read(['name', 'default_code','default_code_r', 'uom_id','attribute_value_ids'])])
                     mylist = sorted(prods.values(), key=lambda v: (v['default_code_r'], int(v['default_code'].split("-")[1]), v['attribute_value_ids']))
@@ -1297,7 +1299,7 @@ class stock_inventory_statement(models.Model):
                                 prods = product_obj.search([('id', 'in', prod_ids), ('categ_id', '=', val['group_id'])])
                             else:
                                 prods = product_obj.search([('id', 'in', prod_ids), ('pos_categ_id', '=', val['group_id'])])
-                            prods = dict([(x['id'], x) for x in prods.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price','attribute_value_ids'])])
+                            prods = dict([(x['id'], x) for x in prods.read(['ean13', 'name', 'default_code', 'uom_id', 'standard_price','attribute_value_ids', 'old_code'])])
                             for prod in sorted(prods.values(), key=itemgetter(wiz['sorting'])):
                                 row.append(['<str>%s.%s</str>' % (number, count)])
                                 temka=[]
@@ -1310,7 +1312,7 @@ class stock_inventory_statement(models.Model):
                                         if len(a.name) <= 4:
                                             temka.append(a.name.encode("utf-8"))
                                 row[prowx] += [u'<space/><space/>%s [%s]' % ((prod['name'] or ''), (prod['default_code'] or '')),
-                                               u'<c>%s</c>' % (str(temka).strip('[]'))]
+                                               u'<c>%s</c>' % (str(temka).strip('[]')), u'<c>%s</c>' % (prod['old_code'] or 0)]
                                 #         Хэмжих нэгж хэрэггүй барааны шинж харна гэсэн болохоор доорх мөрийг коммент болгож өөрчлөлт хийв
                                 # row[prowx] += [u'<space/><space/>%s [%s] [%s]' % ((prod['name'] or ''), (prod['default_code'] or ''), (str(temka).strip('[]'))),
                                 #                u'<c>%s</c>' % (prod['uom_id'][1])]
@@ -1321,9 +1323,9 @@ class stock_inventory_statement(models.Model):
                                     if len(line['lots']) > 1 and wiz['lot']:
                                         for i in range(len(line['lots']) - 1):
                                             if wiz['ean']:
-                                                row.append([None, None, None, None])
+                                                row.append([None, None, None, None, None])
                                             else:
-                                                row.append([None, None, None])
+                                                row.append([None, None, None, None])
                                         to_rowspan((0, rowx), (0, rowx + len(line['lots']) - 1))
                                         if wiz['ean']:
                                             to_rowspan((colx, rowx), (colx, rowx + len(line['lots']) - 1))
@@ -1436,7 +1438,7 @@ class stock_inventory_statement(models.Model):
                     rrowx = 0
                     #I edited here =)
                     prodd = product_obj.browse(prod_ids)
-                    prods = dict([(x['id'], x) for x in prodd.read(['default_code_r','ean13', 'name', 'default_code','uom_id', 'standard_price','attribute_value_ids'])])
+                    prods = dict([(x['id'], x) for x in prodd.read(['default_code_r','ean13', 'name', 'default_code','uom_id', 'standard_price','attribute_value_ids', 'old_code'])])
                     # print '2222222',prods.values()
                     # one = sorted(prods.values(), key=itemgetter(wiz['sorting']))
                     mylist = sorted(prods.values(), key=lambda v: (v['default_code_r'],int(v['default_code'].split("-")[1]),v['attribute_value_ids']))
@@ -1460,7 +1462,7 @@ class stock_inventory_statement(models.Model):
                                 # u'<c>%s</c>' % (prod['uom_id'][1])]
                         row[rrowx] += [u'<space/><space/>%s (%s)' % (
                         (prod['name'] or ''), (prod['default_code'] or '')),
-                                       u'<c>%s</c>' % (str(temka).strip('[]'))]
+                                       u'<c>%s</c>' % (str(temka).strip('[]')), u'<c>%s</c>' %  (prod['old_code'] or 0)]
 
                         if prod['id'] in data_dict:
                             line = data_dict[prod['id']]
@@ -1468,9 +1470,9 @@ class stock_inventory_statement(models.Model):
                             if len(line['lots']) > 1 and wiz['lot']:
                                 for i in range(len(line['lots']) - 1):
                                     if wiz['ean']:
-                                        row.append([None, None, None, None])
+                                        row.append([None, None, None, None, None])
                                     else:
-                                        row.append([None, None, None])
+                                        row.append([None, None, None, None])
                                 to_rowspan((0, rowx), (0, rowx + len(line['lots']) - 1))
                                 if wiz['ean']:
                                     to_rowspan((colx, rowx), (colx, rowx + len(line['lots']) - 1))
