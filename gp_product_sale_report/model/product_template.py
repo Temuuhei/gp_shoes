@@ -62,17 +62,39 @@ def _get_ecommerce_stock_locations_map(cr, product_ids):
     return stock_map
 
 
-def _build_ecommerce_product_vals(product, stock_locations):
-    tmpl = product.product_tmpl_id
+def _get_product_attribute_vals(product):
+    attribute = ''
+    attribute_value = ''
+    if product.attribute_value_ids:
+        attr_value = product.attribute_value_ids[0]
+        attribute = attr_value.attribute_id.name or ''
+        attribute_value = attr_value.name or ''
     return {
+        'attribute': attribute,
+        'attribute_value': attribute_value,
+    }
+
+
+def _build_ecommerce_product_summary_vals(product):
+    vals = {
         'id': product.id,
         'name': product.name_get(),
         'default_code': product.default_code,
+    }
+    vals.update(_get_product_attribute_vals(product))
+    return vals
+
+
+def _build_ecommerce_product_vals(product, stock_locations):
+    tmpl = product.product_tmpl_id
+    vals = _build_ecommerce_product_summary_vals(product)
+    vals.update({
         'barcode': product.new_barcode,
         'price': int(tmpl.main_price),
         'price_sale': int(tmpl.list_price),
         'stock_locations': stock_locations,
-    }
+    })
+    return vals
 
 
 def _product_env():
@@ -143,11 +165,7 @@ class StockQuant(http.Controller):
 
         product_ids = _get_ecommerce_product_ids(request.env.cr)
         products = [
-            {
-                'id': product.id,
-                'name': product.name_get(),
-                'default_code': product.default_code,
-            }
+            _build_ecommerce_product_summary_vals(product)
             for product in _product_env().browse(product_ids)
         ]
         return _json_response(products, 'Return List of All Products')
