@@ -67,11 +67,32 @@ def _build_ecommerce_product_vals(product, stock_locations):
     return {
         'id': product.id,
         'name': product.name_get(),
+        'default_code': product.default_code,
         'barcode': product.new_barcode,
         'price': int(tmpl.main_price),
         'price_sale': int(tmpl.list_price),
         'stock_locations': stock_locations,
     }
+
+
+def _product_env():
+    return request.env['product.product'].sudo()
+
+
+def _find_ecommerce_product(product_ref):
+    if product_ref in (None, '', False):
+        return _product_env().browse()
+    try:
+        product_id = int(product_ref)
+    except (TypeError, ValueError):
+        return _product_env().search([
+            ('active', '=', True),
+            ('new_barcode', '=', str(product_ref)),
+        ], limit=1)
+    return _product_env().search([
+        ('active', '=', True),
+        ('id', '=', product_id),
+    ], limit=1)
 
 
 class ProductProduct(http.Controller):
@@ -82,7 +103,7 @@ class ProductProduct(http.Controller):
         product_ids = _get_ecommerce_product_ids(cr)
         stock_map = _get_ecommerce_stock_locations_map(cr, product_ids)
         products = []
-        for product in request.env['product.product'].browse(product_ids):
+        for product in _product_env().browse(product_ids):
             stock_locations = stock_map.get(product.id)
             if stock_locations:
                 products.append(_build_ecommerce_product_vals(product, stock_locations))
@@ -103,24 +124,31 @@ class StockQuant(http.Controller):
         )
 
     @http.route('/products', type='json', auth='user')
-    def products(self, **rec):
-        if request.jsonrequest and rec.get('id'):
-            product = request.env['product.product'].search([
-                ('active', '=', True),
-                ('id', '=', rec['id']),
-            ], limit=1)
+    def products(self, id=None, product_id=None):
+        product_ref = id or product_id
+        if product_ref not in (None, '', False):
+            product = _find_ecommerce_product(product_ref)
             if not product:
-                return _json_response([], 'Not Found Products or Unavailable')
+                return _json_response([], 'Product not found or inactive')
             stock_locations = _get_ecommerce_stock_locations(request.env.cr, product.id)
-            products = []
-            if stock_locations:
-                products.append(_build_ecommerce_product_vals(product, stock_locations))
-            return _json_response(products, 'Done All Products info Returned')
+            if not stock_locations:
+                return _json_response(
+                    [],
+                    'Product has no stock in configured ecommerce locations',
+                )
+            return _json_response(
+                [_build_ecommerce_product_vals(product, stock_locations)],
+                'Done All Products info Returned',
+            )
 
         product_ids = _get_ecommerce_product_ids(request.env.cr)
         products = [
-            {'id': product.id, 'name': product.name_get()}
-            for product in request.env['product.product'].browse(product_ids)
+            {
+                'id': product.id,
+                'name': product.name_get(),
+                'default_code': product.default_code,
+            }
+            for product in _product_env().browse(product_ids)
         ]
         return _json_response(products, 'Return List of All Products')
 
